@@ -6,25 +6,13 @@
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
       </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
     </expand>
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe64e5d4-be0c-409b-8d89-8dc0cf16a244" name="Default Changelist" comment="removed extra jetstream teams migrations">
-      <change beforePath="$PROJECT_DIR$/app/Models/Team.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/fortify.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/fortify.php" afterDir="false" />
+    <list default="true" id="fe64e5d4-be0c-409b-8d89-8dc0cf16a244" name="Default Changelist" comment="first commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/auth/register.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/auth/register.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -165,9 +153,11 @@
       <path value="$PROJECT_DIR$/vendor/jakub-onderka/php-console-highlighter" />
       <path value="$PROJECT_DIR$/vendor/jakub-onderka/php-console-color" />
       <path value="$PROJECT_DIR$/vendor/symfony/debug" />
+      <path value="$PROJECT_DIR$/vendor/laravel/ui" />
     </include_path>
   </component>
   <component name="ProjectId" id="1ieFK1Ei0ubr3xicAgppYByAlIs" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -199,7 +189,7 @@
       <workItem from="1603771951172" duration="709000" />
       <workItem from="1604033924137" duration="3348000" />
       <workItem from="1604075378825" duration="1000000" />
-      <workItem from="1604076717953" duration="347000" />
+      <workItem from="1604076717953" duration="3510000" />
     </task>
     <task id="LOCAL-00001" summary="added laravel telescope">
       <created>1603602971415</created>
@@ -229,7 +219,14 @@
       <option name="project" value="LOCAL" />
       <updated>1603772299793</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="first commit">
+      <created>1604077412792</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1604077412792</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -252,17 +249,18 @@
     <MESSAGE value="added laravel jetstream" />
     <MESSAGE value="removed jetstream teams" />
     <MESSAGE value="removed extra jetstream teams migrations" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed extra jetstream teams migrations" />
+    <MESSAGE value="first commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="first commit" />
   </component>
   <component name="WindowStateProjectService">
     <state x="184" y="86" key="DiffContextDialog" timestamp="1603604610466">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="184" y="86" key="DiffContextDialog/1920.-635.1080.1880/0.0.1920.1040@0.0.1920.1040" timestamp="1603604610466" />
-    <state x="417" y="119" width="950" height="738" key="Vcs.Push.Dialog.v2" timestamp="1603772303573">
+    <state x="417" y="119" width="950" height="738" key="Vcs.Push.Dialog.v2" timestamp="1604077480952">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="417" y="119" width="950" height="738" key="Vcs.Push.Dialog.v2/1920.-635.1080.1880/0.0.1920.1040@0.0.1920.1040" timestamp="1603772303573" />
+    <state x="417" y="119" width="950" height="738" key="Vcs.Push.Dialog.v2/1920.-635.1080.1880/0.0.1920.1040@0.0.1920.1040" timestamp="1604077480952" />
     <state x="2038" y="-218" width="845" height="1088" key="find.popup" timestamp="1604072363081">
       <screen x="1920" y="-635" width="1080" height="1880" />
     </state>
