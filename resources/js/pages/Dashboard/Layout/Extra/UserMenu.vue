@@ -23,13 +23,13 @@
               <li>
                 <a @click="goToProfile">
                   <span class="sidebar-mini">MP</span>
-                  <span class="sidebar-normal">My Profile</span>
+                  <span class="sidebar-normal">حساب من</span>
                 </a>
               </li>
               <li>
                 <a @click="logout">
                   <span class="sidebar-mini">L</span>
-                  <span class="sidebar-normal">Logout</span>
+                  <span class="sidebar-normal">خروج</span>
                 </a>
               </li>
             </slot>

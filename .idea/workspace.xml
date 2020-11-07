@@ -1,177 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7e804891-6bfe-4774-a72d-d10a70c3271c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/postcss.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/favicon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/apple-icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/bg-pricing.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/bg3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/bg9.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/card-1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/card-2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/card-3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/default-avatar.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/faces/avatar.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/faces/card-profile1-square.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/faces/card-profile2-square.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/faces/marc.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/favicon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/image_placeholder.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/laravel-vue.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/lock.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/login.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/mask.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/new_logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/placeholder.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/product1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/product2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/product3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/register.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/sidebar-1.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/sidebar-2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/sidebar-3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/sidebar-4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/vue-logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/App.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/css/demo.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/images/avatar.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/material-dashboard.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_alerts.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_autocomplete.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_badges.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_buttons.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_cards.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_chartist.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_checkboxes.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_collapse.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_colors.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_dialogs.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_dropdown.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_fileinput.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_fixed-plugin.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_footers.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_forms.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_headers.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_info-areas.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_inputs-size.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_inputs.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_layout.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_misc.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_mixins.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_navbars.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_pages.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_pagination.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_pills.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_popups.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_progress.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_radios.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_responsive.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_rtl.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_select.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_shadows.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_sidebar-and-main-panel.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_tables.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_tabs.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_tags.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_timeline.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_togglebutton.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_typography.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_variables.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/cards/_card-global-sales.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/cards/_card-login.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/cards/_card-pricing.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/cards/_card-product.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/cards/_card-profile.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/cards/_card-signup.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/cards/_card-tabs.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/cards/_card-testimonials.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/mixins/_chartist.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/mixins/_sidebar.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/mixins/_transparency.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/mixins/_vendor-prefixes.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/plugins/_animate.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/plugins/_fullcalendar.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/plugins/_md-datepicker.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/plugins/_perfect-scrollbar.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/plugins/_plugin-jquery.jvectormap.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/plugins/_plugin-nouislider.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/plugins/_sweetalert2.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/plugins/_wizard-card.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/axios/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Badge.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Cards/ChartCard.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Cards/LoginCard.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Cards/NavTabsCard.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Cards/SignupCard.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Cards/StatsCard.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Dropdown.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Logout.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/NotificationPlugin/Notification.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/NotificationPlugin/Notifications.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/NotificationPlugin/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Pagination.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/SidebarPlugin/SideBar.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/SidebarPlugin/SidebarItem.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/SidebarPlugin/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Slider.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/Tabs.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/ValidationError.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/WorldMap/WorldMap.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/WorldMap/world_map.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/components/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/globalComponents.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/globalDirectives.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/material-dashboard.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/middleware/auth.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/middleware/guest.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/mixins/form-mixin.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Components/Icons.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Components/Notifications.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Components/Typography.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Dashboard.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Examples/UserManagement/ListUserPage.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Examples/UserProfile.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Examples/UserProfile/EditPasswordCard.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Examples/UserProfile/EditProfileCard.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Examples/UserProfile/UserProfileCard.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/Content.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/ContentFooter.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/DashboardLayout.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/Extra/MobileMenu.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/Extra/UserMenu.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/TopNavbar.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Maps/API_KEY.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Maps/FullScreenMap.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Pages/AuthLayout.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Pages/Login.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Pages/Register.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Pages/RtlSupport.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Tables/RegularTables.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/FixedPlugin.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/router/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/router/routes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/store/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/store/modules/alerts-module.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/store/modules/auth.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/store/modules/profile-module.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/store/modules/users-module.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/store/services/profile-service.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/store/services/users-service.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/dashboard.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/janat.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/phpunit.xml" beforeDir="false" />
+    <list default="true" id="7e804891-6bfe-4774-a72d-d10a70c3271c" name="Default Changelist" comment="add vue pages">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/mix-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/mix-manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webpack.mix.js" beforeDir="false" afterPath="$PROJECT_DIR$/webpack.mix.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/assets/scss/md/_responsive.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_responsive.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/Extra/UserMenu.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/Extra/UserMenu.vue" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -376,8 +212,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1604648554366</updated>
-      <workItem from="1604648558141" duration="10491000" />
+      <workItem from="1604648558141" duration="11467000" />
     </task>
+    <task id="LOCAL-00001" summary="add vue pages">
+      <created>1604717103225</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1604717103225</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -393,5 +237,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add vue pages" />
+    <option name="LAST_COMMIT_MESSAGE" value="add vue pages" />
   </component>
 </project>
