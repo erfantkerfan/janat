@@ -8,6 +8,25 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import axios from "axios";
+
+// Plugins
+import App from "./App.vue";
+import Chartist from "chartist";
+import VueAxios from "vue-axios";
+import DashboardPlugin from "./material-dashboard";
+
+// plugin setup
+Vue.use(DashboardPlugin);
+Vue.use(VueAxios, axios);
+
+// router & store setup
+import router from "./router";
+import store from "./store";
+
+// global library setup
+// Vue.prototype.$Chartist = Chartist;
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -19,7 +38,7 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -28,5 +47,10 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  */
 
 const app = new Vue({
-    el: '#app',
+    router: router,
+    store: store,
+    el: "#app",
+    render: h => h(App)
 });
+
+store.$app = app;
