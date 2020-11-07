@@ -1,13 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7e804891-6bfe-4774-a72d-d10a70c3271c" name="Default Changelist" comment="add vue pages">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="7e804891-6bfe-4774-a72d-d10a70c3271c" name="Default Changelist" comment="menu update">
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/CHANGELOG.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Black-FD-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Black-FD-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Black-FD-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Black-FD-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-FD-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-FD-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-FD-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-FD-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Black-FD.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Black-FD.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Black-FD.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Black-FD.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Bold-FD.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Bold-FD.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Bold-FD.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Bold-FD.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-FD.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-FD.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-FD.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-FD.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Light-FD.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Light-FD.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Light-FD.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Light-FD.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Medium-FD.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Medium-FD.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Medium-FD.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Medium-FD.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Thin-FD.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Thin-FD.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Thin-FD.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Farsi-Digits/Vazir-Thin-FD.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/HELP.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Black.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Black.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Black.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Black.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Bold.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Bold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Bold.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Bold.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Light.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Light.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Light.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Light.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Medium.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Medium.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Medium.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Medium.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Thin.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Thin.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Thin.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir-Thin.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Vazir.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Black-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Black-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Black-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Black-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Bold-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Bold-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Bold-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Bold-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Light-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Light-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Light-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Light-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Medium-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Medium-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Medium-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Medium-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Thin-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Thin-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Thin-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-Thin-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-WOL.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-WOL.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-WOL.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/Without-Latin/Vazir-WOL.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/font/vazir/sample.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_font-family-vazir.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/mix-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/mix-manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/assets/scss/md/_responsive.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_responsive.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/Extra/UserMenu.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/Extra/UserMenu.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/assets/scss/md/_typography.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_typography.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/assets/scss/md/_variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_variables.scss" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,6 +151,13 @@
       </path>
     </expand>
     <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -157,12 +265,17 @@
   <component name="PropertiesComponent">
     <property name="DatabaseDriversLRU" value="mariadb" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/img" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/font" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="settings.nodejs" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/resources/js/assets/scss/md" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public/font" />
       <recent name="$PROJECT_DIR$/public/img" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/resources/js" />
@@ -212,7 +325,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1604648554366</updated>
-      <workItem from="1604648558141" duration="11467000" />
+      <workItem from="1604648558141" duration="12847000" />
     </task>
     <task id="LOCAL-00001" summary="add vue pages">
       <created>1604717103225</created>
@@ -221,7 +334,14 @@
       <option name="project" value="LOCAL" />
       <updated>1604717103225</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="menu update">
+      <created>1604718915470</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1604718915470</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -240,6 +360,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add vue pages" />
-    <option name="LAST_COMMIT_MESSAGE" value="add vue pages" />
+    <MESSAGE value="menu update" />
+    <option name="LAST_COMMIT_MESSAGE" value="menu update" />
   </component>
 </project>
