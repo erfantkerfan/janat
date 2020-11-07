@@ -1,4 +1,6 @@
+require('dotenv').config();
 const mix = require('laravel-mix');
+require('laravel-mix-alias');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,5 +13,12 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+mix.alias({
+    '@': '/resources/js',
+    '~': '/node_modules/'
+    // '@components': '/resources/assets/js/components',
+});
+
+mix.js('resources/js/app.js', 'public/js').version();
+
+// mix.sass('resources/sass/app.scss', 'public/css')
