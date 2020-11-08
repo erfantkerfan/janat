@@ -7,7 +7,7 @@ import Dashboard from "@/pages/Dashboard/Dashboard.vue";
 import UserProfile from "@/pages/Dashboard/Examples/UserProfile.vue";
 
 // User Management
-import ListUserPage from "@/pages/Dashboard/Examples/UserManagement/ListUserPage.vue";
+import ListUserPage from "@/pages/User/ListUserPage.vue";
 
 // Pages
 import RtlSupport from "@/pages/Dashboard/Pages/RtlSupport.vue";
@@ -95,7 +95,7 @@ let componentsMenu = {
     ]
 };
 
-let examplesMenu = {
+let userMenu = {
     path: "/examples",
     component: DashboardLayout,
     name: "Examples",
@@ -111,7 +111,7 @@ let examplesMenu = {
         },
         {
             path: "user-management/list-users",
-            name: "List Users",
+            name: "لیست کاربران",
             components: {default: ListUserPage},
             meta: {
                 rtlActive: true,
@@ -157,7 +157,7 @@ const routes = [
         children: [
             {
                 path: "dashboard",
-                name: "Dashboard",
+                name: "پیشخوان",
                 components: {default: Dashboard},
                 meta: {
                     rtlActive: true,
@@ -167,7 +167,7 @@ const routes = [
         ]
     },
     componentsMenu,
-    examplesMenu,
+    userMenu,
     authPages
 ];
 
