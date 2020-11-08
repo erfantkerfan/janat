@@ -1,8 +1,10 @@
 @import '_colors';
 @import 'font-family';
 
+$total-font-family: 'Sahel'; // Sahel - Vazir
+
 // Typography elements
-$mdb-font-family: 'Sahel', 'Roboto', 'Helvetica', 'Arial', sans-serif !default;
+$mdb-font-family: $total-font-family, 'Roboto', 'Helvetica', 'Arial', sans-serif !default;
 $mdb-text-color-light:  $white !default;
 $mdb-text-color-light-hex: $white !default; // for contrast function in inverse
 $mdb-text-color-primary: unquote("rgba(#{$rgb-black}, 0.87)") !default;
@@ -39,8 +41,8 @@ $border-radius-label: 12px !default;
 $border-radius-extreme: 30px !default;
 
 // Typography
-$font-family-sans-serif: 'Sahel', 'Roboto', 'Helvetica', 'Arial', sans-serif !default;
-$font-family-serif: 'Sahel', 'Roboto Slab', 'Times New Roman', serif !default;
+$font-family-sans-serif: $total-font-family, 'Roboto', 'Helvetica', 'Arial', sans-serif !default;
+$font-family-serif: $total-font-family, 'Roboto Slab', 'Times New Roman', serif !default;
 
 $headings-font-weight: 300 !default;
 
@@ -113,10 +115,10 @@ $link-hover-decoration: underline !default;
 //
 //## Font, line-height, and color for body text, headings, and more.
 
-$font-family-sans-serif:  'Sahel', "Helvetica Neue", Helvetica, Arial, sans-serif !default;
-$font-family-serif:       'Sahel', Georgia, "Times New Roman", Times, serif !default;
+$font-family-sans-serif:  $total-font-family, "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$font-family-serif:       $total-font-family, Georgia, "Times New Roman", Times, serif !default;
 //** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
-$font-family-monospace:   'Sahel', Menlo, Monaco, Consolas, "Courier New", monospace !default;
+$font-family-monospace:   $total-font-family, Menlo, Monaco, Consolas, "Courier New", monospace !default;
 $font-family-base:        $font-family-sans-serif !default;
 
 $font-size-base:          14px !default;

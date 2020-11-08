@@ -2,104 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7e804891-6bfe-4774-a72d-d10a70c3271c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/CHANGELOG.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Black-FD-WOL.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Black-FD-WOL.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Black-FD-WOL.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Black-FD-WOL.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Bold-FD-WOL.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Bold-FD-WOL.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Bold-FD-WOL.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Bold-FD-WOL.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-FD-WOL.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-FD-WOL.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-FD-WOL.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-FD-WOL.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Light-FD-WOL.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Light-FD-WOL.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Light-FD-WOL.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-Light-FD-WOL.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-SemiBold-FD-WOL.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-SemiBold-FD-WOL.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-SemiBold-FD-WOL.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits-Without-Latin/Sahel-SemiBold-FD-WOL.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Black-FD.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Black-FD.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Black-FD.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Black-FD.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Bold-FD.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Bold-FD.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Bold-FD.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Bold-FD.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-FD.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-FD.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-FD.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-FD.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Light-FD.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Light-FD.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Light-FD.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-Light-FD.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-SemiBold-FD.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-SemiBold-FD.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-SemiBold-FD.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Farsi-Digits/Sahel-SemiBold-FD.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Black.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Black.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Black.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Black.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Bold.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Bold.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Bold.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Light.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Light.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Light.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-Light.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-SemiBold.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-SemiBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-SemiBold.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-SemiBold.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-VF.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel-VF.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Sahel.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Black-WOL.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Black-WOL.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Black-WOL.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Black-WOL.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Bold-WOL.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Bold-WOL.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Bold-WOL.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Bold-WOL.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Light-WOL.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Light-WOL.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Light-WOL.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-Light-WOL.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-SemiBold-WOL.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-SemiBold-WOL.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-SemiBold-WOL.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-SemiBold-WOL.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-WOL.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-WOL.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-WOL.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/Without-Latin/Sahel-WOL.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/font/sahel/sample-variable.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_font-family.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/font-family/sahel.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/font-family/vazir.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/js/pages/User/ListUserPage.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/mix-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/mix-manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/assets/scss/md/_font-family-vazir.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/assets/scss/md/_rtl.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_rtl.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/js/assets/scss/md/_variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/assets/scss/md/_variables.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/DashboardLayout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/pages/Dashboard/Layout/DashboardLayout.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/router/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/router/routes.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -317,7 +223,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1604648554366</updated>
-      <workItem from="1604648558141" duration="16802000" />
+      <workItem from="1604648558141" duration="17115000" />
     </task>
     <task id="LOCAL-00001" summary="add vue pages">
       <created>1604717103225</created>
@@ -340,7 +246,14 @@
       <option name="project" value="LOCAL" />
       <updated>1604721732246</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="change font and some rtl update">
+      <created>1604862346392</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1604862346392</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -361,6 +274,7 @@
     <MESSAGE value="add vue pages" />
     <MESSAGE value="menu update" />
     <MESSAGE value="add Vazir font" />
-    <option name="LAST_COMMIT_MESSAGE" value="add Vazir font" />
+    <MESSAGE value="change font and some rtl update" />
+    <option name="LAST_COMMIT_MESSAGE" value="change font and some rtl update" />
   </component>
 </project>
