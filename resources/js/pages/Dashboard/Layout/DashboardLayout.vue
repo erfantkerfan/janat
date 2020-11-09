@@ -16,7 +16,7 @@
       <mobile-menu></mobile-menu>
       <template slot="links">
         <sidebar-item
-          :link="{ name: 'Dashboard', icon: 'dashboard', path: '/dashboard' }"
+          :link="{ name: 'پیشخوان', icon: 'dashboard', path: '/dashboard' }"
         />
 
         <sidebar-item opened :link="{ name: 'Examples (API)', image: image }">
@@ -25,7 +25,7 @@
           />
           <sidebar-item
             :link="{
-              name: 'User Management',
+              name: 'مدیریت کاربران',
               path: '/examples/user-management/list-users',
             }"
           />

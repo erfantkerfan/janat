@@ -1,5 +1,33 @@
-.rtl{
+.rtl {
   direction: rtl;
+
+    // by krasus
+    .paginated-table {
+        .md-table-head {
+            &.md-sortable {
+                .md-table-sortable-icon {
+                    left: 0;
+                    right: auto;
+                }
+            }
+
+            &.md-table-cell-selection + .md-sortable {
+                .md-table-sortable-icon {
+                    left: 0;
+                    right: auto;
+                }
+            }
+        }
+    }
+
+    .pagination {
+        direction: ltr;
+    }
+    // by krasus
+
+
+
+
 
     .sidebar,
     .bootstrap-navbar{
