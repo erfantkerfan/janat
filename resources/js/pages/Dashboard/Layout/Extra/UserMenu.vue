@@ -27,6 +27,9 @@
                 </a>
               </li>
               <li>
+                  <form id="logout-form" action="/logout" method="POST" style="display: none;">
+                      <input type="hidden" id="logout-form-csrf_token" name="_token" value="viVMg6WzIMXAPgk9QFvOzpVZl5jahXKOhCSTziVW">
+                  </form>
                 <a @click="logout">
                   <span class="sidebar-mini">L</span>
                   <span class="sidebar-normal">خروج</span>
@@ -56,10 +59,15 @@ export default {
     })
     await this.$store.dispatch("profile/me")
   },
+    mounted() {
+        // document.getElementById('logout-form').action = ''
+        document.getElementById('logout-form-csrf_token').value = document.getElementsByName('csrf-token')[0].content
+    },
 
   methods: {
     clicked: function(e) {
       e.preventDefault();
+
     },
     toggleMenu: function() {
       this.isClosed = !this.isClosed;
@@ -68,7 +76,8 @@ export default {
       this.$router.push({name: "User Profile"})
     },
     logout() {
-      this.$store.dispatch("logout");
+      // this.$store.dispatch("logout");
+        document.getElementById('logout-form').submit();
     }
   }
 }
