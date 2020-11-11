@@ -1,0 +1,15 @@
+.rtl {
+    .ml-auto, .mx-auto {
+        margin-left: 0 !important;
+    }
+
+    .form-check {
+        padding-left: 0;
+        padding-right: 1.25rem;
+    }
+
+    .form-check-input {
+        margin-left: auto;
+        margin-right: -1.25rem;
+    }
+}

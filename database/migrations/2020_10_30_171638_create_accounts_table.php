@@ -15,17 +15,19 @@ class CreateAccountsTable extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade')
-                ->onupdate('cascade');
+            $table->bigInteger('user_id')->unsigned();
             $table->text('name');
             $table->text('acc_number');
             $table->integer('company_payment')->default(0);
             $table->string('joined_at')->nullable();
             $table->integer('monthly_payment')->default(0);
             $table->timestamps();
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade')
+                ->onupdate('cascade');
         });
     }
 

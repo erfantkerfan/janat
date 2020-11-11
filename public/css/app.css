@@ -1,4 +1,106 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
+@charset "UTF-8";
+
+.rtl .ml-auto,
+.rtl .mx-auto {
+  margin-left: 0 !important;
+}
+
+.rtl .form-check {
+  padding-left: 0;
+  padding-right: 1.25rem;
+}
+
+.rtl .form-check-input {
+  margin-left: auto;
+  margin-right: -1.25rem;
+}
+
+@font-face {
+  font-family: Sahel;
+  src: url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-FD-WOL.eot");
+  src: url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-FD-WOL.woff2") format("woff2"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-FD-WOL.woff") format("woff"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-FD-WOL.ttf") format("truetype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: Sahel;
+  src: url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Bold-FD-WOL.eot");
+  src: url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Bold-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Bold-FD-WOL.woff2") format("woff2"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Bold-FD-WOL.woff") format("woff"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Bold-FD-WOL.ttf") format("truetype");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: Sahel;
+  src: url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Light-FD-WOL.eot");
+  src: url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Light-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Light-FD-WOL.woff2") format("woff2"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Light-FD-WOL.woff") format("woff"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Light-FD-WOL.ttf") format("truetype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: Sahel;
+  src: url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-SemiBold-FD-WOL.eot");
+  src: url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-SemiBold-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-SemiBold-FD-WOL.woff2") format("woff2"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-SemiBold-FD-WOL.woff") format("woff"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-SemiBold-FD-WOL.ttf") format("truetype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: Sahel;
+  src: url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Black-FD-WOL.eot");
+  src: url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Black-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Black-FD-WOL.woff2") format("woff2"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Black-FD-WOL.woff") format("woff"), url("/font/sahel/Farsi-Digits-Without-Latin/Sahel-Black-FD-WOL.ttf") format("truetype");
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: Vazir;
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-FD-WOL.eot");
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-FD-WOL.woff2") format("woff2"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-FD-WOL.woff") format("woff"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-FD-WOL.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Vazir;
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.eot");
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.woff2") format("woff2"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.woff") format("woff"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Bold-FD-WOL.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Vazir;
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Black-FD-WOL.eot");
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Black-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Black-FD-WOL.woff2") format("woff2"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Black-FD-WOL.woff") format("woff"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Black-FD-WOL.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Vazir;
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.eot");
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff2") format("woff2"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.woff") format("woff"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Medium-FD-WOL.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Vazir;
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.eot");
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.woff2") format("woff2"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.woff") format("woff"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Light-FD-WOL.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Vazir;
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.eot");
+  src: url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.eot?#iefix") format("embedded-opentype"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.woff2") format("woff2"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.woff") format("woff"), url("/font/vazir/Farsi-Digits-Without-Latin/Vazir-Thin-FD-WOL.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+.md-menu-content-container .md-list {
+  font-family: inherit;
+}
 
 /*!
  * Bootstrap v4.5.3 (https://getbootstrap.com/)
@@ -10901,5 +11003,10 @@ a.text-dark:focus {
     color: inherit;
     border-color: #dee2e6;
   }
+}
+
+body {
+  font-family: "Sahel", sans-serif;
+  text-align: right;
 }
 

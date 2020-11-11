@@ -49,7 +49,7 @@ import store from "./store";
 const app = new Vue({
     router: router,
     store: store,
-    el: "#app",
+    el: "#dashboard_app",
     render: h => h(App)
 });
 
