@@ -1,91 +1,130 @@
 <template>
-  <form ref="password_form" @submit.prevent="changePassword">
-
     <md-card>
-
-      <md-card-header class="md-card-header-icon">
-        <div class="card-icon">
-          <md-icon>perm_identity</md-icon>
-        </div>
-        <h4 class="title">
-          Change Password
-        </h4>
-      </md-card-header>
-
-      <md-card-content>
-        <div class="md-layout">
-          <div class="md-layout-item md-size-100">
-            <md-field class="md-invalid">
-              <label>Current Password</label>
-              <md-input v-model="password" type="password"/>
-              <validation-error :errors="apiValidationErrors.password"/>
-            </md-field>
-            <md-field class="md-invalid">
-              <label>New Password</label>
-              <md-input v-model="new_password" type="password"/>
-              <validation-error :errors="apiValidationErrors.password_confirmation"/>
-            </md-field>
-            <md-field class="md-invalid">
-              <label>Confirm New Password</label>
-              <md-input v-model="confirm_password" type="password"/>
-              <validation-error :errors="apiValidationErrors.password_confirmation"/>
-            </md-field>
-          </div>
-        </div>
-      </md-card-content>
-
-      <md-card-actions>
-        <md-button type="submit">
-          Change Password
-        </md-button>
-      </md-card-actions>
+        <md-card-header class="md-card-header-icon">
+            <div class="card-icon">
+                <md-icon>vpn_key</md-icon>
+            </div>
+            <h4 class="title">
+                ویرایش کلمه عبور
+            </h4>
+        </md-card-header>
+        <md-card-content>
+            <div class="md-layout">
+                <div class="md-layout-item md-size-100">
+                    <md-field v-if="!$auth.isSuperAdmin" class="md-invalid">
+                        <label>کلمه عبور فعلی</label>
+                        <md-input v-model="password" type="password"/>
+                    </md-field>
+                    <md-field class="md-invalid">
+                        <label>کلمه عبور جدید</label>
+                        <md-input v-model="new_password" type="password"/>
+                    </md-field>
+                    <md-field class="md-invalid">
+                        <label>تکرار کلمه عبور جدید</label>
+                        <md-input v-model="confirm_password" type="password"/>
+                    </md-field>
+                </div>
+            </div>
+            <loading :active.sync="user.loading" :is-full-page="false"></loading>
+        </md-card-content>
+        <md-card-actions>
+            <md-button @click="changePassword">
+                تغییر کلمه عبور
+            </md-button>
+        </md-card-actions>
     </md-card>
-
-  </form>
 </template>
 
 <script>
-  import {ValidationError} from "@/components";
-  import formMixin from "@/mixins/form-mixin";
-  export default {
-    name: "edit-password-card",
+    import {ValidationError} from "@/components";
+    import formMixin from "@/mixins/form-mixin";
 
-    props: {
-      user: Object
-    },
+    export default {
+        name: "edit-password-card",
 
-    components: {ValidationError},
+        props: {
+            user: Object
+        },
 
-    mixins: [formMixin],
+        components: {ValidationError},
 
-    data: () => ({
-      password: null,
-      new_password: null,
-      confirm_password: null
-    }),
+        mixins: [formMixin],
 
-    methods: {
-      async changePassword() {
-        if(["1", "2", "3"].includes(this.user.id)) {
-          await this.$store.dispatch("alerts/error", "You are not allowed not change data of default users.")
-          return
+        data: () => ({
+            password: null,
+            new_password: null,
+            confirm_password: null
+        }),
+
+        methods: {
+            isValidPassword (password) {
+                if (!password) {
+                    this.$store.dispatch('alerts/fire', {
+                        icon: 'error',
+                        title: 'توجه',
+                        message: 'کلمه عبور را وارد کنید'
+                    });
+                    return false
+                }
+
+                if (password.length < 4) {
+                    this.$store.dispatch('alerts/fire', {
+                        icon: 'error',
+                        title: 'توجه',
+                        message: 'کلمه عبور باید بیش از سه کاراکتر باشد'
+                    });
+                    return false
+                }
+
+                return true
+            },
+            isValid () {
+                if (this.new_password !== this.confirm_password) {
+                    this.$store.dispatch('alerts/fire', {
+                        icon: 'error',
+                        title: 'توجه',
+                        message: 'کلمه عبور جدید و تکرار کلمه عبول جدید متفاوت هستند'
+                    });
+                    return false
+                }
+
+                if (
+                    (!this.logedInUser.hasSuperAdminRole() && (!this.isValidPassword(this.password) || !this.isValidPassword(this.new_password)))
+                    ||
+                    (this.logedInUser.hasSuperAdminRole() && !this.isValidPassword(this.new_password))
+                ) {
+                    return false
+                }
+
+                return true
+            },
+            changePassword() {
+
+                if (!this.isValid()) {
+                    return false
+                }
+
+                let that = this
+                this.user.updatePassword(this.password, this.new_password)
+                    .then((response) => {
+                        that.$emit('update')
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'کلمه عبور با موفقیت ویرایش شد'
+                        });
+                    })
+                    .catch((error) => {
+                        that.$emit('update')
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                    })
+
+            }
         }
-
-        this.user.password = this.password;
-        this.user.password_new = this.new_password;
-        this.user.password_confirmation = this.confirm_password;
-
-        try {
-          await this.$store.dispatch("users/update", this.user)
-          await this.$store.dispatch("alerts/error", "Password changed successfully.")
-          this.user = await this.$store.getters["profile/me"]
-          this.$refs['password_form'].reset()
-        } catch (e) {
-          await this.$store.dispatch("alerts/error", "Oops, something went wrong!")
-          this.setApiValidation(e.response.data.errors)
-        }
-
-      }
-    }
-  };
+    };
 </script>
