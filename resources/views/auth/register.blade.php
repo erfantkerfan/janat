@@ -11,40 +11,38 @@
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
-                        <div class="form-group row">
-                            <label for="f_name" class="col-md-4 col-form-label text-md-right">{{ __('auth.Name') }}</label>
+{{--                        @include('auth.registerField', ['key' => 'f_name'])--}}
 
-                            <div class="col-md-6">
-                                <input id="f_name" type="text" class="form-control @error('f_name') is-invalid @enderror" name="f_name" value="{{ old('f_name') }}" required autocomplete="f_name" autofocus>
-
-                                @error('f_name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+                        @include('auth.registerField', ['key' => 'f_name', 'label' => 'نام'])
+                        @include('auth.registerField', ['key' => 'l_name', 'label' => 'نام خانوادگی'])
+                        @include('auth.registerField', ['key' => 'SSN', 'label' => 'کد ملی'])
+                        @include('auth.registerField', ['key' => 'salary', 'label' => 'حقوق ماهیانه'])
+                        @include('auth.registerField', ['key' => 'address', 'label' => 'آدرس'])
+                        @include('auth.registerField', ['key' => 'phone', 'label' => 'تلفن ثابت'])
+                        @include('auth.registerField', ['key' => 'mobile', 'label' => 'تلفن همراه'])
 
                         <div class="form-group row">
-                            <label for="SSN" class="col-md-4 col-form-label text-md-right">{{ __('auth.SSN') }}</label>
-
+                            <label for="company_id" class="col-md-4 col-form-label text-md-right">شرکت</label>
                             <div class="col-md-6">
-                                <input id="SSN" type="text" class="form-control @error('SSN') is-invalid @enderror" name="SSN" value="{{ old('SSN') }}" required autocomplete="SSN">
-
-                                @error('SSN')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                <select id="company_id" class="form-control @error('company_id') is-invalid @enderror" name="company_id" required autofocus>
+                                    @foreach($companies as $company)
+                                        <option value="{{ $company->id }}">
+                                            {{ $company->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('company_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
                                 @enderror
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('auth.Password') }}</label>
-
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -52,10 +50,8 @@
                                 @enderror
                             </div>
                         </div>
-
                         <div class="form-group row">
                             <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('auth.Confirm Password') }}</label>
-
                             <div class="col-md-6">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                             </div>
@@ -68,6 +64,7 @@
                                 </button>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>
