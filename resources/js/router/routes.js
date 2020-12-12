@@ -46,6 +46,17 @@ let fundsMenu = {
             components: {default: FundList},
             meta: {
                 rtlActive: true,
+                displayName: "لیست صندوق ها",
+                middleware: auth
+            }
+        },
+        {
+            path: "create",
+            name: "Create",
+            components: {default: FundForm},
+            meta: {
+                rtlActive: true,
+                displayName: "ساخت صندوق جدید",
                 middleware: auth
             }
         },
@@ -55,6 +66,7 @@ let fundsMenu = {
             components: {default: FundForm},
             meta: {
                 rtlActive: true,
+                displayName: "اطلاعات صندوق",
                 middleware: auth
             }
         }

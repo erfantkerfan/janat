@@ -42,7 +42,7 @@
                         <md-table-toolbar>
                             <md-field>
                                 <md-button class="md-dense md-raised md-info" @click="getList">جستجو</md-button>
-                                <md-button class="md-dense md-raised md-primary" @click="onProFeature">افزودن صندوق</md-button>
+                                <md-button class="md-dense md-raised md-primary" to="/fund/create">افزودن صندوق</md-button>
                             </md-field>
                             <md-field>
                                 <label>تعداد در هر صفحه:</label>
@@ -59,7 +59,7 @@
                             </md-field>
                         </md-table-toolbar>
                         <md-table-row slot="md-table-row" slot-scope="{ item }">
-                            <md-table-cell md-label="نام" md-sort-by="name">{{item.name}}
+                            <md-table-cell md-label="نام صندوق" md-sort-by="name">
                                 {{item.name}}
                             </md-table-cell>
                             <md-table-cell md-label="پرداخت ماهیانه" md-sort-by="email">
@@ -202,15 +202,22 @@
                 let that = this;
                 item.delete()
                     .then(function(response) {
-                        // toastr.success('تیکت با موفقیت حذف شد.');
-                        // that.removeTicketFromList(item);
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'صندوق با موفقیت حذف شد'
+                        });
                         that.getList()
                     })
                     .catch(function(error) {
-                        // toastr.error('مشکلی رخ داده است.');
-                        // Assist.handleErrorMessage(error);
-                        item.editMode = false;
-                        item.loading = false;
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        item.editMode = false
+                        item.loading = false
                     });
             },
             onProFeature() {

@@ -16,7 +16,7 @@
 
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
-                                نام
+                                نام صندوق
                             </label>
                             <div class="md-layout-item">
                                 <md-field class="md-invalid">
@@ -26,7 +26,7 @@
                         </div>
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
-                                پرداخت ماهیانه
+                                میزان شهریه
                             </label>
                             <div class="md-layout-item">
                                 <md-field class="md-invalid">
@@ -36,7 +36,7 @@
                         </div>
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
-                                تاریخ ایجاد کاربر
+                                تاریخ تعریف صندوق
                             </label>
                             <div class="md-layout-item">
                                 <md-field class="md-invalid">
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-    import {Fund} from "../../models/Fund";
+    import {Fund} from '@/models/Fund';
 
     export default {
         name: "fund-form",
@@ -70,10 +70,13 @@
             fund: new Fund()
         }),
         mounted() {
-            this.getProfile();
+            this.getData();
         },
         methods: {
-            getProfile () {
+            getData () {
+                if (this.$route.name === 'Create') {
+                    return false
+                }
                 this.fund.loading = true;
                 this.fund.show(this.$route.params.id)
                     .then((response) => {
@@ -86,15 +89,47 @@
                     })
             },
             updateFund () {
+                if (this.$route.name === 'Create') {
+                    this.createFund()
+                    return
+                }
+                let that = this
                 this.fund.loading = true;
                 this.fund.update()
                     .then((response) => {
-                        this.fund.loading = false;
-                        this.fund = new Fund(response.data)
+                        that.fund.loading = false;
+                        that.fund = new Fund(response.data)
                     })
                     .catch((error) => {
-                        this.fund.loading = false;
-                        this.fund = new Fund()
+                        that.fund.loading = false;
+                        that.fund = new Fund()
+                    })
+            },
+            createFund () {
+                let that = this
+                this.fund.loading = true
+                delete this.fund.created_at
+                delete this.fund.updated_at
+                this.fund.create()
+                    .then((response) => {
+                        that.fund.loading = false;
+                        that.fund = new Fund(response.data)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'اطلاعات صندوق با موفقیت ثبت شد'
+                        });
+                        that.$router.push({ path: '/fund/'+that.fund.id })
+                    })
+                    .catch((error) => {
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        that.fund.loading = false;
+                        that.fund = new Fund()
                     })
             }
         }

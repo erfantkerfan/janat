@@ -86,53 +86,62 @@
                 }
             },
             updateUserProfile () {
+                if (this.$route.name === 'Create') {
+                    this.createUserProfile()
+                    return
+                }
+                let that = this
                 this.user.loading = true;
                 delete this.user.password
                 delete this.user.user_pic
                 this.user.update()
                     .then((response) => {
-                        this.user.loading = false;
-                        this.user = new User(response.data)
-                        this.$store.dispatch('alerts/fire', {
+                        that.user.loading = false;
+                        that.user = new User(response.data)
+                        that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
                             message: 'اطلاعات کاربر با موفقیت ویرایش شد'
                         });
-                        this.refreshAuthenticatedUserDataIfNeed()
+                        that.refreshAuthenticatedUserDataIfNeed()
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
+                        that.$store.dispatch('alerts/fire', {
                             icon: 'error',
                             title: 'توجه',
                             message: 'مشکلی رخ داده است. مجدد تلاش کنید'
                         });
                         console.log('error: ', error)
-                        this.user.loading = false;
-                        this.user = new User()
+                        that.user.loading = false;
+                        that.user = new User()
                     })
             },
             createUserProfile () {
+                let that = this
                 this.user.loading = true;
+                delete this.user.user_pic
+                delete this.user.created_at
+                delete this.user.updated_at
                 this.user.create()
                     .then((response) => {
-                        this.user.loading = false;
-                        this.user = new User(response.data)
-                        this.$store.dispatch('alerts/fire', {
+                        that.user.loading = false;
+                        that.user = new User(response.data)
+                        that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
                             message: 'اطلاعات کاربر با موفقیت ثبت شد'
                         });
-                        this.router.push({ name: 'user/Show', params: { id: '123' } })
+                        that.$router.push({ path: '/user/'+that.user.id })
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
+                        that.$store.dispatch('alerts/fire', {
                             icon: 'error',
                             title: 'توجه',
                             message: 'مشکلی رخ داده است. مجدد تلاش کنید'
                         });
                         console.log('error: ', error)
-                        this.user.loading = false;
-                        this.user = new User()
+                        that.user.loading = false;
+                        that.user = new User()
                     })
             }
         }
