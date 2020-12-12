@@ -56,7 +56,7 @@
         "vuex": "^3.4.0"
     },
     "dependencies": {
-        "js-abstract-model": "^0.1.12",
+        "js-abstract-model": "^0.1.13",
         "vue-confirm-dialog": "^1.0.2",
         "vue-loading-overlay": "^3.4.2",
         "vue-persian-datetime-picker": "^2.4.1",

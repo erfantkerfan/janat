@@ -21,7 +21,7 @@
 
                 <sidebar-item opened :link="{ name: 'کاربران', image: image }">
                     <sidebar-item
-                        :link="{ name: 'حساب کاربری', path: '/user/'+user.id }"
+                        :link="{ name: 'حساب کاربری', path: '/user/'+authenticatedUser.id }"
                     />
                     <sidebar-item
                         :link="{ name: 'مدیریت کاربران', path: '/user/list' }"
@@ -154,11 +154,6 @@
             FixedPlugin,
             MobileMenu,
             UserMenu,
-        },
-        computed: {
-            user() {
-                return this.$store.getters['users/user']
-            }
         },
         data() {
             return {

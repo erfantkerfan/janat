@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="md-layout-item md-size-40 md-small-size-100">
-            <user-profile-card v-model="user" @update="getProfile"/>
+            <user-profile-card v-model="user" ref="userProfileCard" @update="getProfile" @updateUserPic="updateUserPic"/>
         </div>
     </div>
 </template>
@@ -27,11 +27,6 @@
             "user-edit-card": UserEditCard,
             "user-password-card": UserPasswordCard
         },
-        computed: {
-            logedInUser () {
-                return this.$store.getters['users/user']
-            }
-        },
         data: () => ({
             user: new User()
         }),
@@ -39,6 +34,29 @@
             this.getProfile();
         },
         methods: {
+            updateUserPic (data) {
+                this.user.loading = true;
+                this.user.setUserPic(data)
+                    .then((response) => {
+                        this.user.loading = false;
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'اطلاعات کاربر با موفقیت ویرایش شد'
+                        });
+                        this.refreshAuthenticatedUserDataIfNeed()
+                        this.$refs.userProfileCard.clearUserPicBuffer(response.data)
+                    })
+                    .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        this.user.loading = false;
+                    })
+            },
             getProfile () {
                 if (this.$route.name === 'Create') {
                     return false
@@ -62,8 +80,15 @@
                         this.user = new User()
                     })
             },
+            refreshAuthenticatedUserDataIfNeed () {
+                if (parseInt(this.authenticatedUser.id) === parseInt(this.$route.params.id)) {
+                    this.$auth().refreshAuthenticatedUserData()
+                }
+            },
             updateUserProfile () {
                 this.user.loading = true;
+                delete this.user.password
+                delete this.user.user_pic
                 this.user.update()
                     .then((response) => {
                         this.user.loading = false;
@@ -73,6 +98,7 @@
                             title: 'توجه',
                             message: 'اطلاعات کاربر با موفقیت ویرایش شد'
                         });
+                        this.refreshAuthenticatedUserDataIfNeed()
                     })
                     .catch((error) => {
                         this.$store.dispatch('alerts/fire', {

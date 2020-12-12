@@ -88,6 +88,28 @@ class UserController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param Request $request
+     * @return string
+     */
+    public function setUserPic(Request $request)
+    {
+        if (!$request->file('user_pic') || !$request->get('id')) {
+            return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
+        }
+
+        $user = User::findOrFail($request->get('id'));
+        $user->user_pic = File::get($request->file('user_pic'));
+
+        if ($user->save()) {
+            return $this->getUserPic($user->id);
+        } else {
+            return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param Request $request

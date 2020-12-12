@@ -1,9 +1,18 @@
 <template>
     <md-card class="md-card-profile">
         <div class="md-card-avatar">
-            <img class="img" :src="cardUserImage"/>
+            <img @click="$refs.userProfilePic.click()" class="img" :src="cardUserImage"/>
         </div>
         <md-card-content>
+            <div v-if="cardUserNewImage !== null">
+                <md-button @click="clearUserPicBuffer" class="md-icon-button md-warning">
+                    <md-icon>clear</md-icon>
+                </md-button>
+                <md-button @click="updateUserPic" class="md-icon-button md-success">
+                    <md-icon>check</md-icon>
+                </md-button>
+            </div>
+            <input v-if="cardUserNewImage === null" v-show="false" type="file" ref="userProfilePic" @change="bufferUserPic($event)" />
             <h6 class="category text-gray">{{ value.f_name }} {{ value.l_name }}</h6>
             <h4 class="card-title">{{ value.company.name }}</h4>
             <p class="card-description">
@@ -183,6 +192,7 @@
                 createAccountShowDialog: false,
                 editAccountState: false,
                 cardUserImage: '',
+                cardUserNewImage: null,
                 sortation: {
                     field: "created_at",
                     order: "asc"
@@ -196,6 +206,34 @@
             this.getFunds();
         },
         methods: {
+            bufferUserPic ($event) {
+                const toBase64 = file => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                });
+
+                let that = this
+                toBase64($event.target.files[0])
+                .then((result)=> {
+                    that.cardUserNewImage = $event.target.files[0]
+                    that.cardUserImage = result
+                })
+                .catch(() => {
+                    that.clearUserPicBuffer()
+                })
+            },
+            clearUserPicBuffer (newUserPic) {
+                this.cardUserNewImage = null
+                if (!newUserPic) {
+                    newUserPic = this.authenticatedUser.user_pic
+                }
+                this.cardUserImage = newUserPic
+            },
+            updateUserPic () {
+                this.$emit('updateUserPic', this.cardUserNewImage)
+            },
             updateUserModel () {
                 this.value.status_id = this.value.status.id
                 this.value.company_id = this.value.company.id
