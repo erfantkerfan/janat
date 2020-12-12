@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Fund;
 use App\Traits\Filter;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -37,24 +38,16 @@ class FundController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return Response
      */
     public function store(Request $request)
     {
-        //
+        $fund = Fund::create($request->all());
+
+        return $this->jsonResponseOk($fund);
     }
 
     /**
@@ -69,27 +62,23 @@ class FundController extends Controller
         return $this->jsonResponseOk($fund);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Fund $fund
-     * @return Response
-     */
-    public function edit(Fund $fund)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param Fund $fund
      * @return Response
      */
     public function update(Request $request, Fund $fund)
     {
-        //
+        $fund->fill($request->all());
+
+        if ($fund->save()) {
+            return $this->show($fund->id);
+        } else {
+            return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
+        }
     }
 
     /**
@@ -97,9 +86,14 @@ class FundController extends Controller
      *
      * @param Fund $fund
      * @return Response
+     * @throws Exception
      */
     public function destroy(Fund $fund)
     {
-        //
+        if ($fund->delete()) {
+            return $this->jsonResponseOk([ 'message'=> 'صندوق با موفقیت حذف شد' ]);
+        } else {
+            return $this->jsonResponseError('مشکلی در حذف اطلاعات رخ داده است.');
+        }
     }
 }

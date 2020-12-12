@@ -26,7 +26,9 @@ class CreateTransactionsTable extends Migration
 
             $table->foreign('status_id')
                 ->references('id')
-                ->on('transaction_status');
+                ->on('transaction_status')
+                ->onDelete('cascade')
+                ->onupdate('cascade');
             $table->foreign('allocated_loan_id')
                 ->references('id')
                 ->on('allocated_loans')

@@ -19,6 +19,7 @@ class CreateUserStatusesTable extends Migration
             $table->string('displayName')->nullable()->comment('نام قابل نمایش این وضعیت');
             $table->longText('description')->nullable()->comment('توضیح درباره وضعیت');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
