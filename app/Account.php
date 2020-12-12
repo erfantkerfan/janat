@@ -12,6 +12,24 @@ class Account extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'name', 'acc_number', 'company_payment', 'joined_at', 'monthly_payment'
+        'user_id',
+        'fund_id',
+        'acc_number',
+        'joined_at'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function fund()
+    {
+        return $this->belongsTo(Fund::class);
+    }
+
+    public function allocatedLoans()
+    {
+        return $this->hasMany(AllocatedLoan::class);
+    }
 }
