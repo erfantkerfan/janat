@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAccountsTable extends Migration
+class CreateCompaniesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,16 @@ class CreateAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::create('accounts', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('user_id')->unsigned();
-            $table->text('name');
-            $table->text('acc_number');
-            $table->integer('company_payment')->default(0);
-            $table->string('joined_at')->nullable();
-            $table->integer('monthly_payment')->default(0);
+            $table->text('name')->comment('نام شرکت');
+            $table->bigInteger('fund_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->foreign('user_id')
+            $table->foreign('fund_id')
                 ->references('id')
-                ->on('users')
+                ->on('funds')
                 ->onDelete('cascade')
                 ->onupdate('cascade');
         });
@@ -38,6 +35,6 @@ class CreateAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accounts');
+        Schema::dropIfExists('companies');
     }
 }

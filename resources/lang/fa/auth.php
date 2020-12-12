@@ -22,7 +22,7 @@ return [
     'Login' => 'ورود',
     'Register' => 'ثبت نام',
     'Forgot Your Password?' => 'کلمه عبور خود را فراموش کرده اید؟',
-    'failed' => 'These credentials do not match our records.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'failed' => 'نام کاربری و یا کلمه عبور صحیح نیست',
+    'throttle' => 'تعداد دفعات زیادی اقدام به ورود کرده اید. لطفا بعد از  :seconds  ثانیه دیگر مجدد امتحان کنید.',
 
 ];

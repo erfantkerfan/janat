@@ -1,34 +1,104 @@
 import { Model, Collection } from 'js-abstract-model'
+import { RoleList } from '@/models/Role'
+import { Company } from '@/models/Company'
+import { AccountList } from '@/models/Account'
+import { UserStatus } from '@/models/UserStatus'
 
 class User extends Model {
     constructor (user) {
         super(user, [
             {
                 key: 'baseRoute',
-                default: ''
+                default: 'api/users'
             },
             { key: 'id' },
             { key: 'f_name' },
             { key: 'l_name' },
-            { key: 'fa_name' },
             { key: 'SSN' },
+            { key: 'password' },
             { key: 'staff_code' },
-            { key: 'company_id' },
+            { key: 'salary' },
             { key: 'address' },
             { key: 'phone' },
-            { key: 'status' },
-            { key: 'joined_at' },
+            { key: 'mobile' },
             { key: 'email' },
-            { key: 'email_verified_at' },
-            { key: 'password' },
+            { key: 'description' },
+
+            {
+                key: 'roles',
+                relatedModel: RoleList
+            },
+            {
+                key: 'status',
+                relatedModel: UserStatus
+            },
+            {
+                key: 'company',
+                relatedModel: Company
+            },
+            {
+                key: 'accounts',
+                relatedModel: AccountList
+            },
+
             { key: 'created_at' },
             { key: 'updated_at' }
         ])
     }
 
+    hasSuperAdminRole () {
+        if (!this.roles) {
+            return false
+        }
+        const adminRole = this.roles.list.find( (item) => { return  item.name === 'admin' })
+        if (!adminRole) {
+            return false
+        }
+
+        return true
+    }
+
+    getUserPic (id, url) {
+        if (!this.baseRoute) {
+            return new Promise(() => {
+                throw new Error('baseRoute is not set');
+            })
+        }
+
+        if (!id) {
+            id = this.id;
+        }
+
+        if (!url) {
+            url = this.baseRoute + '/' + id + '/user_pic';
+        }
+
+
+        return this.crud.fetch(url);
+    }
+
+    updatePassword (oldPass, newPass, id, url) {
+        if (!this.baseRoute) {
+            return new Promise(() => {
+                throw new Error('baseRoute is not set');
+            })
+        }
+
+        if (!id) {
+            id = this.id;
+        }
+
+        if (!url) {
+            url = this.baseRoute + '/' + id + '/reset_pass';
+        }
+
+
+        return this.crud.update(url, {oldPass, newPass});
+    }
+
     setFullName () {
-        if (this.first_name !== null && this.last_name !== null) {
-            this.full_name = this.first_name + ' ' + this.last_name
+        if (this.f_name !== null && this.l_name !== null) {
+            this.full_name = this.f_name + ' ' + this.l_name
         }
     }
 
@@ -42,7 +112,7 @@ class User extends Model {
     }
 
     hasValidSSN (input) {
-        let nationalCode = this.nationalCode
+        let nationalCode = this.SSN
         if (typeof input !== 'undefined') {
             nationalCode = input
         }
@@ -79,10 +149,10 @@ class User extends Model {
     }
 
     convertSSNToValidValue (buffer) {
-        let validData = this.nationalCode
+        let validData = this.SSN
         if (!this.hasValidSSN()) {
-            if (this.nationalCode !== null && this.nationalCode.trim().length < 10) {
-                validData = this.nationalCode.trim().padStart(10, '0')
+            if (this.SSN !== null && this.SSN.trim().length < 10) {
+                validData = this.SSN.trim().padStart(10, '0')
                 if (!this.hasValidSSN(validData)) {
                     validData = null
                 }
@@ -94,7 +164,7 @@ class User extends Model {
         if (typeof buffer !== 'undefined' && buffer) {
             return validData
         } else {
-            this.nationalCode = validData
+            this.SSN = validData
         }
     }
 }

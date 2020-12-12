@@ -1,41 +1,360 @@
 <template>
-  <md-card class="md-card-profile">
-    <div class="md-card-avatar">
-      <img class="img" :src="cardUserImage"/>
-    </div>
-    <md-card-content>
-      <h6 class="category text-gray">CEO / Co-Founder</h6>
-      <h4 class="card-title">Alec Thompson</h4>
-      <p class="card-description">
-        Don't be scared of the truth because we need to restart the human
-        foundation in truth And I love you like Kanye loves Kanye I love Rick
-        Owens’ bed design but the back is...
-      </p>
-      <md-button class="md-round" :class="getColorButton(buttonColor)">
-        Follow
-      </md-button>
-    </md-card-content>
-  </md-card>
+    <md-card class="md-card-profile">
+        <div class="md-card-avatar">
+            <img class="img" :src="cardUserImage"/>
+        </div>
+        <md-card-content>
+            <h6 class="category text-gray">{{ value.f_name }} {{ value.l_name }}</h6>
+            <h4 class="card-title">{{ value.company.name }}</h4>
+            <p class="card-description">
+                {{ value.description }}
+            </p>
+
+            <md-empty-state
+                v-if="value.accounts.list.length === 0"
+                class="md-warning"
+                md-icon="cancel_presentation"
+                md-label="حسابی یافت نشد"
+            >
+            </md-empty-state>
+            <md-button
+                class="md-dense md-raised md-primary"
+                @click="showAddAccountDialog">
+                ایجاد حساب جدید
+            </md-button>
+            <md-table
+                v-if="value.accounts.list.length > 0"
+                :value="value.accounts.list"
+                :md-sort.sync="sortation.field"
+                :md-sort-order.sync="sortation.order"
+                class="paginated-table table-striped table-hover"
+            >
+                <md-table-row slot="md-table-row" slot-scope="{ item }">
+                    <md-table-cell md-label="نام صندوق" md-sort-by="name">{{item.fund.name}}</md-table-cell>
+                    <md-table-cell md-label="شماره حساب" md-sort-by="email">{{item.acc_number}}</md-table-cell>
+                    <md-table-cell md-label="تاریخ عضویت" md-sort-by="created_at">{{item.shamsiDate('joined_at').date}}</md-table-cell>
+                    <md-table-cell md-label="عملیات">
+                        <md-button
+                            class="md-icon-button md-raised md-round md-info"
+                            style="margin: .2rem;"
+                            @click="showEditAccountDialog(item)"
+                        >
+                            <md-icon>edit</md-icon>
+                        </md-button>
+                        <md-button
+                            class="md-icon-button md-raised md-round md-danger"
+                            style="margin: .2rem;"
+                            @click="confirmRemove(item)"
+                        >
+                            <md-icon>delete</md-icon>
+                        </md-button>
+                    </md-table-cell>
+                </md-table-row>
+            </md-table>
+
+            <md-field>
+                <label>وضعیت کاربر:</label>
+                <md-select v-model="value.status.id" name="pages">
+                    <md-option
+                        v-for="item in userStatuses.list"
+                        :key="item.id"
+                        :label="item.displayName"
+                        :value="item.id"
+                    >
+                        {{ item.displayName }}
+                    </md-option>
+                </md-select>
+            </md-field>
+            <md-field>
+                <label>شرکت کاربر:</label>
+                <md-select v-model="value.company.id" name="pages">
+                    <md-option
+                        v-for="item in companies.list"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                    >
+                        {{ item.name }}
+                    </md-option>
+                </md-select>
+            </md-field>
+
+            <md-dialog :md-active.sync="createAccountShowDialog">
+                <md-dialog-title>ایجاد حساب جدید</md-dialog-title>
+
+                <md-dialog-content>
+                    <div style="height: 300px;display: flex;flex-flow: column;justify-content: center;">
+                        <md-empty-state
+                            v-if="funds.list.length === 0"
+                            class="md-warning"
+                            md-icon="cancel_presentation"
+                            md-label="صندوقی یافت نشد"
+                            md-description="برای ایجاد حساب ابتدا یک صندوق برای سیستم تعریف کنید"
+                        >
+                        </md-empty-state>
+                        <md-button
+                            v-if="funds.list.length === 0"
+                            class="md-dense md-raised md-primary"
+                            @click="createAccountShowDialog = true">
+                            برای ایجاد صندوق کلیک کنید
+                        </md-button>
+                        <md-field v-if="funds.list.length > 0">
+                            <label>انتخاب صندوق:</label>
+                            <md-select v-model="newAccount.fund.id">
+                                <md-option
+                                    v-for="item in funds.list"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id"
+                                >
+                                    {{ item.name }}
+                                </md-option>
+                            </md-select>
+                        </md-field>
+                        <md-field v-if="funds.list.length > 0">
+                            <label>شماره حساب</label>
+                            <md-input v-model="newAccount.acc_number" />
+                        </md-field>
+                        <div v-if="funds.list.length > 0" class="md-layout">
+                            <label class="md-layout-item md-size-40 md-form-label">
+                                تاریخ عضویت
+                            </label>
+                            <div class="md-layout-item md-size-100">
+                                <date-picker
+                                    v-model="newAccount.joined_at"
+                                    type="datetime"
+                                    :editable="true"
+                                    format="YYYY-MM-DD HH:mm:ss"
+                                    display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                            </div>
+                        </div>
+                    </div>
+                </md-dialog-content>
+
+                <md-dialog-actions>
+                    <md-button class="md-default" @click="createAccountShowDialog = false">انتصراف</md-button>
+                    <md-button v-if="funds.list.length > 0 & !editAccountState" class="md-success" @click="createNewAccount">ذخیره</md-button>
+                    <md-button v-if="funds.list.length > 0 & editAccountState" class="md-success" @click="editAccount">ذخیره</md-button>
+                </md-dialog-actions>
+            </md-dialog>
+
+            <loading :active.sync="companies.loading || userStatuses.loading || value.loading" :is-full-page="false"></loading>
+
+            <vue-confirm-dialog></vue-confirm-dialog>
+
+        </md-card-content>
+    </md-card>
 </template>
 
 <script>
-  export default {
-    name: "user-profile-card",
-    props: {
-      cardUserImage: {
-        type: String,
-        default: "/img/faces/marc.jpg"
-      },
-      buttonColor: {
-        type: String,
-        default: ""
-      }
-    },
-    data() {
-      return {};
-    },
-    methods: {
-      getColorButton: (buttonColor) => ("md-" + buttonColor + "")
-    }
-  };
+    import {User} from '@/models/User';
+    import {FundList} from '@/models/Fund';
+    import {Account} from '@/models/Account';
+    import {CompanyList} from '@/models/Company';
+    import {UserStatusList} from '@/models/UserStatus';
+
+    export default {
+        name: 'user-profile-card',
+        watch: {
+            'value.status.id': function () {
+                this.value.status_id = this.value.status.id
+            },
+            'value.company.id': function () {
+                this.value.company_id = this.value.company.id
+            },
+            'newAccount.fund.id': function () {
+                this.newAccount.fund_id = this.newAccount.fund.id
+            }
+        },
+        props: {
+            value: {
+                type: User,
+                default () {
+                    return new User()
+                }
+            }
+        },
+        data() {
+            return {
+                funds: new FundList(),
+                newAccount: new Account(),
+                companies: new CompanyList(),
+                userStatuses: new UserStatusList(),
+                createAccountShowDialog: false,
+                editAccountState: false,
+                cardUserImage: '',
+                sortation: {
+                    field: "created_at",
+                    order: "asc"
+                },
+            };
+        },
+        mounted() {
+            this.getCompanies();
+            this.getUserStatus();
+            this.getUserPic();
+            this.getFunds();
+        },
+        methods: {
+            updateUserModel () {
+                this.value.status_id = this.value.status.id
+                this.value.company_id = this.value.company.id
+                this.$emit('input', this.value)
+            },
+            showAddAccountDialog () {
+                this.editAccountState = false
+                this.createAccountShowDialog = true
+            },
+            showEditAccountDialog (item) {
+                this.newAccount = item
+                this.editAccountState = true
+                this.createAccountShowDialog = true
+            },
+            closeAccountDialog () {
+                this.createAccountShowDialog = false
+            },
+            createNewAccount () {
+                let that = this
+                this.value.loading = true
+                this.updateUserModel()
+                this.newAccount.user_id = this.$route.params.id
+                this.newAccount.create()
+                    .then((response) => {
+                        that.$emit('update', this.value)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'حساب جدید با موفقیت ثبت شد'
+                        });
+                        that.closeAccountDialog()
+                    })
+                    .catch((error) => {
+                        that.$emit('update', this.value)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        that.closeAccountDialog()
+                    })
+            },
+            editAccount () {
+                let that = this
+                this.value.loading = true
+                this.updateUserModel()
+                this.newAccount.user_id = this.$route.params.id
+                this.newAccount.update()
+                    .then((response) => {
+                        that.$emit('update', this.value)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'حساب با موفقیت ویرایش شد'
+                        });
+                        that.closeAccountDialog()
+                    })
+                    .catch((error) => {
+                        that.$emit('update', this.value)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        that.closeAccountDialog()
+                    })
+            },
+            confirmRemove(item) {
+                let that = this
+                this.$confirm(
+                    {
+                        message: `از حذف حساب اطمینان دارید؟`,
+                        button: {
+                            no: 'خیر',
+                            yes: 'بله'
+                        },
+                        callback: confirm => {
+                            if (confirm) {
+                                that.remove(item)
+                            }
+                        }
+                    }
+                )
+            },
+            remove(item) {
+                item.loading = true;
+                let that = this;
+                item.delete()
+                    .then(function(response) {
+                        that.$emit('update')
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'حساب با موفقیت حذف شد'
+                        });
+                    })
+                    .catch(function(error) {
+                        that.$emit('update')
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        item.editMode = false;
+                        item.loading = false;
+                    });
+            },
+
+            getUserPic () {
+                this.value.getUserPic(this.$route.params.id)
+                    .then((response) => {
+                        // this.user.loading = false;
+                        // console.log('response.data', response.data)
+                        this.cardUserImage = response.data
+                    })
+                    .catch((error) => {
+                        // this.user.loading = false;
+                        // this.user = new User()
+                    })
+            },
+            getUserStatus () {
+                this.userStatuses.loading = true;
+                this.userStatuses.fetch()
+                    .then((response) => {
+                        this.userStatuses.loading = false;
+                        this.userStatuses = new UserStatusList(response.data)
+                    })
+                    .catch((error) => {
+                        this.userStatuses.loading = false;
+                        this.userStatuses = new UserStatusList()
+                    })
+            },
+            getCompanies () {
+                this.companies.loading = true;
+                this.companies.fetch()
+                    .then((response) => {
+                        this.companies.loading = false;
+                        this.companies = new CompanyList(response.data)
+                    })
+                    .catch((error) => {
+                        this.companies.loading = false;
+                        this.companies = new CompanyList()
+                    })
+            },
+            getFunds () {
+                this.funds.loading = true;
+                this.funds.fetch()
+                    .then((response) => {
+                        this.funds.loading = false;
+                        this.funds = new FundList(response.data.data, response.data)
+                    })
+                    .catch((error) => {
+                        this.funds.loading = false;
+                        this.funds = new FundList()
+                    })
+            }
+        }
+    };
 </script>

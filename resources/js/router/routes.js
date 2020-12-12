@@ -4,10 +4,16 @@ import AuthLayout from "@/pages/Dashboard/Pages/AuthLayout.vue";
 // Dashboard pages
 import Dashboard from "@/pages/Dashboard/Dashboard.vue";
 // Profile
-import UserProfile from "@/pages/Dashboard/Examples/UserProfile.vue";
+import UserProfile from "@/pages/User/UserProfile/UserProfile.vue";
 
 // User Management
-import ListUserPage from "@/pages/User/ListUserPage.vue";
+import ListUserPage from "@/pages/User/list/ListUserPage.vue";
+
+// Fund List
+import FundList from "@/pages/Fund/FundList.vue";
+
+// Fund Management
+import FundForm from "@/pages/Fund/FundForm.vue";
 
 // Pages
 import RtlSupport from "@/pages/Dashboard/Pages/RtlSupport.vue";
@@ -28,6 +34,32 @@ import FullScreenMap from "@/pages/Dashboard/Maps/FullScreenMap.vue";
 //import middleware
 import auth from "@/middleware/auth";
 import guest from "@/middleware/guest";
+
+let fundsMenu = {
+    path: "/fund",
+    name: "Fund",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "list",
+            name: "List",
+            components: {default: FundList},
+            meta: {
+                rtlActive: true,
+                middleware: auth
+            }
+        },
+        {
+            path: ":id",
+            name: "Show",
+            components: {default: FundForm},
+            meta: {
+                rtlActive: true,
+                middleware: auth
+            }
+        }
+    ]
+};
 
 let componentsMenu = {
     path: "/components",
@@ -96,25 +128,37 @@ let componentsMenu = {
 };
 
 let userMenu = {
-    path: "/examples",
+    path: "/user",
     component: DashboardLayout,
-    name: "Examples",
+    name: "User",
     children: [
         {
-            path: "user-profile",
-            name: "User Profile",
-            components: {default: UserProfile},
+            path: "list",
+            name: "List",
+            components: {default: ListUserPage},
             meta: {
                 rtlActive: true,
+                displayName: "لیست کاربران",
                 middleware: auth
             }
         },
         {
-            path: "user-management/list-users",
-            name: "لیست کاربران",
-            components: {default: ListUserPage},
+            path: "create",
+            name: "Create",
+            components: {default: UserProfile},
             meta: {
                 rtlActive: true,
+                displayName: "ساخت کاربر جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":id",
+            name: "Show",
+            components: {default: UserProfile},
+            meta: {
+                rtlActive: true,
+                displayName: "اطلاعات کاربر",
                 middleware: auth
             }
         }
@@ -142,11 +186,11 @@ let authPages = {
 };
 
 const routes = [
-    {
-        path: "/",
-        redirect: "/dashboard",
-        name: "Home"
-    },
+    // {
+    //     path: "/",
+    //     redirect: "/dashboard",
+    //     name: "Home"
+    // },
     {
         path: "/",
         component: DashboardLayout,
@@ -156,7 +200,7 @@ const routes = [
         },
         children: [
             {
-                path: "dashboard",
+                path: "/",
                 name: "پیشخوان",
                 components: {default: Dashboard},
                 meta: {
@@ -166,6 +210,7 @@ const routes = [
             }
         ]
     },
+    fundsMenu,
     componentsMenu,
     userMenu,
     authPages
