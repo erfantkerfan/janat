@@ -2,6 +2,12 @@
   direction: rtl;
 
     // by krasus
+
+    .md-field label {
+        right: 0;
+        left: auto;
+    }
+
     .paginated-table {
         .md-table-head {
             &.md-sortable {
@@ -130,7 +136,11 @@
       margin-right: 10px;;
     }
 
-    .dropdown-menu{
+    .dropdown-menu {
+        &.dropdown-menu-right {
+            right: auto;
+            left: 0;
+        }
       right: 0;
       left: auto;
     }
