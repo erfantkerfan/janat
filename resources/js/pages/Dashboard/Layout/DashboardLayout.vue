@@ -31,8 +31,22 @@
                 <sidebar-item
                     :link="{
                         name: 'صندوق ها',
-                        icon: 'content_paste',
+                        icon: 'savings',
                         path: '/fund/list',
+                      }"
+                />
+                <sidebar-item
+                    :link="{
+                        name: 'وام ها',
+                        icon: 'monetization_on',
+                        path: '/loan/list',
+                      }"
+                />
+                <sidebar-item
+                    :link="{
+                        name: 'شرکت ها',
+                        icon: 'business_center',
+                        path: '/company/list',
                       }"
                 />
 
