@@ -2,12 +2,29 @@
 
 namespace App\Traits;
 
-use App\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 trait Filter
 {
+    private function filterByRelationId(Request $request, $requestKey, $relationName, & $modelQuery) {
+        $relationIds = $request->get($requestKey);
+        if (!isset($relationIds)) {
+            return;
+        }
+        if (is_array($relationIds) && count($relationIds) === 0) {
+            return;
+        }
+        if (!is_array($relationIds)) {
+            $relationIds = [$relationIds];
+        }
+        $modelQuery->whereHas($relationName, function (Builder $query) use ($relationIds) {
+            $query->whereIn('id', $relationIds);
+        });
+    }
+
     private function filterByKey($request, $key, & $modelQuery) {
         $keyValue = trim($request->get($key));
         if (isset($keyValue) && strlen($keyValue) > 0) {
