@@ -149,6 +149,13 @@
                     </div>
                     <div class="text-right">
                     </div>
+                    <md-empty-state
+                        v-if="!users.loading && users.list.length === 0"
+                        class="md-warning"
+                        md-icon="cancel_presentation"
+                        md-label="کاربری یافت نشد"
+                    >
+                    </md-empty-state>
                     <md-table
                         :value="users.list"
                         :md-sort.sync="sortation.field"
@@ -175,7 +182,7 @@
                                 </md-select>
                             </md-field>
                         </md-table-toolbar>
-                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                        <md-table-row v-if="!users.loading && users.list.length > 0" slot="md-table-row" slot-scope="{ item }">
                             <md-table-cell md-label="نام و نام خانوادگی" md-sort-by="name">{{item.f_name}}
                                 {{item.l_name}}
                             </md-table-cell>
@@ -335,6 +342,12 @@
                         this.users = new UserList(response.data.data, response.data)
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         this.users.loading = false
                         this.users = new UserList()
                     })
@@ -348,6 +361,12 @@
                         this.userStatuses.addItem(new UserStatus({id: 0, displayName: ''}))
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         this.userStatuses.loading = false;
                         this.userStatuses = new UserStatusList()
                     })
@@ -361,6 +380,12 @@
                         this.companies.addItem(new Company({id: 0, name: ''}))
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         this.companies.loading = false;
                         this.companies = new CompanyList()
                     })

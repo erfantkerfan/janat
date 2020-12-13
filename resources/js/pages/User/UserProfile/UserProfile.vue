@@ -68,14 +68,12 @@
                         this.user = new User(response.data)
                     })
                     .catch((error) => {
-
                         this.$store.dispatch('alerts/fire', {
                             icon: 'error',
                             title: 'توجه',
                             message: 'مشکلی رخ داده است. مجدد تلاش کنید'
                         });
                         console.log('error: ', error)
-
                         this.user.loading = false;
                         this.user = new User()
                     })

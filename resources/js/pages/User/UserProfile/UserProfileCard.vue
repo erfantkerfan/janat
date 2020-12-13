@@ -353,6 +353,12 @@
                         this.cardUserImage = response.data
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         // this.user.loading = false;
                         // this.user = new User()
                     })
@@ -365,6 +371,12 @@
                         this.userStatuses = new UserStatusList(response.data)
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         this.userStatuses.loading = false;
                         this.userStatuses = new UserStatusList()
                     })
@@ -374,9 +386,15 @@
                 this.companies.fetch()
                     .then((response) => {
                         this.companies.loading = false;
-                        this.companies = new CompanyList(response.data)
+                        this.companies = new CompanyList(response.data.data, response.data)
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         this.companies.loading = false;
                         this.companies = new CompanyList()
                     })
@@ -389,6 +407,12 @@
                         this.funds = new FundList(response.data.data, response.data)
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         this.funds.loading = false;
                         this.funds = new FundList()
                     })
