@@ -17,4 +17,9 @@ class Company extends Model
         'name',
         'fund_id'
     ];
+
+    public function fund()
+    {
+        return $this->belongsTo(Fund::class);
+    }
 }
