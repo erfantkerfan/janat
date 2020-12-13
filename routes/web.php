@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\FundController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AccountController;
@@ -34,6 +35,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('user_statuses', '\\'. UserStatusController::class);
         Route::resource('companies', '\\'. CompanyController::class);
         Route::resource('funds', '\\'. FundController::class);
+        Route::resource('loans', '\\'. LoanController::class);
         Route::resource('accounts', '\\'. AccountController::class);
     });
 });
