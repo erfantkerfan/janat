@@ -35,6 +35,15 @@
                             </div>
                         </div>
                     </div>
+
+                    <md-empty-state
+                        v-if="!funds.loading && funds.list.length === 0"
+                        class="md-warning"
+                        md-icon="cancel_presentation"
+                        md-label="صندوقی یافت نشد"
+                    >
+                    </md-empty-state>
+
                     <md-table
                         :value="funds.list"
                         class="paginated-table table-striped table-hover"
@@ -42,7 +51,7 @@
                         <md-table-toolbar>
                             <md-field>
                                 <md-button class="md-dense md-raised md-info" @click="getList">جستجو</md-button>
-                                <md-button class="md-dense md-raised md-primary" to="/fund/create">افزودن صندوق</md-button>
+                                <md-button class="md-dense md-raised md-primary" to="/fund/create">افزودن</md-button>
                             </md-field>
                             <md-field>
                                 <label>تعداد در هر صفحه:</label>
@@ -58,7 +67,7 @@
                                 </md-select>
                             </md-field>
                         </md-table-toolbar>
-                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                        <md-table-row v-if="!funds.loading && funds.list.length > 0" slot="md-table-row" slot-scope="{ item }">
                             <md-table-cell md-label="نام صندوق" md-sort-by="name">
                                 {{item.name}}
                             </md-table-cell>
@@ -119,9 +128,8 @@
 </template>
 
 <script>
-
-    import Pagination from "@/components/Pagination";
     import {FundList} from '@/models/Fund';
+    import Pagination from "@/components/Pagination";
 
     export default {
         watch: {
@@ -141,7 +149,6 @@
                 monthly_payment: null
             }
         }),
-
         computed: {
             from() {
                 return this.pagination.perPage * (this.pagination.currentPage - 1);
@@ -177,6 +184,12 @@
                         this.funds = new FundList(response.data.data, response.data)
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         this.funds.loading = false
                         this.funds = new FundList()
                     })
@@ -219,14 +232,7 @@
                         item.editMode = false
                         item.loading = false
                     });
-            },
-            onProFeature() {
-                this.$store.dispatch("alerts/error", "This is a PRO feature.")
-            },
-
-            // customSort() {
-            //     return false
-            // }
+            }
 
         }
 
