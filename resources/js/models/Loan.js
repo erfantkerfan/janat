@@ -1,15 +1,18 @@
 import { Model, Collection } from 'js-abstract-model'
 import { Fund } from '@/models/Fund'
 
-class Company extends Model {
+class Loan extends Model {
     constructor (user) {
         super(user, [
             {
                 key: 'baseRoute',
-                default: 'api/companies'
+                default: 'api/loans'
             },
             { key: 'id' },
             { key: 'name' },
+            { key: 'loan_amount' },
+            { key: 'installment_rate' },
+            { key: 'number_of_installments' },
             {
                 key: 'fund',
                 relatedModel: Fund
@@ -21,10 +24,10 @@ class Company extends Model {
 
 }
 
-class CompanyList extends Collection {
+class LoanList extends Collection {
     model () {
-        return Company
+        return Loan
     }
 }
 
-export { Company, CompanyList }
+export { Loan, LoanList }
