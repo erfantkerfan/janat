@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\CommonCRUD;
 use App\User;
 use Exception;
 use App\Traits\Filter;
@@ -14,6 +15,8 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 class UserController extends Controller
 {
     use Filter;
+    use CommonCRUD;
+
     /**
      * Display a listing of the resource.
      *
@@ -22,11 +25,6 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = ($request->has('length')) ? $request->get('length') : 10;
-
-        $modelQuery = User::select('id', 'f_name','l_name','SSN', 'phone', 'mobile');
-        $this->filterByDate($request, $modelQuery);
-
         $filterKeys = [
             'f_name',
             'l_name',
@@ -36,12 +34,8 @@ class UserController extends Controller
             'company_id',
             'status_id'
         ];
-
-        foreach ($filterKeys as $item) {
-            $this->filterByKey($request, $item, $modelQuery);
-        }
-
-        return $this->jsonResponseOk($modelQuery->paginate($perPage));
+        $select = ['id', 'f_name','l_name','SSN', 'phone', 'mobile'];
+        return $this->commonIndex($request, User::query(), $filterKeys, [], $select);
     }
 
     /**
@@ -52,9 +46,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = User::create($request->all());
-
-        return $this->jsonResponseOk($user);
+        return $this->commonStore($request, User::class);
     }
 
     /**
@@ -118,14 +110,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $user->fill($request->all());
-
-        if ($user->save()) {
-            $user = User::with(['accounts', 'company', 'status'])->findOrFail($user->id)->makeHidden('user_pic');
-            return $this->jsonResponseOk($user);
-        } else {
-            return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
-        }
+        return $this->commonUpdate($request, $user);
     }
 
     /**
@@ -165,10 +150,6 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if ($user->delete()) {
-            return $this->jsonResponseOk([ 'message'=> 'کاربر با موفقیت حذف شد' ]);
-        } else {
-            return $this->jsonResponseError('مشکلی در حذف اطلاعات رخ داده است.');
-        }
+        return $this->commonDestroy($user);
     }
 }

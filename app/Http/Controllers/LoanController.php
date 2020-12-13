@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Company;
+use App\Loan;
 use App\Traits\Filter;
-use App\Traits\CommonCRUD;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Traits\CommonCRUD;
 
-class CompanyController extends Controller
+class LoanController extends Controller
 {
     use Filter;
     use CommonCRUD;
@@ -22,14 +21,20 @@ class CompanyController extends Controller
      */
     public function index(Request $request)
     {
-        $filterKeys = ['name'];
+        $modelQuery = Loan::with('fund');
+        $filterKeys = [
+            'name',
+            'loan_amount',
+            'installment_rate',
+            'number_of_installments',
+        ];
         $filterRelationKeys = [
             [
                 'requestKey'=> 'fund_id',
                 'relationName'=> 'fund'
             ]
         ];
-        return $this->commonIndex($request, Company::with('fund'), $filterKeys, $filterRelationKeys);
+        return $this->commonIndex($request, $modelQuery, $filterKeys, $filterRelationKeys);
     }
 
     /**
@@ -40,7 +45,7 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->commonStore($request, Company::class);
+        return $this->commonStore($request, Loan::class);
     }
 
     /**
@@ -51,7 +56,7 @@ class CompanyController extends Controller
      */
     public function show($id)
     {
-        $fund = Company::with(['fund'])->find($id);
+        $fund = Loan::with(['fund'])->find($id);
         return $this->jsonResponseOk($fund);
     }
 
@@ -59,23 +64,31 @@ class CompanyController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Company $company
+     * @param Loan $loan
      * @return Response
      */
-    public function update(Request $request, Company $company)
+    public function update(Request $request, Loan $loan)
     {
-        return $this->commonUpdate($request, $company);
+//        $loan->fill($request->all());
+//
+//        dd($loan);
+//        if ($loan->save()) {
+//            return $this->show($loan->id);
+//        } else {
+//            return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
+//        }
+
+        return $this->commonUpdate($request, $loan);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Company $company
+     * @param Loan $loan
      * @return Response
-     * @throws Exception
      */
-    public function destroy(Company $company)
+    public function destroy(Loan $loan)
     {
-        return $this->commonDestroy($company);
+        return $this->commonDestroy($loan);
     }
 }

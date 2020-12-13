@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Fund;
+use App\Traits\CommonCRUD;
 use App\Traits\Filter;
 use Exception;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Illuminate\Http\Response;
 class FundController extends Controller
 {
     use Filter;
+    use CommonCRUD;
 
     /**
      * Display a listing of the resource.
@@ -20,21 +22,11 @@ class FundController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = ($request->has('length')) ? $request->get('length') : 10;
-
-        $modelQuery = Fund::query();
-        $this->filterByDate($request, $modelQuery);
-
         $filterKeys = [
             'name',
             'monthly_payment'
         ];
-
-        foreach ($filterKeys as $item) {
-            $this->filterByKey($request, $item, $modelQuery);
-        }
-
-        return $this->jsonResponseOk($modelQuery->paginate($perPage));
+        return $this->commonIndex($request, Fund::query(), $filterKeys, []);
     }
 
     /**

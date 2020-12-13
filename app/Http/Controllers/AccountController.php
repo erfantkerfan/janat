@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Account;
+use App\Traits\CommonResource;
 use App\Traits\Filter;
 use Exception;
 use Illuminate\Http\Request;
@@ -11,55 +12,53 @@ use Illuminate\Http\Response;
 class AccountController extends Controller
 {
     use Filter;
+    use CommonResource;
+
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $filterKeys = [];
+        return $this->commonIndex($request, Account::query(), $filterKeys, []);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return Response
      */
     public function store(Request $request)
     {
-        Account::create($request->all());
+        return $this->commonStore($request, Account::class);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param Account $account
+     * @param $id
      * @return Response
      */
-    public function show(Account $account)
+    public function show($id)
     {
-        //
+        $account = Account::find($id);
+        return $this->jsonResponseOk($account);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param Account $account
      * @return Response
      */
     public function update(Request $request, Account $account)
     {
-        $account->fill($request->all());
-
-        if ($account->save()) {
-            $account = Account::find($account->id);
-            return $this->jsonResponseOk($account);
-        } else {
-            return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
-        }
+        return $this->commonUpdate($request, $account);
     }
 
     /**
@@ -71,10 +70,6 @@ class AccountController extends Controller
      */
     public function destroy(Account $account)
     {
-        if ($account->delete()) {
-            return $this->jsonResponseOk([ 'message'=> 'حساب با موفقیت حذف شد' ]);
-        } else {
-            return $this->jsonResponseError('مشکلی در حذف اطلاعات رخ داده است.');
-        }
+        return $this->commonDestroy($account);
     }
 }
