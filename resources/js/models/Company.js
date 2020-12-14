@@ -13,7 +13,9 @@ class Company extends Model {
             {
                 key: 'fund',
                 relatedModel: Fund
-            }
+            },
+            { key: 'created_at' },
+            { key: 'updated_at' }
         ])
     }
 

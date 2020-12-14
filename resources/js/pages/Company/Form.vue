@@ -1,0 +1,187 @@
+<template>
+    <div class="md-layout md-gutter">
+        <div class="md-layout-item md-small-size-100">
+            <div class="md-layout-item md-size-100">
+                <md-card>
+                    <md-card-header class="md-card-header-icon">
+                        <div class="card-icon">
+                            <md-icon>perm_identity</md-icon>
+                        </div>
+                        <h4 class="title">
+                            ویرایش اطلاعات
+                        </h4>
+                    </md-card-header>
+
+                    <md-card-content>
+
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                نام شرکت
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="company.name"/>
+                                </md-field>
+                            </div>
+                        </div>
+                        <md-field>
+                            <label>صندوق:</label>
+                            <md-select v-model="company.fund.id" name="pages">
+                                <md-option
+                                    v-for="item in funds.list"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id"
+                                >
+                                    {{ item.name }}
+                                </md-option>
+                            </md-select>
+                        </md-field>
+                        <div v-if="!isCreateForm()" class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                تاریخ تعریف شرکت
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="company.shamsiDate('created_at').date" :disabled="true"/>
+                                </md-field>
+                            </div>
+                        </div>
+
+                        <loading :active.sync="company.loading || funds.loading" :is-full-page="false"></loading>
+
+                    </md-card-content>
+
+                    <md-card-actions>
+                        <md-button type="submit" @click="updateCompany">
+                            ذخیره اطلاعات
+                        </md-button>
+                    </md-card-actions>
+
+                </md-card>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    import {FundList} from '@/models/Fund';
+    import {Company} from '@/models/Company';
+
+    export default {
+        name: "CompanyForm",
+        watch: {
+            'company.fund.id': function () {
+                this.company.fund_id = this.company.fund.id
+            }
+        },
+        data: () => ({
+            company: new Company(),
+            funds: new FundList()
+        }),
+        mounted() {
+            this.getData();
+            this.getfunds();
+        },
+        methods: {
+            isCreateForm () {
+                return (this.$route.name === 'Create')
+            },
+            getData () {
+                if (this.$route.name === 'Create') {
+                    return false
+                }
+                this.company.loading = true;
+                this.company.show(this.$route.params.id)
+                    .then((response) => {
+                        this.company.loading = false;
+                        this.company = new Company(response.data)
+                    })
+                    .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        this.company.loading = false;
+                        this.company = new Company()
+                    })
+            },
+            getfunds () {
+                let that = this
+                this.funds.loading = true;
+                this.funds.fetch()
+                    .then((response) => {
+                        that.funds.loading = false;
+                        that.funds = new FundList(response.data.data, response.data)
+                    })
+                    .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        that.funds.loading = false;
+                        that.funds = new FundList()
+                    })
+            },
+            updateCompany () {
+                if (this.isCreateForm()) {
+                    this.createCompany()
+                    return
+                }
+                let that = this
+                this.company.loading = true;
+                this.company.update()
+                    .then((response) => {
+                        that.company.loading = false;
+                        that.company = new Company(response.data)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'اطلاعات با موفقیت ویرایش شد'
+                        });
+                    })
+                    .catch((error) => {
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        that.company.loading = false;
+                        that.company = new Company()
+                    })
+            },
+            createCompany () {
+                let that = this
+                this.company.loading = true
+                delete this.company.created_at
+                delete this.company.updated_at
+                this.company.create()
+                    .then((response) => {
+                        that.company.loading = false;
+                        that.company = new Company(response.data)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'اطلاعات صندوق با موفقیت ثبت شد'
+                        });
+                        that.$router.push({ path: '/company/'+that.company.id })
+                    })
+                    .catch((error) => {
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        that.company.loading = false;
+                        that.company = new Company()
+                    })
+            }
+        }
+    }
+</script>

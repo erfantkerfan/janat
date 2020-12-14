@@ -15,7 +15,7 @@ export default {
     name: 'App',
     props: ['user'],
     created() {
-        this.$store.commit('users/SET_USER', this.user)
+        this.$auth().setUser(this.user)
     }
 };
 </script>

@@ -8,9 +8,7 @@
                     </div>
                     <h4 class="title">لیست کاربران</h4>
                 </md-card-header>
-
                 <md-card-content>
-
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <div class="md-layout">
@@ -149,9 +147,15 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="text-right">
                     </div>
+                    <md-empty-state
+                        v-if="!users.loading && users.list.length === 0"
+                        class="md-warning"
+                        md-icon="cancel_presentation"
+                        md-label="کاربری یافت نشد"
+                    >
+                    </md-empty-state>
                     <md-table
                         :value="users.list"
                         :md-sort.sync="sortation.field"
@@ -160,8 +164,6 @@
                         class="paginated-table table-striped table-hover"
                     >
                         <md-table-toolbar>
-
-
                             <md-field>
                                 <md-button class="md-dense md-raised md-info" @click="getList">جستجو</md-button>
                                 <md-button class="md-dense md-raised md-primary" to="/user/create">افزودن کاربر</md-button>
@@ -180,8 +182,7 @@
                                 </md-select>
                             </md-field>
                         </md-table-toolbar>
-
-                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                        <md-table-row v-if="!users.loading && users.list.length > 0" slot="md-table-row" slot-scope="{ item }">
                             <md-table-cell md-label="نام و نام خانوادگی" md-sort-by="name">{{item.f_name}}
                                 {{item.l_name}}
                             </md-table-cell>
@@ -209,11 +210,8 @@
                         </md-table-row>
                     </md-table>
                     <vue-confirm-dialog></vue-confirm-dialog>
-
                     <loading :active.sync="users.loading" :is-full-page="false"></loading>
-
                 </md-card-content>
-
                 <md-card-actions v-if="users.paginate" md-alignment="space-between">
                     <div class="">
                         <p class="card-category">
@@ -226,7 +224,6 @@
                             مورد
                         </p>
                     </div>
-
                     <paginate
                         v-model="users.paginate.current_page"
                         :page-count="users.paginate.last_page"
@@ -239,9 +236,7 @@
                         :page-class="'page-item'"
                         :page-link-class="'page-link'">
                     </paginate>
-
                 </md-card-actions>
-
             </md-card>
         </div>
     </div>
@@ -256,7 +251,6 @@
     import {UserStatus} from "../../../models/UserStatus";
 
     export default {
-
         watch: {
             'filterData.perPage' : function () {
                 this.getList()
@@ -265,7 +259,6 @@
         components: {
             "pagination": Pagination
         },
-
         data: () => ({
             users: new UserList(),
             companies: new CompanyList(),
@@ -295,7 +288,6 @@
             total: 1
 
         }),
-
         computed: {
 
             sort() {
@@ -319,13 +311,11 @@
             },
 
         },
-
         mounted() {
             this.getList()
             this.getCompanies()
             this.getUserStatus()
         },
-
         methods: {
             clickCallback (data) {
                 this.getList(data)
@@ -352,6 +342,12 @@
                         this.users = new UserList(response.data.data, response.data)
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         this.users.loading = false
                         this.users = new UserList()
                     })
@@ -365,6 +361,12 @@
                         this.userStatuses.addItem(new UserStatus({id: 0, displayName: ''}))
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         this.userStatuses.loading = false;
                         this.userStatuses = new UserStatusList()
                     })
@@ -378,6 +380,12 @@
                         this.companies.addItem(new Company({id: 0, name: ''}))
                     })
                     .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
                         this.companies.loading = false;
                         this.companies = new CompanyList()
                     })
@@ -430,7 +438,6 @@
             }
 
         }
-
     }
 
 </script>

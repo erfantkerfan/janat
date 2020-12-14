@@ -14,6 +14,7 @@ class User extends Model {
             { key: 'id' },
             { key: 'f_name' },
             { key: 'l_name' },
+            { key: 'user_pic' },
             { key: 'SSN' },
             { key: 'password' },
             { key: 'staff_code' },
@@ -70,11 +71,34 @@ class User extends Model {
         }
 
         if (!url) {
-            url = this.baseRoute + '/' + id + '/user_pic';
+            url = this.baseRoute + '/' + id + '/get_user_pic';
         }
 
 
         return this.crud.fetch(url);
+    }
+
+    setUserPic (data, id, url) {
+        if (!this.baseRoute) {
+            return new Promise(() => {
+                throw new Error('baseRoute is not set');
+            })
+        }
+
+        if (!id) {
+            id = this.id;
+        }
+
+        let formData = new FormData();
+        formData.append('user_pic', data);
+        formData.append('id', id);
+
+        if (!url) {
+            url = this.baseRoute + '/' + id + '/set_user_pic';
+        }
+
+
+        return this.crud.update(url, formData);
     }
 
     updatePassword (oldPass, newPass, id, url) {

@@ -21,7 +21,7 @@
 
                 <sidebar-item opened :link="{ name: 'کاربران', image: image }">
                     <sidebar-item
-                        :link="{ name: 'حساب کاربری', path: '/user/'+user.id }"
+                        :link="{ name: 'حساب کاربری', path: '/user/'+authenticatedUser.id }"
                     />
                     <sidebar-item
                         :link="{ name: 'مدیریت کاربران', path: '/user/list' }"
@@ -31,8 +31,22 @@
                 <sidebar-item
                     :link="{
                         name: 'صندوق ها',
-                        icon: 'content_paste',
+                        icon: 'savings',
                         path: '/fund/list',
+                      }"
+                />
+                <sidebar-item
+                    :link="{
+                        name: 'وام ها',
+                        icon: 'monetization_on',
+                        path: '/loan/list',
+                      }"
+                />
+                <sidebar-item
+                    :link="{
+                        name: 'شرکت ها',
+                        icon: 'business_center',
+                        path: '/company/list',
                       }"
                 />
 
@@ -154,11 +168,6 @@
             FixedPlugin,
             MobileMenu,
             UserMenu,
-        },
-        computed: {
-            user() {
-                return this.$store.getters['users/user']
-            }
         },
         data() {
             return {

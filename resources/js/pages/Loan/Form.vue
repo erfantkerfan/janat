@@ -1,0 +1,215 @@
+<template>
+    <div class="md-layout md-gutter">
+        <div class="md-layout-item md-small-size-100">
+            <div class="md-layout-item md-size-100">
+                <md-card>
+                    <md-card-header class="md-card-header-icon">
+                        <div class="card-icon">
+                            <md-icon>monetization_on</md-icon>
+                        </div>
+                        <h4 class="title">
+                            ویرایش اطلاعات وام
+                        </h4>
+                    </md-card-header>
+
+                    <md-card-content>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                نام وام
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="loan.name"/>
+                                </md-field>
+                            </div>
+                        </div>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                مبلغ وام
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="loan.loan_amount"/>
+                                </md-field>
+                            </div>
+                        </div>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                مبلغ هر قسط
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="loan.installment_rate"/>
+                                </md-field>
+                            </div>
+                        </div>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                تعداد اقساط
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="loan.number_of_installments"/>
+                                </md-field>
+                            </div>
+                        </div>
+                        <md-field>
+                            <label>صندوق:</label>
+                            <md-select v-model="loan.fund.id" name="pages">
+                                <md-option
+                                    v-for="item in funds.list"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id"
+                                >
+                                    {{ item.name }}
+                                </md-option>
+                            </md-select>
+                        </md-field>
+                        <div v-if="!isCreateForm()" class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                تاریخ تعریف وام
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="loan.shamsiDate('created_at').date" :disabled="true"/>
+                                </md-field>
+                            </div>
+                        </div>
+
+                        <loading :active.sync="loan.loading || funds.loading" :is-full-page="false"></loading>
+
+                    </md-card-content>
+
+                    <md-card-actions>
+                        <md-button type="submit" @click="updateLoan">
+                            ذخیره اطلاعات
+                        </md-button>
+                    </md-card-actions>
+
+                </md-card>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    import {FundList} from '@/models/Fund';
+    import {Loan} from '@/models/Loan';
+
+    export default {
+        watch: {
+            'loan.fund.id': function () {
+                this.loan.fund_id = this.loan.fund.id
+            }
+        },
+        data: () => ({
+            loan: new Loan(),
+            funds: new FundList()
+        }),
+        mounted() {
+            this.getData();
+            this.getfunds();
+        },
+        methods: {
+            isCreateForm () {
+                return (this.$route.name === 'Create')
+            },
+            getData () {
+                if (this.$route.name === 'Create') {
+                    return false
+                }
+                this.loan.loading = true;
+                this.loan.show(this.$route.params.id)
+                    .then((response) => {
+                        this.loan.loading = false;
+                        this.loan = new Loan(response.data)
+                    })
+                    .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        this.loan.loading = false;
+                        this.loan = new Loan()
+                    })
+            },
+            getfunds () {
+                let that = this
+                this.funds.loading = true;
+                this.funds.fetch()
+                    .then((response) => {
+                        that.funds.loading = false;
+                        that.funds = new FundList(response.data.data, response.data)
+                    })
+                    .catch((error) => {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        that.funds.loading = false;
+                        that.funds = new FundList()
+                    })
+            },
+            updateLoan () {
+                if (this.isCreateForm()) {
+                    this.createLoan()
+                    return
+                }
+                let that = this
+                this.loan.loading = true;
+                this.loan.update()
+                    .then((response) => {
+                        that.loan.loading = false;
+                        that.loan = new Loan(response.data)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'اطلاعات با موفقیت ویرایش شد'
+                        });
+                    })
+                    .catch((error) => {
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        that.loan.loading = false;
+                        that.loan = new Loan()
+                    })
+            },
+            createLoan () {
+                let that = this
+                this.loan.loading = true
+                delete this.loan.created_at
+                delete this.loan.updated_at
+                this.loan.create()
+                    .then((response) => {
+                        that.loan.loading = false;
+                        that.loan = new Loan(response.data)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'اطلاعات صندوق با موفقیت ثبت شد'
+                        });
+                        that.$router.push({ path: '/loan/'+that.loan.id })
+                    })
+                    .catch((error) => {
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                        });
+                        console.log('error: ', error)
+                        that.loan.loading = false;
+                        that.loan = new Loan()
+                    })
+            }
+        }
+    }
+</script>

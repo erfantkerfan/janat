@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use App\Traits\Filter;
+use App\Traits\CommonCRUD;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class CompanyController extends Controller
 {
     use Filter;
+    use CommonCRUD;
 
     /**
      * Display a listing of the resource.
@@ -19,60 +22,60 @@ class CompanyController extends Controller
      */
     public function index(Request $request)
     {
-        $modelQuery = Company::query();
-        $this->filterByDate($request, $modelQuery);
-
         $filterKeys = ['name'];
-
-        foreach ($filterKeys as $item) {
-            $this->filterByKey($request, $item, $modelQuery);
-        }
-
-        return $this->jsonResponseOk($modelQuery->get());
+        $filterRelationKeys = [
+            [
+                'requestKey'=> 'fund_id',
+                'relationName'=> 'fund'
+            ]
+        ];
+        return $this->commonIndex($request, Company::with('fund'), $filterKeys, $filterRelationKeys);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return Response
      */
     public function store(Request $request)
     {
-        //
+        return $this->commonStore($request, Company::class);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Company  $company
+     * @param $id
      * @return Response
      */
-    public function show(Company $company)
+    public function show($id)
     {
-        //
+        $fund = Company::with(['fund'])->find($id);
+        return $this->jsonResponseOk($fund);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Company  $company
+     * @param Request $request
+     * @param Company $company
      * @return Response
      */
     public function update(Request $request, Company $company)
     {
-        //
+        return $this->commonUpdate($request, $company);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Company  $company
+     * @param Company $company
      * @return Response
+     * @throws Exception
      */
     public function destroy(Company $company)
     {
-        //
+        return $this->commonDestroy($company);
     }
 }

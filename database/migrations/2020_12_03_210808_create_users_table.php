@@ -36,10 +36,14 @@ class CreateUsersTable extends Migration
 
             $table->foreign('company_id')
                 ->references('id')
-                ->on('companies');
+                ->on('companies')
+                ->onDelete('cascade')
+                ->onupdate('cascade');
             $table->foreign('status_id')
                 ->references('id')
-                ->on('user_statuses');
+                ->on('user_statuses')
+                ->onDelete('cascade')
+                ->onupdate('cascade');
         });
         DB::statement("ALTER TABLE users ADD user_pic  MEDIUMBLOB");
     }

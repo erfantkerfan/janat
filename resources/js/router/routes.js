@@ -15,6 +15,18 @@ import FundList from "@/pages/Fund/FundList.vue";
 // Fund Management
 import FundForm from "@/pages/Fund/FundForm.vue";
 
+// Loan List
+import LoanList from "@/pages/Loan/List.vue";
+
+// Fund Management
+import LoanForm from "@/pages/Loan/Form.vue";
+
+// Company List
+import CompanyList from "@/pages/Company/List.vue";
+
+// Fund Management
+import CompanyForm from "@/pages/Company/Form.vue";
+
 // Pages
 import RtlSupport from "@/pages/Dashboard/Pages/RtlSupport.vue";
 import Login from "@/pages/Dashboard/Pages/Login.vue";
@@ -35,6 +47,82 @@ import FullScreenMap from "@/pages/Dashboard/Maps/FullScreenMap.vue";
 import auth from "@/middleware/auth";
 import guest from "@/middleware/guest";
 
+let loansMenu = {
+    path: "/loan",
+    name: "Loan",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "list",
+            name: "List",
+            components: {default: LoanList},
+            meta: {
+                rtlActive: true,
+                displayName: "لیست وام ها",
+                middleware: auth
+            }
+        },
+        {
+            path: "create",
+            name: "Create",
+            components: {default: LoanForm},
+            meta: {
+                rtlActive: true,
+                displayName: "ساخت وام جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":id",
+            name: "Show",
+            components: {default: LoanForm},
+            meta: {
+                rtlActive: true,
+                displayName: "اطلاعات وام",
+                middleware: auth
+            }
+        }
+    ]
+};
+
+let companiesMenu = {
+    path: "/company",
+    name: "Company",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "list",
+            name: "List",
+            components: {default: CompanyList},
+            meta: {
+                rtlActive: true,
+                displayName: "لیست شرکت ها",
+                middleware: auth
+            }
+        },
+        {
+            path: "create",
+            name: "Create",
+            components: {default: CompanyForm},
+            meta: {
+                rtlActive: true,
+                displayName: "ساخت شرکت جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":id",
+            name: "Show",
+            components: {default: CompanyForm},
+            meta: {
+                rtlActive: true,
+                displayName: "اطلاعات شرکت",
+                middleware: auth
+            }
+        }
+    ]
+};
+
 let fundsMenu = {
     path: "/fund",
     name: "Fund",
@@ -46,6 +134,17 @@ let fundsMenu = {
             components: {default: FundList},
             meta: {
                 rtlActive: true,
+                displayName: "لیست صندوق ها",
+                middleware: auth
+            }
+        },
+        {
+            path: "create",
+            name: "Create",
+            components: {default: FundForm},
+            meta: {
+                rtlActive: true,
+                displayName: "ساخت صندوق جدید",
                 middleware: auth
             }
         },
@@ -55,6 +154,7 @@ let fundsMenu = {
             components: {default: FundForm},
             meta: {
                 rtlActive: true,
+                displayName: "اطلاعات صندوق",
                 middleware: auth
             }
         }
@@ -211,6 +311,8 @@ const routes = [
         ]
     },
     fundsMenu,
+    loansMenu,
+    companiesMenu,
     componentsMenu,
     userMenu,
     authPages
