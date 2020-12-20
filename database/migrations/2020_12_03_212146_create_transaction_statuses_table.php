@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFundsTable extends Migration
+class CreateTransactionStatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateFundsTable extends Migration
      */
     public function up()
     {
-        Schema::create('funds', function (Blueprint $table) {
+        Schema::create('transaction_statuses', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('name')->comment('نام صندوق');
-            $table->integer('balance')->default(0)->comment('موجودی');
-            $table->integer('monthly_payment')->default(0)->comment('شهریه صندوق');
+            $table->string('name')->nullable()->comment('نام وضعیت');
+            $table->string('display_name')->nullable()->comment('نام قابل نمایش این وضعیت');
+            $table->longText('description')->nullable()->comment('توضیح درباره وضعیت');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +30,6 @@ class CreateFundsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('funds');
+        Schema::dropIfExists('transaction_statuses');
     }
 }

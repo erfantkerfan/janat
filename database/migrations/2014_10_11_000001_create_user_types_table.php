@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserStatusesTable extends Migration
+class CreateUserTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateUserStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_statuses', function (Blueprint $table) {
+        Schema::create('user_types', function (Blueprint $table) {
             $table->tinyIncrements('id');
-            $table->string('name')->nullable()->comment('نام وضعیت');
-            $table->string('display_name')->nullable()->comment('نام قابل نمایش این وضعیت');
-            $table->longText('description')->nullable()->comment('توضیح درباره وضعیت');
+            $table->string('name')->nullable()->comment('نام');
+            $table->string('display_name')->nullable()->comment('نام قابل نمایش');
+            $table->longText('description')->nullable()->comment('توضیح درباره نوع');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +30,6 @@ class CreateUserStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_statuses');
+        Schema::dropIfExists('user_types');
     }
 }
