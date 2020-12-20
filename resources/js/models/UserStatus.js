@@ -9,7 +9,7 @@ class UserStatus extends Model {
             },
             { key: 'id' },
             { key: 'name' },
-            { key: 'displayName' },
+            { key: 'display_name' },
             { key: 'description' }
         ])
     }
