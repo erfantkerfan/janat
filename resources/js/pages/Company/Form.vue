@@ -3,9 +3,9 @@
         <div class="md-layout-item md-small-size-100">
             <div class="md-layout-item md-size-100">
                 <md-card>
-                    <md-card-header class="md-card-header-icon">
+                    <md-card-header class="md-card-header-icon md-card-header-green">
                         <div class="card-icon">
-                            <md-icon>perm_identity</md-icon>
+                            <md-icon>store_mall_directory</md-icon>
                         </div>
                         <h4 class="title">
                             ویرایش اطلاعات

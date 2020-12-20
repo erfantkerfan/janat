@@ -3,9 +3,9 @@
         <div class="md-layout-item md-size-60 md-small-size-100">
             <div class="md-layout-item md-size-100">
                 <md-card>
-                    <md-card-header class="md-card-header-icon">
+                    <md-card-header class="md-card-header-icon md-card-header-green">
                         <div class="card-icon">
-                            <md-icon>savings</md-icon>
+                            <md-icon>account_balance</md-icon>
                         </div>
                         <h4 class="title">
                             ویرایش اطلاعات
@@ -60,7 +60,7 @@
         </div>
         <div class="md-layout-item md-size-40 md-small-size-100">
             <md-card>
-                <md-card-header class="md-card-header-icon">
+                <md-card-header class="md-card-header-icon md-card-header-blue">
                     <div class="card-icon">
                         <md-icon>monetization_on</md-icon>
                     </div>

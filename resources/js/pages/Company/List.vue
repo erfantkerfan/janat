@@ -40,6 +40,9 @@
                     </div>
                     <md-table
                         :value="companies.list"
+                        :md-sort.sync="filterData.sortation.field"
+                        :md-sort-order.sync="filterData.sortation.order"
+                        :md-sort-fn="customSort"
                         class="paginated-table table-striped table-hover"
                     >
                         <md-table-toolbar>
@@ -65,7 +68,7 @@
                             <md-table-cell md-label="نام شرکت" md-sort-by="name">
                                 {{item.name}}
                             </md-table-cell>
-                            <md-table-cell md-label="نام صندوق" md-sort-by="email">
+                            <md-table-cell md-label="نام صندوق">
                                 {{item.fund.name}}
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
@@ -141,6 +144,10 @@
             companies: new CompanyList(),
             funds: new FundList(),
             filterData: {
+                sortation: {
+                    field: "created_at",
+                    order: "asc"
+                },
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 name: null,
@@ -162,6 +169,8 @@
                 this.companies.loading = true;
                 this.companies.fetch({
                     page,
+                    sortation_field: this.filterData.sortation.field,
+                    sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     name: this.filterData.name
@@ -240,14 +249,10 @@
                         item.loading = false
                     });
             },
-            onProFeature() {
-                this.$store.dispatch("alerts/error", "This is a PRO feature.")
-            },
-
-            // customSort() {
-            //     return false
-            // }
-
+            customSort() {
+                this.getList()
+                return false;
+            }
         }
 
     }

@@ -1,7 +1,7 @@
 <template>
     <md-card>
 
-        <md-card-header class="md-card-header-icon">
+        <md-card-header class="md-card-header-icon md-card-header-green">
             <div class="card-icon">
                 <md-icon>perm_identity</md-icon>
             </div>

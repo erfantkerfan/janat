@@ -87,6 +87,9 @@
 
                     <md-table
                         :value="loans.list"
+                        :md-sort.sync="filterData.sortation.field"
+                        :md-sort-order.sync="filterData.sortation.order"
+                        :md-sort-fn="customSort"
                         class="paginated-table table-striped table-hover"
                     >
                         <md-table-toolbar>
@@ -112,16 +115,16 @@
                             <md-table-cell md-label="نام وام" md-sort-by="name">
                                 {{item.name}}
                             </md-table-cell>
-                            <md-table-cell md-label="مبلغ وام" md-sort-by="name">
+                            <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
                                 {{item.loan_amount}}
                             </md-table-cell>
-                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="name">
+                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
                                 {{item.installment_rate}}
                             </md-table-cell>
-                            <md-table-cell md-label="تعداد اقساط" md-sort-by="name">
+                            <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
                                 {{item.number_of_installments}}
                             </md-table-cell>
-                            <md-table-cell md-label="نام صندوق" md-sort-by="email">
+                            <md-table-cell md-label="نام صندوق">
                                 {{item.fund.name}}
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
@@ -179,7 +182,7 @@
 
 <script>
 
-    import {Fund, FundList} from '@/models/Fund';
+    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
     import {LoanList} from '@/models/Loan';
     import Pagination from "@/components/Pagination";
 
@@ -189,13 +192,17 @@
                 this.getList()
             }
         },
+        mixins: [getFilterDropdownMixin],
         components: {
             "pagination": Pagination
         },
         data: () => ({
             loans: new LoanList(),
-            funds: new FundList(),
             filterData: {
+                sortation: {
+                    field: "created_at",
+                    order: "asc"
+                },
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 name: null,
@@ -207,7 +214,7 @@
         }),
         mounted() {
             this.getList()
-            this.getfunds()
+            this.getFunds()
         },
         methods: {
             clickCallback (data) {
@@ -220,6 +227,8 @@
                 this.loans.loading = true;
                 this.loans.fetch({
                     page,
+                    sortation_field: this.filterData.sortation.field,
+                    sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     name: this.filterData.name,
@@ -240,26 +249,6 @@
                         console.log('error: ', error)
                         this.loans.loading = false
                         this.loans = new LoanList()
-                    })
-            },
-            getfunds () {
-                let that = this
-                this.funds.loading = true;
-                this.funds.fetch()
-                    .then((response) => {
-                        that.funds.loading = false;
-                        that.funds = new FundList(response.data.data, response.data)
-                        this.funds.addItem(new Fund({id: 0, name: ''}))
-                    })
-                    .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
-                        that.funds.loading = false;
-                        that.funds = new FundList()
                     })
             },
             confirmRemove(item) {
@@ -301,14 +290,10 @@
                         item.loading = false
                     });
             },
-            onProFeature() {
-                this.$store.dispatch("alerts/error", "This is a PRO feature.")
-            },
-
-            // customSort() {
-            //     return false
-            // }
-
+            customSort() {
+                this.getList()
+                return false;
+            }
         }
 
     }

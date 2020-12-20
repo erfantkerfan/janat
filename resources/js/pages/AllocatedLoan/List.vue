@@ -6,14 +6,14 @@
                     <div class="card-icon">
                         <md-icon>assignment</md-icon>
                     </div>
-                    <h4 class="title">لیست صندوق ها</h4>
+                    <h4 class="title">لیست وام های تخصیص داده شده</h4>
                 </md-card-header>
                 <md-card-content>
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
-                                    نام
+                                    نام وام
                                 </label>
                                 <div class="md-layout-item">
                                     <md-field class="md-invalid">
@@ -25,27 +25,66 @@
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
-                                    پرداخت ماهیانه
+                                    مبلغ وام
                                 </label>
                                 <div class="md-layout-item">
                                     <md-field class="md-invalid">
-                                        <md-input v-model="filterData.monthly_payment" />
+                                        <md-input v-model="filterData.loan_amount" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <md-field>
+                                <label>صندوق:</label>
+                                <md-select v-model="filterData.fund_id" name="pages">
+                                    <md-option
+                                        v-for="item in funds.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    مبلغ هر قسط
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.installment_rate" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    تعداد اقساط
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.number_of_installments" />
                                     </md-field>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <md-empty-state
-                        v-if="!funds.loading && funds.list.length === 0"
+                        v-if="!allocatedLoans.loading && allocatedLoans.list.length === 0"
                         class="md-warning"
                         md-icon="cancel_presentation"
-                        md-label="صندوقی یافت نشد"
+                        md-label="وامی یافت نشد"
                     >
                     </md-empty-state>
-
                     <md-table
-                        :value="funds.list"
+                        :value="allocatedLoans.list"
                         :md-sort.sync="filterData.sortation.field"
                         :md-sort-order.sync="filterData.sortation.order"
                         :md-sort-fn="customSort"
@@ -54,7 +93,7 @@
                         <md-table-toolbar>
                             <md-field>
                                 <md-button class="md-dense md-raised md-info" @click="getList">جستجو</md-button>
-                                <md-button class="md-dense md-raised md-primary" to="/fund/create">افزودن</md-button>
+                                <md-button class="md-dense md-raised md-primary" to="/loan/create">افزودن</md-button>
                             </md-field>
                             <md-field>
                                 <label>تعداد در هر صفحه:</label>
@@ -70,18 +109,30 @@
                                 </md-select>
                             </md-field>
                         </md-table-toolbar>
-                        <md-table-row v-if="!funds.loading && funds.list.length > 0" slot="md-table-row" slot-scope="{ item }">
-                            <md-table-cell md-label="نام صندوق" md-sort-by="name">
-                                {{item.name}}
+                        <md-table-row v-if="!allocatedLoans.loading && allocatedLoans.list.length > 0" slot="md-table-row" slot-scope="{ item }">
+                            <md-table-cell md-label="نام">
+                                {{item.account.user.f_name}}
                             </md-table-cell>
-                            <md-table-cell md-label="پرداخت ماهیانه" md-sort-by="monthly_payment">
-                                {{item.monthly_payment}}
+                            <md-table-cell md-label="نام خانوادگی">
+                                {{item.account.user.l_name}}
+                            </md-table-cell>
+                            <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
+                                {{item.loan_amount}}
+                            </md-table-cell>
+                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
+                                {{item.installment_rate}}
+                            </md-table-cell>
+                            <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
+                                {{item.number_of_installments}}
+                            </md-table-cell>
+                            <md-table-cell md-label="نام صندوق">
+                                {{item.loan.fund.name}}
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
                                 {{item.shamsiDate('created_at').dateTime}}
                             </md-table-cell>
                             <md-table-cell md-label="عملیات">
-                                <router-link :to="'/fund/'+item.id">
+                                <router-link :to="'/allocated_loan/'+item.id">
                                     <md-button
                                         class="md-icon-button md-raised md-round md-info"
                                         style="margin: .2rem;"
@@ -98,23 +149,23 @@
                         </md-table-row>
                     </md-table>
                     <vue-confirm-dialog></vue-confirm-dialog>
-                    <loading :active.sync="funds.loading" :is-full-page="false"></loading>
+                    <loading :active.sync="allocatedLoans.loading" :is-full-page="false"></loading>
                 </md-card-content>
-                <md-card-actions v-if="funds.paginate" md-alignment="space-between">
+                <md-card-actions v-if="allocatedLoans.paginate" md-alignment="space-between">
                     <div class="">
                         <p class="card-category">
                             نمایش
-                            {{ funds.paginate.from }}
+                            {{ allocatedLoans.paginate.from }}
                             تا
-                            {{ funds.paginate.to }}
+                            {{ allocatedLoans.paginate.to }}
                             از
-                            {{ funds.paginate.total }}
+                            {{ allocatedLoans.paginate.total }}
                             مورد
                         </p>
                     </div>
                     <paginate
-                        v-model="funds.paginate.current_page"
-                        :page-count="funds.paginate.last_page"
+                        v-model="allocatedLoans.paginate.current_page"
+                        :page-count="allocatedLoans.paginate.last_page"
                         :page-range="3"
                         :margin-pages="2"
                         :click-handler="clickCallback"
@@ -131,8 +182,10 @@
 </template>
 
 <script>
-    import {FundList} from '@/models/Fund';
+
     import Pagination from "@/components/Pagination";
+    import {AllocatedLoanList} from '@/models/AllocatedLoan';
+    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
 
     export default {
         watch: {
@@ -140,11 +193,12 @@
                 this.getList()
             }
         },
+        mixins: [getFilterDropdownMixin],
         components: {
             "pagination": Pagination
         },
         data: () => ({
-            funds: new FundList(),
+            allocatedLoans: new AllocatedLoanList(),
             filterData: {
                 sortation: {
                     field: "created_at",
@@ -153,7 +207,10 @@
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 name: null,
-                monthly_payment: null
+                loan_amount: null,
+                installment_rate: null,
+                number_of_installments: null,
+                fund_id: null
             }
         }),
         mounted() {
@@ -167,18 +224,21 @@
                 if (!page) {
                     page = 1
                 }
-                this.funds.loading = true;
-                this.funds.fetch({
+                this.allocatedLoans.loading = true;
+                this.allocatedLoans.fetch({
                     page,
                     sortation_field: this.filterData.sortation.field,
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
+                    fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     name: this.filterData.name,
-                    monthly_payment: this.filterData.monthly_payment
+                    loan_amount: this.filterData.loan_amount,
+                    installment_rate: this.filterData.installment_rate,
+                    number_of_installments: this.filterData.number_of_installments
                 })
                     .then((response) => {
-                        this.funds.loading = false
-                        this.funds = new FundList(response.data.data, response.data)
+                        this.allocatedLoans.loading = false
+                        this.allocatedLoans = new AllocatedLoanList(response.data.data, response.data)
                     })
                     .catch((error) => {
                         this.$store.dispatch('alerts/fire', {
@@ -187,14 +247,14 @@
                             message: 'مشکلی رخ داده است. مجدد تلاش کنید'
                         });
                         console.log('error: ', error)
-                        this.funds.loading = false
-                        this.funds = new FundList()
+                        this.allocatedLoans.loading = false
+                        this.allocatedLoans = new AllocatedLoanList()
                     })
             },
             confirmRemove(item) {
                 this.$confirm(
                     {
-                        message: `از حذف صندوق اطمینان دارید؟`,
+                        message: `از حذف وام تخصیص داده شده اطمینان دارید؟`,
                         button: {
                             no: 'خیر',
                             yes: 'بله'

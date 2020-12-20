@@ -67,10 +67,10 @@
                     <md-option
                         v-for="item in userStatuses.list"
                         :key="item.id"
-                        :label="item.displayName"
+                        :label="item.display_name"
                         :value="item.id"
                     >
-                        {{ item.displayName }}
+                        {{ item.display_name }}
                     </md-option>
                 </md-select>
             </md-field>
@@ -161,6 +161,7 @@
     import {Account} from '@/models/Account';
     import {CompanyList} from '@/models/Company';
     import {UserStatusList} from '@/models/UserStatus';
+    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
 
     export default {
         name: 'user-profile-card',
@@ -175,6 +176,7 @@
                 this.newAccount.fund_id = this.newAccount.fund.id
             }
         },
+        mixins: [getFilterDropdownMixin],
         props: {
             value: {
                 type: User,
@@ -185,10 +187,7 @@
         },
         data() {
             return {
-                funds: new FundList(),
                 newAccount: new Account(),
-                companies: new CompanyList(),
-                userStatuses: new UserStatusList(),
                 createAccountShowDialog: false,
                 editAccountState: false,
                 cardUserImage: '',
@@ -198,6 +197,9 @@
                     order: "asc"
                 },
             };
+        },
+        created() {
+            // console.log('value.accounts', this.value.accounts.list.length)
         },
         mounted() {
             this.getCompanies();
@@ -361,60 +363,6 @@
                         console.log('error: ', error)
                         // this.user.loading = false;
                         // this.user = new User()
-                    })
-            },
-            getUserStatus () {
-                this.userStatuses.loading = true;
-                this.userStatuses.fetch()
-                    .then((response) => {
-                        this.userStatuses.loading = false;
-                        this.userStatuses = new UserStatusList(response.data)
-                    })
-                    .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
-                        this.userStatuses.loading = false;
-                        this.userStatuses = new UserStatusList()
-                    })
-            },
-            getCompanies () {
-                this.companies.loading = true;
-                this.companies.fetch()
-                    .then((response) => {
-                        this.companies.loading = false;
-                        this.companies = new CompanyList(response.data.data, response.data)
-                    })
-                    .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
-                        this.companies.loading = false;
-                        this.companies = new CompanyList()
-                    })
-            },
-            getFunds () {
-                this.funds.loading = true;
-                this.funds.fetch()
-                    .then((response) => {
-                        this.funds.loading = false;
-                        this.funds = new FundList(response.data.data, response.data)
-                    })
-                    .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
-                        this.funds.loading = false;
-                        this.funds = new FundList()
                     })
             }
         }

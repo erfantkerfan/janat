@@ -106,10 +106,10 @@
                                             <md-option
                                                 v-for="item in userStatuses.list"
                                                 :key="item.id"
-                                                :label="item.displayName"
+                                                :label="item.display_name"
                                                 :value="item.id"
                                             >
-                                                {{ item.displayName }}
+                                                {{ item.display_name }}
                                             </md-option>
                                         </md-select>
                                     </md-field>
@@ -147,6 +147,23 @@
                             </div>
                         </div>
                     </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <md-field>
+                                <label>صندوق:</label>
+                                <md-select v-model="filterData.fund_id" name="pages">
+                                    <md-option
+                                        v-for="item in funds.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                    </div>
                     <div class="text-right">
                     </div>
                     <md-empty-state
@@ -158,8 +175,8 @@
                     </md-empty-state>
                     <md-table
                         :value="users.list"
-                        :md-sort.sync="sortation.field"
-                        :md-sort-order.sync="sortation.order"
+                        :md-sort.sync="filterData.sortation.field"
+                        :md-sort-order.sync="filterData.sortation.order"
                         :md-sort-fn="customSort"
                         class="paginated-table table-striped table-hover"
                     >
@@ -183,12 +200,15 @@
                             </md-field>
                         </md-table-toolbar>
                         <md-table-row v-if="!users.loading && users.list.length > 0" slot="md-table-row" slot-scope="{ item }">
-                            <md-table-cell md-label="نام و نام خانوادگی" md-sort-by="name">{{item.f_name}}
+                            <md-table-cell md-label="نام" md-sort-by="f_name">
+                                {{item.f_name}}
+                            </md-table-cell>
+                            <md-table-cell md-label="نام خانوادگی" md-sort-by="l_name">
                                 {{item.l_name}}
                             </md-table-cell>
-                            <md-table-cell md-label="کد ملی" md-sort-by="email">{{item.SSN}}</md-table-cell>
-                            <md-table-cell md-label="شماره همراه" md-sort-by="email">{{item.mobile}}</md-table-cell>
-                            <md-table-cell md-label="تلفن ثابت" md-sort-by="email">{{item.phone}}</md-table-cell>
+                            <md-table-cell md-label="کد ملی" md-sort-by="SSN">{{item.SSN}}</md-table-cell>
+                            <md-table-cell md-label="شماره همراه" md-sort-by="mobile">{{item.mobile}}</md-table-cell>
+                            <md-table-cell md-label="تلفن ثابت" md-sort-by="phone">{{item.phone}}</md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
                                 {{item.shamsiDate('created_at').dateTime}}
                             </md-table-cell>
@@ -244,11 +264,9 @@
 
 <script>
 
-    import {UserList} from '@/models/User';
-    import { Company, CompanyList} from '@/models/Company';
-    import {UserStatusList} from '@/models/UserStatus';
+    import { UserList } from '@/models/User';
     import Pagination from '@/components/Pagination';
-    import {UserStatus} from "../../../models/UserStatus";
+    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
 
     export default {
         watch: {
@@ -256,14 +274,17 @@
                 this.getList()
             }
         },
+        mixins: [getFilterDropdownMixin],
         components: {
             "pagination": Pagination
         },
         data: () => ({
             users: new UserList(),
-            companies: new CompanyList(),
-            userStatuses: new UserStatusList(),
             filterData: {
+                sortation: {
+                    field: "created_at",
+                    order: "asc"
+                },
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 f_name: null,
@@ -272,48 +293,15 @@
                 SSN: null,
                 status_id: null,
                 company_id: null,
+                fund_id: null,
                 createdSinceDate: null,
                 createdTillDate: null
-            },
-            table: [],
-            footerTable: ["Name", "Email", "Created At", "Actions"],
-
-            query: null,
-
-            sortation: {
-                field: "created_at",
-                order: "asc"
-            },
-
-            total: 1
-
+            }
         }),
-        computed: {
-
-            sort() {
-                if (this.sortation.order === "desc") {
-                    return `-${this.sortation.field}`
-                }
-
-                return this.sortation.field;
-            },
-
-            from() {
-                return this.pagination.perPage * (this.pagination.currentPage - 1);
-            },
-
-            to() {
-                let highBound = this.from + this.pagination.perPage;
-                if (this.total < highBound) {
-                    highBound = this.total;
-                }
-                return highBound;
-            },
-
-        },
         mounted() {
             this.getList()
             this.getCompanies()
+            this.getFunds()
             this.getUserStatus()
         },
         methods: {
@@ -327,11 +315,14 @@
                 this.users.loading = true;
                 this.users.fetch({
                     page,
+                    sortation_field: this.filterData.sortation.field,
+                    sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     f_name: this.filterData.f_name,
                     l_name: this.filterData.l_name,
                     phone: this.filterData.phone,
                     SSN: this.filterData.SSN,
+                    fund_id: (this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     status_id: (this.filterData.status_id === 0) ? null: this.filterData.status_id,
                     company_id: (this.filterData.company_id === 0) ? null : this.filterData.company_id,
                     createdSinceDate: this.filterData.createdSinceDate,
@@ -350,44 +341,6 @@
                         console.log('error: ', error)
                         this.users.loading = false
                         this.users = new UserList()
-                    })
-            },
-            getUserStatus () {
-                this.userStatuses.loading = true;
-                this.userStatuses.fetch()
-                    .then((response) => {
-                        this.userStatuses.loading = false;
-                        this.userStatuses = new UserStatusList(response.data)
-                        this.userStatuses.addItem(new UserStatus({id: 0, displayName: ''}))
-                    })
-                    .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
-                        this.userStatuses.loading = false;
-                        this.userStatuses = new UserStatusList()
-                    })
-            },
-            getCompanies () {
-                this.companies.loading = true;
-                this.companies.fetch()
-                    .then((response) => {
-                        this.companies.loading = false;
-                        this.companies = new CompanyList(response.data)
-                        this.companies.addItem(new Company({id: 0, name: ''}))
-                    })
-                    .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
-                        this.companies.loading = false;
-                        this.companies = new CompanyList()
                     })
             },
             confirmRemove(item) {
@@ -429,14 +382,10 @@
                         item.loading = false;
                     });
             },
-            onProFeature() {
-                this.$store.dispatch("alerts/error", "This is a PRO feature.")
-            },
-
             customSort() {
-                return false
+                this.getList()
+                return false;
             }
-
         }
     }
 
