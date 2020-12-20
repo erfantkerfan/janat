@@ -15,6 +15,12 @@ import FundList from "@/pages/Fund/FundList.vue";
 // Fund Management
 import FundForm from "@/pages/Fund/FundForm.vue";
 
+// AllocatedLoan List
+import AllocatedLoanList from "@/pages/AllocatedLoan/List.vue";
+
+// AllocatedLoan Management
+import AllocatedLoanForm from "@/pages/AllocatedLoan/Form.vue";
+
 // Loan List
 import LoanList from "@/pages/Loan/List.vue";
 
@@ -46,6 +52,44 @@ import FullScreenMap from "@/pages/Dashboard/Maps/FullScreenMap.vue";
 //import middleware
 import auth from "@/middleware/auth";
 import guest from "@/middleware/guest";
+
+let allocatedLoansMenu = {
+    path: "/allocated_loan",
+    name: "AllocatedLoan",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "list",
+            name: "List",
+            components: {default: AllocatedLoanList},
+            meta: {
+                rtlActive: true,
+                displayName: "لیست وام های تخصیص داده شده",
+                middleware: auth
+            }
+        },
+        {
+            path: "create",
+            name: "Create",
+            components: {default: AllocatedLoanForm},
+            meta: {
+                rtlActive: true,
+                displayName: "تخصیص وام جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":id",
+            name: "Show",
+            components: {default: AllocatedLoanForm},
+            meta: {
+                rtlActive: true,
+                displayName: "اطلاعات وام تخصیص داده شده",
+                middleware: auth
+            }
+        }
+    ]
+};
 
 let loansMenu = {
     path: "/loan",
@@ -310,6 +354,7 @@ const routes = [
             }
         ]
     },
+    allocatedLoansMenu,
     fundsMenu,
     loansMenu,
     companiesMenu,
