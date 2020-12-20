@@ -25,6 +25,16 @@ trait Filter
         });
     }
 
+    private function filterByRelationKey(Request $request, $requestKey, $relationName, $relationColumn, & $modelQuery) {
+        $name = $request->get($requestKey);
+        if (!isset($name)) {
+            return;
+        }
+        $modelQuery->whereHas($relationName, function (Builder $query) use ($name, $relationColumn) {
+            $query->where($relationColumn, 'like', '%' . $name . '%');
+        });
+    }
+
     private function filterByKey($request, $key, & $modelQuery) {
         $keyValue = trim($request->get($key));
         if (isset($keyValue) && strlen($keyValue) > 0) {
@@ -38,15 +48,13 @@ trait Filter
         if (strlen($createdSinceDate) > 0 && strlen($createdTillDate) > 0) {
             $createdSinceDate = Carbon::parse($createdSinceDate)->format('Y-m-d') . ' 00:00:00';
             $createdTillDate  = Carbon::parse($createdTillDate)->format('Y-m-d') . ' 23:59:59';
-            $modelQuery       = $modelQuery->whereBetween('created_at', [$createdSinceDate, $createdTillDate])->orderBy('created_at', 'Desc');
+            $modelQuery       = $modelQuery->whereBetween('created_at', [$createdSinceDate, $createdTillDate]);
         } else if (strlen($createdSinceDate) > 0) {
             $createdSinceDate = Carbon::parse($createdSinceDate)->format('Y-m-d') . ' 00:00:00';
-            $modelQuery       = $modelQuery->whereDate('created_at', '>=', $createdSinceDate)->orderBy('created_at', 'Desc');
+            $modelQuery       = $modelQuery->whereDate('created_at', '>=', $createdSinceDate);
         } else if (strlen($createdTillDate) > 0) {
             $createdTillDate  = Carbon::parse($createdTillDate)->format('Y-m-d') . ' 23:59:59';
-            $modelQuery       = $modelQuery->whereDate('created_at', '<=', $createdTillDate)->orderBy('created_at', 'Desc');
-        } else {
-            $modelQuery = $modelQuery->orderBy('created_at', 'Desc');
+            $modelQuery       = $modelQuery->whereDate('created_at', '<=', $createdTillDate);
         }
     }
 

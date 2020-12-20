@@ -14,8 +14,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 
 class UserController extends Controller
 {
-    use Filter;
-    use CommonCRUD;
+    use Filter, CommonCRUD;
 
     /**
      * Display a listing of the resource.
@@ -34,8 +33,14 @@ class UserController extends Controller
             'company_id',
             'status_id'
         ];
-        $select = ['id', 'f_name','l_name','SSN', 'phone', 'mobile'];
-        return $this->commonIndex($request, User::query(), $filterKeys, [], $select);
+        $filterRelationIds = [
+            [
+                'requestKey' => 'fund_id',
+                'relationName' => 'accounts.fund'
+            ]
+        ];
+        $select = ['id', 'f_name','l_name','SSN', 'phone', 'mobile', 'created_at'];
+        return $this->commonIndex($request, User::query(), $filterKeys, $filterRelationIds, [], $select);
     }
 
     /**
@@ -57,7 +62,34 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::with(['accounts.fund', 'company', 'status', 'roles'])->findOrFail($id)->makeHidden('user_pic');
+        $user = User::with([
+                'accounts.fund',
+                'accounts.allocatedLoans',
+                'accounts.allocatedLoans.installments',
+                'company',
+                'status',
+                'roles'
+            ])
+            ->findOrFail($id)
+            ->setAppends([
+                'count_of_allocated_loans',
+                'count_of_settled_allocated_loans'
+            ])
+            ->makeHidden('user_pic');
+
+
+        $user->accounts->map(function (& $account) {
+            return $account->allocatedLoans->map(function (& $allocatedLoan) {
+                return $allocatedLoan->setAppends([
+                    'is_settled',
+                    'total_payments',
+                    'remaining_payable_amount',
+                    'count_of_paid_installments',
+                    'count_of_remaining_installments'
+                ]);
+            });
+        });
+
         return $this->jsonResponseOk($user);
     }
 

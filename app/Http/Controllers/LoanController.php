@@ -10,8 +10,7 @@ use App\Traits\CommonCRUD;
 
 class LoanController extends Controller
 {
-    use Filter;
-    use CommonCRUD;
+    use Filter, CommonCRUD;
 
     /**
      * Display a listing of the resource.
@@ -21,20 +20,19 @@ class LoanController extends Controller
      */
     public function index(Request $request)
     {
-        $modelQuery = Loan::with('fund');
         $filterKeys = [
             'name',
             'loan_amount',
             'installment_rate',
             'number_of_installments',
         ];
-        $filterRelationKeys = [
+        $filterRelationIds = [
             [
                 'requestKey'=> 'fund_id',
                 'relationName'=> 'fund'
             ]
         ];
-        return $this->commonIndex($request, $modelQuery, $filterKeys, $filterRelationKeys);
+        return $this->commonIndex($request, Loan::with('fund'), $filterKeys, $filterRelationIds);
     }
 
     /**

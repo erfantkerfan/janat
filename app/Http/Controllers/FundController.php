@@ -11,8 +11,7 @@ use Illuminate\Http\Response;
 
 class FundController extends Controller
 {
-    use Filter;
-    use CommonCRUD;
+    use Filter, CommonCRUD;
 
     /**
      * Display a listing of the resource.
@@ -26,7 +25,7 @@ class FundController extends Controller
             'name',
             'monthly_payment'
         ];
-        return $this->commonIndex($request, Fund::query(), $filterKeys, []);
+        return $this->commonIndex($request, Fund::query(), $filterKeys);
     }
 
     /**
