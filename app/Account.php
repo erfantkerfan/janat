@@ -8,17 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Account extends Model
 {
     use SoftDeletes;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id',
-        'fund_id',
-        'acc_number',
-        'joined_at'
-    ];
 
     public function user()
     {

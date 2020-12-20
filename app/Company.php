@@ -8,18 +8,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Company extends Model
 {
     use SoftDeletes;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name',
-        'fund_id'
-    ];
 
     public function fund()
     {
         return $this->belongsTo(Fund::class);
+    }
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function paidTransactions()
+    {
+        return $this->morphToMany(Transaction::class, 'transaction_payers');
     }
 }

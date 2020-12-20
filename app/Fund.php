@@ -8,15 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Fund extends Model
 {
     use SoftDeletes;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name',
-        'monthly_payment'
-    ];
 
     public function companies()
     {
@@ -31,5 +22,15 @@ class Fund extends Model
     public function loans()
     {
         return $this->hasMany(Loan::class);
+    }
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function receivedTransactions()
+    {
+        return $this->morphToMany(Transaction::class, 'transaction_recipients');
     }
 }
