@@ -12,7 +12,7 @@
           <img src="/img/logo.png">
         </div>
       </a>
-      <a href="٫" class="simple-text logo-normal" target="_blank">
+      <a href="#" class="simple-text logo-normal" target="_blank">
         <template>{{ title }}</template>
       </a>
 
@@ -106,7 +106,7 @@ export default {
     }
   },
   created() {
-    this.$sidebar.toggleMinimize();
+    // this.$sidebar.toggleMinimize();
   },
   provide() {
     return {

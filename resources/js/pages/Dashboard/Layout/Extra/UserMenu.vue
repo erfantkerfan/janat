@@ -54,10 +54,10 @@ export default {
   },
 
   async created() {
-    this.$store.watch(() => this.$store.getters["profile/me"], (me) => {
-      this.title = me.name
-    })
-    await this.$store.dispatch("profile/me")
+    // this.$store.watch(() => this.$store.getters["profile/me"], (me) => {
+    //   this.title = me.name
+    // })
+    // await this.$store.dispatch("profile/me")
   },
     mounted() {
         // document.getElementById('logout-form').action = ''

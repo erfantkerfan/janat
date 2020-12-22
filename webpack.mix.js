@@ -13,6 +13,12 @@ require('laravel-mix-alias')
  |
  */
 
+mix.webpackConfig({
+    devtool: 'eval-source-map'
+    // devtool: "inline-source-map",
+    // devtool: 'source-map'
+})
+
 mix.alias({
     '@': '/resources/js',
     '~': '/node_modules/'
