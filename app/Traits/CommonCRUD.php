@@ -20,6 +20,7 @@ trait CommonCRUD
         $modelQuery = $modelClass::query();
         $select = $this->getDefault($config, 'select', []);
         $joins = $this->getDefault($config, 'joins', []);
+        $joins1 = $this->getDefault($config, 'joins1', []);
         $eagerLoads = $this->getDefault($config, 'eagerLoads', []);
         $filterKeys = $this->getDefault($config, 'filterKeys', []);
         $setAppends = $this->getDefault($config, 'setAppends', []);
@@ -49,7 +50,8 @@ trait CommonCRUD
             $this->filterByRelationId($request, $item['requestKey'], $item['relationName'], $modelQuery);
         }
 
-        $this->join($modelQuery, $joins);
+//        $this->join($modelQuery, $joins);
+//        $this->join1($modelQuery, $joins1);
 
         if ($returnModelQuery) {
             return $modelQuery;
@@ -80,18 +82,27 @@ trait CommonCRUD
     private function sorting(Request $request, & $modelQuery, $modelClass) {
         $sortation_field = $request->get('sortation_field');
         $sortation_order = $request->get('sortation_order');
-        $tableName = (new $modelClass())->getTable();
-        if (!strpos($sortation_field, '.')) {
-            $sortation_field = $tableName.'.'.$sortation_field;
+
+        if (!isset($sortation_field) || !isset($sortation_order)) {
+            return;
         }
-        if ($sortation_field && $sortation_order) {
+
+        if (!strpos($sortation_field, '.')) {
             $modelQuery->orderBy($sortation_field, strtoupper($sortation_order));
+        } else {
+            $modelQuery->orderByPowerJoins($sortation_field, strtoupper($sortation_order));
         }
     }
 
     private function join( & $modelQuery, $joins) {
         foreach ($joins as $item) {
             $this->joinByRelation($modelQuery, $item['joinFrom'], $item['joinTo'], $item['relationType'], $item['joinsType']);
+        }
+    }
+
+    private function join1( & $modelQuery, $joins) {
+        foreach ($joins as $item) {
+            $modelQuery->joinRelationship($item);
         }
     }
 

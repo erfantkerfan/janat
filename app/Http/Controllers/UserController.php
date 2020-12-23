@@ -45,7 +45,7 @@ class UserController extends Controller
             ]
         ];
 
-        return $this->commonIndex($request, User::query(), $config);
+        return $this->commonIndex($request, User::class, $config);
     }
 
     /**

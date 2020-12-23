@@ -5,11 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Kirschbaum\PowerJoins\PowerJoins;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use SoftDeletes;
+    use SoftDeletes, PowerJoins;
     use Notifiable;
     use HasRoles;
 

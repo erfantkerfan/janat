@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Fund;
 use App\Loan;
 use App\Traits\Filter;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class LoanController extends Controller
             ]
         ];
 
-        return $this->commonIndex($request, Loan::query(), $config);
+        return $this->commonIndex($request, Loan::class, $config);
     }
 
     /**

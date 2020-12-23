@@ -111,8 +111,12 @@
                                 </md-select>
                             </md-field>
                         </md-table-toolbar>
-                        <md-table-row v-if="!loans.loading && loans.list.length > 0" slot="md-table-row" slot-scope="{ item }">
+                        <md-table-row v-if="!loans.loading && loans.list.length > 0"
+                                      slot="md-table-row"
+                                      slot-scope="{ item }"
+                        >
                             <md-table-cell md-label="نام وام" md-sort-by="name">
+                                {{item.id}}
                                 {{item.name}}
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
@@ -124,7 +128,7 @@
                             <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
                                 {{item.number_of_installments}}
                             </md-table-cell>
-                            <md-table-cell md-label="نام صندوق">
+                            <md-table-cell md-label="نام صندوق" md-sort-by="fund.name">
                                 {{item.fund.name}}
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">

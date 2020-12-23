@@ -34,7 +34,7 @@ class TransacionController extends Controller
             ]
         ];
 
-        return $this->commonIndex($request, Transaction::query(), $config);
+        return $this->commonIndex($request, Transaction::class, $config);
     }
 
     /**

@@ -4,10 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kirschbaum\PowerJoins\PowerJoins;
 
 class Loan extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, PowerJoins;
 
     public function fund()
     {

@@ -27,7 +27,7 @@ class AccountController extends Controller
             ]
         ];
 
-        return $this->commonIndex($request, Account::query(), $config);
+        return $this->commonIndex($request, Account::class, $config);
     }
 
     /**

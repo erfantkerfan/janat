@@ -36,7 +36,7 @@ class CompanyController extends Controller
             ]
         ];
 
-        return $this->commonIndex($request, Company::query(), $config);
+        return $this->commonIndex($request, Company::class, $config);
     }
 
     /**

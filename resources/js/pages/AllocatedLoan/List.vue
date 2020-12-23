@@ -110,10 +110,10 @@
                             </md-field>
                         </md-table-toolbar>
                         <md-table-row v-if="!allocatedLoans.loading && allocatedLoans.list.length > 0" slot="md-table-row" slot-scope="{ item }">
-                            <md-table-cell md-label="نام" md-sort-by="users.f_name">
+                            <md-table-cell md-label="نام" md-sort-by="account.user.f_name">
                                 {{item.account.user.f_name}}
                             </md-table-cell>
-                            <md-table-cell md-label="نام خانوادگی" md-sort-by="users.l_name">
+                            <md-table-cell md-label="نام خانوادگی" md-sort-by="account.user.l_name">
                                 {{item.account.user.l_name}}
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
@@ -125,7 +125,7 @@
                             <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
                                 {{item.number_of_installments}}
                             </md-table-cell>
-                            <md-table-cell md-label="نام صندوق" md-sort-by="funds.name">
+                            <md-table-cell md-label="نام صندوق" md-sort-by="loan.fund.name">
                                 {{item.loan.fund.name}}
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">

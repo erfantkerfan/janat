@@ -25,11 +25,6 @@ class AllocatedLoanController extends Controller
     public function index(Request $request)
     {
         $config = [
-            'select'=> [
-                'allocated_loans.*',
-                'funds.name',
-                'users.f_name', 'users.l_name',
-            ],
             'eagerLoads'=> [
                 'account.user:id,f_name,l_name', 'loan', 'loan.fund'
             ],
@@ -48,32 +43,6 @@ class AllocatedLoanController extends Controller
                 [
                     'requestKey' => 'loan_id',
                     'relationName' => 'loan'
-                ]
-            ],
-            'joins'=>[
-                [
-                    'joinFrom'=> AllocatedLoan::class,
-                    'joinTo'=> Loan::class,
-                    'joinsType'=> 'join',
-                    'relationType'=> 'ManyToOne'
-                ],
-                [
-                    'joinFrom'=> Loan::class,
-                    'joinTo'=> Fund::class,
-                    'joinsType'=> 'join',
-                    'relationType'=> 'ManyToOne'
-                ],
-                [
-                    'joinFrom'=> AllocatedLoan::class,
-                    'joinTo'=> Account::class,
-                    'joinsType'=> 'join',
-                    'relationType'=> 'ManyToOne'
-                ],
-                [
-                    'joinFrom'=> Account::class,
-                    'joinTo'=> User::class,
-                    'joinsType'=> 'join',
-                    'relationType'=> 'ManyToOne'
                 ]
             ],
             'setAppends'=> [

@@ -26,7 +26,7 @@ class UserStatusController extends Controller
             ]
         ];
 
-        return $this->commonIndex($request, UserStatus::query(), $config);
+        return $this->commonIndex($request, UserStatus::class, $config);
     }
 
     /**

@@ -28,7 +28,7 @@ class FundController extends Controller
             ]
         ];
 
-        return $this->commonIndex($request, Fund::query(), $config);
+        return $this->commonIndex($request, Fund::class, $config);
     }
 
     /**
