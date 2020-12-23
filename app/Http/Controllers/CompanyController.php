@@ -21,14 +21,22 @@ class CompanyController extends Controller
      */
     public function index(Request $request)
     {
-        $filterKeys = ['name'];
-        $filterRelationIds = [
-            [
-                'requestKey'=> 'fund_id',
-                'relationName'=> 'fund'
+        $config = [
+            'eagerLoads'=> [
+                'fund'
+            ],
+            'filterKeys'=> [
+                'name'
+            ],
+            'filterRelationIds'=> [
+                [
+                    'requestKey'=> 'fund_id',
+                    'relationName'=> 'fund'
+                ]
             ]
         ];
-        return $this->commonIndex($request, Company::with('fund'), $filterKeys, $filterRelationIds);
+
+        return $this->commonIndex($request, Company::query(), $config);
     }
 
     /**

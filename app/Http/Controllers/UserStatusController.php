@@ -20,8 +20,13 @@ class UserStatusController extends Controller
      */
     public function index(Request $request)
     {
-        $filterKeys = ['name'];
-        return $this->commonIndex($request, UserStatus::query(), $filterKeys);
+        $config = [
+            'filterKeys'=> [
+                'name'
+            ]
+        ];
+
+        return $this->commonIndex($request, UserStatus::query(), $config);
     }
 
     /**

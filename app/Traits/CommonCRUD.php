@@ -12,19 +12,25 @@ trait CommonCRUD
      *
      * @param Request $request
      * @param $modelQuery
-     * @param array $filterKeys
-     * @param array $filterRelationIds
-     * @param array $filterRelationKeys
-     * @param array $select
-     * @param bool $returnModelQuery
+     * @param $config
      * @return Response
      */
-    public function commonIndex(Request $request, $modelQuery, array $filterKeys = [], array $filterRelationIds = [], array $filterRelationKeys = [], array $select = [], $returnModelQuery = false, $filterBySetAppends = [], $setAppends = [])
+    public function commonIndex(Request $request, $modelQuery, array $config = [])
     {
+        $eagerLoads = $this->getDefault($config, 'eagerLoads', []);
+        $filterKeys = $this->getDefault($config, 'filterKeys', []);
+        $filterRelationIds = $this->getDefault($config, 'filterRelationIds', []);
+        $filterRelationKeys = $this->getDefault($config, 'filterRelationKeys', []);
+        $select = $this->getDefault($config, 'select', []);
+        $returnModelQuery = $this->getDefault($config, 'returnModelQuery', []);
+        $filterBySetAppends = $this->getDefault($config, 'filterBySetAppends', []);
+        $setAppends = $this->getDefault($config, 'setAppends', []);
+
         $perPage = ($request->has('length')) ? $request->get('length') : 10;
         $sortation_field = $request->get('sortation_field');
         $sortation_order = $request->get('sortation_order');
 
+        $modelQuery->with($eagerLoads);
 //        $sortation = true;
 //        foreach ($with as $key=>$item) {
 //            $this->removeSelectSecion($item);
@@ -74,6 +80,10 @@ trait CommonCRUD
 
         return $this->jsonResponseOk($modelQuery->paginate($perPage));
 
+    }
+
+    private function getDefault(array $config = [], $key, $default) {
+        return isset($config[$key]) ? $config[$key] : $default;
     }
 
     private function removeSelectSecion(& $string) {

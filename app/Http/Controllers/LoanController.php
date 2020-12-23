@@ -20,19 +20,25 @@ class LoanController extends Controller
      */
     public function index(Request $request)
     {
-        $filterKeys = [
-            'name',
-            'loan_amount',
-            'installment_rate',
-            'number_of_installments',
-        ];
-        $filterRelationIds = [
-            [
-                'requestKey'=> 'fund_id',
-                'relationName'=> 'fund'
+        $config = [
+            'eagerLoads'=> [
+                'fund'
+            ],
+            'filterKeys'=> [
+                'name',
+                'loan_amount',
+                'installment_rate',
+                'number_of_installments',
+            ],
+            'filterRelationIds'=> [
+                [
+                    'requestKey'=> 'fund_id',
+                    'relationName'=> 'fund'
+                ]
             ]
         ];
-        return $this->commonIndex($request, Loan::with('fund'), $filterKeys, $filterRelationIds);
+
+        return $this->commonIndex($request, Loan::query(), $config);
     }
 
     /**

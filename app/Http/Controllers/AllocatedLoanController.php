@@ -20,30 +20,34 @@ class AllocatedLoanController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = ($request->has('length')) ? $request->get('length') : 10;
-        $filterKeys = [
-            'account_id',
-            'loan_id',
-            'loan_amount',
-            'installment_rate',
-            'number_of_installments'
-        ];
-        $filterRelationIds = [
-            [
-                'requestKey' => 'user_id',
-                'relationName' => 'account.user'
+        $config = [
+            'eagerLoads'=> [
+                'account.user:id,f_name,l_name', 'loan', 'loan.fund'
             ],
-            [
-                'requestKey' => 'loan_id',
-                'relationName' => 'loan'
-            ]
-        ];
-        $setAppends = [
-            'is_settled'
+            'filterKeys'=> [
+                'account_id',
+                'loan_id',
+                'loan_amount',
+                'installment_rate',
+                'number_of_installments'
+            ],
+            'filterRelationIds'=> [
+                [
+                    'requestKey' => 'user_id',
+                    'relationName' => 'account.user'
+                ],
+                [
+                    'requestKey' => 'loan_id',
+                    'relationName' => 'loan'
+                ]
+            ],
+            'setAppends'=> [
+                'is_settled'
 //            'total_payments',
 //            'remaining_payable_amount',
 //            'count_of_paid_installments',
 //            'count_of_remaining_installments'
+            ]
         ];
 
 //        $scopes = function ( & $modelQuery)
@@ -53,12 +57,8 @@ class AllocatedLoanController extends Controller
 
 
         return $this->commonIndex($request,
-            AllocatedLoan::with('account.user:id,f_name,l_name', 'loan', 'loan.fund'),
-            $filterKeys,
-            $filterRelationIds,
-            [], //$filterRelationKeys
-            [], //$select
-            false
+            AllocatedLoan::query(),
+            $config
         );
     }
 

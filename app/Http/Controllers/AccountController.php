@@ -21,7 +21,13 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->commonIndex($request, Account::with('user:id,f_name,l_name', 'fund', 'allocatedLoans'));
+        $config = [
+            'eagerLoads'=> [
+                'user:id,f_name,l_name', 'fund', 'allocatedLoans'
+            ]
+        ];
+
+        return $this->commonIndex($request, Account::query(), $config);
     }
 
     /**

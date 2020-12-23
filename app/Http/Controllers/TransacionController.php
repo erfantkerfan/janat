@@ -20,16 +20,21 @@ class TransacionController extends Controller
      */
     public function index(Request $request)
     {
-        $filterKeys = [
-            'cost',
-            'deadline_at',
-            'manager_comment',
-            'user_comment',
-            'transaction_status_id',
-            'parent_transaction_id'
+        $config = [
+            'eagerLoads'=> [
+                'status', 'userPayers:id,f_name,l_name', 'companyPayers', 'fundRecipients', 'allocatedLoanRecipients'
+            ],
+            'filterKeys'=> [
+                'cost',
+                'deadline_at',
+                'manager_comment',
+                'user_comment',
+                'transaction_status_id',
+                'parent_transaction_id'
+            ]
         ];
-        $filterRelationIds = [];
-        return $this->commonIndex($request, Transaction::with('status', 'userPayers:id,f_name,l_name', 'companyPayers', 'fundRecipients', 'allocatedLoanRecipients'));
+
+        return $this->commonIndex($request, Transaction::query(), $config);
     }
 
     /**

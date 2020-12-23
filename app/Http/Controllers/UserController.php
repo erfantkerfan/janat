@@ -24,23 +24,28 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $filterKeys = [
-            'f_name',
-            'l_name',
-            'SSN',
-            'phone',
-            'mobile',
-            'company_id',
-            'status_id'
-        ];
-        $filterRelationIds = [
-            [
-                'requestKey' => 'fund_id',
-                'relationName' => 'accounts.fund'
+        $config = [
+            'filterKeys'=> [
+                'f_name',
+                'l_name',
+                'SSN',
+                'phone',
+                'mobile',
+                'company_id',
+                'status_id'
+            ],
+            'filterRelationIds'=> [
+                [
+                    'requestKey' => 'fund_id',
+                    'relationName' => 'accounts.fund'
+                ]
+            ],
+            'select'=> [
+                'id', 'f_name','l_name','SSN', 'phone', 'mobile', 'created_at'
             ]
         ];
-        $select = ['id', 'f_name','l_name','SSN', 'phone', 'mobile', 'created_at'];
-        return $this->commonIndex($request, User::query(), $filterKeys, $filterRelationIds, [], $select);
+
+        return $this->commonIndex($request, User::query(), $config);
     }
 
     /**

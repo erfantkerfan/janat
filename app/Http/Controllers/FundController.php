@@ -21,11 +21,14 @@ class FundController extends Controller
      */
     public function index(Request $request)
     {
-        $filterKeys = [
-            'name',
-            'monthly_payment'
+        $config = [
+            'filterKeys'=> [
+                'name',
+                'monthly_payment'
+            ]
         ];
-        return $this->commonIndex($request, Fund::query(), $filterKeys);
+
+        return $this->commonIndex($request, Fund::query(), $config);
     }
 
     /**
