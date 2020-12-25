@@ -68,7 +68,7 @@
                     :link="{
                         name: 'تراکنش ها',
                         icon: 'payments',
-                        path: '/company/list',
+                        path: '/transactions/list',
                       }"
                 />
 

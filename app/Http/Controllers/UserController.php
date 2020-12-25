@@ -79,8 +79,8 @@ class UserController extends Controller
             ->setAppends([
                 'count_of_allocated_loans',
                 'count_of_settled_allocated_loans'
-            ])
-            ->makeHidden('user_pic');
+            ]);
+//            ->makeHidden('user_pic');
 
 
         $user->accounts->map(function (& $account) {
@@ -106,7 +106,7 @@ class UserController extends Controller
      */
     public function getUserPic($id)
     {
-        $user = User::select('user_pic')->findOrFail($id);
+        $user = User::select('user_pic')->findOrFail($id)->makeVisible('user_pic');
         $blobData = '';
         if (strlen($user->user_pic) === 0) {
             $blobData = File::get(public_path('img/faces/sample-avatar.png'));
@@ -128,7 +128,7 @@ class UserController extends Controller
             return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
         }
 
-        $user = User::findOrFail($request->get('id'));
+        $user = User::findOrFail($request->get('id'))->makeVisible('user_pic');
         $user->user_pic = File::get($request->file('user_pic'));
 
         if ($user->save()) {

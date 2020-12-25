@@ -22,7 +22,9 @@ class TransacionController extends Controller
     {
         $config = [
             'eagerLoads'=> [
-                'status', 'userPayers:id,f_name,l_name', 'companyPayers', 'fundRecipients', 'allocatedLoanRecipients'
+                'transactionStatus',
+                'relatedPayers.transactionPayers',
+                'relatedRecipients.transactionRecipients'
             ],
             'filterKeys'=> [
                 'cost',

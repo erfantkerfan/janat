@@ -50,6 +50,16 @@ class Transaction extends Model
         return $this->morphedByMany(AllocatedLoanInstallment::class, 'transaction_recipients');
     }
 
+    public function relatedPayers()
+    {
+        return $this->hasMany(TransactionPayer::class);
+    }
+
+    public function relatedRecipients()
+    {
+        return $this->hasMany(TransactionRecipient::class);
+    }
+
     //each category might have one parent
     public function parent() {
         return $this->belongsTo(static::class, 'parent_transaction_id');
