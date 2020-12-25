@@ -10,6 +10,17 @@ class Fund extends Model
 {
     use SoftDeletes, PowerJoins;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'balance',
+        'monthly_payment'
+    ];
+
     public function companies()
     {
         return $this->hasMany(Company::class);

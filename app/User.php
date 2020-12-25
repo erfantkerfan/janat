@@ -10,9 +10,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use SoftDeletes, PowerJoins;
-    use Notifiable;
-    use HasRoles;
+    use SoftDeletes, PowerJoins, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -22,9 +20,10 @@ class User extends Authenticatable
     protected $fillable = [
         'f_name',
         'l_name',
+        'father_name',
         'SSN',
-        'password',
         'staff_code',
+        'password',
         'salary',
         'address',
         'phone',
