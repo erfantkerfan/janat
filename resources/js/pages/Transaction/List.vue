@@ -20,11 +20,11 @@
                                         :label="item.name"
                                         :value="item.id"
                                     >
-                                        <div>
+                                        <div v-if="item.id !== 0">
                                             صندوق:
                                             {{ item.fund.name }}
                                         </div>
-                                        <div>
+                                        <div v-if="item.id !== 0">
                                             وام:
                                             {{ item.name }}
                                         </div>
@@ -47,40 +47,46 @@
                                 </md-select>
                             </md-field>
                         </div>
+                        <div class="md-layout-item">
+                            <md-field>
+                                <label>شرکت:</label>
+                                <md-select v-model="filterData.company_id" name="pages">
+                                    <md-option
+                                        v-for="item in companies.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
                     </div>
                     <div class="md-layout">
                         <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    مبلغ وام
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.loan_amount" />
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-20 md-form-label">
-                                    مبلغ هر قسط
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.installment_rate" />
-                                    </md-field>
-                                </div>
-                            </div>
+                            <md-field>
+                                <label>وضعیت تراکنش:</label>
+                                <md-select v-model="filterData.transaction_status_id" name="pages">
+                                    <md-option
+                                        v-for="item in transactionStatuses.list"
+                                        :key="item.id"
+                                        :label="item.display_name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.display_name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
                         </div>
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
-                                    تعداد اقساط
+                                    کد کاربر:
                                 </label>
                                 <div class="md-layout-item">
                                     <md-field class="md-invalid">
-                                        <md-input v-model="filterData.number_of_installments" />
+                                        <md-input v-model="filterData.user_id" />
                                     </md-field>
                                 </div>
                             </div>
@@ -152,8 +158,25 @@
                             </md-field>
                         </md-table-toolbar>
                         <md-table-row v-if="!transctions.loading && transctions.list.length > 0" slot="md-table-row" slot-scope="{ item }">
+                            <md-table-cell md-label="پرداخت کنندگان">
+                                <div v-for="related_payer in item.related_payers"
+                                    :key="'related_payer-'+related_payer.id">
+                                    {{item.getRelatedModelType(related_payer.transaction_payers_type)}}:
+                                    {{item.getRelatedModelLabel(related_payer.transaction_payers_type, related_payer.transaction_payers)}}
+                                </div>
+                            </md-table-cell>
+                            <md-table-cell md-label="دریافت کنندگان">
+                                <div v-for="related_recipient in item.related_recipients"
+                                     :key="'related_recipient-'+related_recipient.id">
+                                    {{item.getRelatedModelType(related_recipient.transaction_recipients_type)}}:
+                                    {{item.getRelatedModelLabel(related_recipient.transaction_recipients_type, related_recipient.transaction_recipients)}}
+                                </div>
+                            </md-table-cell>
                             <md-table-cell md-label="مبلغ" md-sort-by="cost">
                                 {{item.cost}}
+                            </md-table-cell>
+                            <md-table-cell md-label="وضعیت" md-sort-by="parent_transaction_id">
+                                {{item.transaction_status.display_name}}
                             </md-table-cell>
                             <md-table-cell md-label="مهلت پرداخت" md-sort-by="deadline_at">
                                 <span v-if="item.deadline_at">
@@ -239,19 +262,21 @@
                 },
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
-                loan_amount: null,
-                installment_rate: null,
-                number_of_installments: null,
                 fund_id: null,
+                user_id: null,
                 loan_id: null,
+                company_id: null,
+                transaction_status_id: null,
                 createdSinceDate: null,
                 createdTillDate: null
             }
         }),
         mounted() {
             this.getList()
-            this.getFunds()
             this.getLoans()
+            this.getFunds()
+            this.getCompanies()
+            this.getTransactionStatus()
         },
         methods: {
             clickCallback (data) {
@@ -267,11 +292,11 @@
                     sortation_field: this.filterData.sortation.field,
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
+                    user_id: (this.filterData.user_id === null || this.filterData.user_id.trim().length === 0) ? null: this.filterData.user_id,
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null: this.filterData.loan_id,
-                    loan_amount: this.filterData.loan_amount,
-                    installment_rate: this.filterData.installment_rate,
-                    number_of_installments: this.filterData.number_of_installments,
+                    company_id: (this.filterData.company_id === null || this.filterData.company_id === 0) ? null: this.filterData.company_id,
+                    transaction_status_id: (this.filterData.transaction_status_id === null || this.filterData.transaction_status_id === 0) ? null: this.filterData.transaction_status_id,
                     createdSinceDate: this.filterData.createdSinceDate,
                     createdTillDate: this.filterData.createdTillDate
                 })

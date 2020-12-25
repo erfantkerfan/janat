@@ -6,7 +6,7 @@ class TransactionStatus extends Model {
         super(user, [
             {
                 key: 'baseRoute',
-                default: 'api/transactions'
+                default: 'api/transaction_statuses'
             },
             { key: 'id' },
             { key: 'name' },

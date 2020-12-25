@@ -5,6 +5,7 @@ import {User} from "@/models/User";
 import {Company} from "@/models/Company";
 import {AllocatedLoan} from "@/models/AllocatedLoan";
 import {AllocatedLoanInstallment} from "@/models/AllocatedLoanInstallment";
+import {Loan} from "@/models/Loan";
 
 class Transaction extends Model {
     constructor (user) {
@@ -63,6 +64,42 @@ class Transaction extends Model {
             { key: 'updated_at' },
             { key: 'deleted_at' }
         ])
+    }
+
+    getRelatedModelType(modelType) {
+        if (modelType === 'App\\Company') {
+            return 'شرکت'
+        } else if (modelType === 'App\\User') {
+            return 'شخص'
+        } else if (modelType === 'App\\Fund') {
+            return 'صندوق'
+        } else if (modelType === 'App\\AllocatedLoan') {
+            return 'وام تخصیص داده شده'
+        } else if (modelType === 'App\\AllocatedLoanInstallment') {
+            return 'قسط وام'
+        }
+    }
+
+    getRelatedModelLabel(modelType, modelValue) {
+        if (modelType === 'App\\Company') {
+            return modelValue.name
+        } else if (modelType === 'App\\User') {
+            return modelValue.f_name + ' ' + modelValue.l_name
+        } else if (modelType === 'App\\Fund') {
+            return modelValue.name
+        } else if (modelType === 'App\\AllocatedLoan') {
+            if(modelValue.is_settled) {
+                return 'تسویه شده'
+            } else {
+                return 'تسویه نشده'
+            }
+        } else if (modelType === 'App\\AllocatedLoanInstallment') {
+            if(modelValue.is_settled) {
+                return 'تسویه شده'
+            } else {
+                return 'تسویه نشده'
+            }
+        }
     }
 
 }

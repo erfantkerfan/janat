@@ -249,7 +249,7 @@
                 return (this.$route.name === 'Create')
             },
             getData () {
-                if (this.$route.name === 'Create') {
+                if (this.isCreateForm()) {
                     return false
                 }
                 this.allocatedLoan.loading = true;

@@ -47,7 +47,7 @@ trait CommonCRUD
         }
 
         foreach ($filterRelationIds as $item) {
-            $this->filterByRelationId($request, $item['requestKey'], $item['relationName'], $modelQuery);
+            $this->filterByRelationId($request, $item, $modelQuery);
         }
 
 //        $this->join($modelQuery, $joins);

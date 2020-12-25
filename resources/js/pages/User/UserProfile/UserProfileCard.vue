@@ -208,6 +208,9 @@
             this.getFunds();
         },
         methods: {
+            isCreateForm () {
+                return (this.$route.name === 'Create')
+            },
             bufferUserPic ($event) {
                 const toBase64 = file => new Promise((resolve, reject) => {
                     const reader = new FileReader();

@@ -33,7 +33,29 @@ class TransacionController extends Controller
                 'user_comment',
                 'transaction_status_id',
                 'parent_transaction_id'
-            ]
+            ],
+            'filterRelationIds'=> [
+                [
+                    'requestKey' => 'user_id',
+                    'relationName' => 'userPayers'
+                ],
+                [
+                    'requestKey' => 'loan_id',
+                    'relationName' => 'allocatedLoanRecipients.loan'
+                ],
+                [
+                    'requestKey' => 'company_id',
+                    'relationName' => 'companyPayers'
+                ],
+                [
+                    'requestKey' => 'fund_id',
+                    'orWhereHas' => true,
+                    'relationNames' => [
+                        'fundPayers',
+                        'fundRecipients'
+                    ]
+                ]
+            ],
         ];
 
         return $this->commonIndex($request, Transaction::class, $config);

@@ -17,6 +17,7 @@ use App\Http\Controllers\FundController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\TransacionController;
+use App\Http\Controllers\TransactionStatusController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AccountController;
@@ -43,6 +44,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('allocated_loan_Installments', '\\'. AllocatedLoanInstallmentController::class);
         Route::resource('accounts', '\\'. AccountController::class);
         Route::resource('transactions', '\\'. TransacionController::class);
+        Route::resource('transaction_statuses', '\\'. TransactionStatusController::class);
     });
 });
 

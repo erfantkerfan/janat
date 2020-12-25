@@ -9,7 +9,12 @@ use Illuminate\Http\Response;
 
 trait Filter
 {
-    private function filterByRelationId(Request $request, $requestKey, $relationName, & $modelQuery) {
+    private function filterByRelationId(Request $request, $filterData, & $modelQuery) {
+        $requestKey = $filterData['requestKey'];
+        $relationName = (isset($filterData['relationName'])) ? $filterData['relationName'] : null;
+        $relationNames = (isset($filterData['relationNames'])) ? $filterData['relationNames'] : null;
+        $orWhereHas = (isset($filterData['orWhereHas'])) ? $filterData['orWhereHas'] : false;
+
         $relationIds = $request->get($requestKey);
         if (!isset($relationIds)) {
             return;
@@ -17,12 +22,30 @@ trait Filter
         if (is_array($relationIds) && count($relationIds) === 0) {
             return;
         }
+        if ($orWhereHas && is_array($relationNames) && count($relationNames) === 0) {
+            return;
+        }
+
+        if (!is_array($relationNames)) {
+            $relationNames = [$relationNames];
+        }
         if (!is_array($relationIds)) {
             $relationIds = [$relationIds];
         }
-        $modelQuery->whereHas($relationName, function (Builder $query) use ($relationIds) {
-            $query->whereIn('id', $relationIds);
-        });
+
+        if ($orWhereHas) {
+            foreach ($relationNames as $relationNameItem) {
+                $modelQuery->orWhereHas($relationNameItem, function (Builder $query) use ($relationIds) {
+                    $tableName = with($query)->getModel()->getTable();
+                    $query->whereIn($tableName.'.id', $relationIds);
+                });
+            }
+        } else {
+            $modelQuery->whereHas($relationName, function (Builder $query) use ($relationIds) {
+                $tableName = with($query)->getModel()->getTable();
+                $query->whereIn($tableName.'.id', $relationIds);
+            });
+        }
     }
 
     private function filterByRelationKey(Request $request, $requestKey, $relationName, $relationColumn, & $modelQuery) {

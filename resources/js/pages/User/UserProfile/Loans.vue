@@ -47,9 +47,6 @@
                     return new User()
                 }
             }
-        },
-        created() {
-            console.log('user.accounts.list.length', this.user.accounts.list.length)
         }
     }
 </script>

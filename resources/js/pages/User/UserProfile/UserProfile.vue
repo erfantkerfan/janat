@@ -7,8 +7,11 @@
                 </div>
             </div>
             <div class="md-layout-item md-size-40 md-small-size-100">
-                <user-profile-card v-model="user" ref="userProfileCard" @update="getProfile"
-                                   @updateUserPic="updateUserPic"/>
+                <user-profile-card v-model="user"
+                                   ref="userProfileCard"
+                                   @update="getProfile"
+                                   @updateUserPic="updateUserPic"
+                />
             </div>
         </div>
 
@@ -102,11 +105,14 @@
                 }
             }
         }),
-        mounted() {
+        created() {
             this.getProfile()
             this.fillData()
         },
         methods: {
+            isCreateForm () {
+                return (this.$route.name === 'Create')
+            },
             fillData () {
                 this.datacollection = {
                     datasets: [{
@@ -141,7 +147,10 @@
                     })
             },
             getProfile() {
-                if (this.$route.name === 'Create') {
+                if (this.isCreateForm()) {
+                    this.user.id = 0
+                    this.user.status.id = 0
+                    this.user.company.id = 0
                     return false
                 }
                 this.user.loading = true;

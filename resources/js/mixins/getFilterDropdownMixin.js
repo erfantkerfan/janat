@@ -1,15 +1,17 @@
 import { Fund, FundList } from '@/models/Fund';
-import { Company, CompanyList } from '@/models/Company';
-import { UserStatus, UserStatusList } from '@/models/UserStatus';
 import { Loan, LoanList } from '@/models/Loan';
+import { Company, CompanyList } from '@/models/Company';
+import { TransactionStatus, TransactionStatusList } from '@/models/TransactionStatus';
+import { UserStatus, UserStatusList } from '@/models/UserStatus';
 
 export default {
   data() {
     return {
+        loans: new LoanList(),
         funds: new FundList(),
         companies: new CompanyList(),
         userStatuses: new UserStatusList(),
-        loans: new LoanList()
+        transactionStatuses: new TransactionStatusList()
     };
   },
   methods: {
@@ -30,6 +32,25 @@ export default {
                   console.log('error: ', error)
                   this.userStatuses.loading = false;
                   this.userStatuses = new UserStatusList()
+              })
+      },
+      getTransactionStatus () {
+          this.transactionStatuses.loading = true;
+          this.transactionStatuses.fetch()
+              .then((response) => {
+                  this.transactionStatuses.loading = false;
+                  this.transactionStatuses = new TransactionStatusList(response.data.data, response.data)
+                  this.transactionStatuses.addItem(new TransactionStatus({id: 0, display_name: ''}))
+              })
+              .catch((error) => {
+                  this.$store.dispatch('alerts/fire', {
+                      icon: 'error',
+                      title: 'توجه',
+                      message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                  });
+                  console.log('error: ', error)
+                  this.transactionStatuses.loading = false;
+                  this.transactionStatuses = new TransactionStatusList()
               })
       },
       getCompanies () {

@@ -106,9 +106,14 @@ class UserController extends Controller
      */
     public function getUserPic($id)
     {
-        $user = User::select('user_pic')->findOrFail($id)->makeVisible('user_pic');
+        $user = User::select('user_pic')->find($id);
+
+        if (isset($user)) {
+            $user->makeVisible('user_pic');
+        }
+
         $blobData = '';
-        if (strlen($user->user_pic) === 0) {
+        if (!isset($user) || strlen($user->user_pic) === 0) {
             $blobData = File::get(public_path('img/faces/sample-avatar.png'));
         } else {
             $blobData = $user->user_pic;

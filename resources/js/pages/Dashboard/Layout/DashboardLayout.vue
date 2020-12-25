@@ -73,6 +73,7 @@
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{
             name: 'Table Lists',
             icon: 'content_paste',
@@ -81,6 +82,7 @@
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{
             name: 'Typography',
             icon: 'library_books',
@@ -89,6 +91,7 @@
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{
             name: 'Icons',
             icon: 'bubble_chart',
@@ -97,10 +100,12 @@
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{ name: 'Maps', icon: 'place', path: '/components/maps' }"
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{
             name: 'Notifications',
             icon: 'notifications',
@@ -109,6 +114,7 @@
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{
             name: 'RTL Support',
             icon: 'language',
