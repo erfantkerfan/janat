@@ -52,7 +52,7 @@
                 <loans :user="user"/>
             </div>
             <div class="md-layout-item md-size-100">
-                <user-password-card :user="user" @update="getProfile"/>
+                <user-password-card v-model="user" @update="getProfile"/>
             </div>
         </div>
     </div>
@@ -111,7 +111,7 @@
         },
         methods: {
             isCreateForm () {
-                return (this.$route.name === 'Create')
+                return (this.$route.name === 'User.Create')
             },
             fillData () {
                 this.datacollection = {
@@ -176,7 +176,7 @@
                 }
             },
             updateUserProfile() {
-                if (this.$route.name === 'Create') {
+                if (this.isCreateForm()) {
                     this.createUserProfile()
                     return
                 }

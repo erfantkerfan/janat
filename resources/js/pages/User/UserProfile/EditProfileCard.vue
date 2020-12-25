@@ -34,11 +34,31 @@
             </div>
             <div class="md-layout">
                 <label class="md-layout-item md-size-15 md-form-label">
+                    نام پدر
+                </label>
+                <div class="md-layout-item">
+                    <md-field class="md-invalid">
+                        <md-input v-model="value.father_name" @input="updateUserModel"/>
+                    </md-field>
+                </div>
+            </div>
+            <div class="md-layout">
+                <label class="md-layout-item md-size-15 md-form-label">
                     کد ملی
                 </label>
                 <div class="md-layout-item">
                     <md-field class="md-invalid">
                         <md-input v-model="value.SSN" @input="updateUserModel"/>
+                    </md-field>
+                </div>
+            </div>
+            <div class="md-layout">
+                <label class="md-layout-item md-size-15 md-form-label">
+                    کد پرسنلی
+                </label>
+                <div class="md-layout-item">
+                    <md-field class="md-invalid">
+                        <md-input v-model="value.personnel_code" @input="updateUserModel"/>
                     </md-field>
                 </div>
             </div>
@@ -94,6 +114,16 @@
             </div>
             <div class="md-layout">
                 <label class="md-layout-item md-size-15 md-form-label">
+                    توضیحات
+                </label>
+                <div class="md-layout-item">
+                    <md-field class="md-invalid">
+                        <md-textarea v-model="value.description" @input="updateUserModel"/>
+                    </md-field>
+                </div>
+            </div>
+            <div v-if="!isCreateForm" class="md-layout">
+                <label class="md-layout-item md-size-15 md-form-label">
                     تاریخ ایجاد کاربر
                 </label>
                 <div class="md-layout-item">
@@ -143,6 +173,9 @@
         },
 
         methods: {
+            isCreateForm () {
+                return (this.$route.name === 'User.Create')
+            },
             fireUpdateEvent () {
                 this.$emit('update', this.value)
             },

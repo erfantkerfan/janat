@@ -11,23 +11,31 @@
         <md-card-content>
             <div class="md-layout">
                 <div class="md-layout-item md-size-100">
-                    <md-field v-if="!$auth.isSuperAdmin" class="md-invalid">
+                    <md-field v-if="isCreateForm" class="md-invalid">
+                        <label>کلمه عبور</label>
+                        <md-input v-model="value.password" type="password" @input="updateUserModel"/>
+                    </md-field>
+                    <md-field v-if="isCreateForm" class="md-invalid">
+                        <label>تکرار عبور</label>
+                        <md-input v-model="value.password_confirmation" type="password" @input="updateUserModel"/>
+                    </md-field>
+                    <md-field v-if="!$auth.isSuperAdmin && !isCreateForm" class="md-invalid">
                         <label>کلمه عبور فعلی</label>
                         <md-input v-model="password" type="password"/>
                     </md-field>
-                    <md-field class="md-invalid">
+                    <md-field v-if="!isCreateForm" class="md-invalid">
                         <label>کلمه عبور جدید</label>
                         <md-input v-model="new_password" type="password"/>
                     </md-field>
-                    <md-field class="md-invalid">
+                    <md-field v-if="!isCreateForm" class="md-invalid">
                         <label>تکرار کلمه عبور جدید</label>
                         <md-input v-model="confirm_password" type="password"/>
                     </md-field>
                 </div>
             </div>
-            <loading :active.sync="user.loading" :is-full-page="false"></loading>
+            <loading :active.sync="value.loading" :is-full-page="false"></loading>
         </md-card-content>
-        <md-card-actions>
+        <md-card-actions v-if="!isCreateForm">
             <md-button @click="changePassword">
                 تغییر کلمه عبور
             </md-button>
@@ -38,12 +46,19 @@
 <script>
     import {ValidationError} from "@/components";
     import formMixin from "@/mixins/form-mixin";
+    import {User} from '@/models/User';
 
     export default {
         name: "edit-password-card",
 
         props: {
-            user: Object
+            user: Object,
+            value: {
+                type: User,
+                default () {
+                    return new User()
+                }
+            }
         },
 
         components: {ValidationError},
@@ -57,6 +72,12 @@
         }),
 
         methods: {
+            isCreateForm () {
+                return (this.$route.name === 'User.Create')
+            },
+            updateUserModel() {
+                this.$emit('input', this.value)
+            },
             isValidPassword (password) {
                 if (!password) {
                     this.$store.dispatch('alerts/fire', {
@@ -105,7 +126,7 @@
                 }
 
                 let that = this
-                this.user.updatePassword(this.password, this.new_password)
+                this.value.updatePassword(this.password, this.new_password)
                     .then((response) => {
                         that.$emit('update')
                         that.$store.dispatch('alerts/fire', {

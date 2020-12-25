@@ -67,7 +67,7 @@ let userMenu = {
     children: [
         {
             path: "list",
-            name: "List",
+            name: "User.List",
             components: {default: ListUserPage},
             meta: {
                 rtlActive: true,
@@ -77,7 +77,7 @@ let userMenu = {
         },
         {
             path: "create",
-            name: "Create",
+            name: "User.Create",
             components: {default: UserProfile},
             meta: {
                 rtlActive: true,
@@ -87,7 +87,7 @@ let userMenu = {
         },
         {
             path: ":id",
-            name: "Show",
+            name: "User.Show",
             components: {default: UserProfile},
             meta: {
                 rtlActive: true,
@@ -105,7 +105,7 @@ let companiesMenu = {
     children: [
         {
             path: "list",
-            name: "List",
+            name: "Company.List",
             components: {default: CompanyList},
             meta: {
                 rtlActive: true,
@@ -115,7 +115,7 @@ let companiesMenu = {
         },
         {
             path: "create",
-            name: "Create",
+            name: "Company.Create",
             components: {default: CompanyForm},
             meta: {
                 rtlActive: true,
@@ -125,7 +125,7 @@ let companiesMenu = {
         },
         {
             path: ":id",
-            name: "Show",
+            name: "Company.Show",
             components: {default: CompanyForm},
             meta: {
                 rtlActive: true,
@@ -143,7 +143,7 @@ let fundsMenu = {
     children: [
         {
             path: "list",
-            name: "List",
+            name: "Fund.List",
             components: {default: FundList},
             meta: {
                 rtlActive: true,
@@ -153,7 +153,7 @@ let fundsMenu = {
         },
         {
             path: "create",
-            name: "Create",
+            name: "Fund.Create",
             components: {default: FundForm},
             meta: {
                 rtlActive: true,
@@ -163,7 +163,7 @@ let fundsMenu = {
         },
         {
             path: ":id",
-            name: "Show",
+            name: "Fund.Show",
             components: {default: FundForm},
             meta: {
                 rtlActive: true,
@@ -181,7 +181,7 @@ let loansMenu = {
     children: [
         {
             path: "list",
-            name: "List",
+            name: "Loan.List",
             components: {default: LoanList},
             meta: {
                 rtlActive: true,
@@ -191,7 +191,7 @@ let loansMenu = {
         },
         {
             path: "create",
-            name: "Create",
+            name: "Loan.Create",
             components: {default: LoanForm},
             meta: {
                 rtlActive: true,
@@ -201,7 +201,7 @@ let loansMenu = {
         },
         {
             path: ":id",
-            name: "Show",
+            name: "Loan.Show",
             components: {default: LoanForm},
             meta: {
                 rtlActive: true,
@@ -219,7 +219,7 @@ let allocatedLoansMenu = {
     children: [
         {
             path: "list",
-            name: "List",
+            name: "AllocatedLoan.List",
             components: {default: AllocatedLoanList},
             meta: {
                 rtlActive: true,
@@ -229,7 +229,7 @@ let allocatedLoansMenu = {
         },
         {
             path: "create",
-            name: "Create",
+            name: "AllocatedLoan.Create",
             components: {default: AllocatedLoanForm},
             meta: {
                 rtlActive: true,
@@ -239,7 +239,7 @@ let allocatedLoansMenu = {
         },
         {
             path: ":id",
-            name: "Show",
+            name: "AllocatedLoan.Show",
             components: {default: AllocatedLoanForm},
             meta: {
                 rtlActive: true,
@@ -257,7 +257,7 @@ let transactionMenu = {
     children: [
         {
             path: "list",
-            name: "List",
+            name: "Transaction.List",
             components: {default: TransactionList},
             meta: {
                 rtlActive: true,
@@ -267,7 +267,7 @@ let transactionMenu = {
         },
         {
             path: "create",
-            name: "Create",
+            name: "Transaction.Create",
             components: {default: TransactionForm},
             meta: {
                 rtlActive: true,
@@ -277,7 +277,7 @@ let transactionMenu = {
         },
         {
             path: ":id",
-            name: "Show",
+            name: "Transaction.Show",
             components: {default: AllocatedLoanForm},
             meta: {
                 rtlActive: true,

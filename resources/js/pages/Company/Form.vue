@@ -85,10 +85,10 @@
         },
         methods: {
             isCreateForm () {
-                return (this.$route.name === 'Create')
+                return (this.$route.name === 'Company.Create')
             },
             getData () {
-                if (this.$route.name === 'Create') {
+                if (this.isCreateForm()) {
                     return false
                 }
                 this.company.loading = true;

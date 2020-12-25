@@ -192,6 +192,9 @@
             this.getLoans()
         },
         methods: {
+            isCreateForm () {
+                return (this.$route.name === 'Fund.Create')
+            },
             showDialog (item) {
                 this.loan = new Loan(item)
                 this.editLoanState = false
@@ -203,7 +206,7 @@
             createNewLoan () {
                 let that = this
                 this.loan.loading = true
-                this.loan.fund_id = this.$route.params.id
+                this.loan.fund.id = this.$route.params.id
                 this.loan.create()
                     .then((response) => {
                         that.$store.dispatch('alerts/fire', {
@@ -290,11 +293,8 @@
                         item.loading = false;
                     });
             },
-            isCreateForm () {
-                return (this.$route.name === 'Create')
-            },
             getData () {
-                if (this.$route.name === 'Create') {
+                if (this.isCreateForm()) {
                     return false
                 }
                 this.fund.loading = true;

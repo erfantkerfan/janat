@@ -246,7 +246,7 @@
         },
         methods: {
             isCreateForm () {
-                return (this.$route.name === 'Create')
+                return (this.$route.name === 'Transaction.Create')
             },
             getData () {
                 if (this.isCreateForm()) {

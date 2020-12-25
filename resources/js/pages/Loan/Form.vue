@@ -113,10 +113,10 @@
         },
         methods: {
             isCreateForm () {
-                return (this.$route.name === 'Create')
+                return (this.$route.name === 'Loan.Create')
             },
             getData () {
-                if (this.$route.name === 'Create') {
+                if (this.isCreateForm()) {
                     return false
                 }
                 this.loan.loading = true;

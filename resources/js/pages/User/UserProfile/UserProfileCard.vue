@@ -12,7 +12,7 @@
                     <md-icon>check</md-icon>
                 </md-button>
             </div>
-            <input v-if="cardUserNewImage === null" v-show="false" type="file" ref="userProfilePic" @change="bufferUserPic($event)" />
+            <input v-if="!isCreateForm && cardUserNewImage === null" v-show="false" type="file" ref="userProfilePic" @change="bufferUserPic($event)" />
             <h6 class="category text-gray">{{ value.f_name }} {{ value.l_name }}</h6>
             <h4 class="card-title">{{ value.company.name }}</h4>
             <p class="card-description">
@@ -20,19 +20,20 @@
             </p>
 
             <md-empty-state
-                v-if="value.accounts.list.length === 0"
+                v-if="!isCreateForm && value.accounts.list.length === 0"
                 class="md-warning"
                 md-icon="cancel_presentation"
                 md-label="حسابی یافت نشد"
             >
             </md-empty-state>
             <md-button
+                v-if="!isCreateForm"
                 class="md-dense md-raised md-primary"
                 @click="showAddAccountDialog">
                 ایجاد حساب جدید
             </md-button>
             <md-table
-                v-if="value.accounts.list.length > 0"
+                v-if="!isCreateForm && value.accounts.list.length > 0"
                 :value="value.accounts.list"
                 :md-sort.sync="sortation.field"
                 :md-sort-order.sync="sortation.order"
@@ -209,7 +210,7 @@
         },
         methods: {
             isCreateForm () {
-                return (this.$route.name === 'Create')
+                return (this.$route.name === 'User.Create')
             },
             bufferUserPic ($event) {
                 const toBase64 = file => new Promise((resolve, reject) => {
