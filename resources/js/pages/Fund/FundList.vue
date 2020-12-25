@@ -35,6 +35,38 @@
                             </div>
                         </div>
                     </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    از تاریخ
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="filterData.createdSinceDate"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    تا تاریخ
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="filterData.createdTillDate"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <md-empty-state
                         v-if="!funds.loading && funds.list.length === 0"
@@ -147,13 +179,15 @@
             funds: new FundList(),
             filterData: {
                 sortation: {
-                    field: "created_at",
-                    order: "asc"
+                    field: 'created_at',
+                    order: 'asc'
                 },
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 name: null,
-                monthly_payment: null
+                monthly_payment: null,
+                createdSinceDate: null,
+                createdTillDate: null
             }
         }),
         mounted() {
@@ -174,7 +208,9 @@
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     name: this.filterData.name,
-                    monthly_payment: this.filterData.monthly_payment
+                    monthly_payment: this.filterData.monthly_payment,
+                    createdSinceDate: this.filterData.createdSinceDate,
+                    createdTillDate: this.filterData.createdTillDate
                 })
                     .then((response) => {
                         this.funds.loading = false

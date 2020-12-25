@@ -23,18 +23,6 @@
                             </div>
                         </div>
                         <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    مبلغ وام
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.loan_amount" />
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-layout-item">
                             <md-field>
                                 <label>صندوق:</label>
                                 <md-select v-model="filterData.fund_id" name="pages">
@@ -51,6 +39,18 @@
                         </div>
                     </div>
                     <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    مبلغ وام
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.loan_amount" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
@@ -116,7 +116,6 @@
                                       slot-scope="{ item }"
                         >
                             <md-table-cell md-label="نام وام" md-sort-by="name">
-                                {{item.id}}
                                 {{item.name}}
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">

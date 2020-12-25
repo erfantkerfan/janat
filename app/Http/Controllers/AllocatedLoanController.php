@@ -43,6 +43,10 @@ class AllocatedLoanController extends Controller
                 [
                     'requestKey' => 'loan_id',
                     'relationName' => 'loan'
+                ],
+                [
+                    'requestKey' => 'fund_id',
+                    'relationName' => 'loan.fund'
                 ]
             ],
             'setAppends'=> [

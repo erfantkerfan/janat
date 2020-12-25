@@ -11,28 +11,26 @@
                 <md-card-content>
                     <div class="md-layout">
                         <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    نام وام
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.name" />
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    مبلغ وام
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.loan_amount" />
-                                    </md-field>
-                                </div>
-                            </div>
+                            <md-field>
+                                <label>وام:</label>
+                                <md-select v-model="filterData.loan_id" name="pages">
+                                    <md-option
+                                        v-for="item in loans.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        <div>
+                                            صندوق:
+                                            {{ item.fund.name }}
+                                        </div>
+                                        <div>
+                                            وام:
+                                            {{ item.name }}
+                                        </div>
+                                    </md-option>
+                                </md-select>
+                            </md-field>
                         </div>
                         <div class="md-layout-item">
                             <md-field>
@@ -54,6 +52,18 @@
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
+                                    مبلغ وام
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.loan_amount" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-20 md-form-label">
                                     مبلغ هر قسط
                                 </label>
                                 <div class="md-layout-item">
@@ -72,6 +82,38 @@
                                     <md-field class="md-invalid">
                                         <md-input v-model="filterData.number_of_installments" />
                                     </md-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    از تاریخ
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="filterData.createdSinceDate"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    تا تاریخ
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="filterData.createdTillDate"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
                                 </div>
                             </div>
                         </div>
@@ -206,15 +248,19 @@
                 },
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
-                name: null,
                 loan_amount: null,
                 installment_rate: null,
                 number_of_installments: null,
-                fund_id: null
+                fund_id: null,
+                loan_id: null,
+                createdSinceDate: null,
+                createdTillDate: null
             }
         }),
         mounted() {
             this.getList()
+            this.getFunds()
+            this.getLoans()
         },
         methods: {
             clickCallback (data) {
@@ -231,10 +277,12 @@
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
-                    name: this.filterData.name,
+                    loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null: this.filterData.loan_id,
                     loan_amount: this.filterData.loan_amount,
                     installment_rate: this.filterData.installment_rate,
-                    number_of_installments: this.filterData.number_of_installments
+                    number_of_installments: this.filterData.number_of_installments,
+                    createdSinceDate: this.filterData.createdSinceDate,
+                    createdTillDate: this.filterData.createdTillDate
                 })
                     .then((response) => {
                         this.allocatedLoans.loading = false

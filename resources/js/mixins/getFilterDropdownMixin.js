@@ -1,6 +1,7 @@
 import { Fund, FundList } from '@/models/Fund';
 import { Company, CompanyList } from '@/models/Company';
 import { UserStatus, UserStatusList } from '@/models/UserStatus';
+import { Loan, LoanList } from '@/models/Loan';
 
 export default {
   data() {
@@ -8,6 +9,7 @@ export default {
         funds: new FundList(),
         companies: new CompanyList(),
         userStatuses: new UserStatusList(),
+        loans: new LoanList()
     };
   },
   methods: {
@@ -67,6 +69,26 @@ export default {
                   console.log('error: ', error)
                   that.funds.loading = false;
                   that.funds = new FundList()
+              })
+      },
+      getLoans () {
+          let that = this
+          this.loans.loading = true
+          this.loans.fetch()
+              .then((response) => {
+                  that.loans.loading = false
+                  that.loans = new LoanList(response.data.data, response.data)
+                  this.loans.addItem(new Loan({id: 0, name: ''}))
+              })
+              .catch((error) => {
+                  this.$store.dispatch('alerts/fire', {
+                      icon: 'error',
+                      title: 'توجه',
+                      message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                  });
+                  console.log('error: ', error)
+                  that.loans.loading = false
+                  that.loans = new LoanList()
               })
       },
   }
