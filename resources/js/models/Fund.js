@@ -9,6 +9,7 @@ class Fund extends Model {
             },
             { key: 'id' },
             { key: 'name' },
+            { key: 'balance' },
             { key: 'monthly_payment' },
             { key: 'created_at' },
             { key: 'updated_at' }

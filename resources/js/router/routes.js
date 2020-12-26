@@ -278,7 +278,7 @@ let transactionMenu = {
         {
             path: ":id",
             name: "Transaction.Show",
-            components: {default: AllocatedLoanForm},
+            components: {default: TransactionForm},
             meta: {
                 rtlActive: true,
                 displayName: "اطلاعات تراکنش",

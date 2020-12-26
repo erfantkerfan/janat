@@ -68,7 +68,7 @@
                             <md-table-cell md-label="نام شرکت" md-sort-by="name">
                                 {{item.name}}
                             </md-table-cell>
-                            <md-table-cell md-label="نام صندوق">
+                            <md-table-cell md-label="نام صندوق" md-sort-by="fund.name">
                                 {{item.fund.name}}
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">

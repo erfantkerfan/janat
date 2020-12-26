@@ -159,10 +159,10 @@
                                 {{item.account.user.l_name}}
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
-                                {{item.loan_amount}}
+                                {{item.loan_amount | currencyFormat}}
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
-                                {{item.installment_rate}}
+                                {{item.installment_rate | currencyFormat}}
                             </md-table-cell>
                             <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
                                 {{item.number_of_installments}}
@@ -227,6 +227,7 @@
 
     import Pagination from "@/components/Pagination";
     import {AllocatedLoanList} from '@/models/AllocatedLoan';
+    import priceFilterMixin from "@/mixins/priceFilterMixin"
     import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
 
     export default {
@@ -235,7 +236,7 @@
                 this.getList()
             }
         },
-        mixins: [getFilterDropdownMixin],
+        mixins: [getFilterDropdownMixin, priceFilterMixin],
         components: {
             "pagination": Pagination
         },

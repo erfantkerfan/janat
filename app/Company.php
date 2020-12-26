@@ -10,6 +10,16 @@ class Company extends Model
 {
     use SoftDeletes, PowerJoins;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'fund_id'
+    ];
+
     public function fund()
     {
         return $this->belongsTo(Fund::class);

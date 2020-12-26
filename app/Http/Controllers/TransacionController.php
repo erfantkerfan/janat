@@ -90,7 +90,12 @@ class TransacionController extends Controller
      */
     public function show($id)
     {
-        $data = Transaction::with('transactionStatus', 'userPayers:id,f_name,l_name', 'companyPayers', 'fundPayers', 'fundRecipients', 'allocatedLoanRecipients', 'allocatedLoanInstallmentRecipients')->find($id);
+        $data = Transaction::with([
+            'transactionStatus',
+            'userPayers:id,f_name,l_name',
+            'relatedPayers.transactionPayers',
+            'relatedRecipients.transactionRecipients'
+        ])->find($id);
         return $this->jsonResponseOk($data);
     }
 

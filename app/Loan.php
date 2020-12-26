@@ -31,6 +31,11 @@ class Loan extends Model
         return $this->belongsTo(Fund::class);
     }
 
+    public function loanType()
+    {
+        return $this->belongsTo(LoanType::class);
+    }
+
     public function allocatedLoans()
     {
         return $this->hasMany(AllocatedLoan::class);

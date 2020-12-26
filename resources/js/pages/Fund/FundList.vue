@@ -109,6 +109,9 @@
                             <md-table-cell md-label="پرداخت ماهیانه" md-sort-by="monthly_payment">
                                 {{item.monthly_payment}}
                             </md-table-cell>
+                            <md-table-cell md-label="موجودی" md-sort-by="balance">
+                                {{item.balance | currencyFormat}}
+                            </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
                                 {{item.shamsiDate('created_at').dateTime}}
                             </md-table-cell>
@@ -164,7 +167,8 @@
 
 <script>
     import {FundList} from '@/models/Fund';
-    import Pagination from "@/components/Pagination";
+    import Pagination from "@/components/Pagination"
+    import priceFilterMixin from "@/mixins/priceFilterMixin"
 
     export default {
         watch: {
@@ -172,6 +176,7 @@
                 this.getList()
             }
         },
+        mixins: [priceFilterMixin],
         components: {
             "pagination": Pagination
         },

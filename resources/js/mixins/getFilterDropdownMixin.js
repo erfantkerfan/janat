@@ -3,11 +3,13 @@ import { Loan, LoanList } from '@/models/Loan';
 import { Company, CompanyList } from '@/models/Company';
 import { TransactionStatus, TransactionStatusList } from '@/models/TransactionStatus';
 import { UserStatus, UserStatusList } from '@/models/UserStatus';
+import {LoanType, LoanTypeList} from "@/models/LoanType";
 
 export default {
   data() {
     return {
         loans: new LoanList(),
+        loanTypes: new LoanTypeList(),
         funds: new FundList(),
         companies: new CompanyList(),
         userStatuses: new UserStatusList(),
@@ -110,6 +112,26 @@ export default {
                   console.log('error: ', error)
                   that.loans.loading = false
                   that.loans = new LoanList()
+              })
+      },
+      getLoanTypes () {
+          let that = this
+          this.loanTypes.loading = true
+          this.loanTypes.fetch()
+              .then((response) => {
+                  that.loanTypes.loading = false
+                  that.loanTypes = new LoanTypeList(response.data.data, response.data)
+                  this.loanTypes.addItem(new LoanType({id: 0, name: ''}))
+              })
+              .catch((error) => {
+                  this.$store.dispatch('alerts/fire', {
+                      icon: 'error',
+                      title: 'توجه',
+                      message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                  });
+                  console.log('error: ', error)
+                  that.loanTypes.loading = false
+                  that.loanTypes = new LoanTypeList()
               })
       },
   }

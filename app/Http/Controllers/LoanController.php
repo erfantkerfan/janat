@@ -23,11 +23,14 @@ class LoanController extends Controller
     {
         $config = [
             'eagerLoads'=> [
-                'fund'
+                'fund',
+                'loanType'
             ],
             'filterKeys'=> [
                 'name',
                 'loan_amount',
+                'interest_rate',
+                'interest_amount',
                 'installment_rate',
                 'number_of_installments',
             ],
@@ -35,6 +38,10 @@ class LoanController extends Controller
                 [
                     'requestKey'=> 'fund_id',
                     'relationName'=> 'fund'
+                ],
+                [
+                    'requestKey'=> 'loan_type_id',
+                    'relationName'=> 'loanType'
                 ]
             ]
         ];
@@ -61,7 +68,7 @@ class LoanController extends Controller
      */
     public function show($id)
     {
-        $fund = Loan::with(['fund'])->find($id);
+        $fund = Loan::with(['fund', 'loanType'])->find($id);
         return $this->jsonResponseOk($fund);
     }
 
@@ -74,15 +81,6 @@ class LoanController extends Controller
      */
     public function update(Request $request, Loan $loan)
     {
-//        $loan->fill($request->all());
-//
-//        dd($loan);
-//        if ($loan->save()) {
-//            return $this->show($loan->id);
-//        } else {
-//            return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
-//        }
-
         return $this->commonUpdate($request, $loan);
     }
 

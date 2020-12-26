@@ -173,7 +173,7 @@
                                 </div>
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ" md-sort-by="cost">
-                                {{item.cost}}
+                                {{item.cost | currencyFormat}}
                             </md-table-cell>
                             <md-table-cell md-label="وضعیت" md-sort-by="parent_transaction_id">
                                 {{item.transaction_status.display_name}}
@@ -242,6 +242,7 @@
     import Pagination from "@/components/Pagination";
     import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
     import {TransactionList} from "@/models/Transaction";
+    import priceFilterMixin from "@/mixins/priceFilterMixin";
 
     export default {
         watch: {
@@ -249,7 +250,7 @@
                 this.getList()
             }
         },
-        mixins: [getFilterDropdownMixin],
+        mixins: [getFilterDropdownMixin, priceFilterMixin],
         components: {
             "pagination": Pagination
         },
