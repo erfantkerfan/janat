@@ -30,9 +30,24 @@
 
                 <sidebar-item
                     :link="{
+                        name: 'مدیریت کاربران',
+                        icon: 'groups',
+                        path: '/user/list',
+                      }"
+                />
+
+                <sidebar-item
+                    :link="{
                         name: 'صندوق ها',
-                        icon: 'savings',
+                        icon: 'account_balance',
                         path: '/fund/list',
+                      }"
+                />
+                <sidebar-item
+                    :link="{
+                        name: 'وام های تخصیص داده شده',
+                        icon: 'attach_money',
+                        path: '/allocated_loan/list',
                       }"
                 />
                 <sidebar-item
@@ -45,12 +60,20 @@
                 <sidebar-item
                     :link="{
                         name: 'شرکت ها',
-                        icon: 'business_center',
+                        icon: 'store_mall_directory',
                         path: '/company/list',
+                      }"
+                />
+                <sidebar-item
+                    :link="{
+                        name: 'تراکنش ها',
+                        icon: 'payments',
+                        path: '/transactions/list',
                       }"
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{
             name: 'Table Lists',
             icon: 'content_paste',
@@ -59,6 +82,7 @@
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{
             name: 'Typography',
             icon: 'library_books',
@@ -67,6 +91,7 @@
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{
             name: 'Icons',
             icon: 'bubble_chart',
@@ -75,10 +100,12 @@
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{ name: 'Maps', icon: 'place', path: '/components/maps' }"
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{
             name: 'Notifications',
             icon: 'notifications',
@@ -87,6 +114,7 @@
                 />
 
                 <sidebar-item
+                    v-if="false"
                     :link="{
             name: 'RTL Support',
             icon: 'language',

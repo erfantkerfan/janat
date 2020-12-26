@@ -23,16 +23,19 @@
                             </div>
                         </div>
                         <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    مبلغ وام
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.loan_amount" />
-                                    </md-field>
-                                </div>
-                            </div>
+                            <md-field>
+                                <label>نوع وام:</label>
+                                <md-select v-model="filterData.loan_type_id" name="pages">
+                                    <md-option
+                                        v-for="item in loanTypes.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.display_name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
                         </div>
                         <div class="md-layout-item">
                             <md-field>
@@ -53,7 +56,19 @@
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
+                                <label class="md-layout-item md-size-25 md-form-label">
+                                    مبلغ وام
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.loan_amount" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-35 md-form-label">
                                     مبلغ هر قسط
                                 </label>
                                 <div class="md-layout-item">
@@ -65,7 +80,7 @@
                         </div>
                         <div class="md-layout-item">
                             <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
+                                <label class="md-layout-item md-size-35 md-form-label">
                                     تعداد اقساط
                                 </label>
                                 <div class="md-layout-item">
@@ -87,6 +102,9 @@
 
                     <md-table
                         :value="loans.list"
+                        :md-sort.sync="filterData.sortation.field"
+                        :md-sort-order.sync="filterData.sortation.order"
+                        :md-sort-fn="customSort"
                         class="paginated-table table-striped table-hover"
                     >
                         <md-table-toolbar>
@@ -108,20 +126,32 @@
                                 </md-select>
                             </md-field>
                         </md-table-toolbar>
-                        <md-table-row v-if="!loans.loading && loans.list.length > 0" slot="md-table-row" slot-scope="{ item }">
+                        <md-table-row v-if="!loans.loading && loans.list.length > 0"
+                                      slot="md-table-row"
+                                      slot-scope="{ item }"
+                        >
                             <md-table-cell md-label="نام وام" md-sort-by="name">
                                 {{item.name}}
                             </md-table-cell>
-                            <md-table-cell md-label="مبلغ وام" md-sort-by="name">
-                                {{item.loan_amount}}
+                            <md-table-cell md-label="نوع وام" md-sort-by="loanType.display_name">
+                                {{item.loan_type.display_name}}
                             </md-table-cell>
-                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="name">
-                                {{item.installment_rate}}
+                            <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
+                                {{item.loan_amount | currencyFormat}}
                             </md-table-cell>
-                            <md-table-cell md-label="تعداد اقساط" md-sort-by="name">
+                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
+                                {{item.installment_rate | currencyFormat}}
+                            </md-table-cell>
+                            <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
                                 {{item.number_of_installments}}
                             </md-table-cell>
-                            <md-table-cell md-label="نام صندوق" md-sort-by="email">
+                            <md-table-cell md-label="نرخ بهره" md-sort-by="interest_rate">
+                                {{item.interest_rate}}
+                            </md-table-cell>
+                            <md-table-cell md-label="مقدار بهره" md-sort-by="interest_amount">
+                                {{item.interest_amount}}
+                            </md-table-cell>
+                            <md-table-cell md-label="نام صندوق" md-sort-by="fund.name">
                                 {{item.fund.name}}
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
@@ -179,7 +209,8 @@
 
 <script>
 
-    import {Fund, FundList} from '@/models/Fund';
+    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
+    import priceFilterMixin from "@/mixins/priceFilterMixin"
     import {LoanList} from '@/models/Loan';
     import Pagination from "@/components/Pagination";
 
@@ -189,25 +220,31 @@
                 this.getList()
             }
         },
+        mixins: [getFilterDropdownMixin, priceFilterMixin],
         components: {
             "pagination": Pagination
         },
         data: () => ({
             loans: new LoanList(),
-            funds: new FundList(),
             filterData: {
+                sortation: {
+                    field: "created_at",
+                    order: "asc"
+                },
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 name: null,
                 loan_amount: null,
                 installment_rate: null,
                 number_of_installments: null,
-                fund_id: null
+                fund_id: null,
+                loan_type_id: null
             }
         }),
         mounted() {
             this.getList()
-            this.getfunds()
+            this.getFunds()
+            this.getLoanTypes()
         },
         methods: {
             clickCallback (data) {
@@ -220,8 +257,11 @@
                 this.loans.loading = true;
                 this.loans.fetch({
                     page,
+                    sortation_field: this.filterData.sortation.field,
+                    sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
+                    loan_type_id: (this.filterData.loan_type_id === null || this.filterData.loan_type_id === 0) ? null: this.filterData.loan_type_id,
                     name: this.filterData.name,
                     loan_amount: this.filterData.loan_amount,
                     installment_rate: this.filterData.installment_rate,
@@ -240,26 +280,6 @@
                         console.log('error: ', error)
                         this.loans.loading = false
                         this.loans = new LoanList()
-                    })
-            },
-            getfunds () {
-                let that = this
-                this.funds.loading = true;
-                this.funds.fetch()
-                    .then((response) => {
-                        that.funds.loading = false;
-                        that.funds = new FundList(response.data.data, response.data)
-                        this.funds.addItem(new Fund({id: 0, name: ''}))
-                    })
-                    .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
-                        that.funds.loading = false;
-                        that.funds = new FundList()
                     })
             },
             confirmRemove(item) {
@@ -301,14 +321,10 @@
                         item.loading = false
                     });
             },
-            onProFeature() {
-                this.$store.dispatch("alerts/error", "This is a PRO feature.")
-            },
-
-            // customSort() {
-            //     return false
-            // }
-
+            customSort() {
+                this.getList()
+                return false;
+            }
         }
 
     }

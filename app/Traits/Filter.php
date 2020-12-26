@@ -9,7 +9,12 @@ use Illuminate\Http\Response;
 
 trait Filter
 {
-    private function filterByRelationId(Request $request, $requestKey, $relationName, & $modelQuery) {
+    private function filterByRelationId(Request $request, $filterData, & $modelQuery) {
+        $requestKey = $filterData['requestKey'];
+        $relationName = (isset($filterData['relationName'])) ? $filterData['relationName'] : null;
+        $relationNames = (isset($filterData['relationNames'])) ? $filterData['relationNames'] : null;
+        $orWhereHas = (isset($filterData['orWhereHas'])) ? $filterData['orWhereHas'] : false;
+
         $relationIds = $request->get($requestKey);
         if (!isset($relationIds)) {
             return;
@@ -17,11 +22,39 @@ trait Filter
         if (is_array($relationIds) && count($relationIds) === 0) {
             return;
         }
+        if ($orWhereHas && is_array($relationNames) && count($relationNames) === 0) {
+            return;
+        }
+
+        if (!is_array($relationNames)) {
+            $relationNames = [$relationNames];
+        }
         if (!is_array($relationIds)) {
             $relationIds = [$relationIds];
         }
-        $modelQuery->whereHas($relationName, function (Builder $query) use ($relationIds) {
-            $query->whereIn('id', $relationIds);
+
+        if ($orWhereHas) {
+            foreach ($relationNames as $relationNameItem) {
+                $modelQuery->orWhereHas($relationNameItem, function (Builder $query) use ($relationIds) {
+                    $tableName = with($query)->getModel()->getTable();
+                    $query->whereIn($tableName.'.id', $relationIds);
+                });
+            }
+        } else {
+            $modelQuery->whereHas($relationName, function (Builder $query) use ($relationIds) {
+                $tableName = with($query)->getModel()->getTable();
+                $query->whereIn($tableName.'.id', $relationIds);
+            });
+        }
+    }
+
+    private function filterByRelationKey(Request $request, $requestKey, $relationName, $relationColumn, & $modelQuery) {
+        $name = $request->get($requestKey);
+        if (!isset($name)) {
+            return;
+        }
+        $modelQuery->whereHas($relationName, function (Builder $query) use ($name, $relationColumn) {
+            $query->where($relationColumn, 'like', '%' . $name . '%');
         });
     }
 
@@ -38,15 +71,13 @@ trait Filter
         if (strlen($createdSinceDate) > 0 && strlen($createdTillDate) > 0) {
             $createdSinceDate = Carbon::parse($createdSinceDate)->format('Y-m-d') . ' 00:00:00';
             $createdTillDate  = Carbon::parse($createdTillDate)->format('Y-m-d') . ' 23:59:59';
-            $modelQuery       = $modelQuery->whereBetween('created_at', [$createdSinceDate, $createdTillDate])->orderBy('created_at', 'Desc');
+            $modelQuery       = $modelQuery->whereBetween('created_at', [$createdSinceDate, $createdTillDate]);
         } else if (strlen($createdSinceDate) > 0) {
             $createdSinceDate = Carbon::parse($createdSinceDate)->format('Y-m-d') . ' 00:00:00';
-            $modelQuery       = $modelQuery->whereDate('created_at', '>=', $createdSinceDate)->orderBy('created_at', 'Desc');
+            $modelQuery       = $modelQuery->whereDate('created_at', '>=', $createdSinceDate);
         } else if (strlen($createdTillDate) > 0) {
             $createdTillDate  = Carbon::parse($createdTillDate)->format('Y-m-d') . ' 23:59:59';
-            $modelQuery       = $modelQuery->whereDate('created_at', '<=', $createdTillDate)->orderBy('created_at', 'Desc');
-        } else {
-            $modelQuery = $modelQuery->orderBy('created_at', 'Desc');
+            $modelQuery       = $modelQuery->whereDate('created_at', '<=', $createdTillDate);
         }
     }
 

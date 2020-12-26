@@ -11,8 +11,7 @@ use Illuminate\Http\Response;
 
 class CompanyController extends Controller
 {
-    use Filter;
-    use CommonCRUD;
+    use Filter, CommonCRUD;
 
     /**
      * Display a listing of the resource.
@@ -22,14 +21,22 @@ class CompanyController extends Controller
      */
     public function index(Request $request)
     {
-        $filterKeys = ['name'];
-        $filterRelationKeys = [
-            [
-                'requestKey'=> 'fund_id',
-                'relationName'=> 'fund'
+        $config = [
+            'eagerLoads'=> [
+                'fund'
+            ],
+            'filterKeys'=> [
+                'name'
+            ],
+            'filterRelationIds'=> [
+                [
+                    'requestKey'=> 'fund_id',
+                    'relationName'=> 'fund'
+                ]
             ]
         ];
-        return $this->commonIndex($request, Company::with('fund'), $filterKeys, $filterRelationKeys);
+
+        return $this->commonIndex($request, Company::class, $config);
     }
 
     /**
@@ -51,8 +58,8 @@ class CompanyController extends Controller
      */
     public function show($id)
     {
-        $fund = Company::with(['fund'])->find($id);
-        return $this->jsonResponseOk($fund);
+        $company = Company::with(['fund'])->find($id);
+        return $this->jsonResponseOk($company);
     }
 
     /**

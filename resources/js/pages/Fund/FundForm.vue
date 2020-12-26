@@ -3,9 +3,9 @@
         <div class="md-layout-item md-size-60 md-small-size-100">
             <div class="md-layout-item md-size-100">
                 <md-card>
-                    <md-card-header class="md-card-header-icon">
+                    <md-card-header class="md-card-header-icon md-card-header-green">
                         <div class="card-icon">
-                            <md-icon>savings</md-icon>
+                            <md-icon>account_balance</md-icon>
                         </div>
                         <h4 class="title">
                             ویرایش اطلاعات
@@ -60,7 +60,7 @@
         </div>
         <div class="md-layout-item md-size-40 md-small-size-100">
             <md-card>
-                <md-card-header class="md-card-header-icon">
+                <md-card-header class="md-card-header-icon md-card-header-blue">
                     <div class="card-icon">
                         <md-icon>monetization_on</md-icon>
                     </div>
@@ -91,7 +91,7 @@
                                 <md-button
                                     class="md-icon-button md-raised md-round md-info"
                                     style="margin: .2rem;"
-                                    @click="showDialog(item)"
+                                    :to="'/loan/'+item.id"
                                 >
                                     <md-icon>edit</md-icon>
                                 </md-button>
@@ -110,7 +110,7 @@
 
                         <md-dialog-content>
                             <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
+                                <label class="md-layout-item md-size-35 md-form-label">
                                     نام وام
                                 </label>
                                 <div class="md-layout-item">
@@ -120,7 +120,22 @@
                                 </div>
                             </div>
                             <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
+                                <md-field>
+                                    <label>نوع وام</label>
+                                    <md-select v-model="loan.loan_type.id" name="pages">
+                                        <md-option
+                                            v-for="item in loanTypes.list"
+                                            :key="item.id"
+                                            :label="item.name"
+                                            :value="item.id"
+                                        >
+                                            {{ item.display_name }}
+                                        </md-option>
+                                    </md-select>
+                                </md-field>
+                            </div>
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-35 md-form-label">
                                     مقدار وام
                                 </label>
                                 <div class="md-layout-item">
@@ -130,7 +145,7 @@
                                 </div>
                             </div>
                             <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
+                                <label class="md-layout-item md-size-35 md-form-label">
                                     مبلغ هر قسط
                                 </label>
                                 <div class="md-layout-item">
@@ -140,7 +155,7 @@
                                 </div>
                             </div>
                             <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
+                                <label class="md-layout-item md-size-35 md-form-label">
                                     تعداد اقساط
                                 </label>
                                 <div class="md-layout-item">
@@ -177,9 +192,11 @@
 <script>
     import {Fund} from '@/models/Fund';
     import {Loan, LoanList} from '@/models/Loan';
+    import getFilterDropdownMixin from "@/mixins/getFilterDropdownMixin";
 
     export default {
         name: "fund-form",
+        mixins: [getFilterDropdownMixin],
         data: () => ({
             fund: new Fund(),
             loan: new Loan(),
@@ -190,8 +207,12 @@
         mounted() {
             this.getData()
             this.getLoans()
+            this.getLoanTypes()
         },
         methods: {
+            isCreateForm () {
+                return (this.$route.name === 'Fund.Create')
+            },
             showDialog (item) {
                 this.loan = new Loan(item)
                 this.editLoanState = false
@@ -203,7 +224,7 @@
             createNewLoan () {
                 let that = this
                 this.loan.loading = true
-                this.loan.fund_id = this.$route.params.id
+                this.loan.fund.id = this.$route.params.id
                 this.loan.create()
                     .then((response) => {
                         that.$store.dispatch('alerts/fire', {
@@ -290,11 +311,8 @@
                         item.loading = false;
                     });
             },
-            isCreateForm () {
-                return (this.$route.name === 'Create')
-            },
             getData () {
-                if (this.$route.name === 'Create') {
+                if (this.isCreateForm()) {
                     return false
                 }
                 this.fund.loading = true;

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Account;
-use App\Traits\CommonResource;
+use App\Traits\CommonCRUD;
 use App\Traits\Filter;
 use Exception;
 use Illuminate\Http\Request;
@@ -11,8 +11,7 @@ use Illuminate\Http\Response;
 
 class AccountController extends Controller
 {
-    use Filter;
-    use CommonResource;
+    use Filter, CommonCRUD;
 
     /**
      * Display a listing of the resource.
@@ -22,8 +21,13 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        $filterKeys = [];
-        return $this->commonIndex($request, Account::query(), $filterKeys, []);
+        $config = [
+            'eagerLoads'=> [
+                'user:id,f_name,l_name', 'fund', 'allocatedLoans'
+            ]
+        ];
+
+        return $this->commonIndex($request, Account::class, $config);
     }
 
     /**

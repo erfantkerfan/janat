@@ -2,36 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\CommonCRUD;
 use App\UserStatus;
 use App\Traits\Filter;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class UserStatusController extends Controller
 {
-    use Filter;
+    use Filter, CommonCRUD;
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function index(Request $request)
     {
-        $modelQuery = UserStatus::query();
-        $this->filterByDate($request, $modelQuery);
+        $config = [
+            'filterKeys'=> [
+                'name'
+            ]
+        ];
 
-        $filterKeys = ['name'];
-
-        foreach ($filterKeys as $item) {
-            $this->filterByKey($request, $item, $modelQuery);
-        }
-
-        return $this->jsonResponseOk($modelQuery->get());
+        return $this->commonIndex($request, UserStatus::class, $config);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -42,7 +43,7 @@ class UserStatusController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -53,7 +54,7 @@ class UserStatusController extends Controller
      * Display the specified resource.
      *
      * @param  \App\UserStatus  $userStatus
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(UserStatus $userStatus)
     {
@@ -64,7 +65,7 @@ class UserStatusController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\UserStatus  $userStatus
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(UserStatus $userStatus)
     {
@@ -76,7 +77,7 @@ class UserStatusController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\UserStatus  $userStatus
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, UserStatus $userStatus)
     {
@@ -87,7 +88,7 @@ class UserStatusController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\UserStatus  $userStatus
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(UserStatus $userStatus)
     {

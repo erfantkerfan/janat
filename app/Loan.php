@@ -4,10 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kirschbaum\PowerJoins\PowerJoins;
 
 class Loan extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, PowerJoins;
 
     /**
      * The attributes that are mass assignable.
@@ -17,14 +18,22 @@ class Loan extends Model
     protected $fillable = [
         'name',
         'loan_amount',
+        'interest_rate',
+        'interest_amount',
         'installment_rate',
         'number_of_installments',
-        'fund_id'
+        'fund_id',
+        'loan_type_id'
     ];
 
     public function fund()
     {
         return $this->belongsTo(Fund::class);
+    }
+
+    public function loanType()
+    {
+        return $this->belongsTo(LoanType::class);
     }
 
     public function allocatedLoans()

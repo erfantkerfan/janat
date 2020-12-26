@@ -18,9 +18,10 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('f_name')->nullable()->comment('نام');
             $table->string('l_name')->nullable()->comment('نام خانوادگی');
+            $table->string('father_name')->nullable()->comment('نام پدر');
             $table->string('SSN')->unique()->comment('کد ملی');
+            $table->string('staff_code')->nullable()->unique()->comment('کد پرسنلی');
             $table->string('password')->comment('کلمه عبور');
-            $table->string('staff_code')->nullable();
             $table->integer('salary')->default(0)->comment('حقوق ماهانه');
             $table->string('address')->nullable()->comment('آدرس');
             $table->string('phone')->nullable()->comment('تلفن ثابت');
@@ -30,6 +31,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->bigInteger('company_id')->nullable()->unsigned()->comment('کد شرکت کاربر');
             $table->tinyInteger('status_id')->unsigned()->comment('وضعیت');
+            $table->tinyInteger('user_type_id')->nullable()->unsigned()->comment('نوع');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
@@ -37,6 +39,11 @@ class CreateUsersTable extends Migration
             $table->foreign('company_id')
                 ->references('id')
                 ->on('companies')
+                ->onDelete('cascade')
+                ->onupdate('cascade');
+            $table->foreign('user_type_id')
+                ->references('id')
+                ->on('user_types')
                 ->onDelete('cascade')
                 ->onupdate('cascade');
             $table->foreign('status_id')

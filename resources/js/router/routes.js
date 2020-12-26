@@ -3,11 +3,18 @@ import AuthLayout from "@/pages/Dashboard/Pages/AuthLayout.vue";
 
 // Dashboard pages
 import Dashboard from "@/pages/Dashboard/Dashboard.vue";
+
 // Profile
 import UserProfile from "@/pages/User/UserProfile/UserProfile.vue";
 
 // User Management
 import ListUserPage from "@/pages/User/list/ListUserPage.vue";
+
+// Company List
+import CompanyList from "@/pages/Company/List.vue";
+
+// Company Management
+import CompanyForm from "@/pages/Company/Form.vue";
 
 // Fund List
 import FundList from "@/pages/Fund/FundList.vue";
@@ -18,14 +25,20 @@ import FundForm from "@/pages/Fund/FundForm.vue";
 // Loan List
 import LoanList from "@/pages/Loan/List.vue";
 
-// Fund Management
+// Loan Management
 import LoanForm from "@/pages/Loan/Form.vue";
 
-// Company List
-import CompanyList from "@/pages/Company/List.vue";
+// AllocatedLoan List
+import AllocatedLoanList from "@/pages/AllocatedLoan/List.vue";
 
-// Fund Management
-import CompanyForm from "@/pages/Company/Form.vue";
+// AllocatedLoan Management
+import AllocatedLoanForm from "@/pages/AllocatedLoan/Form.vue";
+
+// Transaction List
+import TransactionList from "@/pages/Transaction/List.vue";
+
+// Transaction Management
+import TransactionForm from "@/pages/Transaction/Form.vue";
 
 // Pages
 import RtlSupport from "@/pages/Dashboard/Pages/RtlSupport.vue";
@@ -47,38 +60,38 @@ import FullScreenMap from "@/pages/Dashboard/Maps/FullScreenMap.vue";
 import auth from "@/middleware/auth";
 import guest from "@/middleware/guest";
 
-let loansMenu = {
-    path: "/loan",
-    name: "Loan",
+let userMenu = {
+    path: "/user",
     component: DashboardLayout,
+    name: "User",
     children: [
         {
             path: "list",
-            name: "List",
-            components: {default: LoanList},
+            name: "User.List",
+            components: {default: ListUserPage},
             meta: {
                 rtlActive: true,
-                displayName: "لیست وام ها",
+                displayName: "لیست کاربران",
                 middleware: auth
             }
         },
         {
             path: "create",
-            name: "Create",
-            components: {default: LoanForm},
+            name: "User.Create",
+            components: {default: UserProfile},
             meta: {
                 rtlActive: true,
-                displayName: "ساخت وام جدید",
+                displayName: "ساخت کاربر جدید",
                 middleware: auth
             }
         },
         {
             path: ":id",
-            name: "Show",
-            components: {default: LoanForm},
+            name: "User.Show",
+            components: {default: UserProfile},
             meta: {
                 rtlActive: true,
-                displayName: "اطلاعات وام",
+                displayName: "اطلاعات کاربر",
                 middleware: auth
             }
         }
@@ -92,7 +105,7 @@ let companiesMenu = {
     children: [
         {
             path: "list",
-            name: "List",
+            name: "Company.List",
             components: {default: CompanyList},
             meta: {
                 rtlActive: true,
@@ -102,7 +115,7 @@ let companiesMenu = {
         },
         {
             path: "create",
-            name: "Create",
+            name: "Company.Create",
             components: {default: CompanyForm},
             meta: {
                 rtlActive: true,
@@ -112,7 +125,7 @@ let companiesMenu = {
         },
         {
             path: ":id",
-            name: "Show",
+            name: "Company.Show",
             components: {default: CompanyForm},
             meta: {
                 rtlActive: true,
@@ -130,7 +143,7 @@ let fundsMenu = {
     children: [
         {
             path: "list",
-            name: "List",
+            name: "Fund.List",
             components: {default: FundList},
             meta: {
                 rtlActive: true,
@@ -140,7 +153,7 @@ let fundsMenu = {
         },
         {
             path: "create",
-            name: "Create",
+            name: "Fund.Create",
             components: {default: FundForm},
             meta: {
                 rtlActive: true,
@@ -150,7 +163,7 @@ let fundsMenu = {
         },
         {
             path: ":id",
-            name: "Show",
+            name: "Fund.Show",
             components: {default: FundForm},
             meta: {
                 rtlActive: true,
@@ -160,6 +173,123 @@ let fundsMenu = {
         }
     ]
 };
+
+let loansMenu = {
+    path: "/loan",
+    name: "Loan",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "list",
+            name: "Loan.List",
+            components: {default: LoanList},
+            meta: {
+                rtlActive: true,
+                displayName: "لیست وام ها",
+                middleware: auth
+            }
+        },
+        {
+            path: "create",
+            name: "Loan.Create",
+            components: {default: LoanForm},
+            meta: {
+                rtlActive: true,
+                displayName: "ساخت وام جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":id",
+            name: "Loan.Show",
+            components: {default: LoanForm},
+            meta: {
+                rtlActive: true,
+                displayName: "اطلاعات وام",
+                middleware: auth
+            }
+        }
+    ]
+};
+
+let allocatedLoansMenu = {
+    path: "/allocated_loan",
+    name: "AllocatedLoan",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "list",
+            name: "AllocatedLoan.List",
+            components: {default: AllocatedLoanList},
+            meta: {
+                rtlActive: true,
+                displayName: "لیست وام های تخصیص داده شده",
+                middleware: auth
+            }
+        },
+        {
+            path: "create",
+            name: "AllocatedLoan.Create",
+            components: {default: AllocatedLoanForm},
+            meta: {
+                rtlActive: true,
+                displayName: "تخصیص وام جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":id",
+            name: "AllocatedLoan.Show",
+            components: {default: AllocatedLoanForm},
+            meta: {
+                rtlActive: true,
+                displayName: "اطلاعات وام تخصیص داده شده",
+                middleware: auth
+            }
+        }
+    ]
+};
+
+let transactionMenu = {
+    path: "/transactions",
+    name: "Transaction",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "list",
+            name: "Transaction.List",
+            components: {default: TransactionList},
+            meta: {
+                rtlActive: true,
+                displayName: "لیست تراکنش ها",
+                middleware: auth
+            }
+        },
+        {
+            path: "create",
+            name: "Transaction.Create",
+            components: {default: TransactionForm},
+            meta: {
+                rtlActive: true,
+                displayName: "تعریف تراکنش جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":id",
+            name: "Transaction.Show",
+            components: {default: TransactionForm},
+            meta: {
+                rtlActive: true,
+                displayName: "اطلاعات تراکنش",
+                middleware: auth
+            }
+        }
+    ]
+};
+
+
+
 
 let componentsMenu = {
     path: "/components",
@@ -227,43 +357,6 @@ let componentsMenu = {
     ]
 };
 
-let userMenu = {
-    path: "/user",
-    component: DashboardLayout,
-    name: "User",
-    children: [
-        {
-            path: "list",
-            name: "List",
-            components: {default: ListUserPage},
-            meta: {
-                rtlActive: true,
-                displayName: "لیست کاربران",
-                middleware: auth
-            }
-        },
-        {
-            path: "create",
-            name: "Create",
-            components: {default: UserProfile},
-            meta: {
-                rtlActive: true,
-                displayName: "ساخت کاربر جدید",
-                middleware: auth
-            }
-        },
-        {
-            path: ":id",
-            name: "Show",
-            components: {default: UserProfile},
-            meta: {
-                rtlActive: true,
-                displayName: "اطلاعات کاربر",
-                middleware: auth
-            }
-        }
-    ]
-};
 
 let authPages = {
     path: "/",
@@ -310,11 +403,13 @@ const routes = [
             }
         ]
     },
+    userMenu,
+    companiesMenu,
     fundsMenu,
     loansMenu,
-    companiesMenu,
+    allocatedLoansMenu,
+    transactionMenu,
     componentsMenu,
-    userMenu,
     authPages
 ];
 

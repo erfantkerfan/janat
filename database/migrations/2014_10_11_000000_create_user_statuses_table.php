@@ -16,7 +16,7 @@ class CreateUserStatusesTable extends Migration
         Schema::create('user_statuses', function (Blueprint $table) {
             $table->tinyIncrements('id');
             $table->string('name')->nullable()->comment('نام وضعیت');
-            $table->string('displayName')->nullable()->comment('نام قابل نمایش این وضعیت');
+            $table->string('display_name')->nullable()->comment('نام قابل نمایش این وضعیت');
             $table->longText('description')->nullable()->comment('توضیح درباره وضعیت');
             $table->timestamps();
             $table->softDeletes();

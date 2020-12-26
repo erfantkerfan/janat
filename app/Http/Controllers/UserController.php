@@ -14,8 +14,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 
 class UserController extends Controller
 {
-    use Filter;
-    use CommonCRUD;
+    use Filter, CommonCRUD;
 
     /**
      * Display a listing of the resource.
@@ -25,17 +24,28 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $filterKeys = [
-            'f_name',
-            'l_name',
-            'SSN',
-            'phone',
-            'mobile',
-            'company_id',
-            'status_id'
+        $config = [
+            'filterKeys'=> [
+                'f_name',
+                'l_name',
+                'SSN',
+                'phone',
+                'mobile',
+                'company_id',
+                'status_id'
+            ],
+            'filterRelationIds'=> [
+                [
+                    'requestKey' => 'fund_id',
+                    'relationName' => 'accounts.fund'
+                ]
+            ],
+            'select'=> [
+                'id', 'f_name','l_name','SSN', 'phone', 'mobile', 'created_at'
+            ]
         ];
-        $select = ['id', 'f_name','l_name','SSN', 'phone', 'mobile'];
-        return $this->commonIndex($request, User::query(), $filterKeys, [], $select);
+
+        return $this->commonIndex($request, User::class, $config);
     }
 
     /**
@@ -57,7 +67,34 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::with(['accounts.fund', 'company', 'status', 'roles'])->findOrFail($id)->makeHidden('user_pic');
+        $user = User::with([
+                'accounts.fund',
+                'accounts.allocatedLoans',
+                'accounts.allocatedLoans.installments',
+                'company',
+                'status',
+                'roles'
+            ])
+            ->findOrFail($id)
+            ->setAppends([
+                'count_of_allocated_loans',
+                'count_of_settled_allocated_loans'
+            ]);
+//            ->makeHidden('user_pic');
+
+
+        $user->accounts->map(function (& $account) {
+            return $account->allocatedLoans->map(function (& $allocatedLoan) {
+                return $allocatedLoan->setAppends([
+                    'is_settled',
+                    'total_payments',
+                    'remaining_payable_amount',
+                    'count_of_paid_installments',
+                    'count_of_remaining_installments'
+                ]);
+            });
+        });
+
         return $this->jsonResponseOk($user);
     }
 
@@ -69,9 +106,14 @@ class UserController extends Controller
      */
     public function getUserPic($id)
     {
-        $user = User::select('user_pic')->findOrFail($id);
+        $user = User::select('user_pic')->find($id);
+
+        if (isset($user)) {
+            $user->makeVisible('user_pic');
+        }
+
         $blobData = '';
-        if (strlen($user->user_pic) === 0) {
+        if (!isset($user) || strlen($user->user_pic) === 0) {
             $blobData = File::get(public_path('img/faces/sample-avatar.png'));
         } else {
             $blobData = $user->user_pic;
@@ -91,7 +133,7 @@ class UserController extends Controller
             return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
         }
 
-        $user = User::findOrFail($request->get('id'));
+        $user = User::findOrFail($request->get('id'))->makeVisible('user_pic');
         $user->user_pic = File::get($request->file('user_pic'));
 
         if ($user->save()) {

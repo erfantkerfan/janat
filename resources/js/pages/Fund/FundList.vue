@@ -35,6 +35,38 @@
                             </div>
                         </div>
                     </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    از تاریخ
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="filterData.createdSinceDate"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    تا تاریخ
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="filterData.createdTillDate"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <md-empty-state
                         v-if="!funds.loading && funds.list.length === 0"
@@ -46,6 +78,9 @@
 
                     <md-table
                         :value="funds.list"
+                        :md-sort.sync="filterData.sortation.field"
+                        :md-sort-order.sync="filterData.sortation.order"
+                        :md-sort-fn="customSort"
                         class="paginated-table table-striped table-hover"
                     >
                         <md-table-toolbar>
@@ -71,8 +106,11 @@
                             <md-table-cell md-label="نام صندوق" md-sort-by="name">
                                 {{item.name}}
                             </md-table-cell>
-                            <md-table-cell md-label="پرداخت ماهیانه" md-sort-by="email">
+                            <md-table-cell md-label="پرداخت ماهیانه" md-sort-by="monthly_payment">
                                 {{item.monthly_payment}}
+                            </md-table-cell>
+                            <md-table-cell md-label="موجودی" md-sort-by="balance">
+                                {{item.balance | currencyFormat}}
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
                                 {{item.shamsiDate('created_at').dateTime}}
@@ -129,7 +167,8 @@
 
 <script>
     import {FundList} from '@/models/Fund';
-    import Pagination from "@/components/Pagination";
+    import Pagination from "@/components/Pagination"
+    import priceFilterMixin from "@/mixins/priceFilterMixin"
 
     export default {
         watch: {
@@ -137,30 +176,25 @@
                 this.getList()
             }
         },
+        mixins: [priceFilterMixin],
         components: {
             "pagination": Pagination
         },
         data: () => ({
             funds: new FundList(),
             filterData: {
+                sortation: {
+                    field: 'created_at',
+                    order: 'asc'
+                },
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 name: null,
-                monthly_payment: null
+                monthly_payment: null,
+                createdSinceDate: null,
+                createdTillDate: null
             }
         }),
-        computed: {
-            from() {
-                return this.pagination.perPage * (this.pagination.currentPage - 1);
-            },
-            to() {
-                let highBound = this.from + this.pagination.perPage;
-                if (this.total < highBound) {
-                    highBound = this.total;
-                }
-                return highBound;
-            },
-        },
         mounted() {
             this.getList()
         },
@@ -175,9 +209,13 @@
                 this.funds.loading = true;
                 this.funds.fetch({
                     page,
+                    sortation_field: this.filterData.sortation.field,
+                    sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     name: this.filterData.name,
-                    monthly_payment: this.filterData.monthly_payment
+                    monthly_payment: this.filterData.monthly_payment,
+                    createdSinceDate: this.filterData.createdSinceDate,
+                    createdTillDate: this.filterData.createdTillDate
                 })
                     .then((response) => {
                         this.funds.loading = false
@@ -232,8 +270,11 @@
                         item.editMode = false
                         item.loading = false
                     });
+            },
+            customSort() {
+                this.getList()
+                return false;
             }
-
         }
 
     }

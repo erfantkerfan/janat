@@ -12,18 +12,29 @@ trait CommonCRUD
      *
      * @param Request $request
      * @param $modelQuery
-     * @param array $filterKeys
-     * @param array $filterRelationKeys
-     * @param array $select
+     * @param $config
      * @return Response
      */
-    public function commonIndex(Request $request, $modelQuery, array $filterKeys = [], array $filterRelationKeys = [], array $select = [])
+    public function commonIndex(Request $request, $modelClass, array $config = [])
     {
+        $modelQuery = $modelClass::query();
+        $select = $this->getDefault($config, 'select', []);
+        $joins = $this->getDefault($config, 'joins', []);
+        $joins1 = $this->getDefault($config, 'joins1', []);
+        $eagerLoads = $this->getDefault($config, 'eagerLoads', []);
+        $filterKeys = $this->getDefault($config, 'filterKeys', []);
+        $setAppends = $this->getDefault($config, 'setAppends', []);
+        $returnModelQuery = $this->getDefault($config, 'returnModelQuery', []);
+        $filterRelationIds = $this->getDefault($config, 'filterRelationIds', []);
+        $filterRelationKeys = $this->getDefault($config, 'filterRelationKeys', []);
+
         $perPage = ($request->has('length')) ? $request->get('length') : 10;
 
-        foreach ($select as $item) {
-            $modelQuery->addSelect($item);
-        }
+        $modelQuery->with($eagerLoads);
+
+        $this->sorting($request,$modelQuery, $modelClass);
+
+        $this->select($select,$modelQuery, $modelClass);
 
         $this->filterByDate($request, $modelQuery);
 
@@ -32,10 +43,107 @@ trait CommonCRUD
         }
 
         foreach ($filterRelationKeys as $item) {
-            $this->filterByRelationId($request, $item['requestKey'], $item['relationName'], $modelQuery);
+            $this->filterByRelationKey($request, $item['requestKey'], $item['relationName'], $item['relationColumn'], $modelQuery);
         }
 
+        foreach ($filterRelationIds as $item) {
+            $this->filterByRelationId($request, $item, $modelQuery);
+        }
+
+//        $this->join($modelQuery, $joins);
+//        $this->join1($modelQuery, $joins1);
+
+        if ($returnModelQuery) {
+            return $modelQuery;
+        }
+
+        if (count($setAppends) > 0) {
+            $attachedCoolection = $modelQuery->paginate($perPage)->getCollection()->map(function (& $item) use ($setAppends) {
+                return $item->setAppends($setAppends);
+            });
+            return $this->jsonResponseOk($modelQuery->paginate($perPage)->setCollection($attachedCoolection));
+        }
+
+
         return $this->jsonResponseOk($modelQuery->paginate($perPage));
+
+    }
+
+    private function select(array $select, & $modelQuery, $modelClass) {
+        $tableName = (new $modelClass())->getTable();
+        foreach ($select as $item) {
+            if (!strpos($item, '.')) {
+                $item = $tableName.'.'.$item;
+            }
+            $modelQuery->addSelect($item);
+        }
+    }
+
+    private function sorting(Request $request, & $modelQuery, $modelClass) {
+        $sortation_field = $request->get('sortation_field');
+        $sortation_order = $request->get('sortation_order');
+
+        if (!isset($sortation_field) || !isset($sortation_order)) {
+            return;
+        }
+
+        if (!strpos($sortation_field, '.')) {
+            $modelQuery->orderBy($sortation_field, strtoupper($sortation_order));
+        } else {
+            $modelQuery->orderByPowerJoins($sortation_field, strtoupper($sortation_order));
+        }
+    }
+
+    private function join( & $modelQuery, $joins) {
+        foreach ($joins as $item) {
+            $this->joinByRelation($modelQuery, $item['joinFrom'], $item['joinTo'], $item['relationType'], $item['joinsType']);
+        }
+    }
+
+    private function join1( & $modelQuery, $joins) {
+        foreach ($joins as $item) {
+            $modelQuery->joinRelationship($item);
+        }
+    }
+
+    private function joinByRelation( & $modelQuery, $joinFrom, $joinTo, $relationType, $joinsType) {
+        $joinToTable = (new $joinTo())->getTable();
+        $joinToKey = (new $joinTo())->getKeyName();
+        $joinToForeignKey = (new $joinTo())->getForeignKey();
+
+        $joinFromTable = (new $joinFrom())->getTable();
+        $joinFromKey = (new $joinFrom())->getKeyName();
+        $joinFromForeignKey = (new $joinFrom())->getForeignKey();
+
+        if ($relationType === 'OneToMany') {
+            $this->joinByType($modelQuery, $joinsType, $joinToTable, $joinFromTable.'.'.$joinFromKey, $joinToTable.'.'.$joinFromForeignKey);
+        } else if ($relationType === 'ManyToOne') {
+            $this->joinByType($modelQuery, $joinsType, $joinToTable, $joinFromTable.'.'.$joinToForeignKey, $joinToTable.'.'.$joinToKey);
+        }
+    }
+
+    private function joinByType(& $modelQuery, $joinsType, $joinToTable, $joinFrom, $joinTo) {
+        if ($joinsType === 'join') {
+            $modelQuery->join($joinToTable, $joinFrom, '=', $joinTo);
+        } else if ($joinsType === 'leftJoin') {
+            $modelQuery->leftJoin($joinToTable, $joinFrom, '=', $joinTo);
+        } else if ($joinsType === 'rightJoin') {
+            $modelQuery->rightJoin($joinToTable, $joinFrom, '=', $joinTo);
+        }
+    }
+
+    private function getDefault(array $config = [], $key, $default) {
+        return isset($config[$key]) ? $config[$key] : $default;
+    }
+
+    private function removeSelectSecion(& $string) {
+        if (strpos($string,':')) {
+            $string = substr($string, 0, strpos($string,':'));
+        }
+    }
+
+    private function removeColumnSecion($item, $sortation_field) {
+        return str_replace(str_replace($item, '', $sortation_field), '', $sortation_field);
     }
 
     /**

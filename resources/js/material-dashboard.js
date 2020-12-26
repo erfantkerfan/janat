@@ -13,6 +13,7 @@ import VueMaterial from "vue-material";
 // asset imports
 import "vue-material/dist/vue-material.min.css";
 import "./assets/scss/material-dashboard.scss";
+import "./assets/scss/customFix.scss";
 import "./assets/css/demo.css";
 
 // library auto imports

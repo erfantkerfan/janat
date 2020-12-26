@@ -5,13 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Kirschbaum\PowerJoins\PowerJoins;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use SoftDeletes;
-    use Notifiable;
-    use HasRoles;
+    use SoftDeletes, PowerJoins, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -21,9 +20,10 @@ class User extends Authenticatable
     protected $fillable = [
         'f_name',
         'l_name',
+        'father_name',
         'SSN',
-        'password',
         'staff_code',
+        'password',
         'salary',
         'address',
         'phone',
@@ -36,22 +36,23 @@ class User extends Authenticatable
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+//        'count_of_settled_allocated_loans',
+    ];
+
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
     protected $hidden = [
         'password',
+        'user_pic',
         'remember_token'
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
     ];
 
     public function accounts()
@@ -67,5 +68,31 @@ class User extends Authenticatable
     public function status()
     {
         return $this->belongsTo(UserStatus::class);
+    }
+
+    public function paidTransactions()
+    {
+        return $this->morphToMany(Transaction::class, 'transaction_payers');
+    }
+
+    public function getCountOfAllocatedLoansAttribute()
+    {
+        return $this->accounts->reduce(function ($carry, $item) {
+            return $carry + $item->allocatedLoans()->count();
+        });
+    }
+
+    public function getCountOfSettledAllocatedLoansAttribute()
+    {
+        return $this->accounts->reduce(function ($carry, $item) {
+            $accountSettlesAllocatedLoans = $item->allocatedLoans()
+                ->get()
+                ->map(function ($allocatedLoan) {
+                    return $allocatedLoan->append('is_settled');
+                })
+                ->where('is_settled', true)
+                ->count();
+            return $carry + $accountSettlesAllocatedLoans;
+        });
     }
 }

@@ -16,6 +16,7 @@ class CreateFundsTable extends Migration
         Schema::create('funds', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('name')->comment('نام صندوق');
+            $table->integer('balance')->default(0)->comment('موجودی');
             $table->integer('monthly_payment')->default(0)->comment('شهریه صندوق');
             $table->timestamps();
             $table->softDeletes();

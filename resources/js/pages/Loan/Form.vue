@@ -3,7 +3,7 @@
         <div class="md-layout-item md-small-size-100">
             <div class="md-layout-item md-size-100">
                 <md-card>
-                    <md-card-header class="md-card-header-icon">
+                    <md-card-header class="md-card-header-icon md-card-header-green">
                         <div class="card-icon">
                             <md-icon>monetization_on</md-icon>
                         </div>
@@ -53,6 +53,39 @@
                                 </md-field>
                             </div>
                         </div>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                نرخ بهره
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="loan.interest_rate"/>
+                                </md-field>
+                            </div>
+                        </div>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                مقدار بهره
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="loan.interest_amount"/>
+                                </md-field>
+                            </div>
+                        </div>
+                        <md-field>
+                            <label>نوع وام:</label>
+                            <md-select v-model="loan.loan_type.id" name="pages">
+                                <md-option
+                                    v-for="item in loanTypes.list"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id"
+                                >
+                                    {{ item.display_name }}
+                                </md-option>
+                            </md-select>
+                        </md-field>
                         <md-field>
                             <label>صندوق:</label>
                             <md-select v-model="loan.fund.id" name="pages">
@@ -94,8 +127,8 @@
 </template>
 
 <script>
-    import {FundList} from '@/models/Fund';
     import {Loan} from '@/models/Loan';
+    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
 
     export default {
         watch: {
@@ -103,20 +136,21 @@
                 this.loan.fund_id = this.loan.fund.id
             }
         },
+        mixins: [getFilterDropdownMixin],
         data: () => ({
             loan: new Loan(),
-            funds: new FundList()
         }),
         mounted() {
-            this.getData();
-            this.getfunds();
+            this.getData()
+            this.getFunds()
+            this.getLoanTypes()
         },
         methods: {
             isCreateForm () {
-                return (this.$route.name === 'Create')
+                return (this.$route.name === 'Loan.Create')
             },
             getData () {
-                if (this.$route.name === 'Create') {
+                if (this.isCreateForm()) {
                     return false
                 }
                 this.loan.loading = true;
@@ -134,25 +168,6 @@
                         console.log('error: ', error)
                         this.loan.loading = false;
                         this.loan = new Loan()
-                    })
-            },
-            getfunds () {
-                let that = this
-                this.funds.loading = true;
-                this.funds.fetch()
-                    .then((response) => {
-                        that.funds.loading = false;
-                        that.funds = new FundList(response.data.data, response.data)
-                    })
-                    .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
-                        that.funds.loading = false;
-                        that.funds = new FundList()
                     })
             },
             updateLoan () {

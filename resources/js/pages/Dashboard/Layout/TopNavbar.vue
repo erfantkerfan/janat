@@ -8,7 +8,7 @@
   >
     <div class="md-toolbar-row">
       <div class="md-toolbar-section-start">
-        <h3 class="md-title" v-if="$route.meta.displayName">{{ $route.meta.displayName }}</h3>
+        <h3 class="md-title" v-if="$route.meta.display_name">{{ $route.meta.display_name }}</h3>
       </div>
       <div class="md-toolbar-section-end">
         <md-button

@@ -4,10 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kirschbaum\PowerJoins\PowerJoins;
 
 class Fund extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, PowerJoins;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -15,6 +17,7 @@ class Fund extends Model
      */
     protected $fillable = [
         'name',
+        'balance',
         'monthly_payment'
     ];
 
@@ -31,5 +34,15 @@ class Fund extends Model
     public function loans()
     {
         return $this->hasMany(Loan::class);
+    }
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function receivedTransactions()
+    {
+        return $this->morphToMany(Transaction::class, 'transaction_recipients');
     }
 }

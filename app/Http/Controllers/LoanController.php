@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Fund;
 use App\Loan;
 use App\Traits\Filter;
 use Illuminate\Http\Request;
@@ -10,8 +11,7 @@ use App\Traits\CommonCRUD;
 
 class LoanController extends Controller
 {
-    use Filter;
-    use CommonCRUD;
+    use Filter, CommonCRUD;
 
     /**
      * Display a listing of the resource.
@@ -21,20 +21,32 @@ class LoanController extends Controller
      */
     public function index(Request $request)
     {
-        $modelQuery = Loan::with('fund');
-        $filterKeys = [
-            'name',
-            'loan_amount',
-            'installment_rate',
-            'number_of_installments',
-        ];
-        $filterRelationKeys = [
-            [
-                'requestKey'=> 'fund_id',
-                'relationName'=> 'fund'
+        $config = [
+            'eagerLoads'=> [
+                'fund',
+                'loanType'
+            ],
+            'filterKeys'=> [
+                'name',
+                'loan_amount',
+                'interest_rate',
+                'interest_amount',
+                'installment_rate',
+                'number_of_installments',
+            ],
+            'filterRelationIds'=> [
+                [
+                    'requestKey'=> 'fund_id',
+                    'relationName'=> 'fund'
+                ],
+                [
+                    'requestKey'=> 'loan_type_id',
+                    'relationName'=> 'loanType'
+                ]
             ]
         ];
-        return $this->commonIndex($request, $modelQuery, $filterKeys, $filterRelationKeys);
+
+        return $this->commonIndex($request, Loan::class, $config);
     }
 
     /**
@@ -56,7 +68,7 @@ class LoanController extends Controller
      */
     public function show($id)
     {
-        $fund = Loan::with(['fund'])->find($id);
+        $fund = Loan::with(['fund', 'loanType'])->find($id);
         return $this->jsonResponseOk($fund);
     }
 
@@ -69,15 +81,6 @@ class LoanController extends Controller
      */
     public function update(Request $request, Loan $loan)
     {
-//        $loan->fill($request->all());
-//
-//        dd($loan);
-//        if ($loan->save()) {
-//            return $this->show($loan->id);
-//        } else {
-//            return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
-//        }
-
         return $this->commonUpdate($request, $loan);
     }
 

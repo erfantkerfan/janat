@@ -4,21 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kirschbaum\PowerJoins\PowerJoins;
 
 class Account extends Model
 {
-    use SoftDeletes;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id',
-        'fund_id',
-        'acc_number',
-        'joined_at'
-    ];
+    use SoftDeletes, PowerJoins;
 
     public function user()
     {
