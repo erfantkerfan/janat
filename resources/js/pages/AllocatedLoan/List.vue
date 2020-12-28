@@ -224,10 +224,10 @@
 
 <script>
 
-    import Pagination from "@/components/Pagination";
-    import {AllocatedLoanList} from '@/models/AllocatedLoan';
-    import priceFilterMixin from "@/mixins/priceFilterMixin"
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
+    import Pagination from '@/components/Pagination'
+    import {AllocatedLoanList} from '@/models/AllocatedLoan'
+    import priceFilterMixin from '@/mixins/priceFilterMixin'
+    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin'
 
     export default {
         watch: {

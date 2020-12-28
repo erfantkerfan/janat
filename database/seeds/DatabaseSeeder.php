@@ -437,6 +437,14 @@ class FakeTransaction extends Seeder {
             'companyChargeFund',
             'fundPayLoan',
             'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment'
         ];
         for ($i = 1; $i <= self::$countOfObject; $i++) {
             $status = $statuses[rand(0, count($statuses)-1)];
@@ -504,8 +512,9 @@ class FakeTransaction extends Seeder {
     }
 
     private function userPayInstallment($faker, $transactionStatus) {
-        $user = FakeUser::getRandomObject();
         $allocatedLoanInstallment = FakeAllocatedLoanInstallment::getRandomObject();
+        $user = $allocatedLoanInstallment->allocatedLoan->account->user()->first();
+
         if ($allocatedLoanInstallment->is_settled) {
             return;
         }
