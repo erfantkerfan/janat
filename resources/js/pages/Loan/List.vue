@@ -131,31 +131,31 @@
                                       slot-scope="{ item }"
                         >
                             <md-table-cell md-label="نام وام" md-sort-by="name">
-                                {{item.name}}
+                                {{ item.name }}
                             </md-table-cell>
                             <md-table-cell md-label="نوع وام" md-sort-by="loanType.display_name">
-                                {{item.loan_type.display_name}}
+                                {{ item.loan_type.display_name }}
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
-                                {{item.loan_amount | currencyFormat}}
+                                {{ item.loan_amount | currencyFormat }}
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
-                                {{item.installment_rate | currencyFormat}}
+                                {{ item.installment_rate | currencyFormat }}
                             </md-table-cell>
                             <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
-                                {{item.number_of_installments}}
+                                {{ item.number_of_installments }}
                             </md-table-cell>
-                            <md-table-cell md-label="نرخ بهره" md-sort-by="interest_rate">
-                                {{item.interest_rate}}
+                            <md-table-cell md-label="نرخ کارمزد" md-sort-by="interest_rate">
+                                {{ item.interest_rate }}%
                             </md-table-cell>
-                            <md-table-cell md-label="مقدار بهره" md-sort-by="interest_amount">
-                                {{item.interest_amount}}
+                            <md-table-cell md-label="مقدار کارمزد" md-sort-by="interest_amount">
+                                {{ item.interest_amount | currencyFormat }}
                             </md-table-cell>
                             <md-table-cell md-label="نام صندوق" md-sort-by="fund.name">
-                                {{item.fund.name}}
+                                {{ item.fund.name }}
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
-                                {{item.shamsiDate('created_at').dateTime}}
+                                {{ item.shamsiDate('created_at').dateTime }}
                             </md-table-cell>
                             <md-table-cell md-label="عملیات">
                                 <md-button

@@ -80,14 +80,14 @@ class AllocatedLoan extends Model
         return $this->loan_amount - $this->getTotalPaymentsAttribute();
     }
 
-    public function getPayableAmountdAttribute()
+    public function getPayableAmountAttribute()
     {
         return $this->loan_amount + $this->interest_amount;
     }
 
     public function getIsSettledAttribute()
     {
-        return $this->getTotalPaymentsAttribute() >= $this->getPayableAmountdAttribute();
+        return $this->getTotalPaymentsAttribute() >= $this->getPayableAmountAttribute();
     }
 
     public function scopeSettled($query)

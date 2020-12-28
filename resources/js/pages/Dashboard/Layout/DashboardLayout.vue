@@ -14,17 +14,33 @@
         >
             <user-menu></user-menu>
             <mobile-menu></mobile-menu>
+
             <template slot="links">
                 <sidebar-item
                     :link="{ name: 'پیشخوان', icon: 'dashboard', path: '/dashboard' }"
                 />
 
-                <sidebar-item opened :link="{ name: 'کاربران', image: image }">
+                <sidebar-item :opened="false" :link="{ name: 'تعاریف اولیه', image: image }">
                     <sidebar-item
-                        :link="{ name: 'حساب کاربری', path: '/user/'+authenticatedUser.id }"
+                        :link="{
+                        name: 'صندوق ها',
+                        icon: 'account_balance',
+                        path: '/fund/list',
+                      }"
                     />
                     <sidebar-item
-                        :link="{ name: 'مدیریت کاربران', path: '/user/list' }"
+                        :link="{
+                        name: 'وام ها',
+                        icon: 'monetization_on',
+                        path: '/loan/list',
+                      }"
+                    />
+                    <sidebar-item
+                        :link="{
+                        name: 'شرکت ها',
+                        icon: 'store_mall_directory',
+                        path: '/company/list',
+                      }"
                     />
                 </sidebar-item>
 
@@ -33,14 +49,6 @@
                         name: 'مدیریت کاربران',
                         icon: 'groups',
                         path: '/user/list',
-                      }"
-                />
-
-                <sidebar-item
-                    :link="{
-                        name: 'صندوق ها',
-                        icon: 'account_balance',
-                        path: '/fund/list',
                       }"
                 />
                 <sidebar-item
@@ -52,20 +60,6 @@
                 />
                 <sidebar-item
                     :link="{
-                        name: 'وام ها',
-                        icon: 'monetization_on',
-                        path: '/loan/list',
-                      }"
-                />
-                <sidebar-item
-                    :link="{
-                        name: 'شرکت ها',
-                        icon: 'store_mall_directory',
-                        path: '/company/list',
-                      }"
-                />
-                <sidebar-item
-                    :link="{
                         name: 'تراکنش ها',
                         icon: 'payments',
                         path: '/transactions/list',
@@ -73,14 +67,13 @@
                 />
 
                 <sidebar-item
-                    v-if="true"
+                    v-if="false"
                     :link="{
                         name: 'Table Lists',
                         icon: 'content_paste',
                         path: '/components/table',
                       }"
                 />
-
                 <sidebar-item
                     v-if="false"
                     :link="{
@@ -89,7 +82,6 @@
                         path: '/components/typography',
                       }"
                 />
-
                 <sidebar-item
                     v-if="false"
                     :link="{
@@ -98,12 +90,10 @@
                         path: '/components/icons',
                       }"
                 />
-
                 <sidebar-item
                     v-if="false"
                     :link="{ name: 'Maps', icon: 'place', path: '/components/maps' }"
                 />
-
                 <sidebar-item
                     v-if="false"
                     :link="{
@@ -112,7 +102,6 @@
                         path: '/components/notifications',
                       }"
                 />
-
                 <sidebar-item
                     v-if="false"
                     :link="{
