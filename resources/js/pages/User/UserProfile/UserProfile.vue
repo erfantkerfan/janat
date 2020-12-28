@@ -14,8 +14,6 @@
                 />
             </div>
         </div>
-
-
         <div v-if="false" class="md-layout md-gutter">
             <div
                 class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
@@ -45,8 +43,6 @@
                 </md-card>
             </div>
         </div>
-
-
         <div class="md-layout md-gutter">
             <div class="md-layout-item md-size-100">
                 <loans :user="user"/>
@@ -59,23 +55,21 @@
 </template>
 
 <script>
-    import Chart from '../../../components/Chart'
-
-    import Loans from "./Loans";
-
-    import UserEditCard from "@/pages/User/UserProfile/EditProfileCard.vue";
-    import UserPasswordCard from "@/pages/User/UserProfile/EditPasswordCard.vue";
-    import UserProfileCard from "@/pages/User/UserProfile/UserProfileCard.vue";
+    import Chart from '@/components/Chart'
+    import Loans from '@/pages/User/UserProfile/Loans.vue';
+    import UserEditCard from '@/pages/User/UserProfile/EditProfileCard.vue';
+    import UserProfileCard from '@/pages/User/UserProfile/UserProfileCard.vue';
+    import UserPasswordCard from '@/pages/User/UserProfile/EditPasswordCard.vue';
     import {User} from '@/models/User';
 
     export default {
-        name: "user-profile-example",
+        name: 'user-profile-example',
         components: {
             Loans,
             Chart,
-            "user-profile-card": UserProfileCard,
-            "user-edit-card": UserEditCard,
-            "user-password-card": UserPasswordCard
+            'user-profile-card': UserProfileCard,
+            'user-edit-card': UserEditCard,
+            'user-password-card': UserPasswordCard
         },
         data: () => ({
             datacollection: null,

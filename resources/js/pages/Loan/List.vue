@@ -158,14 +158,13 @@
                                 {{item.shamsiDate('created_at').dateTime}}
                             </md-table-cell>
                             <md-table-cell md-label="عملیات">
-                                <router-link :to="'/loan/'+item.id">
-                                    <md-button
-                                        class="md-icon-button md-raised md-round md-info"
-                                        style="margin: .2rem;"
-                                    >
-                                        <md-icon>edit</md-icon>
-                                    </md-button>
-                                </router-link>
+                                <md-button
+                                    :to="'/loan/'+item.id"
+                                    class="md-icon-button md-raised md-round md-info"
+                                    style="margin: .2rem;"
+                                >
+                                    <md-icon>edit</md-icon>
+                                </md-button>
                                 <md-button class="md-icon-button md-raised md-round md-danger"
                                            @click="confirmRemove(item)"
                                            style="margin: .2rem;">

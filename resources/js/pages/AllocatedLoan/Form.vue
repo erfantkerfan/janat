@@ -33,6 +33,11 @@
                                 </md-field>
                             </div>
                         </div>
+                        <md-button
+                            class="md-dense md-raised md-success"
+                            :to="'/user/'+allocatedLoan.account.user.id">
+                            مشاهده اطلاعات کاربر
+                        </md-button>
                         <md-divider></md-divider>
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
@@ -94,6 +99,11 @@
                                 </md-field>
                             </div>
                         </div>
+                        <md-button
+                            class="md-dense md-raised md-success"
+                            :to="'/loan/'+allocatedLoan.loan.id">
+                            مشاهده اطلاعات وام
+                        </md-button>
                         <md-divider></md-divider>
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
@@ -115,6 +125,12 @@
                                 </md-field>
                             </div>
                         </div>
+                        <md-button
+                            class="md-dense md-raised md-success"
+                            :to="'/fund/'+allocatedLoan.loan.fund.id">
+                            مشاهده اطلاعات صندوق
+                        </md-button>
+                        <md-divider></md-divider>
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 تاریخ دریافت وام
@@ -145,18 +161,18 @@
                                 </span>
                                 <br>
                                 کل مبلغ پرداختی:
-                                {{allocatedLoan.total_payments}}
+                                {{ allocatedLoan.total_payments | currencyFormat }}
                                 -
                                 مبلغ قابل پرداخت باقیمانده:
-                                {{allocatedLoan.remaining_payable_amount}}
+                                {{ allocatedLoan.remaining_payable_amount | currencyFormat}}
                                 <br>
                                 تعداد
-                                {{allocatedLoan.count_of_paid_installments}}
+                                {{ allocatedLoan.count_of_paid_installments }}
                                 قسط از
-                                {{allocatedLoan.number_of_installments}}
+                                {{ allocatedLoan.number_of_installments }}
                                 قسط پرداخت شده
                                 و تعداد
-                                {{allocatedLoan.count_of_remaining_installments}}
+                                {{ allocatedLoan.count_of_remaining_installments }}
                                 قسط باقیمانده
                             </p>
                         </div>
@@ -171,9 +187,9 @@
                             <md-table-row slot="md-table-row"
                                           slot-scope="{ item }"
                                           :class="getInstallmentRowClass(item)">
-                                <md-table-cell md-label="مبلغ قسط" md-sort-by="rate">{{ item.rate }}</md-table-cell>
-                                <md-table-cell md-label="کل پرداختی" md-sort-by="total_payments">{{ item.total_payments }}</md-table-cell>
-                                <md-table-cell md-label="مبلغ قابل پرداخت باقیمانده" md-sort-by="remaining_payable_amount">{{ item.remaining_payable_amount }}</md-table-cell>
+                                <md-table-cell md-label="مبلغ قسط" md-sort-by="rate">{{ item.rate | currencyFormat }}</md-table-cell>
+                                <md-table-cell md-label="کل پرداختی" md-sort-by="total_payments">{{ item.total_payments | currencyFormat }}</md-table-cell>
+                                <md-table-cell md-label="مبلغ قابل پرداخت باقیمانده" md-sort-by="remaining_payable_amount">{{ item.remaining_payable_amount | currencyFormat }}</md-table-cell>
                                 <md-table-cell md-label="وضعیت" md-sort-by="is_settled">
                                     <span v-if="item.is_settled">
                                         تسویه شده
@@ -183,42 +199,71 @@
                                     </span>
                                 </md-table-cell>
                                 <md-table-cell md-label="تاریخ" md-sort-by="created_at">{{ item.shamsiDate('created_at').date }}</md-table-cell>
+                                <md-table-cell md-label="عملیات">
+                                    <md-button
+                                        v-if="item.received_transactions.list.length > 0"
+                                        @click="showInstallmentTransactions(item)"
+                                        class="md-icon-button md-raised md-round md-info"
+                                        style="margin: .2rem;"
+                                    >
+                                        <md-icon>edit</md-icon>
+                                    </md-button>
+                                </md-table-cell>
                             </md-table-row>
                         </md-table>
                     </md-card-content>
                 </md-card>
 
-                <div v-for="installment in allocatedLoan.installments.list">
-                    <md-card>
-                        <md-card-header class="md-card-header-text" :class="{'md-card-header-warning': !installment.is_settled, 'md-card-header-blue': installment.is_settled}">
-                            <div class="card-text">
-                                <h4 class="title">تاریخ قسط: {{installment.shamsiDate('created_at').date}}</h4>
-                                <p class="category">
+                <md-dialog :md-active.sync="installmentTransactionsShowDialog">
+                    <md-dialog-title>ایجاد حساب جدید</md-dialog-title>
+
+                    <md-dialog-content>
+                        <div style="height: 300px;display: flex;flex-flow: column;justify-content: center;">
+                            <md-card v-if="installment.id">
+                                <md-card-header class="md-card-header-text" :class="{'md-card-header-warning': !installment.is_settled, 'md-card-header-blue': installment.is_settled}">
+                                    <div class="card-text">
+                                        <h4 class="title">تاریخ قسط: {{installment.shamsiDate('created_at').date}}</h4>
+                                        <p class="category">
                                     <span v-if="installment.is_settled">
                                         تسویه شده
                                     </span>
-                                    <span v-else>
+                                            <span v-else>
                                         تسویه نشده
                                     </span>
-                                    <br>
-                                    کل پرداخت:
-                                    {{installment.total_payments}}
-                                </p>
-                            </div>
-                        </md-card-header>
-                        <md-card-content>
-                            <md-table v-model="installment.received_transactions.list" table-header-color="orange">
-                                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                                    <md-table-cell md-label="مبلغ تراکنش">{{ item.cost }}</md-table-cell>
-                                    <md-table-cell md-label="تاریخ">{{ item.shamsiDate('created_at').date }}</md-table-cell>
-                                    <md-table-cell md-label="وضعیت">{{ item.transaction_status.display_name }}</md-table-cell>
-                                    <md-table-cell md-label="توضیحات کاربر">{{ item.user_comment }}</md-table-cell>
-                                    <md-table-cell md-label="توضیحات مدیر">{{ item.manager_comment }}</md-table-cell>
-                                </md-table-row>
-                            </md-table>
-                        </md-card-content>
-                    </md-card>
-                </div>
+                                            <br>
+                                            کل پرداخت:
+                                            {{installment.total_payments | currencyFormat}}
+                                        </p>
+                                    </div>
+                                </md-card-header>
+                                <md-card-content>
+                                    <md-table v-model="installment.received_transactions.list" table-header-color="orange">
+                                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                                            <md-table-cell md-label="مبلغ تراکنش">{{ item.cost | currencyFormat }}</md-table-cell>
+                                            <md-table-cell md-label="تاریخ">{{ item.shamsiDate('created_at').date }}</md-table-cell>
+                                            <md-table-cell md-label="وضعیت">{{ item.transaction_status.display_name }}</md-table-cell>
+                                            <md-table-cell md-label="توضیحات کاربر">{{ item.user_comment }}</md-table-cell>
+                                            <md-table-cell md-label="توضیحات مدیر">{{ item.manager_comment }}</md-table-cell>
+                                            <md-table-cell md-label="عملیات">
+                                                <md-button
+                                                    :to="'/transactions/'+item.id"
+                                                    class="md-icon-button md-raised md-round md-info"
+                                                    style="margin: .2rem;"
+                                                >
+                                                    <md-icon>edit</md-icon>
+                                                </md-button>
+                                            </md-table-cell>
+                                        </md-table-row>
+                                    </md-table>
+                                </md-card-content>
+                            </md-card>
+                        </div>
+                    </md-dialog-content>
+
+                    <md-dialog-actions>
+                        <md-button class="md-default" @click="closeInstallmentTransactions">بستن</md-button>
+                    </md-dialog-actions>
+                </md-dialog>
 
             </div>
         </div>
@@ -226,7 +271,9 @@
 </template>
 
 <script>
-    import {AllocatedLoan} from "../../models/AllocatedLoan";
+    import { AllocatedLoan } from '@/models/AllocatedLoan';
+    import {AllocatedLoanInstallment} from "@/models/AllocatedLoanInstallment";
+    import priceFilterMixin from "@/mixins/priceFilterMixin";
 
     export default {
         watch: {
@@ -234,12 +281,15 @@
                 this.allocatedLoan.fund_id = this.allocatedLoan.fund.id
             }
         },
+        mixins: [priceFilterMixin],
         data: () => ({
             allocatedLoan: new AllocatedLoan(),
             sortation: {
-                field: "created_at",
-                order: "asc"
+                field: 'created_at',
+                order: 'asc'
             },
+            installment: new AllocatedLoanInstallment(),
+            installmentTransactionsShowDialog: false
         }),
         mounted() {
             this.getData()
@@ -348,6 +398,14 @@
 
                     return b[sortBy].toString().localeCompare(a[sortBy])
                 })
+            },
+            showInstallmentTransactions (installment) {
+                this.installment = installment
+                this.installmentTransactionsShowDialog = true
+            },
+            closeInstallmentTransactions () {
+                this.installment = new AllocatedLoanInstallment()
+                this.installmentTransactionsShowDialog = false
             }
         }
     }

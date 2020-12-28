@@ -23,6 +23,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\UserStatusController;
+use App\Http\Controllers\UserTypeController;
 
 Route::get('/', [HomeController::class, 'welcome'])->name('web.welcome');
 
@@ -38,6 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::put('{user}/reset_pass', [UserController::class, 'resetPass'])->name('web.panel.getUserPic');
         });
         Route::resource('user_statuses', '\\'. UserStatusController::class);
+        Route::resource('user_types', '\\'. UserTypeController::class);
         Route::resource('companies', '\\'. CompanyController::class);
         Route::resource('funds', '\\'. FundController::class);
         Route::resource('loans', '\\'. LoanController::class);

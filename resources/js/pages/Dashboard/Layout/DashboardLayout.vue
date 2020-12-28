@@ -73,30 +73,30 @@
                 />
 
                 <sidebar-item
-                    v-if="false"
+                    v-if="true"
                     :link="{
-            name: 'Table Lists',
-            icon: 'content_paste',
-            path: '/components/table',
-          }"
+                        name: 'Table Lists',
+                        icon: 'content_paste',
+                        path: '/components/table',
+                      }"
                 />
 
                 <sidebar-item
                     v-if="false"
                     :link="{
-            name: 'Typography',
-            icon: 'library_books',
-            path: '/components/typography',
-          }"
+                        name: 'Typography',
+                        icon: 'library_books',
+                        path: '/components/typography',
+                      }"
                 />
 
                 <sidebar-item
                     v-if="false"
                     :link="{
-            name: 'Icons',
-            icon: 'bubble_chart',
-            path: '/components/icons',
-          }"
+                        name: 'Icons',
+                        icon: 'bubble_chart',
+                        path: '/components/icons',
+                      }"
                 />
 
                 <sidebar-item
@@ -107,10 +107,10 @@
                 <sidebar-item
                     v-if="false"
                     :link="{
-            name: 'Notifications',
-            icon: 'notifications',
-            path: '/components/notifications',
-          }"
+                        name: 'Notifications',
+                        icon: 'notifications',
+                        path: '/components/notifications',
+                      }"
                 />
 
                 <sidebar-item

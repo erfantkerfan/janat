@@ -70,9 +70,11 @@ class UserController extends Controller
         $user = User::with([
                 'accounts.fund',
                 'accounts.allocatedLoans',
+                'accounts.allocatedLoans.loan',
                 'accounts.allocatedLoans.installments',
                 'company',
                 'status',
+                'userType',
                 'roles'
             ])
             ->findOrFail($id)

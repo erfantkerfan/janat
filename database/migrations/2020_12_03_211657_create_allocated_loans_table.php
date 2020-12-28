@@ -18,10 +18,11 @@ class CreateAllocatedLoansTable extends Migration
             $table->bigInteger('account_id')->unsigned();
             $table->bigInteger('loan_id')->unsigned();
             $table->integer('loan_amount')->default(0)->comment('مبلغ وام');
+            $table->integer('interest_rate')->default(0)->comment('نرخ بهره به درصد');
+            $table->integer('interest_amount')->default(0)->comment('مقدار بهره');
             $table->integer('installment_rate')->default(0)->comment('مبلغ هر قسط');
             $table->integer('number_of_installments')->default(0)->comment('تعداد اقساط');
             $table->boolean('payroll_deduction')->default(false)->comment('پرداخت اقساط به صورت کسر از حقوق');
-//            $table->integer('number_of_paid_installments')->default(0)->comment('تعداد اقساط باقیمانده');
             $table->timestamps();
             $table->softDeletes();
 

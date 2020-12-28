@@ -28,6 +28,16 @@
                                 <span v-if="item.is_settled">تسویه شده</span>
                                 <span v-else>تسویه نشده</span>
                             </md-table-cell>
+                            <md-table-cell md-label="عملیات">
+                                <router-link v-if="item.loan.id !== null" :to="'/allocated_loan/'+item.id">
+                                    <md-button
+                                        class="md-icon-button md-raised md-round md-info"
+                                        style="margin: .2rem;"
+                                    >
+                                        <md-icon>edit</md-icon>
+                                    </md-button>
+                                </router-link>
+                            </md-table-cell>
                         </md-table-row>
                     </md-table>
                 </md-card-content>

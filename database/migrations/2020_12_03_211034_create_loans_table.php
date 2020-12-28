@@ -17,7 +17,7 @@ class CreateLoansTable extends Migration
             $table->bigIncrements('id');
             $table->text('name')->comment('نام وام');
             $table->integer('loan_amount')->default(0)->comment('مبلغ وام');
-            $table->integer('interest_rate')->default(0)->comment('نرخ بهره');
+            $table->integer('interest_rate')->default(0)->comment('نرخ بهره به درصد');
             $table->integer('interest_amount')->default(0)->comment('مقدار بهره');
             $table->integer('installment_rate')->default(0)->comment('مبلغ هر قسط');
             $table->integer('number_of_installments')->default(0)->comment('تعداد اقساط');
