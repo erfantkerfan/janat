@@ -3,6 +3,7 @@ import { RoleList } from '@/models/Role'
 import { Company } from '@/models/Company'
 import { AccountList } from '@/models/Account'
 import { UserStatus } from '@/models/UserStatus'
+import {UserType} from "@/models/UserType";
 
 class User extends Model {
     constructor (user) {
@@ -35,6 +36,10 @@ class User extends Model {
             {
                 key: 'status',
                 relatedModel: UserStatus
+            },
+            {
+                key: 'user_type',
+                relatedModel: UserType
             },
             {
                 key: 'company',

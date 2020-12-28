@@ -11,11 +11,28 @@ class AllocatedLoan extends Model
     use SoftDeletes, PowerJoins;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'account_id',
+        'loan_id',
+        'loan_amount',
+        'interest_rate',
+        'interest_amount',
+        'installment_rate',
+        'number_of_installments',
+        'payroll_deduction'
+    ];
+
+    /**
      * The accessors to append to the model's array form.
      *
      * @var array
      */
     protected $appends = [
+        'payable_amount'
 //        'is_settled',
 //        'total_payments',
 //        'remaining_payable_amount',
@@ -63,10 +80,14 @@ class AllocatedLoan extends Model
         return $this->loan_amount - $this->getTotalPaymentsAttribute();
     }
 
+    public function getPayableAmountAttribute()
+    {
+        return $this->loan_amount + $this->interest_amount;
+    }
+
     public function getIsSettledAttribute()
     {
-        $payableAmount = $this->loan->loan_amount + $this->loan->interest_amount;
-        return $this->getTotalPaymentsAttribute() >= $payableAmount;
+        return $this->getTotalPaymentsAttribute() >= $this->getPayableAmountAttribute();
     }
 
     public function scopeSettled($query)

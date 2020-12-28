@@ -174,14 +174,13 @@
                                 {{item.shamsiDate('created_at').dateTime}}
                             </md-table-cell>
                             <md-table-cell md-label="عملیات">
-                                <router-link :to="'/allocated_loan/'+item.id">
-                                    <md-button
-                                        class="md-icon-button md-raised md-round md-info"
-                                        style="margin: .2rem;"
-                                    >
-                                        <md-icon>edit</md-icon>
-                                    </md-button>
-                                </router-link>
+                                <md-button
+                                    :to="'/allocated_loan/'+item.id"
+                                    class="md-icon-button md-raised md-round md-info"
+                                    style="margin: .2rem;"
+                                >
+                                    <md-icon>edit</md-icon>
+                                </md-button>
                                 <md-button class="md-icon-button md-raised md-round md-danger"
                                            @click="confirmRemove(item)"
                                            style="margin: .2rem;">
@@ -225,10 +224,10 @@
 
 <script>
 
-    import Pagination from "@/components/Pagination";
-    import {AllocatedLoanList} from '@/models/AllocatedLoan';
-    import priceFilterMixin from "@/mixins/priceFilterMixin"
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
+    import Pagination from '@/components/Pagination'
+    import {AllocatedLoanList} from '@/models/AllocatedLoan'
+    import priceFilterMixin from '@/mixins/priceFilterMixin'
+    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin'
 
     export default {
         watch: {

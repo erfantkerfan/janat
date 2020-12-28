@@ -2,3 +2,9 @@
     max-width: 400px;
     max-height: 40vh;
 }
+.md-dialog {
+    z-index: 99999;
+}
+.sidebar .sidebar-wrapper .md-list li ul.nav {
+    padding-right: 30px;
+}

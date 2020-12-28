@@ -32,6 +32,7 @@ class User extends Authenticatable
         'description',
         'user_pic',
         'company_id',
+        'user_type_id',
         'status_id'
     ];
 
@@ -68,6 +69,11 @@ class User extends Authenticatable
     public function status()
     {
         return $this->belongsTo(UserStatus::class);
+    }
+
+    public function userType()
+    {
+        return $this->belongsTo(UserType::class);
     }
 
     public function paidTransactions()

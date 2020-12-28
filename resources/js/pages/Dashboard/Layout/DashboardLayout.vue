@@ -14,17 +14,33 @@
         >
             <user-menu></user-menu>
             <mobile-menu></mobile-menu>
+
             <template slot="links">
                 <sidebar-item
                     :link="{ name: 'پیشخوان', icon: 'dashboard', path: '/dashboard' }"
                 />
 
-                <sidebar-item opened :link="{ name: 'کاربران', image: image }">
+                <sidebar-item :opened="false" :link="{ name: 'تعاریف اولیه', image: image }">
                     <sidebar-item
-                        :link="{ name: 'حساب کاربری', path: '/user/'+authenticatedUser.id }"
+                        :link="{
+                        name: 'صندوق ها',
+                        icon: 'account_balance',
+                        path: '/fund/list',
+                      }"
                     />
                     <sidebar-item
-                        :link="{ name: 'مدیریت کاربران', path: '/user/list' }"
+                        :link="{
+                        name: 'وام ها',
+                        icon: 'monetization_on',
+                        path: '/loan/list',
+                      }"
+                    />
+                    <sidebar-item
+                        :link="{
+                        name: 'شرکت ها',
+                        icon: 'store_mall_directory',
+                        path: '/company/list',
+                      }"
                     />
                 </sidebar-item>
 
@@ -35,33 +51,11 @@
                         path: '/user/list',
                       }"
                 />
-
-                <sidebar-item
-                    :link="{
-                        name: 'صندوق ها',
-                        icon: 'account_balance',
-                        path: '/fund/list',
-                      }"
-                />
                 <sidebar-item
                     :link="{
                         name: 'وام های تخصیص داده شده',
                         icon: 'attach_money',
                         path: '/allocated_loan/list',
-                      }"
-                />
-                <sidebar-item
-                    :link="{
-                        name: 'وام ها',
-                        icon: 'monetization_on',
-                        path: '/loan/list',
-                      }"
-                />
-                <sidebar-item
-                    :link="{
-                        name: 'شرکت ها',
-                        icon: 'store_mall_directory',
-                        path: '/company/list',
                       }"
                 />
                 <sidebar-item
@@ -75,44 +69,39 @@
                 <sidebar-item
                     v-if="false"
                     :link="{
-            name: 'Table Lists',
-            icon: 'content_paste',
-            path: '/components/table',
-          }"
+                        name: 'Table Lists',
+                        icon: 'content_paste',
+                        path: '/components/table',
+                      }"
                 />
-
                 <sidebar-item
                     v-if="false"
                     :link="{
-            name: 'Typography',
-            icon: 'library_books',
-            path: '/components/typography',
-          }"
+                        name: 'Typography',
+                        icon: 'library_books',
+                        path: '/components/typography',
+                      }"
                 />
-
                 <sidebar-item
                     v-if="false"
                     :link="{
-            name: 'Icons',
-            icon: 'bubble_chart',
-            path: '/components/icons',
-          }"
+                        name: 'Icons',
+                        icon: 'bubble_chart',
+                        path: '/components/icons',
+                      }"
                 />
-
                 <sidebar-item
                     v-if="false"
                     :link="{ name: 'Maps', icon: 'place', path: '/components/maps' }"
                 />
-
                 <sidebar-item
                     v-if="false"
                     :link="{
-            name: 'Notifications',
-            icon: 'notifications',
-            path: '/components/notifications',
-          }"
+                        name: 'Notifications',
+                        icon: 'notifications',
+                        path: '/components/notifications',
+                      }"
                 />
-
                 <sidebar-item
                     v-if="false"
                     :link="{

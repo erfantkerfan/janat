@@ -22,7 +22,9 @@ class UserStatusController extends Controller
     {
         $config = [
             'filterKeys'=> [
-                'name'
+                'name',
+                'display_name',
+                'description'
             ]
         ];
 

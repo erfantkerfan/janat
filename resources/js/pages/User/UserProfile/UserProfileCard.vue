@@ -12,61 +12,86 @@
                     <md-icon>check</md-icon>
                 </md-button>
             </div>
-            <input v-if="!isCreateForm && cardUserNewImage === null" v-show="false" type="file" ref="userProfilePic" @change="bufferUserPic($event)" />
+            <input v-if="!isCreateForm() && cardUserNewImage === null" v-show="false" type="file" ref="userProfilePic" @change="bufferUserPic($event)" />
             <h6 class="category text-gray">{{ value.f_name }} {{ value.l_name }}</h6>
             <h4 class="card-title">{{ value.company.name }}</h4>
             <p class="card-description">
                 {{ value.description }}
             </p>
-
             <md-empty-state
-                v-if="!isCreateForm && value.accounts.list.length === 0"
+                v-if="!isCreateForm() && value.accounts.list.length === 0"
                 class="md-warning"
                 md-icon="cancel_presentation"
                 md-label="حسابی یافت نشد"
             >
             </md-empty-state>
-            <md-button
-                v-if="!isCreateForm"
-                class="md-dense md-raised md-primary"
-                @click="showAddAccountDialog">
-                ایجاد حساب جدید
-            </md-button>
-            <md-table
-                v-if="!isCreateForm && value.accounts.list.length > 0"
-                :value="value.accounts.list"
-                :md-sort.sync="sortation.field"
-                :md-sort-order.sync="sortation.order"
-                class="paginated-table table-striped table-hover"
-            >
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="نام صندوق" md-sort-by="name">{{item.fund.name}}</md-table-cell>
-                    <md-table-cell md-label="شماره حساب" md-sort-by="email">{{item.acc_number}}</md-table-cell>
-                    <md-table-cell md-label="تاریخ عضویت" md-sort-by="created_at">{{item.shamsiDate('joined_at').date}}</md-table-cell>
-                    <md-table-cell md-label="عملیات">
+            <md-card v-if="!isCreateForm() && value.accounts.list.length > 0">
+                <md-card-header class="md-card-header-text md-card-header-blue" style="text-align: right">
+                    <div class="card-icon" style="padding: 0">
                         <md-button
-                            class="md-icon-button md-raised md-round md-info"
-                            style="margin: .2rem;"
-                            @click="showEditAccountDialog(item)"
-                        >
-                            <md-icon>edit</md-icon>
+                            class="md-dense md-raised md-primary"
+                            style="margin: 0"
+                            @click="showAddAccountDialog">
+                            ایجاد حساب جدید
                         </md-button>
-                        <md-button
-                            class="md-icon-button md-raised md-round md-danger"
-                            style="margin: .2rem;"
-                            @click="confirmRemove(item)"
-                        >
-                            <md-icon>delete</md-icon>
-                        </md-button>
-                    </md-table-cell>
-                </md-table-row>
-            </md-table>
-
+                    </div>
+                    <div class="card-text">
+                        <h4 class="title">حساب های کاربر</h4>
+                        <p class="category">
+                            تعداد حساب های کاربر:
+                            {{ value.accounts.list.length }}
+                        </p>
+                    </div>
+                </md-card-header>
+                <md-card-content>
+                    <md-table
+                        :value="value.accounts.list"
+                        :md-sort.sync="sortation.field"
+                        :md-sort-order.sync="sortation.order"
+                        class="paginated-table table-striped table-hover"
+                    >
+                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                            <md-table-cell md-label="نام صندوق" md-sort-by="name">{{item.fund.name}}</md-table-cell>
+                            <md-table-cell md-label="شماره حساب" md-sort-by="email">{{item.acc_number}}</md-table-cell>
+                            <md-table-cell md-label="تاریخ عضویت" md-sort-by="created_at">{{item.shamsiDate('joined_at').date}}</md-table-cell>
+                            <md-table-cell md-label="عملیات">
+                                <md-button
+                                    class="md-icon-button md-raised md-round md-info"
+                                    style="margin: .2rem;"
+                                    @click="showEditAccountDialog(item)"
+                                >
+                                    <md-icon>edit</md-icon>
+                                </md-button>
+                                <md-button
+                                    class="md-icon-button md-raised md-round md-danger"
+                                    style="margin: .2rem;"
+                                    @click="confirmRemove(item)"
+                                >
+                                    <md-icon>delete</md-icon>
+                                </md-button>
+                            </md-table-cell>
+                        </md-table-row>
+                    </md-table>
+                </md-card-content>
+            </md-card>
             <md-field>
                 <label>وضعیت کاربر:</label>
                 <md-select v-model="value.status.id" name="pages">
                     <md-option
                         v-for="item in userStatuses.list"
+                        :key="item.id"
+                        :label="item.display_name"
+                        :value="item.id"
+                    >
+                        {{ item.display_name }}
+                    </md-option>
+                </md-select>
+            </md-field>
+            <md-field>
+                <label>نوع کاربر:</label>
+                <md-select v-model="value.user_type.id" name="pages">
+                    <md-option
+                        v-for="item in userTypes.list"
                         :key="item.id"
                         :label="item.display_name"
                         :value="item.id"
@@ -203,10 +228,11 @@
             // console.log('value.accounts', this.value.accounts.list.length)
         },
         mounted() {
-            this.getCompanies();
-            this.getUserStatus();
-            this.getUserPic();
-            this.getFunds();
+            this.getFunds()
+            this.getUserPic()
+            this.getCompanies()
+            this.getUserTypes()
+            this.getUserStatus()
         },
         methods: {
             isCreateForm () {

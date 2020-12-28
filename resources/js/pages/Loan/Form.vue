@@ -55,7 +55,7 @@
                         </div>
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
-                                نرخ بهره
+                                نرخ کارمزد
                             </label>
                             <div class="md-layout-item">
                                 <md-field class="md-invalid">
@@ -65,7 +65,7 @@
                         </div>
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
-                                مقدار بهره
+                                مقدار کارمزد
                             </label>
                             <div class="md-layout-item">
                                 <md-field class="md-invalid">

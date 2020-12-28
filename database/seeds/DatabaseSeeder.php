@@ -295,7 +295,7 @@ class FakeUser extends Seeder {
                 'l_name' => $faker->lastName,
                 'father_name' => $faker->firstName,
                 'SSN' => $faker->nationalCode,
-                'personnel_code' => $faker->nationalCode,
+                'staff_code' => $faker->nationalCode,
                 'phone' => '021'.$faker->numberBetween(11111111, 99999999),
                 'mobile' => $faker->mobileNumber,
                 'address' => $faker->address,
@@ -350,11 +350,18 @@ class FakeLoan extends Seeder {
         for ($i = 1; $i <= self::$countOfObject; $i++) {
             $fund = FakeFund::getRandomObject();
             $loanType = LoanTypeSeeder::getRandomObject();
+            $loan_amount = $faker->numberBetween(1000, 1000000);
+            $number_of_installments = $faker->numberBetween(10, 20);
+            $interest_rate = $faker->numberBetween(0, 5);
+            $interest_amount = ($interest_rate/100) * $loan_amount;
+            $installment_rate = ($interest_amount + $loan_amount) / $number_of_installments;
             Loan::create([
                 'name' => $faker->companyField(),
-                'loan_amount' => $faker->numberBetween(1000, 1000000),
-                'installment_rate' => $faker->numberBetween(100, 10000),
-                'number_of_installments' => $faker->numberBetween(10, 20),
+                'loan_amount' => $loan_amount,
+                'interest_rate' => $interest_rate,
+                'interest_amount' => $interest_amount,
+                'installment_rate' => $installment_rate,
+                'number_of_installments' => $number_of_installments,
                 'fund_id' => $fund->id,
                 'loan_type_id' => $loanType->id,
                 'created_at' => $faker->dateTime()
@@ -381,6 +388,8 @@ class FakeAllocatedLoan extends Seeder {
                 'account_id' => $account->id,
                 'loan_id' => $loan->id,
                 'loan_amount' => $loan->loan_amount,
+                'interest_rate' => $loan->interest_rate,
+                'interest_amount' => $loan->interest_amount,
                 'installment_rate' => $loan->installment_rate,
                 'number_of_installments' => $loan->number_of_installments,
                 'payroll_deduction' => rand(0, 1),
@@ -428,6 +437,14 @@ class FakeTransaction extends Seeder {
             'companyChargeFund',
             'fundPayLoan',
             'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment',
+            'userPayInstallment'
         ];
         for ($i = 1; $i <= self::$countOfObject; $i++) {
             $status = $statuses[rand(0, count($statuses)-1)];
@@ -495,8 +512,9 @@ class FakeTransaction extends Seeder {
     }
 
     private function userPayInstallment($faker, $transactionStatus) {
-        $user = FakeUser::getRandomObject();
         $allocatedLoanInstallment = FakeAllocatedLoanInstallment::getRandomObject();
+        $user = $allocatedLoanInstallment->allocatedLoan->account->user()->first();
+
         if ($allocatedLoanInstallment->is_settled) {
             return;
         }

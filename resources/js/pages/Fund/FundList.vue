@@ -107,23 +107,22 @@
                                 {{item.name}}
                             </md-table-cell>
                             <md-table-cell md-label="پرداخت ماهیانه" md-sort-by="monthly_payment">
-                                {{item.monthly_payment}}
+                                {{ item.monthly_payment | currencyFormat }}
                             </md-table-cell>
                             <md-table-cell md-label="موجودی" md-sort-by="balance">
-                                {{item.balance | currencyFormat}}
+                                {{ item.balance | currencyFormat }}
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
                                 {{item.shamsiDate('created_at').dateTime}}
                             </md-table-cell>
                             <md-table-cell md-label="عملیات">
-                                <router-link :to="'/fund/'+item.id">
-                                    <md-button
-                                        class="md-icon-button md-raised md-round md-info"
-                                        style="margin: .2rem;"
-                                    >
-                                        <md-icon>edit</md-icon>
-                                    </md-button>
-                                </router-link>
+                                <md-button
+                                    :to="'/fund/'+item.id"
+                                    class="md-icon-button md-raised md-round md-info"
+                                    style="margin: .2rem;"
+                                >
+                                    <md-icon>edit</md-icon>
+                                </md-button>
                                 <md-button class="md-icon-button md-raised md-round md-danger"
                                            @click="confirmRemove(item)"
                                            style="margin: .2rem;">

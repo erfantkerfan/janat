@@ -10,6 +10,18 @@ class Account extends Model
 {
     use SoftDeletes, PowerJoins;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id',
+        'fund_id',
+        'acc_number',
+        'joined_at'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
