@@ -49,6 +49,23 @@ class AllocatedLoanController extends Controller
                     'relationName' => 'loan.fund'
                 ]
             ],
+            'filterRelationKeys'=> [
+                [
+                    'requestKey' => 'f_name',
+                    'relationName' => 'account.user',
+                    'relationColumn' => 'f_name'
+                ],
+                [
+                    'requestKey' => 'l_name',
+                    'relationName' => 'account.user',
+                    'relationColumn' => 'l_name'
+                ],
+                [
+                    'requestKey' => 'SSN',
+                    'relationName' => 'account.user',
+                    'relationColumn' => 'SSN'
+                ]
+            ],
             'setAppends'=> [
                 'is_settled'
 //            'total_payments',
