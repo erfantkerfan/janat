@@ -19,6 +19,7 @@ trait CommonCRUD
     {
         $modelQuery = $modelClass::query();
         $select = $this->getDefault($config, 'select', []);
+        $scopes = $this->getDefault($config, 'scopes', []);
         $eagerLoads = $this->getDefault($config, 'eagerLoads', []);
         $filterKeys = $this->getDefault($config, 'filterKeys', []);
         $setAppends = $this->getDefault($config, 'setAppends', []);
@@ -30,11 +31,18 @@ trait CommonCRUD
 
         $modelQuery->with($eagerLoads);
 
-        $this->sorting($request,$modelQuery, $modelClass);
+        $this->sorting($request,$modelQuery);
 
         $this->select($select,$modelQuery, $modelClass);
 
         $this->filterByDate($request, $modelQuery);
+
+        foreach ($scopes as $item) {
+            $scopeItem = ($request->has($item)) ? $request->get($item) : false;
+            if ($scopeItem) {
+                $modelQuery->$item();
+            }
+        }
 
         foreach ($filterKeys as $item) {
             $this->filterByKey($request, $item, $modelQuery);
@@ -77,7 +85,7 @@ trait CommonCRUD
         }
     }
 
-    private function sorting(Request $request, & $modelQuery, $modelClass) {
+    private function sorting(Request $request, & $modelQuery) {
         $sortation_field = $request->get('sortation_field');
         $sortation_order = $request->get('sortation_order');
 
@@ -92,56 +100,8 @@ trait CommonCRUD
         }
     }
 
-    private function join( & $modelQuery, $joins) {
-        foreach ($joins as $item) {
-            $this->joinByRelation($modelQuery, $item['joinFrom'], $item['joinTo'], $item['relationType'], $item['joinsType']);
-        }
-    }
-
-    private function join1( & $modelQuery, $joins) {
-        foreach ($joins as $item) {
-            $modelQuery->joinRelationship($item);
-        }
-    }
-
-    private function joinByRelation( & $modelQuery, $joinFrom, $joinTo, $relationType, $joinsType) {
-        $joinToTable = (new $joinTo())->getTable();
-        $joinToKey = (new $joinTo())->getKeyName();
-        $joinToForeignKey = (new $joinTo())->getForeignKey();
-
-        $joinFromTable = (new $joinFrom())->getTable();
-        $joinFromKey = (new $joinFrom())->getKeyName();
-        $joinFromForeignKey = (new $joinFrom())->getForeignKey();
-
-        if ($relationType === 'OneToMany') {
-            $this->joinByType($modelQuery, $joinsType, $joinToTable, $joinFromTable.'.'.$joinFromKey, $joinToTable.'.'.$joinFromForeignKey);
-        } else if ($relationType === 'ManyToOne') {
-            $this->joinByType($modelQuery, $joinsType, $joinToTable, $joinFromTable.'.'.$joinToForeignKey, $joinToTable.'.'.$joinToKey);
-        }
-    }
-
-    private function joinByType(& $modelQuery, $joinsType, $joinToTable, $joinFrom, $joinTo) {
-        if ($joinsType === 'join') {
-            $modelQuery->join($joinToTable, $joinFrom, '=', $joinTo);
-        } else if ($joinsType === 'leftJoin') {
-            $modelQuery->leftJoin($joinToTable, $joinFrom, '=', $joinTo);
-        } else if ($joinsType === 'rightJoin') {
-            $modelQuery->rightJoin($joinToTable, $joinFrom, '=', $joinTo);
-        }
-    }
-
     private function getDefault(array $config = [], $key, $default) {
         return isset($config[$key]) ? $config[$key] : $default;
-    }
-
-    private function removeSelectSecion(& $string) {
-        if (strpos($string,':')) {
-            $string = substr($string, 0, strpos($string,':'));
-        }
-    }
-
-    private function removeColumnSecion($item, $sortation_field) {
-        return str_replace(str_replace($item, '', $sortation_field), '', $sortation_field);
     }
 
     /**
