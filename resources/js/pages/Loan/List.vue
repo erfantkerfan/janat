@@ -208,10 +208,9 @@
 
 <script>
 
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
-    import priceFilterMixin from "@/mixins/priceFilterMixin"
-    import {LoanList} from '@/models/Loan';
-    import Pagination from "@/components/Pagination";
+    import {LoanList} from '@/models/Loan'
+    import Pagination from "@/components/Pagination"
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -219,7 +218,7 @@
                 this.getList()
             }
         },
-        mixins: [getFilterDropdownMixin, priceFilterMixin],
+        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         components: {
             "pagination": Pagination
         },
@@ -271,12 +270,7 @@
                         this.loans = new LoanList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.loans.loading = false
                         this.loans = new LoanList()
                     })
@@ -309,13 +303,8 @@
                         });
                         that.getList()
                     })
-                    .catch(function(error) {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false
                         item.loading = false
                     });

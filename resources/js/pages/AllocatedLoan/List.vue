@@ -264,8 +264,7 @@
 
     import Pagination from '@/components/Pagination'
     import {AllocatedLoanList} from '@/models/AllocatedLoan'
-    import priceFilterMixin from '@/mixins/priceFilterMixin'
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin'
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -273,7 +272,7 @@
                 this.getList()
             }
         },
-        mixins: [getFilterDropdownMixin, priceFilterMixin],
+        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         components: {
             "pagination": Pagination
         },
@@ -333,12 +332,7 @@
                         this.allocatedLoans = new AllocatedLoanList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.allocatedLoans.loading = false
                         this.allocatedLoans = new AllocatedLoanList()
                     })
@@ -371,13 +365,8 @@
                         });
                         that.getList()
                     })
-                    .catch(function(error) {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false
                         item.loading = false
                     });

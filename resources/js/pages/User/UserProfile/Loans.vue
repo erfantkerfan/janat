@@ -48,7 +48,8 @@
 
 <script>
     import {User} from '@/models/User';
-    import priceFilterMixin from '@/mixins/priceFilterMixin'
+    import { priceFilterMixin } from '@/mixins/Mixins'
+
     export default {
         name: 'Loans',
         mixins: [priceFilterMixin],

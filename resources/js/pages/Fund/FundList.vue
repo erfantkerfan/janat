@@ -165,9 +165,9 @@
 </template>
 
 <script>
-    import {FundList} from '@/models/Fund';
-    import Pagination from "@/components/Pagination"
-    import priceFilterMixin from "@/mixins/priceFilterMixin"
+    import {FundList} from '@/models/Fund'
+    import Pagination from '@/components/Pagination'
+    import { priceFilterMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -175,7 +175,7 @@
                 this.getList()
             }
         },
-        mixins: [priceFilterMixin],
+        mixins: [priceFilterMixin, axiosMixin],
         components: {
             "pagination": Pagination
         },
@@ -221,12 +221,7 @@
                         this.funds = new FundList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.funds.loading = false
                         this.funds = new FundList()
                     })
@@ -259,13 +254,8 @@
                         });
                         that.getList()
                     })
-                    .catch(function(error) {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false
                         item.loading = false
                     });

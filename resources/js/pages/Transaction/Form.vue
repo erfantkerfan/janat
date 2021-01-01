@@ -159,10 +159,8 @@
 </template>
 
 <script>
-    import {AllocatedLoan} from '@/models/AllocatedLoan';
     import { Transaction } from '@/models/Transaction'
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
-    import priceFilterMixin from "@/mixins/priceFilterMixin";
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -170,6 +168,7 @@
                 this.transaction.transaction_statusـid = this.transaction.transaction_status.id
             }
         },
+        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         data: () => ({
             transaction: new Transaction(),
             sortation: {
@@ -177,7 +176,6 @@
                 order: "asc"
             },
         }),
-        mixins: [getFilterDropdownMixin, priceFilterMixin],
         mounted() {
             this.getData()
             this.getTransactionStatus()
@@ -197,12 +195,7 @@
                         this.transaction = new Transaction(response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.transaction.loading = false;
                         this.transaction = new Transaction()
                     })
@@ -225,12 +218,7 @@
                         });
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.transaction.loading = false;
                         that.transaction = new Transaction()
                     })
@@ -252,12 +240,7 @@
                         that.$router.push({ path: '/allocated_loan/'+that.transaction.id })
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.transaction.loading = false;
                         that.transaction = new Transaction()
                     })

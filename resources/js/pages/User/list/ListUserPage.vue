@@ -263,9 +263,9 @@
 
 <script>
 
-    import { UserList } from '@/models/User';
-    import Pagination from '@/components/Pagination';
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
+    import { UserList } from '@/models/User'
+    import Pagination from '@/components/Pagination'
+    import { getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -273,7 +273,7 @@
                 this.getList()
             }
         },
-        mixins: [getFilterDropdownMixin],
+        mixins: [getFilterDropdownMixin, axiosMixin],
         components: {
             "pagination": Pagination
         },
@@ -332,12 +332,7 @@
                         this.users = new UserList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.users.loading = false
                         this.users = new UserList()
                     })
@@ -370,13 +365,8 @@
                         });
                         that.getList()
                     })
-                    .catch(function(error) {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false;
                         item.loading = false;
                     });

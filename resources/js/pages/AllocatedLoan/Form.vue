@@ -219,10 +219,10 @@
 </template>
 
 <script>
-    import { StatsCard } from "@/components";
-    import { AllocatedLoan } from '@/models/AllocatedLoan';
-    import { AllocatedLoanInstallment } from "@/models/AllocatedLoanInstallment";
-    import priceFilterMixin from "@/mixins/priceFilterMixin";
+    import { StatsCard } from "@/components"
+    import { AllocatedLoan } from '@/models/AllocatedLoan'
+    import { AllocatedLoanInstallment } from "@/models/AllocatedLoanInstallment"
+    import { priceFilterMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -231,7 +231,7 @@
             }
         },
         components: { StatsCard },
-        mixins: [priceFilterMixin],
+        mixins: [priceFilterMixin, axiosMixin],
         data: () => ({
             allocatedLoan: new AllocatedLoan(),
             sortation: {
@@ -259,12 +259,7 @@
                         this.allocatedLoan = new AllocatedLoan(response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.allocatedLoan.loading = false;
                         this.allocatedLoan = new AllocatedLoan()
                     })
@@ -287,12 +282,7 @@
                         });
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.allocatedLoan.loading = false;
                         that.allocatedLoan = new AllocatedLoan()
                     })
@@ -314,12 +304,7 @@
                         that.$router.push({ path: '/allocated_loan/'+that.allocatedLoan.id })
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.allocatedLoan.loading = false;
                         that.allocatedLoan = new AllocatedLoan()
                     })

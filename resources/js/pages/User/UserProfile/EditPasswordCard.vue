@@ -44,13 +44,12 @@
 </template>
 
 <script>
-    import {ValidationError} from "@/components";
-    import formMixin from "@/mixins/form-mixin";
-    import {User} from '@/models/User';
+    import {ValidationError} from "@/components"
+    import {User} from '@/models/User'
+    import { axiosMixin } from '@/mixins/Mixins'
 
     export default {
         name: "edit-password-card",
-
         props: {
             user: Object,
             value: {
@@ -60,10 +59,8 @@
                 }
             }
         },
-
         components: {ValidationError},
-
-        mixins: [formMixin],
+        mixins: [axiosMixin],
 
         data: () => ({
             password: null,
@@ -136,13 +133,8 @@
                         });
                     })
                     .catch((error) => {
+                        this.axios_handleError(error)
                         that.$emit('update')
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
                     })
 
             }

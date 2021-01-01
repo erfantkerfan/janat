@@ -125,9 +125,10 @@
 
 <script>
 
-    import {Fund, FundList} from '@/models/Fund';
-    import {CompanyList} from '@/models/Company';
-    import Pagination from "@/components/Pagination";
+    import {Fund, FundList} from '@/models/Fund'
+    import {CompanyList} from '@/models/Company'
+    import Pagination from '@/components/Pagination'
+    import { axiosMixin } from '@/mixins/Mixins'
 
     export default {
         name: "CompanyList",
@@ -136,6 +137,7 @@
                 this.getList()
             }
         },
+        mixins: [axiosMixin],
         components: {
             "pagination": Pagination
         },
@@ -179,12 +181,7 @@
                         this.companies = new CompanyList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.companies.loading = false
                         this.companies = new CompanyList()
                     })
@@ -199,12 +196,7 @@
                         this.funds.addItem(new Fund({id: 0, name: ''}))
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.funds.loading = false;
                         that.funds = new FundList()
                     })
@@ -237,13 +229,8 @@
                         });
                         that.getList()
                     })
-                    .catch(function(error) {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false
                         item.loading = false
                     });

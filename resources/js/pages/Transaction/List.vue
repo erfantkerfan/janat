@@ -238,10 +238,9 @@
 
 <script>
 
-    import Pagination from "@/components/Pagination";
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
-    import {TransactionList} from "@/models/Transaction";
-    import priceFilterMixin from "@/mixins/priceFilterMixin";
+    import Pagination from '@/components/Pagination'
+    import { TransactionList } from '@/models/Transaction'
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -249,7 +248,7 @@
                 this.getList()
             }
         },
-        mixins: [getFilterDropdownMixin, priceFilterMixin],
+        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         components: {
             "pagination": Pagination
         },
@@ -305,12 +304,7 @@
                         this.transctions = new TransactionList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.transctions.loading = false
                         this.transctions = new TransactionList()
                     })
@@ -339,17 +333,12 @@
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
-                            message: 'صندوق با موفقیت حذف شد'
+                            message: 'وام تخصیص داده شده با موفقیت حذف شد'
                         });
                         that.getList()
                     })
-                    .catch(function(error) {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false
                         item.loading = false
                     });
