@@ -10,6 +10,21 @@ class Transaction extends Model
 {
     use SoftDeletes, PowerJoins;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'cost',
+        'deadline_at',
+        'paid_at',
+        'manager_comment',
+        'user_comment',
+        'transaction_status_id',
+        'parent_transaction_id'
+    ];
+
     public function scopePaid($query)
     {
         return $query->where('transaction_status_id', 1);

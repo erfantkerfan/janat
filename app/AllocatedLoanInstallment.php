@@ -32,7 +32,8 @@ class AllocatedLoanInstallment extends Model
 
     public function getTotalPaymentsAttribute()
     {
-        return $this->receivedTransactions()->paid()->sum('cost');
+        return $this->receivedTransactions->sum('cost');
+//        return $this->receivedTransactions()->paid()->sum('cost');
     }
 
     public function getRemainingPayableAmountAttribute()
