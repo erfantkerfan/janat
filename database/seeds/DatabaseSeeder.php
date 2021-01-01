@@ -469,46 +469,52 @@ class FakeTransaction extends Seeder {
     private function userChargeFund($faker, $transactionStatus) {
         $user = FakeUser::getRandomObject();
         $fund = FakeFund::getRandomObject();
+        $cost = $fund->monthly_payment;
         $transaction = Transaction::create([
-            'cost' => $fund->monthly_payment,
+            'cost' => $cost,
             'manager_comment' => $faker->paragraph,
             'user_comment' => $faker->paragraph,
             'transaction_status_id' => $transactionStatus->id,
             'deadline_at' => $faker->dateTime(),
+            'paid_at' => $faker->dateTime(),
             'created_at' => $faker->dateTime()
         ]);
-        $transaction->userPayers()->attach($user);
-        $transaction->fundRecipients()->attach($fund);
+        $transaction->userPayers()->attach($user, ['cost'=> $cost]);
+        $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
     }
 
     private function companyChargeFund($faker, $transactionStatus) {
         $company = FakeCompany::getRandomObject();
         $fund = FakeFund::getRandomObject();
+        $cost = $fund->monthly_payment;
         $transaction = Transaction::create([
-            'cost' => $fund->monthly_payment,
+            'cost' => $cost,
             'manager_comment' => $faker->paragraph,
             'user_comment' => $faker->paragraph,
             'transaction_status_id' => $transactionStatus->id,
             'deadline_at' => $faker->dateTime(),
+            'paid_at' => $faker->dateTime(),
             'created_at' => $faker->dateTime()
         ]);
-        $transaction->companyPayers()->attach($company);
-        $transaction->fundRecipients()->attach($fund);
+        $transaction->companyPayers()->attach($company, ['cost'=> $cost]);
+        $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
     }
 
     private function fundPayLoan($faker, $transactionStatus) {
         $fund = FakeFund::getRandomObject();
         $allocatedLoan = FakeAllocatedLoan::getRandomObject();
+        $cost = $allocatedLoan->loan_amount;
         $transaction = Transaction::create([
-            'cost' => $allocatedLoan->loan_amount,
+            'cost' => $cost,
             'manager_comment' => $faker->paragraph,
             'user_comment' => $faker->paragraph,
             'transaction_status_id' => $transactionStatus->id,
             'deadline_at' => $faker->dateTime(),
+            'paid_at' => $faker->dateTime(),
             'created_at' => $faker->dateTime()
         ]);
-        $transaction->fundPayers()->attach($fund);
-        $transaction->allocatedLoanRecipients()->attach($allocatedLoan);
+        $transaction->fundPayers()->attach($fund, ['cost'=> $cost]);
+        $transaction->allocatedLoanRecipients()->attach($allocatedLoan, ['cost'=> $cost]);
     }
 
     private function userPayInstallment($faker, $transactionStatus) {
@@ -521,16 +527,18 @@ class FakeTransaction extends Seeder {
         if ($allocatedLoanInstallment->allocatedLoan->is_settled) {
             return;
         }
+        $cost = $allocatedLoanInstallment->allocatedLoan->installment_rate;
         $transaction = Transaction::create([
-            'cost' => $allocatedLoanInstallment->allocatedLoan->installment_rate,
+            'cost' => $cost,
             'manager_comment' => $faker->paragraph,
             'user_comment' => $faker->paragraph,
             'transaction_status_id' => $transactionStatus->id,
             'deadline_at' => $faker->dateTime(),
+            'paid_at' => $faker->dateTime(),
             'created_at' => $faker->dateTime()
         ]);
-        $transaction->userPayers()->attach($user);
-        $transaction->allocatedLoanInstallmentRecipients()->attach($allocatedLoanInstallment);
+        $transaction->userPayers()->attach($user, ['cost'=> $cost]);
+        $transaction->allocatedLoanInstallmentRecipients()->attach($allocatedLoanInstallment, ['cost'=> $cost]);
     }
 
 }
