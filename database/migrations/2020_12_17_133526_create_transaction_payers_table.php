@@ -15,6 +15,7 @@ class CreateTransactionPayersTable extends Migration
     {
         Schema::create('transaction_payers', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('cost')->nullable()->comment('مبلغ پرداخت');
             $table->bigInteger('transaction_id')->unsigned();
             $table->bigInteger('transaction_payers_id')->unsigned();
             $table->string('transaction_payers_type');

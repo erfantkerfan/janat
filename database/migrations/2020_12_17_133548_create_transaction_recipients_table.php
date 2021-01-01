@@ -15,6 +15,7 @@ class CreateTransactionRecipientsTable extends Migration
     {
         Schema::create('transaction_recipients', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('cost')->nullable()->comment('مبلغ دریافت');
             $table->bigInteger('transaction_id')->unsigned();
             $table->bigInteger('transaction_recipients_id')->unsigned();
             $table->string('transaction_recipients_type');
