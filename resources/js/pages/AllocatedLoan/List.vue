@@ -77,13 +77,16 @@
                                     <md-option
                                         v-for="item in funds.list"
                                         :key="item.id"
-                                        :label="item.name"
+                                        :label="item.id"
                                         :value="item.id"
                                     >
                                         {{ item.name }}
                                     </md-option>
                                 </md-select>
                             </md-field>
+                        </div>
+                        <div class="md-layout-item">
+                            <md-checkbox v-model="filterData.settled">تسویه شده</md-checkbox>
                         </div>
                     </div>
                     <div class="md-layout">
@@ -189,7 +192,9 @@
                                 </md-select>
                             </md-field>
                         </md-table-toolbar>
-                        <md-table-row v-if="!allocatedLoans.loading && allocatedLoans.list.length > 0" slot="md-table-row" slot-scope="{ item }">
+                        <md-table-row v-if="!allocatedLoans.loading && allocatedLoans.list.length > 0"
+                                      slot="md-table-row" slot-scope="{ item }"
+                                      :class="getInstallmentRowClass(item)">
                             <md-table-cell md-label="نام" md-sort-by="account.user.f_name">
                                 {{item.account.user.f_name}}
                             </md-table-cell>
@@ -207,6 +212,14 @@
                             </md-table-cell>
                             <md-table-cell md-label="نام صندوق" md-sort-by="loan.fund.name">
                                 {{item.loan.fund.name}}
+                            </md-table-cell>
+                            <md-table-cell md-label="وضعیت">
+                                <span v-if="item.is_settled">
+                                    تسویه شده
+                                </span>
+                                <span v-else>
+                                    تسویه نشده
+                                </span>
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
                                 {{item.shamsiDate('created_at').dateTime}}
@@ -230,31 +243,10 @@
                     <vue-confirm-dialog></vue-confirm-dialog>
                     <loading :active.sync="allocatedLoans.loading" :is-full-page="false"></loading>
                 </md-card-content>
-                <md-card-actions v-if="allocatedLoans.paginate" md-alignment="space-between">
-                    <div class="">
-                        <p class="card-category">
-                            نمایش
-                            {{ allocatedLoans.paginate.from }}
-                            تا
-                            {{ allocatedLoans.paginate.to }}
-                            از
-                            {{ allocatedLoans.paginate.total }}
-                            مورد
-                        </p>
-                    </div>
-                    <paginate
-                        v-model="allocatedLoans.paginate.current_page"
-                        :page-count="allocatedLoans.paginate.last_page"
-                        :page-range="3"
-                        :margin-pages="2"
-                        :click-handler="clickCallback"
-                        :prev-text="'<'"
-                        :next-text="'>'"
-                        :container-class="'pagination pagination-no-border pagination-success pagination-primary'"
-                        :page-class="'page-item'"
-                        :page-link-class="'page-link'">
-                    </paginate>
-                </md-card-actions>
+                <list-pagination
+                    :paginate="allocatedLoans.paginate"
+                    @changePage="clickCallback"
+                />
             </md-card>
         </div>
     </div>
@@ -262,8 +254,8 @@
 
 <script>
 
-    import Pagination from '@/components/Pagination'
     import {AllocatedLoanList} from '@/models/AllocatedLoan'
+    import ListPagination from '@/components/ListPagination'
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
@@ -274,7 +266,7 @@
         },
         mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         components: {
-            "pagination": Pagination
+            ListPagination,
         },
         data: () => ({
             allocatedLoans: new AllocatedLoanList(),
@@ -290,6 +282,7 @@
                 number_of_installments: null,
                 fund_id: null,
                 loan_id: null,
+                settled: false,
                 f_name: null,
                 l_name: null,
                 SSN: null,
@@ -316,8 +309,9 @@
                     sortation_field: this.filterData.sortation.field,
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
-                    fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
-                    loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null: this.filterData.loan_id,
+                    fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null : this.filterData.fund_id,
+                    loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null : this.filterData.loan_id,
+                    settled: (this.filterData.settled === false) ? null : this.filterData.settled,
                     loan_amount: this.filterData.loan_amount,
                     f_name: this.filterData.f_name,
                     l_name: this.filterData.l_name,
@@ -374,7 +368,19 @@
             customSort() {
                 this.getList()
                 return false;
-            }
+            },
+            getInstallmentRowClass (item) {
+                if (item.is_settled) {
+                    return 'table-success'
+                }
+                return ''
+                // {
+                //     "table-success": id === 1,
+                //     "table-info": id === 3,
+                //     "table-danger": id === 5,
+                //     "table-warning": id === 7
+                // }
+            },
         }
 
     }

@@ -134,31 +134,10 @@
                     <vue-confirm-dialog></vue-confirm-dialog>
                     <loading :active.sync="funds.loading" :is-full-page="false"></loading>
                 </md-card-content>
-                <md-card-actions v-if="funds.paginate" md-alignment="space-between">
-                    <div class="">
-                        <p class="card-category">
-                            نمایش
-                            {{ funds.paginate.from }}
-                            تا
-                            {{ funds.paginate.to }}
-                            از
-                            {{ funds.paginate.total }}
-                            مورد
-                        </p>
-                    </div>
-                    <paginate
-                        v-model="funds.paginate.current_page"
-                        :page-count="funds.paginate.last_page"
-                        :page-range="3"
-                        :margin-pages="2"
-                        :click-handler="clickCallback"
-                        :prev-text="'<'"
-                        :next-text="'>'"
-                        :container-class="'pagination pagination-no-border pagination-success pagination-primary'"
-                        :page-class="'page-item'"
-                        :page-link-class="'page-link'">
-                    </paginate>
-                </md-card-actions>
+                <list-pagination
+                    :paginate="funds.paginate"
+                    @changePage="clickCallback"
+                />
             </md-card>
         </div>
     </div>
@@ -166,7 +145,7 @@
 
 <script>
     import {FundList} from '@/models/Fund'
-    import Pagination from '@/components/Pagination'
+    import ListPagination from '@/components/ListPagination'
     import { priceFilterMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
@@ -177,7 +156,7 @@
         },
         mixins: [priceFilterMixin, axiosMixin],
         components: {
-            "pagination": Pagination
+            ListPagination
         },
         data: () => ({
             funds: new FundList(),

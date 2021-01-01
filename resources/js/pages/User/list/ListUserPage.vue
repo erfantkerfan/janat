@@ -231,31 +231,10 @@
                     <vue-confirm-dialog></vue-confirm-dialog>
                     <loading :active.sync="users.loading" :is-full-page="false"></loading>
                 </md-card-content>
-                <md-card-actions v-if="users.paginate" md-alignment="space-between">
-                    <div class="">
-                        <p class="card-category">
-                            نمایش
-                            {{ users.paginate.from }}
-                            تا
-                            {{ users.paginate.to }}
-                            از
-                            {{ users.paginate.total }}
-                            مورد
-                        </p>
-                    </div>
-                    <paginate
-                        v-model="users.paginate.current_page"
-                        :page-count="users.paginate.last_page"
-                        :page-range="3"
-                        :margin-pages="2"
-                        :click-handler="clickCallback"
-                        :prev-text="'<'"
-                        :next-text="'>'"
-                        :container-class="'pagination pagination-no-border pagination-success pagination-primary'"
-                        :page-class="'page-item'"
-                        :page-link-class="'page-link'">
-                    </paginate>
-                </md-card-actions>
+                <list-pagination
+                    :paginate="users.paginate"
+                    @changePage="clickCallback"
+                />
             </md-card>
         </div>
     </div>
@@ -264,7 +243,7 @@
 <script>
 
     import { UserList } from '@/models/User'
-    import Pagination from '@/components/Pagination'
+    import ListPagination from '@/components/ListPagination'
     import { getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
@@ -275,7 +254,7 @@
         },
         mixins: [getFilterDropdownMixin, axiosMixin],
         components: {
-            "pagination": Pagination
+            ListPagination
         },
         data: () => ({
             users: new UserList(),

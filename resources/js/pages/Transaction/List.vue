@@ -206,31 +206,10 @@
                     <vue-confirm-dialog></vue-confirm-dialog>
                     <loading :active.sync="transctions.loading" :is-full-page="false"></loading>
                 </md-card-content>
-                <md-card-actions v-if="transctions.paginate" md-alignment="space-between">
-                    <div class="">
-                        <p class="card-category">
-                            نمایش
-                            {{ transctions.paginate.from }}
-                            تا
-                            {{ transctions.paginate.to }}
-                            از
-                            {{ transctions.paginate.total }}
-                            مورد
-                        </p>
-                    </div>
-                    <paginate
-                        v-model="transctions.paginate.current_page"
-                        :page-count="transctions.paginate.last_page"
-                        :page-range="3"
-                        :margin-pages="2"
-                        :click-handler="clickCallback"
-                        :prev-text="'<'"
-                        :next-text="'>'"
-                        :container-class="'pagination pagination-no-border pagination-success pagination-primary'"
-                        :page-class="'page-item'"
-                        :page-link-class="'page-link'">
-                    </paginate>
-                </md-card-actions>
+                <list-pagination
+                    :paginate="transctions.paginate"
+                    @changePage="clickCallback"
+                />
             </md-card>
         </div>
     </div>
@@ -238,7 +217,7 @@
 
 <script>
 
-    import Pagination from '@/components/Pagination'
+    import ListPagination from '@/components/ListPagination'
     import { TransactionList } from '@/models/Transaction'
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
@@ -250,7 +229,7 @@
         },
         mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         components: {
-            "pagination": Pagination
+            ListPagination
         },
         data: () => ({
             transctions: new TransactionList(),

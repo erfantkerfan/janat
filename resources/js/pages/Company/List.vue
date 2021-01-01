@@ -93,31 +93,10 @@
                     <vue-confirm-dialog></vue-confirm-dialog>
                     <loading :active.sync="companies.loading" :is-full-page="false"></loading>
                 </md-card-content>
-                <md-card-actions v-if="companies.paginate" md-alignment="space-between">
-                    <div class="">
-                        <p class="card-category">
-                            نمایش
-                            {{ companies.paginate.from }}
-                            تا
-                            {{ companies.paginate.to }}
-                            از
-                            {{ companies.paginate.total }}
-                            مورد
-                        </p>
-                    </div>
-                    <paginate
-                        v-model="companies.paginate.current_page"
-                        :page-count="companies.paginate.last_page"
-                        :page-range="3"
-                        :margin-pages="2"
-                        :click-handler="clickCallback"
-                        :prev-text="'<'"
-                        :next-text="'>'"
-                        :container-class="'pagination pagination-no-border pagination-success pagination-primary'"
-                        :page-class="'page-item'"
-                        :page-link-class="'page-link'">
-                    </paginate>
-                </md-card-actions>
+                <list-pagination
+                    :paginate="companies.paginate"
+                    @changePage="clickCallback"
+                />
             </md-card>
         </div>
     </div>
@@ -127,7 +106,7 @@
 
     import {Fund, FundList} from '@/models/Fund'
     import {CompanyList} from '@/models/Company'
-    import Pagination from '@/components/Pagination'
+    import ListPagination from '@/components/ListPagination'
     import { axiosMixin } from '@/mixins/Mixins'
 
     export default {
@@ -139,7 +118,7 @@
         },
         mixins: [axiosMixin],
         components: {
-            "pagination": Pagination
+            ListPagination,
         },
         data: () => ({
             companies: new CompanyList(),
