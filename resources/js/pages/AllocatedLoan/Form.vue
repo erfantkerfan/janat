@@ -2,151 +2,99 @@
     <div class="md-layout md-gutter">
         <div class="md-layout-item md-small-size-100">
             <div class="md-layout-item md-size-100">
-                <md-card>
-                    <md-card-header class="md-card-header-icon md-card-header-green">
-                        <div class="card-icon">
-                            <md-icon>monetization_on</md-icon>
-                        </div>
-                        <h4 class="title">
-                            اطلاعات وام تخصیص داده شده
-                        </h4>
-                    </md-card-header>
 
-                    <md-card-content>
-                        <div v-if="allocatedLoan.account" class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                نام و نام خانوادگی وام گیرنده
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.account.user.f_name+' '+allocatedLoan.account.user.l_name" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
-                        <div v-if="allocatedLoan.account" class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                شماره حساب
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.account.acc_number" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
-                        <md-button
-                            class="md-dense md-raised md-success"
-                            :to="'/user/'+allocatedLoan.account.user.id">
-                            مشاهده اطلاعات کاربر
-                        </md-button>
-                        <md-divider></md-divider>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                نام وام
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.loan.name" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                مبلغ وام
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.loan.loan_amount" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                نرخ کارمزد
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.loan.interest_rate" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                مقدار کارمزد
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.loan.interest_amount" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                مبلغ هر قسط وام
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.loan.installment_rate" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                تعداد اقساط وام
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.loan.number_of_installments" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
-                        <md-button
-                            class="md-dense md-raised md-success"
-                            :to="'/loan/'+allocatedLoan.loan.id">
-                            مشاهده اطلاعات وام
-                        </md-button>
-                        <md-divider></md-divider>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                نام صندوق وام
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.loan.fund.name" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                شهریه صندوق
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.loan.fund.monthly_payment" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
-                        <md-button
-                            class="md-dense md-raised md-success"
-                            :to="'/fund/'+allocatedLoan.loan.fund.id">
-                            مشاهده اطلاعات صندوق
-                        </md-button>
-                        <md-divider></md-divider>
-                        <div v-if="!isCreateForm()" class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                تاریخ دریافت وام
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="allocatedLoan.shamsiDate('created_at').date" :disabled="true"/>
-                                </md-field>
-                            </div>
-                        </div>
+                <div class="md-layout">
+                    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                        <stats-card  v-if="allocatedLoan.account" header-color="blue">
+                            <template slot="header">
+                                <div class="card-icon">
+                                    <md-icon>perm_identity</md-icon>
+                                </div>
+                                <p class="category">نام و نام خانوادگی وام گیرنده</p>
+                                <h3 class="title">
+                                    {{ allocatedLoan.account.user.f_name+' '+allocatedLoan.account.user.l_name }}
+                                </h3>
+                            </template>
+                            <template slot="footer">
+                                <div class="stats">
+                                    <md-button
+                                        v-if="allocatedLoan.account"
+                                        class="md-dense md-raised md-success"
+                                        :to="'/user/'+allocatedLoan.account.user.id">
+                                        مشاهده اطلاعات کاربر
+                                    </md-button>
+                                </div>
+                            </template>
+                        </stats-card>
+                    </div>
+                    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                        <stats-card header-color="warning">
+                            <template slot="header">
+                                <div class="card-icon">
+                                    <md-icon>monetization_on</md-icon>
+                                </div>
+                                <p class="category">اطلاعات وام</p>
+                                <h3 class="title">
+                                    {{ allocatedLoan.loan.name }}
+                                </h3>
+                            </template>
 
-                        <loading :active.sync="allocatedLoan.loading" :is-full-page="false"></loading>
+                            <template slot="footer">
+                                <div class="stats">
+                                    <md-button
+                                        class="md-dense md-raised md-success"
+                                        :to="'/loan/'+allocatedLoan.loan.id">
+                                        مشاهده اطلاعات وام
+                                    </md-button>
+                                </div>
+                            </template>
+                        </stats-card>
+                    </div>
+                    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                        <stats-card header-color="green">
+                            <template slot="header">
+                                <div class="card-icon">
+                                    <md-icon>account_balance</md-icon>
+                                </div>
+                                <p class="category">اطلاعات صندوق</p>
+                                <h3 class="title">
+                                    {{ allocatedLoan.loan.fund.name }}
+                                </h3>
+                            </template>
 
-                    </md-card-content>
-
-                </md-card>
+                            <template slot="footer">
+                                <div class="stats">
+                                    <md-button
+                                        class="md-dense md-raised md-success"
+                                        :to="'/fund/'+allocatedLoan.loan.fund.id">
+                                        مشاهده اطلاعات صندوق
+                                    </md-button>
+                                </div>
+                            </template>
+                        </stats-card>
+                    </div>
+                    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                        <stats-card header-color="rose">
+                            <template slot="header">
+                                <div class="card-icon">
+                                    <md-icon>monetization_on</md-icon>
+                                </div>
+                                <p class="category">اطلاعات وام تخصیص داده شده</p>
+                                تاریخ ایجاد:
+                                {{ allocatedLoan.shamsiDate('created_at').date }}
+                                <br>
+                                مبلغ وام:
+                                {{ allocatedLoan.loan_amount }}
+                                <br>
+                                مبلغ هر قسط وام:
+                                {{ allocatedLoan.installment_rate }}
+                                <br>
+                                تعداد اقساط:
+                                {{ allocatedLoan.number_of_installments }}
+                            </template>
+                        </stats-card>
+                    </div>
+                </div>
 
                 <md-card>
                     <md-card-header class="md-card-header-text" :class="{'md-card-header-warning': !allocatedLoan.is_settled, 'md-card-header-blue': allocatedLoan.is_settled}">
@@ -199,7 +147,7 @@
                                     </span>
                                 </md-table-cell>
                                 <md-table-cell md-label="تاریخ" md-sort-by="created_at">{{ item.shamsiDate('created_at').date }}</md-table-cell>
-                                <md-table-cell md-label="عملیات">
+                                <md-table-cell md-label="مشاهده">
                                     <md-button
                                         v-if="item.received_transactions.list.length > 0"
                                         @click="showInstallmentTransactions(item)"
@@ -215,7 +163,7 @@
                 </md-card>
 
                 <md-dialog :md-active.sync="installmentTransactionsShowDialog">
-                    <md-dialog-title>ایجاد حساب جدید</md-dialog-title>
+                    <md-dialog-title>پرداختی های قسط</md-dialog-title>
 
                     <md-dialog-content>
                         <div style="height: 300px;display: flex;flex-flow: column;justify-content: center;">
@@ -240,11 +188,11 @@
                                     <md-table v-model="installment.received_transactions.list" table-header-color="orange">
                                         <md-table-row slot="md-table-row" slot-scope="{ item }">
                                             <md-table-cell md-label="مبلغ تراکنش">{{ item.cost | currencyFormat }}</md-table-cell>
-                                            <md-table-cell md-label="تاریخ">{{ item.shamsiDate('created_at').date }}</md-table-cell>
+                                            <md-table-cell md-label="تاریخ پرداخت">{{ item.shamsiDate('paid_at').date }}</md-table-cell>
                                             <md-table-cell md-label="وضعیت">{{ item.transaction_status.display_name }}</md-table-cell>
                                             <md-table-cell md-label="توضیحات کاربر">{{ item.user_comment }}</md-table-cell>
                                             <md-table-cell md-label="توضیحات مدیر">{{ item.manager_comment }}</md-table-cell>
-                                            <md-table-cell md-label="عملیات">
+                                            <md-table-cell md-label="مشاهده">
                                                 <md-button
                                                     :to="'/transactions/'+item.id"
                                                     class="md-icon-button md-raised md-round md-info"
@@ -271,8 +219,9 @@
 </template>
 
 <script>
+    import { StatsCard } from "@/components";
     import { AllocatedLoan } from '@/models/AllocatedLoan';
-    import {AllocatedLoanInstallment} from "@/models/AllocatedLoanInstallment";
+    import { AllocatedLoanInstallment } from "@/models/AllocatedLoanInstallment";
     import priceFilterMixin from "@/mixins/priceFilterMixin";
 
     export default {
@@ -281,6 +230,7 @@
                 this.allocatedLoan.fund_id = this.allocatedLoan.fund.id
             }
         },
+        components: { StatsCard },
         mixins: [priceFilterMixin],
         data: () => ({
             allocatedLoan: new AllocatedLoan(),

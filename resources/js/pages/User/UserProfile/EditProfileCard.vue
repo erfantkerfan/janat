@@ -58,7 +58,7 @@
                 </label>
                 <div class="md-layout-item">
                     <md-field class="md-invalid">
-                        <md-input v-model="value.personnel_code" @input="updateUserModel"/>
+                        <md-input v-model="value.staff_code" @input="updateUserModel"/>
                     </md-field>
                 </div>
             </div>

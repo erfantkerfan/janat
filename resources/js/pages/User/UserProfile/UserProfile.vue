@@ -2,9 +2,7 @@
     <div>
         <div class="md-layout md-gutter">
             <div class="md-layout-item md-size-60 md-small-size-100">
-                <div class="md-layout-item md-size-100">
-                    <user-edit-card v-model="user" @update="updateUserProfile"/>
-                </div>
+                <user-edit-card v-model="user" @update="updateUserProfile"/>
             </div>
             <div class="md-layout-item md-size-40 md-small-size-100">
                 <user-profile-card v-model="user"

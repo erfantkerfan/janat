@@ -11,6 +11,44 @@
                 <md-card-content>
                     <div class="md-layout">
                         <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    نام
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.f_name" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    نام خانوادگی
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.l_name" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    کد ملی
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.SSN" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
                             <md-field>
                                 <label>وام:</label>
                                 <md-select v-model="filterData.loan_id" name="pages">
@@ -253,6 +291,9 @@
                 number_of_installments: null,
                 fund_id: null,
                 loan_id: null,
+                f_name: null,
+                l_name: null,
+                SSN: null,
                 createdSinceDate: null,
                 createdTillDate: null
             }
@@ -279,6 +320,9 @@
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null: this.filterData.loan_id,
                     loan_amount: this.filterData.loan_amount,
+                    f_name: this.filterData.f_name,
+                    l_name: this.filterData.l_name,
+                    SSN: this.filterData.SSN,
                     installment_rate: this.filterData.installment_rate,
                     number_of_installments: this.filterData.number_of_installments,
                     createdSinceDate: this.filterData.createdSinceDate,
