@@ -11,16 +11,14 @@ trait CommonCRUD
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @param $modelQuery
-     * @param $config
+     * @param $modelClass
+     * @param array $config
      * @return Response
      */
     public function commonIndex(Request $request, $modelClass, array $config = [])
     {
         $modelQuery = $modelClass::query();
         $select = $this->getDefault($config, 'select', []);
-        $joins = $this->getDefault($config, 'joins', []);
-        $joins1 = $this->getDefault($config, 'joins1', []);
         $eagerLoads = $this->getDefault($config, 'eagerLoads', []);
         $filterKeys = $this->getDefault($config, 'filterKeys', []);
         $setAppends = $this->getDefault($config, 'setAppends', []);
@@ -43,7 +41,7 @@ trait CommonCRUD
         }
 
         foreach ($filterRelationKeys as $item) {
-            $this->filterByRelationKey($request, $item['requestKey'], $item['relationName'], $item['relationColumn'], $modelQuery);
+            $this->filterByRelationKey($request, $item, $modelQuery);
         }
 
         foreach ($filterRelationIds as $item) {
