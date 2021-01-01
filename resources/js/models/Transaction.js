@@ -60,6 +60,7 @@ class Transaction extends Model {
                 }
             },
             { key: 'deadline_at' },
+            { key: 'paid_at' },
             { key: 'created_at' },
             { key: 'updated_at' },
             { key: 'deleted_at' }
@@ -102,6 +103,19 @@ class Transaction extends Model {
         }
     }
 
+    getRelatedModelRoute(modelType, modelValue) {
+        if (modelType === 'App\\Company') {
+            return '/company/'+modelValue.id
+        } else if (modelType === 'App\\User') {
+            return '/user/'+modelValue.id
+        } else if (modelType === 'App\\Fund') {
+            return '/fund/'+modelValue.id
+        } else if (modelType === 'App\\AllocatedLoan') {
+            return '/allocated_loan/'+modelValue.id
+        } else if (modelType === 'App\\AllocatedLoanInstallment') {
+            return '/allocated_loan/'+modelValue.allocated_loan_id
+        }
+    }
 }
 
 class TransactionList extends Collection {
