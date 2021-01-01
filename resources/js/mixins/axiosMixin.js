@@ -7,8 +7,13 @@ export default {
                 console.log(error.response.data);
                 console.log(error.response.status);
                 console.log(error.response.headers);
-                if (parseInt(error.response.status) === 401) {
+                let statusCode = parseInt(error.response.status)
+                if (statusCode === 401) {
                     errorMessage = 'ابتدا وارد شوید.'
+                } else if (statusCode >499 && statusCode < 600) {
+                    errorMessage = 'یک مشکل فنی رخ داده است. لطفا متن زیر را برای پشتیبانی ارسال کنید.' +
+                        '<br>' +
+                        error.response.data.message
                 } else {
                     errorMessage = error.message
                 }
