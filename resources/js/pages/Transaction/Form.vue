@@ -61,14 +61,30 @@
                                 مهلت پرداخت
                             </label>
                             <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="transaction.shamsiDate('deadline_at').date"/>
-                                </md-field>
+                                <date-picker
+                                    v-model="transaction.deadline_at"
+                                    type="datetime"
+                                    :editable="true"
+                                    format="YYYY-MM-DD HH:mm:ss"
+                                    display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                            </div>
+                        </div>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                تاریخ پرداخت
+                            </label>
+                            <div class="md-layout-item">
+                                <date-picker
+                                    v-model="transaction.paid_at"
+                                    type="datetime"
+                                    :editable="true"
+                                    format="YYYY-MM-DD HH:mm:ss"
+                                    display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
                             </div>
                         </div>
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
-                                تاریخ دریافت وام
+                                تاریخ ایجاد
                             </label>
                             <div class="md-layout-item">
                                 <md-field class="md-invalid">
@@ -96,6 +112,15 @@
                             <md-table-row slot="md-table-row" slot-scope="{ item }">
                                 <md-table-cell md-label="نوع پرداخت کننده">{{ transaction.getRelatedModelType(item.transaction_payers_type) }}</md-table-cell>
                                 <md-table-cell md-label="اطلاعات پرداخت کننده">{{ transaction.getRelatedModelLabel(item.transaction_payers_type, item.transaction_payers) }}</md-table-cell>
+                                <md-table-cell md-label="مشاهده">
+                                    <md-button
+                                        :to="transaction.getRelatedModelRoute(item.transaction_payers_type, item.transaction_payers)"
+                                        class="md-icon-button md-raised md-round md-info"
+                                        style="margin: .2rem;"
+                                    >
+                                        <md-icon>edit</md-icon>
+                                    </md-button>
+                                </md-table-cell>
                             </md-table-row>
                         </md-table>
                     </md-card-content>
@@ -114,6 +139,15 @@
                             <md-table-row slot="md-table-row" slot-scope="{ item }">
                                 <md-table-cell md-label="نوع دریافت کننده">{{ transaction.getRelatedModelType(item.transaction_recipients_type) }}</md-table-cell>
                                 <md-table-cell md-label="اطلاعات دریافت کننده">{{ transaction.getRelatedModelLabel(item.transaction_recipients_type, item.transaction_recipients) }}</md-table-cell>
+                                <md-table-cell md-label="مشاهده">
+                                    <md-button
+                                        :to="transaction.getRelatedModelRoute(item.transaction_recipients_type, item.transaction_recipients)"
+                                        class="md-icon-button md-raised md-round md-info"
+                                        style="margin: .2rem;"
+                                    >
+                                        <md-icon>edit</md-icon>
+                                    </md-button>
+                                </md-table-cell>
                             </md-table-row>
                         </md-table>
                     </md-card-content>
@@ -125,10 +159,8 @@
 </template>
 
 <script>
-    import {AllocatedLoan} from '@/models/AllocatedLoan';
     import { Transaction } from '@/models/Transaction'
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
-    import priceFilterMixin from "@/mixins/priceFilterMixin";
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -136,6 +168,7 @@
                 this.transaction.transaction_statusـid = this.transaction.transaction_status.id
             }
         },
+        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         data: () => ({
             transaction: new Transaction(),
             sortation: {
@@ -143,7 +176,6 @@
                 order: "asc"
             },
         }),
-        mixins: [getFilterDropdownMixin, priceFilterMixin],
         mounted() {
             this.getData()
             this.getTransactionStatus()
@@ -163,12 +195,7 @@
                         this.transaction = new Transaction(response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.transaction.loading = false;
                         this.transaction = new Transaction()
                     })
@@ -191,12 +218,7 @@
                         });
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.transaction.loading = false;
                         that.transaction = new Transaction()
                     })
@@ -218,12 +240,7 @@
                         that.$router.push({ path: '/allocated_loan/'+that.transaction.id })
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.transaction.loading = false;
                         that.transaction = new Transaction()
                     })

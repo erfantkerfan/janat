@@ -65,8 +65,9 @@
 </template>
 
 <script>
-    import {FundList} from '@/models/Fund';
-    import {Company} from '@/models/Company';
+    import {FundList} from '@/models/Fund'
+    import {Company} from '@/models/Company'
+    import { axiosMixin } from '@/mixins/Mixins'
 
     export default {
         name: "CompanyForm",
@@ -75,6 +76,7 @@
                 this.company.fund_id = this.company.fund.id
             }
         },
+        mixins: [axiosMixin],
         data: () => ({
             company: new Company(),
             funds: new FundList()
@@ -98,12 +100,7 @@
                         this.company = new Company(response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.company.loading = false;
                         this.company = new Company()
                     })
@@ -117,12 +114,7 @@
                         that.funds = new FundList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.funds.loading = false;
                         that.funds = new FundList()
                     })
@@ -145,12 +137,7 @@
                         });
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.company.loading = false;
                         that.company = new Company()
                     })
@@ -172,12 +159,7 @@
                         that.$router.push({ path: '/company/'+that.company.id })
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.company.loading = false;
                         that.company = new Company()
                     })

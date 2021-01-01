@@ -182,12 +182,9 @@
 </template>
 
 <script>
-    import {User} from '@/models/User';
-    import {FundList} from '@/models/Fund';
-    import {Account} from '@/models/Account';
-    import {CompanyList} from '@/models/Company';
-    import {UserStatusList} from '@/models/UserStatus';
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
+    import {User} from '@/models/User'
+    import {Account} from '@/models/Account'
+    import { getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         name: 'user-profile-card',
@@ -202,7 +199,7 @@
                 this.newAccount.fund_id = this.newAccount.fund.id
             }
         },
-        mixins: [getFilterDropdownMixin],
+        mixins: [getFilterDropdownMixin, axiosMixin],
         props: {
             value: {
                 type: User,
@@ -252,7 +249,8 @@
                     that.cardUserNewImage = $event.target.files[0]
                     that.cardUserImage = result
                 })
-                .catch(() => {
+                .catch((error) => {
+                    this.axios_handleError(error)
                     that.clearUserPicBuffer()
                 })
             },
@@ -299,13 +297,7 @@
                         that.closeAccountDialog()
                     })
                     .catch((error) => {
-                        that.$emit('update', this.value)
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.closeAccountDialog()
                     })
             },
@@ -325,13 +317,7 @@
                         that.closeAccountDialog()
                     })
                     .catch((error) => {
-                        that.$emit('update', this.value)
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.closeAccountDialog()
                     })
             },
@@ -364,14 +350,9 @@
                             message: 'حساب با موفقیت حذف شد'
                         });
                     })
-                    .catch(function(error) {
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         that.$emit('update')
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
                         item.editMode = false;
                         item.loading = false;
                     });
@@ -385,12 +366,7 @@
                         this.cardUserImage = response.data
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         // this.user.loading = false;
                         // this.user = new User()
                     })

@@ -2,9 +2,7 @@
     <div>
         <div class="md-layout md-gutter">
             <div class="md-layout-item md-size-60 md-small-size-100">
-                <div class="md-layout-item md-size-100">
-                    <user-edit-card v-model="user" @update="updateUserProfile"/>
-                </div>
+                <user-edit-card v-model="user" @update="updateUserProfile"/>
             </div>
             <div class="md-layout-item md-size-40 md-small-size-100">
                 <user-profile-card v-model="user"
@@ -56,11 +54,12 @@
 
 <script>
     import Chart from '@/components/Chart'
-    import Loans from '@/pages/User/UserProfile/Loans.vue';
-    import UserEditCard from '@/pages/User/UserProfile/EditProfileCard.vue';
-    import UserProfileCard from '@/pages/User/UserProfile/UserProfileCard.vue';
-    import UserPasswordCard from '@/pages/User/UserProfile/EditPasswordCard.vue';
-    import {User} from '@/models/User';
+    import Loans from '@/pages/User/UserProfile/Loans.vue'
+    import UserEditCard from '@/pages/User/UserProfile/EditProfileCard.vue'
+    import UserProfileCard from '@/pages/User/UserProfile/UserProfileCard.vue'
+    import UserPasswordCard from '@/pages/User/UserProfile/EditPasswordCard.vue'
+    import { User } from '@/models/User'
+    import { axiosMixin } from '@/mixins/Mixins'
 
     export default {
         name: 'user-profile-example',
@@ -71,6 +70,7 @@
             'user-edit-card': UserEditCard,
             'user-password-card': UserPasswordCard
         },
+        mixins: [axiosMixin],
         data: () => ({
             datacollection: null,
             user: new User(),
@@ -131,13 +131,8 @@
                         this.$refs.userProfileCard.clearUserPicBuffer(response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
-                        this.user.loading = false;
+                        this.axios_handleError(error)
+                        this.user.loading = false
                     })
             },
             getProfile() {
@@ -154,12 +149,7 @@
                         this.user = new User(response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.user.loading = false;
                         this.user = new User()
                     })
@@ -191,12 +181,7 @@
                         that.refreshAuthenticatedUserDataIfNeed()
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.user.loading = false;
                         that.user = new User()
                     })
@@ -219,12 +204,7 @@
                         that.$router.push({path: '/user/' + that.user.id})
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.user.loading = false;
                         that.user = new User()
                     })

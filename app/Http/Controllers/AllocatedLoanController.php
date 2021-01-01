@@ -24,6 +24,7 @@ class AllocatedLoanController extends Controller
      */
     public function index(Request $request)
     {
+//        return AllocatedLoan::settled()->get();
         $config = [
             'eagerLoads'=> [
                 'account.user:id,f_name,l_name', 'loan', 'loan.fund'
@@ -31,6 +32,7 @@ class AllocatedLoanController extends Controller
             'filterKeys'=> [
                 'account_id',
                 'loan_id',
+                'is_settled',
                 'loan_amount',
                 'installment_rate',
                 'number_of_installments'
@@ -49,13 +51,33 @@ class AllocatedLoanController extends Controller
                     'relationName' => 'loan.fund'
                 ]
             ],
+            'filterRelationKeys'=> [
+                [
+                    'requestKey' => 'f_name',
+                    'relationName' => 'account.user',
+                    'relationColumn' => 'f_name'
+                ],
+                [
+                    'requestKey' => 'l_name',
+                    'relationName' => 'account.user',
+                    'relationColumn' => 'l_name'
+                ],
+                [
+                    'requestKey' => 'SSN',
+                    'relationName' => 'account.user',
+                    'relationColumn' => 'SSN'
+                ]
+            ],
             'setAppends'=> [
                 'is_settled'
-//            'total_payments',
-//            'remaining_payable_amount',
-//            'count_of_paid_installments',
-//            'count_of_remaining_installments'
-            ]
+//                'total_payments',
+//                'remaining_payable_amount',
+//                'count_of_paid_installments',
+//                'count_of_remaining_installments'
+            ],
+            'scopes'=> [
+                'settled'
+            ],
         ];
 
 //        $scopes = function ( & $modelQuery)

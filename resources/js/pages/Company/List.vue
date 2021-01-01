@@ -93,31 +93,10 @@
                     <vue-confirm-dialog></vue-confirm-dialog>
                     <loading :active.sync="companies.loading" :is-full-page="false"></loading>
                 </md-card-content>
-                <md-card-actions v-if="companies.paginate" md-alignment="space-between">
-                    <div class="">
-                        <p class="card-category">
-                            نمایش
-                            {{ companies.paginate.from }}
-                            تا
-                            {{ companies.paginate.to }}
-                            از
-                            {{ companies.paginate.total }}
-                            مورد
-                        </p>
-                    </div>
-                    <paginate
-                        v-model="companies.paginate.current_page"
-                        :page-count="companies.paginate.last_page"
-                        :page-range="3"
-                        :margin-pages="2"
-                        :click-handler="clickCallback"
-                        :prev-text="'<'"
-                        :next-text="'>'"
-                        :container-class="'pagination pagination-no-border pagination-success pagination-primary'"
-                        :page-class="'page-item'"
-                        :page-link-class="'page-link'">
-                    </paginate>
-                </md-card-actions>
+                <list-pagination
+                    :paginate="companies.paginate"
+                    @changePage="clickCallback"
+                />
             </md-card>
         </div>
     </div>
@@ -125,9 +104,10 @@
 
 <script>
 
-    import {Fund, FundList} from '@/models/Fund';
-    import {CompanyList} from '@/models/Company';
-    import Pagination from "@/components/Pagination";
+    import {Fund, FundList} from '@/models/Fund'
+    import {CompanyList} from '@/models/Company'
+    import ListPagination from '@/components/ListPagination'
+    import { axiosMixin } from '@/mixins/Mixins'
 
     export default {
         name: "CompanyList",
@@ -136,8 +116,9 @@
                 this.getList()
             }
         },
+        mixins: [axiosMixin],
         components: {
-            "pagination": Pagination
+            ListPagination,
         },
         data: () => ({
             companies: new CompanyList(),
@@ -179,12 +160,7 @@
                         this.companies = new CompanyList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.companies.loading = false
                         this.companies = new CompanyList()
                     })
@@ -199,12 +175,7 @@
                         this.funds.addItem(new Fund({id: 0, name: ''}))
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.funds.loading = false;
                         that.funds = new FundList()
                     })
@@ -237,13 +208,8 @@
                         });
                         that.getList()
                     })
-                    .catch(function(error) {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false
                         item.loading = false
                     });

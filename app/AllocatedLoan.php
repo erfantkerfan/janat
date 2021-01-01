@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Kirschbaum\PowerJoins\PowerJoins;
 
 class AllocatedLoan extends Model
@@ -92,7 +93,20 @@ class AllocatedLoan extends Model
 
     public function scopeSettled($query)
     {
+        return $query->whereHas('installments', function($q) {
+            $q->whereHas(
+                'receivedTransactions',
+                function ($query) {
+                    $query->select('transactions.id', DB::raw('SUM(transactions.cost) as total_paid'))
+                        ->groupBy('transactions.id')
+                        ->havingRaw( DB::raw('SUM(`transactions`.`cost`) > `allocated_loans`.`loan_amount` + `allocated_loans`.`interest_amount`'));
+//                        ->where('sum(transactions.cost)', '>', $payableAmount);
+                }
+            );
+//            $q->where('rate', '>', $payableAmount);
+//            $q->where('sum(total_payments)', '>', $payableAmount);
+        });
 //        return $query->where('is_settled', true);
-        return $query->installments()->sum('total_payments')->where('is_settled', true);
+//        return $query->installments->sum('total_payments')->where('is_settled', true);
     }
 }

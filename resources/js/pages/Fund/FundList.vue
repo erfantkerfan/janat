@@ -134,40 +134,19 @@
                     <vue-confirm-dialog></vue-confirm-dialog>
                     <loading :active.sync="funds.loading" :is-full-page="false"></loading>
                 </md-card-content>
-                <md-card-actions v-if="funds.paginate" md-alignment="space-between">
-                    <div class="">
-                        <p class="card-category">
-                            نمایش
-                            {{ funds.paginate.from }}
-                            تا
-                            {{ funds.paginate.to }}
-                            از
-                            {{ funds.paginate.total }}
-                            مورد
-                        </p>
-                    </div>
-                    <paginate
-                        v-model="funds.paginate.current_page"
-                        :page-count="funds.paginate.last_page"
-                        :page-range="3"
-                        :margin-pages="2"
-                        :click-handler="clickCallback"
-                        :prev-text="'<'"
-                        :next-text="'>'"
-                        :container-class="'pagination pagination-no-border pagination-success pagination-primary'"
-                        :page-class="'page-item'"
-                        :page-link-class="'page-link'">
-                    </paginate>
-                </md-card-actions>
+                <list-pagination
+                    :paginate="funds.paginate"
+                    @changePage="clickCallback"
+                />
             </md-card>
         </div>
     </div>
 </template>
 
 <script>
-    import {FundList} from '@/models/Fund';
-    import Pagination from "@/components/Pagination"
-    import priceFilterMixin from "@/mixins/priceFilterMixin"
+    import {FundList} from '@/models/Fund'
+    import ListPagination from '@/components/ListPagination'
+    import { priceFilterMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -175,9 +154,9 @@
                 this.getList()
             }
         },
-        mixins: [priceFilterMixin],
+        mixins: [priceFilterMixin, axiosMixin],
         components: {
-            "pagination": Pagination
+            ListPagination
         },
         data: () => ({
             funds: new FundList(),
@@ -221,12 +200,7 @@
                         this.funds = new FundList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.funds.loading = false
                         this.funds = new FundList()
                     })
@@ -259,13 +233,8 @@
                         });
                         that.getList()
                     })
-                    .catch(function(error) {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false
                         item.loading = false
                     });

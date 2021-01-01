@@ -48,7 +48,12 @@ trait Filter
         }
     }
 
-    private function filterByRelationKey(Request $request, $requestKey, $relationName, $relationColumn, & $modelQuery) {
+    private function filterByRelationKey(Request $request, $filterData, & $modelQuery) {
+
+        $requestKey = $filterData['requestKey'];
+        $relationName = (isset($filterData['relationName'])) ? $filterData['relationName'] : null;
+        $relationColumn = (isset($filterData['relationColumn'])) ? $filterData['relationColumn'] : null;
+
         $name = $request->get($requestKey);
         if (!isset($name)) {
             return;

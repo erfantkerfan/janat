@@ -10,6 +10,7 @@ class AllocatedLoanInstallment extends Model {
             },
             { key: 'id' },
             { key: 'rate' },
+            { key: 'allocated_loan_id' },
             { key: 'is_settled' },
             { key: 'total_payments' },
             { key: 'remaining_payable_amount' },

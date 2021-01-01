@@ -127,8 +127,8 @@
 </template>
 
 <script>
-    import {Loan} from '@/models/Loan';
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
+    import {Loan} from '@/models/Loan'
+    import { getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -136,7 +136,7 @@
                 this.loan.fund_id = this.loan.fund.id
             }
         },
-        mixins: [getFilterDropdownMixin],
+        mixins: [getFilterDropdownMixin, axiosMixin],
         data: () => ({
             loan: new Loan(),
         }),
@@ -160,12 +160,7 @@
                         this.loan = new Loan(response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.loan.loading = false;
                         this.loan = new Loan()
                     })
@@ -188,12 +183,7 @@
                         });
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.loan.loading = false;
                         that.loan = new Loan()
                     })
@@ -215,12 +205,7 @@
                         that.$router.push({ path: '/loan/'+that.loan.id })
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.loan.loading = false;
                         that.loan = new Loan()
                     })

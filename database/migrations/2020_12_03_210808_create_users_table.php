@@ -52,7 +52,7 @@ class CreateUsersTable extends Migration
                 ->onDelete('cascade')
                 ->onupdate('cascade');
         });
-        DB::statement("ALTER TABLE users ADD user_pic  MEDIUMBLOB");
+        DB::statement("ALTER TABLE users ADD user_pic  MEDIUMBLOB AFTER l_name");
     }
 
     /**

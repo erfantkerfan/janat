@@ -176,31 +176,10 @@
                     <vue-confirm-dialog></vue-confirm-dialog>
                     <loading :active.sync="loans.loading" :is-full-page="false"></loading>
                 </md-card-content>
-                <md-card-actions v-if="loans.paginate" md-alignment="space-between">
-                    <div class="">
-                        <p class="card-category">
-                            نمایش
-                            {{ loans.paginate.from }}
-                            تا
-                            {{ loans.paginate.to }}
-                            از
-                            {{ loans.paginate.total }}
-                            مورد
-                        </p>
-                    </div>
-                    <paginate
-                        v-model="loans.paginate.current_page"
-                        :page-count="loans.paginate.last_page"
-                        :page-range="3"
-                        :margin-pages="2"
-                        :click-handler="clickCallback"
-                        :prev-text="'<'"
-                        :next-text="'>'"
-                        :container-class="'pagination pagination-no-border pagination-success pagination-primary'"
-                        :page-class="'page-item'"
-                        :page-link-class="'page-link'">
-                    </paginate>
-                </md-card-actions>
+                <list-pagination
+                    :paginate="loans.paginate"
+                    @changePage="clickCallback"
+                />
             </md-card>
         </div>
     </div>
@@ -208,10 +187,9 @@
 
 <script>
 
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
-    import priceFilterMixin from "@/mixins/priceFilterMixin"
-    import {LoanList} from '@/models/Loan';
-    import Pagination from "@/components/Pagination";
+    import {LoanList} from '@/models/Loan'
+    import ListPagination from '@/components/ListPagination'
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -219,9 +197,9 @@
                 this.getList()
             }
         },
-        mixins: [getFilterDropdownMixin, priceFilterMixin],
+        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         components: {
-            "pagination": Pagination
+            ListPagination
         },
         data: () => ({
             loans: new LoanList(),
@@ -271,12 +249,7 @@
                         this.loans = new LoanList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.loans.loading = false
                         this.loans = new LoanList()
                     })
@@ -309,13 +282,8 @@
                         });
                         that.getList()
                     })
-                    .catch(function(error) {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false
                         item.loading = false
                     });

@@ -84,8 +84,8 @@
                     >
                         <md-table-row slot="md-table-row" slot-scope="{ item }">
                             <md-table-cell md-label="نام" md-sort-by="name">{{item.name}}</md-table-cell>
-                            <md-table-cell md-label="مبلغ وام" md-sort-by="email">{{item.loan_amount}}</md-table-cell>
-                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="email">{{item.installment_rate}}</md-table-cell>
+                            <md-table-cell md-label="مبلغ وام" md-sort-by="email">{{item.loan_amount | currencyFormat}}</md-table-cell>
+                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="email">{{item.installment_rate | currencyFormat}}</md-table-cell>
                             <md-table-cell md-label="تعداد اقساط" md-sort-by="email">{{item.number_of_installments}}</md-table-cell>
                             <md-table-cell md-label="عملیات">
                                 <md-button
@@ -192,11 +192,11 @@
 <script>
     import {Fund} from '@/models/Fund';
     import {Loan, LoanList} from '@/models/Loan';
-    import getFilterDropdownMixin from "@/mixins/getFilterDropdownMixin";
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         name: "fund-form",
-        mixins: [getFilterDropdownMixin],
+        mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
         data: () => ({
             fund: new Fund(),
             loan: new Loan(),
@@ -236,12 +236,7 @@
                         that.getLoans()
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.closeLoanDialog()
                     })
             },
@@ -261,13 +256,7 @@
                         that.closeAccountDialog()
                     })
                     .catch((error) => {
-                        that.$emit('update', this.value)
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.closeAccountDialog()
                     })
             },
@@ -300,13 +289,8 @@
                         })
                         that.getLoans()
                     })
-                    .catch(function(error) {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false;
                         item.loading = false;
                     });
@@ -322,12 +306,7 @@
                         this.fund = new Fund(response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.fund.loading = false;
                         this.fund = new Fund()
                     })
@@ -343,12 +322,7 @@
                         that.loans = new LoanList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.loans.loading = false;
                         that.loans = new LoanList()
                     })
@@ -371,12 +345,7 @@
                         });
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.fund.loading = false;
                         that.fund = new Fund()
                     })
@@ -398,12 +367,7 @@
                         that.$router.push({ path: '/fund/'+that.fund.id })
                     })
                     .catch((error) => {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         that.fund.loading = false;
                         that.fund = new Fund()
                     })

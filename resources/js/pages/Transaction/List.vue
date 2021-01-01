@@ -206,31 +206,10 @@
                     <vue-confirm-dialog></vue-confirm-dialog>
                     <loading :active.sync="transctions.loading" :is-full-page="false"></loading>
                 </md-card-content>
-                <md-card-actions v-if="transctions.paginate" md-alignment="space-between">
-                    <div class="">
-                        <p class="card-category">
-                            نمایش
-                            {{ transctions.paginate.from }}
-                            تا
-                            {{ transctions.paginate.to }}
-                            از
-                            {{ transctions.paginate.total }}
-                            مورد
-                        </p>
-                    </div>
-                    <paginate
-                        v-model="transctions.paginate.current_page"
-                        :page-count="transctions.paginate.last_page"
-                        :page-range="3"
-                        :margin-pages="2"
-                        :click-handler="clickCallback"
-                        :prev-text="'<'"
-                        :next-text="'>'"
-                        :container-class="'pagination pagination-no-border pagination-success pagination-primary'"
-                        :page-class="'page-item'"
-                        :page-link-class="'page-link'">
-                    </paginate>
-                </md-card-actions>
+                <list-pagination
+                    :paginate="transctions.paginate"
+                    @changePage="clickCallback"
+                />
             </md-card>
         </div>
     </div>
@@ -238,10 +217,9 @@
 
 <script>
 
-    import Pagination from "@/components/Pagination";
-    import getFilterDropdownMixin from '@/mixins/getFilterDropdownMixin';
-    import {TransactionList} from "@/models/Transaction";
-    import priceFilterMixin from "@/mixins/priceFilterMixin";
+    import ListPagination from '@/components/ListPagination'
+    import { TransactionList } from '@/models/Transaction'
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -249,9 +227,9 @@
                 this.getList()
             }
         },
-        mixins: [getFilterDropdownMixin, priceFilterMixin],
+        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         components: {
-            "pagination": Pagination
+            ListPagination
         },
         data: () => ({
             transctions: new TransactionList(),
@@ -305,12 +283,7 @@
                         this.transctions = new TransactionList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                        this.axios_handleError(error)
                         this.transctions.loading = false
                         this.transctions = new TransactionList()
                     })
@@ -339,17 +312,12 @@
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
-                            message: 'صندوق با موفقیت حذف شد'
+                            message: 'وام تخصیص داده شده با موفقیت حذف شد'
                         });
                         that.getList()
                     })
-                    .catch(function(error) {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'error',
-                            title: 'توجه',
-                            message: 'مشکلی رخ داده است. مجدد تلاش کنید'
-                        });
-                        console.log('error: ', error)
+                    .catch((error) => {
+                        this.axios_handleError(error)
                         item.editMode = false
                         item.loading = false
                     });
