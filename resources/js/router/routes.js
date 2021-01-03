@@ -32,7 +32,10 @@ import LoanForm from "@/pages/Loan/Form.vue";
 import AllocatedLoanList from "@/pages/AllocatedLoan/List.vue";
 
 // AllocatedLoan Management
-import AllocatedLoanForm from "@/pages/AllocatedLoan/Form.vue";
+import AllocatedLoanViewForm from "@/pages/AllocatedLoan/Form.vue";
+
+// AllocatedLoan CreateForm
+import AllocatedLoanCreateForm from "@/pages/AllocatedLoan/Create.vue";
 
 // Transaction List
 import TransactionList from "@/pages/Transaction/List.vue";
@@ -230,7 +233,7 @@ let allocatedLoansMenu = {
         {
             path: "create",
             name: "AllocatedLoan.Create",
-            components: {default: AllocatedLoanForm},
+            components: {default: AllocatedLoanCreateForm},
             meta: {
                 rtlActive: true,
                 displayName: "تخصیص وام جدید",
@@ -240,7 +243,7 @@ let allocatedLoansMenu = {
         {
             path: ":id",
             name: "AllocatedLoan.Show",
-            components: {default: AllocatedLoanForm},
+            components: {default: AllocatedLoanViewForm},
             meta: {
                 rtlActive: true,
                 displayName: "اطلاعات وام تخصیص داده شده",

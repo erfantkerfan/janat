@@ -178,6 +178,7 @@
 
                 <md-card-actions>
                     <md-button
+                        v-if="false"
                         class="md-dense md-raised md-primary"
                         @click="showDialog">
                         تعریف وام جدید

@@ -91,15 +91,32 @@ class AllocatedLoan extends Model
         return $this->getTotalPaymentsAttribute() >= $this->getPayableAmountAttribute();
     }
 
-    public function scopeSettled($query)
-    {
+    public function scopeSettled($query) {
         return $query->whereHas('installments', function($q) {
             $q->whereHas(
                 'receivedTransactions',
                 function ($query) {
                     $query->select('transactions.id', DB::raw('SUM(transactions.cost) as total_paid'))
                         ->groupBy('transactions.id')
-                        ->havingRaw( DB::raw('SUM(`transactions`.`cost`) > `allocated_loans`.`loan_amount` + `allocated_loans`.`interest_amount`'));
+                        ->havingRaw( DB::raw('SUM(`transactions`.`cost`) >= (`allocated_loans`.`loan_amount` + `allocated_loans`.`interest_amount`)'));
+//                        ->where('sum(transactions.cost)', '>', $payableAmount);
+                }
+            );
+//            $q->where('rate', '>', $payableAmount);
+//            $q->where('sum(total_payments)', '>', $payableAmount);
+        });
+//        return $query->where('is_settled', true);
+//        return $query->installments->sum('total_payments')->where('is_settled', true);
+    }
+
+    public function scopeNotSettled($query) {
+        return $query->whereHas('installments', function($q) {
+            $q->whereHas(
+                'receivedTransactions',
+                function ($query) {
+                    $query->select('transactions.id', DB::raw('SUM(transactions.cost) as total_paid'))
+                        ->groupBy('transactions.id')
+                        ->havingRaw( DB::raw('SUM(`transactions`.`cost`) < (`allocated_loans`.`loan_amount` + `allocated_loans`.`interest_amount`)'));
 //                        ->where('sum(transactions.cost)', '>', $payableAmount);
                 }
             );

@@ -76,7 +76,8 @@ class AllocatedLoanController extends Controller
 //                'count_of_remaining_installments'
             ],
             'scopes'=> [
-                'settled'
+                'settled',
+                'notSettled'
             ],
         ];
 
@@ -99,7 +100,19 @@ class AllocatedLoanController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->commonStore($request, AllocatedLoan::class);
+        $account = Account::findOrFail($request->get('account_id'));
+        $loan = Loan::findOrFail($request->get('loan_id'));
+        return AllocatedLoan::create([
+            'account_id' => $account->id,
+            'loan_id' => $loan->id,
+            'loan_amount' => $loan->loan_amount,
+            'interest_rate' => $loan->interest_rate,
+            'interest_amount' => $loan->interest_amount,
+            'installment_rate' => $loan->installment_rate,
+            'number_of_installments' => $loan->number_of_installments,
+            'payroll_deduction' => $request->get('payroll_deduction')
+        ]);
+//        return $this->commonStore($request, AllocatedLoan::class);
     }
 
     /**
