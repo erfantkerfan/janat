@@ -4,8 +4,8 @@
             <div class="md-layout-item md-size-100">
 
                 <div class="md-layout">
-                    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
-                        <stats-card  v-if="allocatedLoan.account" header-color="blue">
+                    <div  v-if="allocatedLoan.account" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                        <stats-card  v-if="allocatedLoan.account && !isCreateForm" header-color="blue">
                             <template slot="header">
                                 <div class="card-icon">
                                     <md-icon>perm_identity</md-icon>
@@ -223,6 +223,8 @@
     import { AllocatedLoan } from '@/models/AllocatedLoan'
     import { AllocatedLoanInstallment } from "@/models/AllocatedLoanInstallment"
     import { priceFilterMixin, axiosMixin } from '@/mixins/Mixins'
+    import {Account} from "@/models/Account";
+    import {User} from "@/models/User";
 
     export default {
         watch: {
@@ -234,6 +236,7 @@
         mixins: [priceFilterMixin, axiosMixin],
         data: () => ({
             allocatedLoan: new AllocatedLoan(),
+            newAllocatedLoan: new AllocatedLoan(),
             sortation: {
                 field: 'created_at',
                 order: 'asc'
@@ -241,6 +244,12 @@
             installment: new AllocatedLoanInstallment(),
             installmentTransactionsShowDialog: false
         }),
+        created () {
+            this.newAllocatedLoan.account = new Account()
+            this.newAllocatedLoan.account_id = null
+            this.newAllocatedLoan.account.user = new User()
+            this.newAllocatedLoan.user_id = null
+        },
         mounted() {
             this.getData()
         },
@@ -341,6 +350,20 @@
             closeInstallmentTransactions () {
                 this.installment = new AllocatedLoanInstallment()
                 this.installmentTransactionsShowDialog = false
+            },
+            showUserAccounts () {
+                let that = this
+                this.newAllocatedLoan.account.user.loading = true;
+                this.newAllocatedLoan.account.user.show(this.newAllocatedLoan.user_id)
+                    .then((response) => {
+                        that.newAllocatedLoan.account.user.loading = false
+                        that.newAllocatedLoan.account.user = new User(response.data)
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        that.newAllocatedLoan.account.user.loading = false;
+                        that.newAllocatedLoan.account.user = new User()
+                    })
             }
         }
     }

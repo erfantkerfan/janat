@@ -10,6 +10,8 @@ export default {
                 let statusCode = parseInt(error.response.status)
                 if (statusCode === 401) {
                     errorMessage = 'ابتدا وارد شوید.'
+                } else if (statusCode === 404) {
+                    errorMessage = 'موردی یافت نشد!'
                 } else if (statusCode >499 && statusCode < 600) {
                     errorMessage = 'یک مشکل فنی رخ داده است. لطفا متن زیر را برای پشتیبانی ارسال کنید.' +
                         '<br>' +

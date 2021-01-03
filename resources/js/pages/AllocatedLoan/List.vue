@@ -87,6 +87,7 @@
                         </div>
                         <div class="md-layout-item">
                             <md-checkbox v-model="filterData.settled">تسویه شده</md-checkbox>
+                            <md-checkbox v-model="filterData.notSettled">تسویه نشده</md-checkbox>
                         </div>
                     </div>
                     <div class="md-layout">
@@ -176,7 +177,7 @@
                         <md-table-toolbar>
                             <md-field>
                                 <md-button class="md-dense md-raised md-info" @click="getList">جستجو</md-button>
-                                <md-button class="md-dense md-raised md-primary" to="/loan/create">افزودن</md-button>
+                                <md-button class="md-dense md-raised md-primary" to="/allocated_loan/create">افزودن</md-button>
                             </md-field>
                             <md-field>
                                 <label>تعداد در هر صفحه:</label>
@@ -283,6 +284,7 @@
                 fund_id: null,
                 loan_id: null,
                 settled: false,
+                notSettled: false,
                 f_name: null,
                 l_name: null,
                 SSN: null,
@@ -312,6 +314,7 @@
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null : this.filterData.fund_id,
                     loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null : this.filterData.loan_id,
                     settled: (this.filterData.settled === false) ? null : this.filterData.settled,
+                    notSettled: (this.filterData.notSettled === false) ? null : this.filterData.notSettled,
                     loan_amount: this.filterData.loan_amount,
                     f_name: this.filterData.f_name,
                     l_name: this.filterData.l_name,

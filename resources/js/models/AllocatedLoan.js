@@ -32,6 +32,7 @@ class AllocatedLoan extends Model {
             { key: 'loan_amount' },
             { key: 'installment_rate' },
             { key: 'number_of_installments' },
+            { key: 'payroll_deduction', default: false },
             { key: 'created_at' },
             { key: 'updated_at' }
         ])
