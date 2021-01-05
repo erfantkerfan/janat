@@ -37,6 +37,9 @@ import AllocatedLoanViewForm from "@/pages/AllocatedLoan/Form.vue";
 // AllocatedLoan CreateForm
 import AllocatedLoanCreateForm from "@/pages/AllocatedLoan/Create.vue";
 
+// AllocatedLoanInstallment CreateForm
+import AllocatedLoanInstallmentCreateForm from "@/pages/AllocatedLoanInstallment/Create.vue";
+
 // Transaction List
 import TransactionList from "@/pages/Transaction/List.vue";
 
@@ -253,6 +256,44 @@ let allocatedLoansMenu = {
     ]
 };
 
+let allocatedLoanInstallmentsMenu = {
+    path: "/allocated_loan_installment",
+    name: "AllocatedLoanInstallment",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "list",
+            name: "AllocatedLoanInstallment.List",
+            components: {default: AllocatedLoanList},
+            meta: {
+                rtlActive: true,
+                displayName: "لیست قسط های تعریف شده",
+                middleware: auth
+            }
+        },
+        {
+            path: ":allocated_loan_id/create",
+            name: "AllocatedLoanInstallment.Create",
+            components: {default: AllocatedLoanInstallmentCreateForm},
+            meta: {
+                rtlActive: true,
+                displayName: "تعریف قسط جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":id",
+            name: "AllocatedLoanInstallment.Show",
+            components: {default: AllocatedLoanViewForm},
+            meta: {
+                rtlActive: true,
+                displayName: "اطلاعات قسط تعریف شده",
+                middleware: auth
+            }
+        }
+    ]
+};
+
 let transactionMenu = {
     path: "/transactions",
     name: "Transaction",
@@ -411,6 +452,7 @@ const routes = [
     fundsMenu,
     loansMenu,
     allocatedLoansMenu,
+    allocatedLoanInstallmentsMenu,
     transactionMenu,
     componentsMenu,
     authPages

@@ -5,7 +5,7 @@
 
                 <div class="md-layout">
                     <div  v-if="allocatedLoan.account" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
-                        <stats-card  v-if="allocatedLoan.account && !isCreateForm" header-color="blue">
+                        <stats-card header-color="blue">
                             <template slot="header">
                                 <div class="card-icon">
                                     <md-icon>perm_identity</md-icon>
@@ -61,7 +61,6 @@
                                     {{ allocatedLoan.loan.fund.name }}
                                 </h3>
                             </template>
-
                             <template slot="footer">
                                 <div class="stats">
                                     <md-button
@@ -159,6 +158,11 @@
                                 </md-table-cell>
                             </md-table-row>
                         </md-table>
+                        <md-button
+                            class="md-dense md-raised md-success"
+                            :to="{ name: 'AllocatedLoanInstallment.Create', params: {'allocated_loan_id': allocatedLoan.id} }">
+                            تعریف قسط جدید
+                        </md-button>
                     </md-card-content>
                 </md-card>
 

@@ -22,7 +22,7 @@
         </md-button>
 
         <div class="md-collapse">
-          <div class="md-autocomplete">
+          <div v-if="false" class="md-autocomplete">
             <md-autocomplete
                 class="search"
                 v-model="selectedEmployee"
@@ -38,7 +38,7 @@
               <p class="hidden-lg hidden-md">Dashboard</p>
             </md-list-item>
 
-            <li class="md-list-item">
+            <li v-if="false" class="md-list-item">
               <a
                   @click="goToNotifications"
                   class="md-list-item-router md-list-item-container md-button-clean dropdown"
@@ -107,7 +107,7 @@
         this.$router.push({name: 'Notifications'})
       },
       goToUsers(){
-        this.$router.push({name: 'User Profile'})
+        this.$router.push({name: 'User.Show', params: {id: this.authenticatedUser.id}})
       }
     }
   };

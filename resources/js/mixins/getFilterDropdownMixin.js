@@ -59,13 +59,15 @@ export default {
                   that.funds = new FundList()
               })
       },
-      getUserTypes () {
+      getUserTypes (withEmpty) {
           this.userTypes.loading = true;
           this.userTypes.fetch()
               .then((response) => {
                   this.userTypes.loading = false;
                   this.userTypes = new UserTypeList(response.data.data, response.data)
-                  this.userTypes.addItem(new UserType({id: 0, display_name: ''}))
+                  if (typeof withEmpty === 'undefined' || withEmpty) {
+                      this.userTypes.addItem(new UserType({id: 0, display_name: ''}))
+                  }
               })
               .catch((error) => {
                   this.$store.dispatch('alerts/fire', {
@@ -78,13 +80,15 @@ export default {
                   this.userTypes = new UserTypeList()
               })
       },
-      getCompanies () {
+      getCompanies (withEmpty) {
           this.companies.loading = true;
           this.companies.fetch()
               .then((response) => {
                   this.companies.loading = false;
                   this.companies = new CompanyList(response.data.data, response.data)
-                  this.companies.addItem(new Company({id: 0, name: ''}))
+                  if (typeof withEmpty === 'undefined' || withEmpty) {
+                      this.companies.addItem(new Company({id: 0, name: ''}))
+                  }
               })
               .catch((error) => {
                   this.$store.dispatch('alerts/fire', {
@@ -97,14 +101,16 @@ export default {
                   this.companies = new CompanyList()
               })
       },
-      getLoanTypes () {
+      getLoanTypes (withEmpty) {
           let that = this
           this.loanTypes.loading = true
           this.loanTypes.fetch()
               .then((response) => {
                   that.loanTypes.loading = false
                   that.loanTypes = new LoanTypeList(response.data.data, response.data)
-                  this.loanTypes.addItem(new LoanType({id: 0, name: ''}))
+                  if (typeof withEmpty === 'undefined' || withEmpty) {
+                      this.loanTypes.addItem(new LoanType({id: 0, name: ''}))
+                  }
               })
               .catch((error) => {
                   this.$store.dispatch('alerts/fire', {
@@ -117,13 +123,15 @@ export default {
                   that.loanTypes = new LoanTypeList()
               })
       },
-      getUserStatus () {
+      getUserStatus (withEmpty) {
           this.userStatuses.loading = true;
           this.userStatuses.fetch()
               .then((response) => {
                   this.userStatuses.loading = false;
                   this.userStatuses = new UserStatusList(response.data.data, response.data)
-                  this.userStatuses.addItem(new UserStatus({id: 0, display_name: ''}))
+                  if (typeof withEmpty === 'undefined' || withEmpty) {
+                      this.userStatuses.addItem(new UserStatus({id: 0, display_name: ''}))
+                  }
               })
               .catch((error) => {
                   this.$store.dispatch('alerts/fire', {
@@ -136,13 +144,15 @@ export default {
                   this.userStatuses = new UserStatusList()
               })
       },
-      getTransactionStatus () {
+      getTransactionStatus (withEmpty) {
           this.transactionStatuses.loading = true;
           this.transactionStatuses.fetch()
               .then((response) => {
                   this.transactionStatuses.loading = false;
                   this.transactionStatuses = new TransactionStatusList(response.data.data, response.data)
-                  this.transactionStatuses.addItem(new TransactionStatus({id: 0, display_name: ''}))
+                  if (typeof withEmpty === 'undefined' || withEmpty) {
+                      this.transactionStatuses.addItem(new TransactionStatus({id: 0, display_name: ''}))
+                  }
               })
               .catch((error) => {
                   this.$store.dispatch('alerts/fire', {
