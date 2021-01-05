@@ -414,7 +414,6 @@ class FakeAllocatedLoanInstallment extends Seeder {
             $allocatedLoan = FakeAllocatedLoan::getRandomObject();
             AllocatedLoanInstallment::create([
                 'allocated_loan_id' => $allocatedLoan->id,
-                'rate' => $allocatedLoan->installment_rate,
                 'created_at' => $faker->dateTime()
             ]);
         }

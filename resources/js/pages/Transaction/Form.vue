@@ -11,7 +11,6 @@
                             اطلاعات تراکنش
                         </h4>
                     </md-card-header>
-
                     <md-card-content>
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
@@ -92,11 +91,8 @@
                                 </md-field>
                             </div>
                         </div>
-
                         <loading :active.sync="transaction.loading" :is-full-page="false"></loading>
-
                     </md-card-content>
-
                 </md-card>
 
                 <md-card v-if="transaction.related_payers">

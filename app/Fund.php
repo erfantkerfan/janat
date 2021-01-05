@@ -21,6 +21,16 @@ class Fund extends Model
         'monthly_payment'
     ];
 
+    public function deposit($money) {
+        $this->balance += $money;
+        return $this->save();
+    }
+
+    public function withdrawal($money) {
+        $this->balance -= $money;
+        return $this->save();
+    }
+
     public function companies()
     {
         return $this->hasMany(Company::class);
