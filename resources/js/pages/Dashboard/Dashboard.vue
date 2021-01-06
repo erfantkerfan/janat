@@ -11,7 +11,6 @@
             +245
           </h3>
         </template>
-
         <template slot="footer">
           <div class="stats">
             <md-icon>update</md-icon>
@@ -80,6 +79,7 @@
         </template>
       </stats-card>
     </div>
+
     <div
       class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
     >

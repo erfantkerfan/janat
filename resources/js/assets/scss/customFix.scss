@@ -1,0 +1,24 @@
+.md-menu-content {
+    max-width: 400px;
+    max-height: 40vh;
+}
+.md-dialog {
+    z-index: 99999;
+}
+.sidebar .sidebar-wrapper .md-list li ul.nav {
+    padding-right: 30px;
+}
+.md-card-stats .md-card-header.md-card-header-icon i {
+    font-size: inherit;
+    line-height: inherit;
+    width: auto;
+    height: auto;
+    text-align: right;
+}
+.md-card-stats .md-card-header.md-card-header-icon > .card-icon > i {
+    font-size: 36px !important;
+    line-height: 56px;
+    width: 56px;
+    height: 56px;
+    text-align: center;
+}

@@ -3,15 +3,37 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Kirschbaum\PowerJoins\PowerJoins;
 
 class Account extends Model
 {
+    use SoftDeletes, PowerJoins;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'user_id', 'name', 'acc_number', 'company_payment', 'joined_at', 'monthly_payment'
+        'user_id',
+        'fund_id',
+        'acc_number',
+        'joined_at'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function fund()
+    {
+        return $this->belongsTo(Fund::class);
+    }
+
+    public function allocatedLoans()
+    {
+        return $this->hasMany(AllocatedLoan::class);
+    }
 }

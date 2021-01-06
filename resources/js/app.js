@@ -4,6 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import Vue from "vue";
+
 require('./bootstrap');
 
 window.Vue = require('vue');
@@ -11,21 +13,28 @@ window.Vue = require('vue');
 import axios from "axios";
 
 // Plugins
-import App from "./App.vue";
-import Chartist from "chartist";
+// import App from "./App.vue";
 import VueAxios from "vue-axios";
 import DashboardPlugin from "./material-dashboard";
-
+import Auth from "./plugins/auth.js";
 // plugin setup
 Vue.use(DashboardPlugin);
-Vue.use(VueAxios, axios);
 
+Vue.use(VueAxios, axios);
+Vue.use(Auth)
 // router & store setup
+
 import router from "./router";
 import store from "./store";
 
+
+
+
+import Chartist from "chartist";
 // global library setup
-// Vue.prototype.$Chartist = Chartist;
+Vue.prototype.$Chartist = Chartist;
+
+
 
 /**
  * The following block of code may be used to automatically register your
@@ -46,11 +55,19 @@ import store from "./store";
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.component('App', require('./App.vue').default);
+
+import VuePersianDatetimePicker from 'vue-persian-datetime-picker'
+Vue.component('date-picker', VuePersianDatetimePicker)
+
+import VueConfirmDialog from 'vue-confirm-dialog'
+Vue.use(VueConfirmDialog)
+
 const app = new Vue({
     router: router,
     store: store,
-    el: "#app",
-    render: h => h(App)
+    el: "#dashboard_app"
+    // render: h => h(App)
 });
 
 store.$app = app;
