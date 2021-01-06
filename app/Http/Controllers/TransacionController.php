@@ -70,7 +70,7 @@ class TransacionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return Response
      */
     public function store(Request $request)
@@ -105,7 +105,8 @@ class TransacionController extends Controller
 
     private function attachAndChangeFundBalance_userChargeFund(Request $request, Transaction $transaction) {
         $user = User::findOrFail($request->get('user_id'));
-        $fund = Fund::findOrFail($request->get('fund_id'));
+        $account = User::findOrFail($request->get('account_id'));
+        $fund = $account->fund()->first();
         $cost = $request->get('cost');
         $transaction->userPayers()->attach($user, ['cost'=> $cost]);
         $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
@@ -114,7 +115,7 @@ class TransacionController extends Controller
 
     private function attachAndChangeFundBalance_companyChargeFund(Request $request, Transaction $transaction) {
         $company = Company::findOrFail($request->get('company_id'));
-        $fund = Fund::findOrFail($request->get('fund_id'));
+        $fund = $company->fund()->first();
         $cost = $request->get('cost');
         $transaction->companyPayers()->attach($company, ['cost'=> $cost]);
         $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
@@ -123,7 +124,7 @@ class TransacionController extends Controller
 
     private function attachAndChangeFundBalance_fundPayLoan(Request $request, Transaction $transaction) {
         $allocatedLoan = AllocatedLoan::findOrFail($request->get('allocated_loan_id'));
-        $fund = Fund::findOrFail($request->get('fund_id'));
+        $fund = $allocatedLoan->account->fund()->first();
         $cost = $request->get('cost');
         $transaction->fundPayers()->attach($fund, ['cost'=> $cost]);
         $transaction->allocatedLoanRecipients()->attach($allocatedLoan, ['cost'=> $cost]);
@@ -160,7 +161,7 @@ class TransacionController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  \App\Transaction  $transacion
      * @return Response
      */
