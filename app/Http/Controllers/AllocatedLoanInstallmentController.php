@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AllocatedLoan;
 use App\AllocatedLoanInstallment;
+use App\Company;
 use App\Fund;
 use App\Traits\CommonCRUD;
 use App\Traits\Filter;
@@ -42,43 +43,28 @@ class AllocatedLoanInstallmentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return Response
      */
     public function store(Request $request)
     {
         $allocatedLoan = AllocatedLoan::findOrFail($request->get('allocated_loan_id'));
-        $transactionStatus = TransactionStatus::findOrFail($request->get('transaction_status_id'));
-
         $allocatedLoanInstallment = AllocatedLoanInstallment::create([
             'allocated_loan_id' => $allocatedLoan->id
         ]);
-        $user = $allocatedLoanInstallment->allocatedLoan->account->user()->first();
-        $cost = $request->get('cost');
-        $transaction = Transaction::create([
-            'cost' => $cost,
-            'manager_comment' => $request->get('manager_comment'),
-            'user_comment' => $request->get('user_comment'),
-            'transaction_status_id' => $transactionStatus->id,
-            'deadline_at' => $request->get('deadline_at'),
-            'paid_at' => $request->get('paid_at')
-        ]);
-        $transaction->userPayers()->attach($user, ['cost'=> $cost]);
-        $transaction->allocatedLoanInstallmentRecipients()->attach($allocatedLoanInstallment, ['cost'=> $cost]);
-
-        $fund = $allocatedLoanInstallment->allocatedLoan->loan->fund;
-        $fund->deposit($cost);
+        return $this->show($allocatedLoanInstallment->id);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\AllocatedLoanInstallment  $allocatedLoanInstallment
+     * @param $id
      * @return Response
      */
-    public function show(AllocatedLoanInstallment $allocatedLoanInstallment)
+    public function show($id)
     {
-        //
+        $allocatedLoanInstallment = AllocatedLoanInstallment::findOrFail($id);
+        return $this->jsonResponseOk($allocatedLoanInstallment);
     }
 
     /**
@@ -95,7 +81,7 @@ class AllocatedLoanInstallmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  \App\AllocatedLoanInstallment  $allocatedLoanInstallment
      * @return Response
      */

@@ -51,7 +51,8 @@
                                     </label>
                                     <div class="md-layout-item">
                                         <md-field class="md-invalid">
-                                            <md-input :value="transaction.cost | currencyFormat" @input="currencyFormatInput"/>
+<!--                                            <md-input :value="transaction.cost | currencyFormat" @input="currencyFormatInput"/>-->
+                                            <md-input v-model="transaction.cost"/>
                                         </md-field>
                                     </div>
                                 </div>
@@ -116,6 +117,16 @@
                                 </div>
                                 <loading :active.sync="transaction.loading || transactionStatuses.loading" :is-full-page="false"></loading>
                             </md-card-content>
+                            <md-card-actions>
+                                <div class="stats">
+                                    <md-button
+                                        class="md-dense md-raised md-success"
+                                        @click="createAllocatedLoanInstallment"
+                                    >
+                                        ثبت قسط و تراکنش پرداخت
+                                    </md-button>
+                                </div>
+                            </md-card-actions>
                         </md-card>
                     </div>
                 </div>
@@ -146,6 +157,7 @@
         mixins: [priceFilterMixin, axiosMixin, getFilterDropdownMixin],
         data: () => ({
             allocatedLoan: new AllocatedLoan(),
+            allocatedLoanInstallment: new AllocatedLoanInstallment(),
             transaction: new Transaction(),
 
             selectedFund: null,
@@ -186,7 +198,50 @@
                 this.transaction.cost = this.allocatedLoan.installment_rate
                 this.transaction.paid_at = new Date()
             },
+            createAllocatedLoanInstallment () {
+                this.allocatedLoanInstallment.loading = true;
+                let that = this
+                this.allocatedLoanInstallment.create({
+                    allocated_loan_id: this.allocatedLoan.id
+                })
+                    .then((response) => {
+                        that.allocatedLoanInstallment.loading = false;
+                        that.allocatedLoanInstallment = new AllocatedLoanInstallment(response.data)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'قسط با موفقیت ثبت شد'
+                        });
+                        that.createTransaction()
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        that.allocatedLoanInstallment.loading = false;
+                        that.allocatedLoanInstallment = new AllocatedLoan()
+                    })
 
+            },
+            createTransaction () {
+                this.transaction.loading = true;
+                this.transaction.transaction_type = 'user_pay_installment'
+                this.transaction.allocated_loan_installment_id = this.allocatedLoanInstallment.id
+                let that = this
+                this.transaction.create()
+                    .then((response) => {
+                        that.transaction.loading = false;
+                        that.transaction = new Transaction(response.data)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'اطلاعات تراکنش قسط با موفقیت ثبت شد'
+                        });
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        that.transaction.loading = false;
+                        that.transaction = new Transaction()
+                    })
+            },
 
             showUserAccounts () {
                 let that = this

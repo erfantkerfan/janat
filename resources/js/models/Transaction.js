@@ -8,13 +8,21 @@ import {AllocatedLoanInstallment} from "@/models/AllocatedLoanInstallment";
 import {Loan} from "@/models/Loan";
 
 class Transaction extends Model {
-    constructor (user) {
-        super(user, [
+    constructor (data) {
+        super(data, [
             {
                 key: 'baseRoute',
                 default: 'api/transactions'
             },
             { key: 'id' },
+
+            { key: 'transaction_type' },
+            { key: 'user_id' },
+            { key: 'account_id' },
+            { key: 'company_id' },
+            { key: 'allocated_loan_id' },
+            { key: 'allocated_loan_installment_id' },
+
             { key: 'cost' },
             { key: 'manager_comment' },
             { key: 'user_comment' },

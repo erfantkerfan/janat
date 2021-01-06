@@ -9,6 +9,16 @@ use Kirschbaum\PowerJoins\PowerJoins;
 class AllocatedLoanInstallment extends Model
 {
     use SoftDeletes, PowerJoins;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'allocated_loan_id'
+    ];
+
     /**
      * The accessors to append to the model's array form.
      *
