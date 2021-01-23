@@ -121,9 +121,9 @@
                                 <div class="stats">
                                     <md-button
                                         class="md-dense md-raised md-success"
-                                        @click="createAllocatedLoanInstallment"
+                                        @click="createTransaction"
                                     >
-                                        ثبت قسط و تراکنش پرداخت
+                                        ثبت تراکنش پرداخت
                                     </md-button>
                                 </div>
                             </md-card-actions>
@@ -226,7 +226,7 @@
             createTransaction () {
                 this.transaction.loading = true;
                 this.transaction.transaction_type = 'user_pay_installment'
-                this.transaction.allocated_loan_installment_id = this.allocatedLoanInstallment.id
+                this.transaction.allocated_loan_installment_id = this.$route.params.allocated_loan_installment_id
                 let that = this
                 this.transaction.create()
                     .then((response) => {
@@ -240,7 +240,7 @@
                     })
                     .catch((error) => {
                         this.axios_handleError(error)
-                        that.transaction.loading = false
+                        that.transaction.loading = false;
                     })
             },
 
