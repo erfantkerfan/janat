@@ -40,6 +40,9 @@ import AllocatedLoanCreateForm from "@/pages/AllocatedLoan/Create.vue";
 // AllocatedLoanInstallment CreateForm
 import AllocatedLoanInstallmentCreateForm from "@/pages/AllocatedLoanInstallment/Create.vue";
 
+// AllocatedLoanInstallment CreateForm
+import AllocatedLoanInstallmentAddPaymentForm from "@/pages/AllocatedLoanInstallment/AddPayment";
+
 // Transaction List
 import TransactionList from "@/pages/Transaction/List.vue";
 
@@ -278,6 +281,15 @@ let allocatedLoanInstallmentsMenu = {
             meta: {
                 rtlActive: true,
                 displayName: "تعریف قسط جدید",
+                middleware: auth
+            }
+        },{
+            path: ":allocated_loan_id/:allocated_loan_installment_id/add_payment",
+            name: "AllocatedLoanInstallment.AddPayment",
+            components: {default: AllocatedLoanInstallmentAddPaymentForm},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداختی جدید برای قسط",
                 middleware: auth
             }
         },

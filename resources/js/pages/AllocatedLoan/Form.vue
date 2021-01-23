@@ -155,6 +155,13 @@
                                     >
                                         <md-icon>edit</md-icon>
                                     </md-button>
+                                    <md-button
+                                        :to="{ name: 'AllocatedLoanInstallment.AddPayment', params: {'allocated_loan_id': allocatedLoan.id, 'allocated_loan_installment_id': item.id} }"
+                                        class="md-icon-button md-raised md-round md-info"
+                                        style="margin: .2rem;"
+                                    >
+                                        <md-icon>payment</md-icon>
+                                    </md-button>
                                 </md-table-cell>
                             </md-table-row>
                         </md-table>
