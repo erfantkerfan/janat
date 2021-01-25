@@ -78,7 +78,7 @@ class AllocatedLoan extends Model
 
     public function getRemainingPayableAmountAttribute()
     {
-        return $this->loan_amount - $this->getTotalPaymentsAttribute();
+        return $this->getPayableAmountAttribute() - $this->getTotalPaymentsAttribute();
     }
 
     public function getPayableAmountAttribute()

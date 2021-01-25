@@ -17,7 +17,7 @@
 
             <template slot="links">
                 <sidebar-item
-                    :link="{ name: 'پیشخوان', icon: 'dashboard', path: '/dashboard' }"
+                    :link="{ name: 'پیشخوان', icon: 'dashboard', path: '/' }"
                 />
 
                 <sidebar-item :opened="false" :link="{ name: 'تعاریف اولیه', image: image }">

@@ -6,6 +6,7 @@ use App\AllocatedLoan;
 use App\AllocatedLoanInstallment;
 use App\Company;
 use App\Fund;
+use App\Http\Requests\StoreTransaction;
 use App\Traits\CommonCRUD;
 use App\Traits\Filter;
 use App\Transaction;
@@ -13,6 +14,8 @@ use App\TransactionStatus;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class TransacionController extends Controller
 {
@@ -70,11 +73,12 @@ class TransacionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreTransaction $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StoreTransaction $request)
     {
+        DB::beginTransaction();
         $transactionStatus = TransactionStatus::findOrFail($request->get('transaction_status_id'));
         $cost = $request->get('cost');
         $transaction = Transaction::create([
@@ -85,25 +89,42 @@ class TransacionController extends Controller
             'deadline_at' => $request->get('deadline_at'),
             'paid_at' => $request->get('paid_at')
         ]);
-        $this->attachTransaction($request, $transaction);
-        return $this->show($transaction->id);
+        $dBTransactionValidator = $this->attachTransaction($request, $transaction);
+
+        if ($dBTransactionValidator->fails()) {
+            DB::rollBack();
+            return $this->jsonResponseErrorValidate([
+                'errors' => $dBTransactionValidator->errors()
+            ]);
+        } else {
+            DB::commit();
+            return $this->show($transaction->id);
+        }
     }
 
     private function attachTransaction(Request $request, Transaction $transaction) {
         $transaction_type = $request->get('transaction_type');
+        $dBTransactionValidator = true;
 
         if ($transaction_type === 'user_charge_fund') {
-            $this->attachAndChangeFundBalance_userChargeFund($request, $transaction);
+            $dBTransactionValidator = $this->attachAndChangeFundBalance_userChargeFund($request, $transaction);
         } else if ($transaction_type === 'company_charge_fund') {
-            $this->attachAndChangeFundBalance_companyChargeFund($request, $transaction);
+            $dBTransactionValidator = $this->attachAndChangeFundBalance_companyChargeFund($request, $transaction);
         } else if ($transaction_type === 'fund_pay_loan') {
-            $this->attachAndChangeFundBalance_fundPayLoan($request, $transaction);
+            $dBTransactionValidator = $this->attachAndChangeFundBalance_fundPayLoan($request, $transaction);
         } else if ($transaction_type === 'user_pay_installment') {
-            $this->attachAndChangeFundBalance_userPayInstallment($request, $transaction);
+            $dBTransactionValidator = $this->attachAndChangeFundBalance_userPayInstallment($request, $transaction);
         }
+
+        return $dBTransactionValidator;
     }
 
     private function attachAndChangeFundBalance_userChargeFund(Request $request, Transaction $transaction) {
+        Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'account_id' => 'required|exists:accounts,id',
+        ])->validate();
+
         $user = User::findOrFail($request->get('user_id'));
         $account = User::findOrFail($request->get('account_id'));
         $fund = $account->fund()->first();
@@ -114,6 +135,9 @@ class TransacionController extends Controller
     }
 
     private function attachAndChangeFundBalance_companyChargeFund(Request $request, Transaction $transaction) {
+        Validator::make($request->all(), [
+            'company_id' => 'required|exists:companies,id'
+        ])->validate();
         $company = Company::findOrFail($request->get('company_id'));
         $fund = $company->fund()->first();
         $cost = $request->get('cost');
@@ -123,6 +147,9 @@ class TransacionController extends Controller
     }
 
     private function attachAndChangeFundBalance_fundPayLoan(Request $request, Transaction $transaction) {
+        Validator::make($request->all(), [
+            'allocated_loan_id' => 'required|exists:allocated_loans,id'
+        ])->validate();
         $allocatedLoan = AllocatedLoan::findOrFail($request->get('allocated_loan_id'));
         $fund = $allocatedLoan->account->fund()->first();
         $cost = $request->get('cost');
@@ -132,13 +159,34 @@ class TransacionController extends Controller
     }
 
     private function attachAndChangeFundBalance_userPayInstallment(Request $request, Transaction $transaction) {
-        $allocatedLoanInstallment = AllocatedLoanInstallment::findOrFail($request->get('allocated_loan_installment_id'));
-        $user = $allocatedLoanInstallment->allocatedLoan->account->user()->first();
+        $validator = Validator::make($request->all(), [
+            'allocated_loan_installment_id' => 'required|exists:allocated_loan_installments,id'
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
+
+        $allocatedLoanInstallment = AllocatedLoanInstallment::findOrFail($request->get('allocated_loan_installment_id'))
+            ->setAppends([
+                'is_settled',
+                'total_payments',
+                'remaining_payable_amount'
+            ]);
         $cost = $request->get('cost');
+        $validator = Validator::make($request->all(), [
+            'cost' => 'numeric|max:'.($allocatedLoanInstallment->remaining_payable_amount)
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
+
+        $user = $allocatedLoanInstallment->allocatedLoan->account->user()->first();
         $transaction->userPayers()->attach($user, ['cost'=> $cost]);
         $transaction->allocatedLoanInstallmentRecipients()->attach($allocatedLoanInstallment, ['cost'=> $cost]);
         $fund = $allocatedLoanInstallment->allocatedLoan->loan->fund;
         $fund->deposit($cost);
+
+        return $validator;
     }
 
     /**

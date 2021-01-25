@@ -22,3 +22,10 @@
     height: 56px;
     text-align: center;
 }
+
+.fixed-plugin {
+    left: 0;
+    right: auto;
+    //z-index: 9999999;
+    border-radius: 0 8px 8px 0;
+}

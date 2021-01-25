@@ -4,14 +4,11 @@ namespace App\Http\Controllers;
 
 use App\AllocatedLoan;
 use App\AllocatedLoanInstallment;
-use App\Company;
-use App\Fund;
 use App\Traits\CommonCRUD;
 use App\Traits\Filter;
-use App\Transaction;
-use App\TransactionStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class AllocatedLoanInstallmentController extends Controller
 {
@@ -50,7 +47,8 @@ class AllocatedLoanInstallmentController extends Controller
     {
         $allocatedLoan = AllocatedLoan::findOrFail($request->get('allocated_loan_id'));
         $allocatedLoanInstallment = AllocatedLoanInstallment::create([
-            'allocated_loan_id' => $allocatedLoan->id
+            'allocated_loan_id' => $allocatedLoan->id,
+            'rate' => $allocatedLoan->installment_rate
         ]);
         return $this->show($allocatedLoanInstallment->id);
     }
@@ -63,26 +61,21 @@ class AllocatedLoanInstallmentController extends Controller
      */
     public function show($id)
     {
-        $allocatedLoanInstallment = AllocatedLoanInstallment::findOrFail($id);
+        $allocatedLoanInstallment = AllocatedLoanInstallment::with('receivedTransactions.transactionStatus')
+            ->findOrFail($id)
+            ->setAppends([
+                'is_settled',
+                'total_payments',
+                'remaining_payable_amount'
+            ]);
         return $this->jsonResponseOk($allocatedLoanInstallment);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\AllocatedLoanInstallment  $allocatedLoanInstallment
-     * @return Response
-     */
-    public function edit(AllocatedLoanInstallment $allocatedLoanInstallment)
-    {
-        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  \App\AllocatedLoanInstallment  $allocatedLoanInstallment
+     * @param AllocatedLoanInstallment $allocatedLoanInstallment
      * @return Response
      */
     public function update(Request $request, AllocatedLoanInstallment $allocatedLoanInstallment)
@@ -93,11 +86,20 @@ class AllocatedLoanInstallmentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\AllocatedLoanInstallment  $allocatedLoanInstallment
+     * @param $id
      * @return Response
      */
-    public function destroy(AllocatedLoanInstallment $allocatedLoanInstallment)
+    public function destroy($id)
     {
-        //
+        Validator::make([
+            'allocatedLoanInstallment_id' => $id
+        ], [
+            'allocatedLoanInstallment_id' => 'required|exists:allocated_loan_installments,id'
+        ])->validate();
+        if (AllocatedLoanInstallment::find($id)->delete()) {
+            return $this->jsonResponseOk([ 'message'=> 'حذف با موفقیت انجام شد.' ]);
+        } else {
+            return $this->jsonResponseError('مشکلی در حذف اطلاعات رخ داده است.');
+        }
     }
 }
