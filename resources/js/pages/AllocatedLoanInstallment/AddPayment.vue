@@ -14,13 +14,49 @@
                                 {{ allocatedLoan.shamsiDate('created_at').date }}
                                 <br>
                                 مبلغ وام:
-                                {{ allocatedLoan.loan_amount }}
+                                {{ allocatedLoan.loan_amount | currencyFormat }}
                                 <br>
                                 مبلغ هر قسط وام:
-                                {{ allocatedLoan.installment_rate }}
+                                {{ allocatedLoan.installment_rate | currencyFormat }}
                                 <br>
                                 تعداد اقساط:
                                 {{ allocatedLoan.number_of_installments }}
+                                <hr>
+                                وضعیت قسط:
+                                {{ (allocatedLoanInstallment.is_settled) ? 'تسویه شده' : 'تسویه نشده' }}
+                                <br>
+                                مبلغ قسط:
+                                {{ allocatedLoanInstallment.rate | currencyFormat }}
+                                <br>
+                                تعداد پرداختی ها:
+                                {{ allocatedLoanInstallment.received_transactions.list.length }}
+                                <br>
+                                جمع کل پرداختی این قسط:
+                                {{ allocatedLoanInstallment.total_payments | currencyFormat }}
+                                <br>
+                                مبلغ باقیمانده جهت پرداخت این قسط:
+                                {{ allocatedLoanInstallment.remaining_payable_amount | currencyFormat }}
+                            </template>
+                            <template slot="content">
+                                <md-table v-model="allocatedLoanInstallment.received_transactions.list" table-header-color="orange">
+                                    <md-table-row slot="md-table-row" slot-scope="{ item }">
+                                        <md-table-cell md-label="مبلغ تراکنش">{{ item.cost | currencyFormat }}</md-table-cell>
+                                        <md-table-cell md-label="تاریخ پرداخت">{{ item.shamsiDate('paid_at').date }}</md-table-cell>
+                                        <md-table-cell md-label="وضعیت">{{ item.transaction_status.display_name }}</md-table-cell>
+                                        <md-table-cell md-label="توضیحات کاربر">{{ item.user_comment }}</md-table-cell>
+                                        <md-table-cell md-label="توضیحات مدیر">{{ item.manager_comment }}</md-table-cell>
+                                        <md-table-cell md-label="مشاهده">
+                                            <md-button
+                                                :to="'/transactions/'+item.id"
+                                                class="md-icon-button md-raised md-round md-info"
+                                                style="margin: .2rem;"
+                                            >
+                                                <md-icon>preview</md-icon>
+                                                <md-tooltip md-direction="top">مشاهده</md-tooltip>
+                                            </md-button>
+                                        </md-table-cell>
+                                    </md-table-row>
+                                </md-table>
                             </template>
                             <template slot="footer">
                                 <div class="stats">
@@ -34,7 +70,7 @@
                         </stats-card>
                         <loading :active.sync="allocatedLoan.loading" :is-full-page="false"></loading>
                     </div>
-                    <div class="md-layout-item md-size-100">
+                    <div v-if="!allocatedLoanInstallment.is_settled" class="md-layout-item md-size-100">
                         <md-card>
                             <md-card-header class="md-card-header-icon md-card-header-green">
                                 <div class="card-icon">
@@ -142,9 +178,6 @@
     import { AllocatedLoanInstallment } from "@/models/AllocatedLoanInstallment"
     import { priceFilterMixin, axiosMixin, getFilterDropdownMixin } from '@/mixins/Mixins'
     import moment from 'moment'
-    import {User} from "@/models/User";
-    import {FundList} from "@/models/Fund";
-    import {LoanList} from "@/models/Loan";
     import {Transaction} from "@/models/Transaction";
 
     export default {
@@ -159,35 +192,25 @@
         data: () => ({
             allocatedLoan: new AllocatedLoan(),
             allocatedLoanInstallment: new AllocatedLoanInstallment(),
-            transaction: new Transaction(),
-
-            selectedFund: null,
-            selectedAccount: null,
-            funds: new FundList(),
-            loans: new LoanList(),
-            selectedLoan: null,
-
-            sortation: {
-                field: 'created_at',
-                order: 'asc'
-            },
-            installment: new AllocatedLoanInstallment(),
-            installmentTransactionsShowDialog: false
+            transaction: new Transaction()
         }),
         created () {
         },
         mounted() {
-            this.getAllocatedLoan()
+            this.getData()
             this.getTransactionStatus(false)
         },
         methods: {
+            getData () {
+                this.getAllocatedLoan()
+                this.getAllocatedLoanInstallment()
+            },
             getAllocatedLoan () {
                 this.allocatedLoan.loading = true;
                 this.allocatedLoan.show(this.$route.params.allocated_loan_id)
                     .then((response) => {
                         this.allocatedLoan.loading = false;
                         this.allocatedLoan = new AllocatedLoan(response.data)
-                        this.loadTransactionFromAllocatedLoanData()
                     })
                     .catch((error) => {
                         this.axios_handleError(error)
@@ -195,33 +218,24 @@
                         this.allocatedLoan = new AllocatedLoan()
                     })
             },
-            loadTransactionFromAllocatedLoanData () {
-                this.transaction.cost = this.allocatedLoan.installment_rate
-                this.transaction.transaction_status.id = 1
-                this.transaction.paid_at = moment().format('YYYY-MM-DD HH:mm:ss')
-            },
-            createAllocatedLoanInstallment () {
+            getAllocatedLoanInstallment () {
                 this.allocatedLoanInstallment.loading = true;
-                let that = this
-                this.allocatedLoanInstallment.create({
-                    allocated_loan_id: this.allocatedLoan.id
-                })
+                this.allocatedLoanInstallment.show(this.$route.params.allocated_loan_installment_id)
                     .then((response) => {
-                        that.allocatedLoanInstallment.loading = false;
-                        that.allocatedLoanInstallment = new AllocatedLoanInstallment(response.data)
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'success',
-                            title: 'توجه',
-                            message: 'قسط با موفقیت ثبت شد'
-                        });
-                        that.createTransaction()
+                        this.allocatedLoanInstallment.loading = false;
+                        this.allocatedLoanInstallment = new AllocatedLoanInstallment(response.data)
+                        this.loadTransactionFromAllocatedLoanData()
                     })
                     .catch((error) => {
                         this.axios_handleError(error)
-                        that.allocatedLoanInstallment.loading = false;
-                        that.allocatedLoanInstallment = new AllocatedLoan()
+                        this.allocatedLoanInstallment.loading = false;
+                        this.allocatedLoanInstallment = new AllocatedLoanInstallment()
                     })
-
+            },
+            loadTransactionFromAllocatedLoanData () {
+                this.transaction.cost = this.allocatedLoanInstallment.remaining_payable_amount
+                this.transaction.transaction_status.id = 1
+                this.transaction.paid_at = moment().format('YYYY-MM-DD HH:mm:ss')
             },
             createTransaction () {
                 this.transaction.loading = true;
@@ -237,154 +251,14 @@
                             title: 'توجه',
                             message: 'اطلاعات تراکنش قسط با موفقیت ثبت شد'
                         });
+                        that.getData()
                     })
                     .catch((error) => {
                         this.axios_handleError(error)
-                        that.transaction.loading = false;
+                        that.transaction.loading = false
+                        that.getData()
                     })
-            },
-
-            showUserAccounts () {
-                let that = this
-                this.selectedUser.loading = true;
-                this.selectedUser.show(this.selectedUser.id)
-                    .then((response) => {
-                        that.selectedUser.loading = false
-                        that.selectedUser = new User(response.data)
-                    })
-                    .catch((error) => {
-                        that.axios_handleError(error)
-                        that.selectedUser.loading = false;
-                        that.selectedUser = new User()
-                    })
-            },
-            onSelectAccount (item) {
-                this.selectedAccount = item
-            },
-            onSelectFund (item) {
-                this.selectedFund = item
-                this.getLoans()
-            },
-            onSelectLoan (item) {
-                this.selectedLoan = item
-            },
-            getLoans (page) {
-                if (!page) {
-                    page = 1
-                }
-                let that = this
-                this.loans.loading = true
-                this.loans.fetch({page, fund_id: this.selectedFund.id})
-                    .then((response) => {
-                        that.loans.loading = false
-                        that.loans = new LoanList(response.data.data, response.data)
-                    })
-                    .catch((error) => {
-                        that.axios_handleError(error)
-                        that.loans.loading = false
-                        that.loans = new LoanList()
-                    })
-            },
-            getFunds (page) {
-                if (!page) {
-                    page = 1
-                }
-                let that = this
-                this.funds.loading = true;
-                this.funds.fetch({page})
-                    .then((response) => {
-                        that.funds.loading = false;
-                        that.funds = new FundList(response.data.data, response.data)
-                    })
-                    .catch((error) => {
-                        that.axios_handleError(error)
-                        that.funds.loading = false;
-                        that.funds = new FundList()
-                    })
-            },
-            createAllocatedLoan () {
-                let that = this
-                this.allocatedLoan.loading = true
-                this.allocatedLoan.create({
-                    account_id: this.selectedAccount.id,
-                    loan_id: this.selectedLoan.id,
-                    payroll_deduction: this.allocatedLoan.payroll_deduction
-                })
-                    .then((response) => {
-                        that.allocatedLoan.loading = false;
-                        let newAllocatedLoan = new AllocatedLoan(response.data)
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'success',
-                            title: 'توجه',
-                            message: 'اطلاعات وام تخصیص داده شده با موفقیت ثبت شد'
-                        });
-                        that.$router.push({ path: '/allocated_loan/'+newAllocatedLoan.id })
-                    })
-                    .catch((error) => {
-                        this.axios_handleError(error)
-                        that.allocatedLoan.loading = false;
-                        that.allocatedLoan = new AllocatedLoan()
-                    })
-            },
-
-
-            updateAllocatedLoan () {
-                if (this.isCreateForm()) {
-                    this.createAllocatedLoan()
-                    return
-                }
-                let that = this
-                this.allocatedLoan.loading = true;
-                this.allocatedLoan.update()
-                    .then((response) => {
-                        that.allocatedLoan.loading = false;
-                        that.allocatedLoan = new AllocatedLoan(response.data)
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'success',
-                            title: 'توجه',
-                            message: 'اطلاعات با موفقیت ویرایش شد'
-                        });
-                    })
-                    .catch((error) => {
-                        this.axios_handleError(error)
-                        that.allocatedLoan.loading = false;
-                        that.allocatedLoan = new AllocatedLoan()
-                    })
-            },
-            getInstallmentRowClass (item) {
-                if (!item.is_settled && parseInt(item.remaining_payable_amount) === parseInt(item.rate)) {
-                    return 'table-danger'
-                } else if (!item.is_settled) {
-                    return 'table-warning'
-                }
-                return '';
-                // {
-                //     "table-success": id === 1,
-                //     "table-info": id === 3,
-                //     "table-danger": id === 5,
-                //     "table-warning": id === 7
-                // }
-            },
-            customSort (value) {
-                return value.sort((a, b) => {
-                    const sortBy = this.sortation.field
-
-                    if (this.sortation.order === 'desc') {
-                        return a[sortBy].toString().localeCompare(b[sortBy])
-                    }
-
-                    return b[sortBy].toString().localeCompare(a[sortBy])
-                })
-            },
-            showInstallmentTransactions (installment) {
-                this.installment = installment
-                this.installmentTransactionsShowDialog = true
-            },
-            closeInstallmentTransactions () {
-                this.installment = new AllocatedLoanInstallment()
-                this.installmentTransactionsShowDialog = false
-            },
-
+            }
         }
     }
 </script>

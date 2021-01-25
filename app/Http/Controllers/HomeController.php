@@ -25,7 +25,8 @@ class HomeController extends Controller
      */
     public function welcome()
     {
-        return view('landing');
+        return redirect('/login');
+//        return view('landing');
     }
 
     /**

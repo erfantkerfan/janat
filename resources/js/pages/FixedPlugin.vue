@@ -1,133 +1,65 @@
 <template>
-  <div class="fixed-plugin" v-click-outside="closeDropDown">
-    <div class="dropdown show-dropdown" :class="{ show: isOpen }">
-      <a data-toggle="dropdown">
-        <i class="fa fa-cog fa-2x" @click="toggleDropDown"> </i>
-      </a>
-      <ul class="dropdown-menu" :class="{ show: isOpen }">
-        <li class="header-title">Sidebar Filters</li>
-        <li class="adjustments-line text-center">
-          <span
-              v-for="item in sidebarColors"
-              :key="item.color"
-              class="badge filter"
-              :class="[`badge-${item.color}`, { active: item.active }]"
-              :data-color="item.color"
-              @click="changeSidebarBackground(item)"
-          >
-          </span>
-        </li>
-        <li class="header-title">Sidebar Background</li>
-        <li class="adjustments-line text-center">
-          <span
-              v-for="item in sidebarBg"
-              :key="item.colorBg"
-              class="badge filter"
-              :class="[`badge-${item.colorBg}`, { active: item.active }]"
-              :data-color="item.colorBg"
-              @click="changeSidebarBg(item)"
-          >
-          </span>
-        </li>
-        <li class="adjustments-line sidebar-mini">
-          Sidebar Mini
-          <md-switch
-              :value="!sidebarMini"
-              @change="val => updateValue('sidebarMini', val)"
-          ></md-switch>
-        </li>
-        <li class="adjustments-line sidebar-img">
-          Sidebar Image
-          <md-switch
-              :value="!sidebarImg"
-              @change="val => updateValueImg('sidebarImg', val)"
-          ></md-switch>
-        </li>
+  <div v-if="false" class="fixed-plugin">
+      <md-menu md-size="medium" :md-offset-x="127" :md-offset-y="-36">
+          <md-button md-menu-trigger>
+              <md-icon>settings</md-icon>
+          </md-button>
 
-        <li class="header-title">Images</li>
-        <li
-            v-for="item in sidebarImages"
-            :key="item.image"
-            :class="{ active: item.active }"
-            @click="changeSidebarImage(item)"
-        >
-          <a class="img-holder switch-trigger">
-            <img :src="item.image" alt=""/>
-          </a>
-        </li>
+          <md-menu-content>
+              <ul>
+                  <li class="header-title">Sidebar Filters</li>
+                  <li class="adjustments-line text-center">
+                      <span
+                          v-for="item in sidebarColors"
+                          :key="item.color"
+                          class="badge filter"
+                          :class="[`badge-${item.color}`, { active: item.active }]"
+                          :data-color="item.color"
+                          @click="changeSidebarBackground(item)"
+                      >
+                      </span>
+                  </li>
+                  <li class="header-title">Sidebar Background</li>
+                  <li class="adjustments-line text-center">
+                      <span
+                          v-for="item in sidebarBg"
+                          :key="item.colorBg"
+                          class="badge filter"
+                          :class="[`badge-${item.colorBg}`, { active: item.active }]"
+                          :data-color="item.colorBg"
+                          @click="changeSidebarBg(item)"
+                      >
+                      </span>
+                  </li>
+                  <li class="adjustments-line sidebar-mini">
+                      Sidebar Mini
+                      <md-switch
+                          :value="!sidebarMini"
+                          @change="val => updateValue('sidebarMini', val)"
+                      ></md-switch>
+                  </li>
+                  <li class="adjustments-line sidebar-img">
+                      Sidebar Image
+                      <md-switch
+                          :value="!sidebarImg"
+                          @change="val => updateValueImg('sidebarImg', val)"
+                      ></md-switch>
+                  </li>
 
-        <li class="button-container">
-          <div class="">
-            <md-button
-                class="md-success md-block"
-                :href="downloadUrl"
-                target="_blank"
-            >Download Now
-            </md-button
-            >
-          </div>
-        </li>
-
-        <li class="button-container">
-          <div class="">
-            <md-button
-                class="md-default md-block"
-                :href="documentationLink"
-                target="_blank"
-            >Documentation
-            </md-button
-            >
-          </div>
-        </li>
-
-        <li class="button-container">
-          <div class="">
-            <md-button class="md-block md-danger" :href="upgradeUrl" target="_blank"
-            >Upgrade to PRO
-            </md-button
-            >
-          </div>
-        </li>
-
-        <li class="github-buttons">
-          <gh-btns-star
-              slug="creativetimofficial/vue-material-dashboard-laravel"
-              show-count
-          ></gh-btns-star>
-        </li>
-
-        <li class="header-title d-flex justify-content-center">
-          Thank you for sharing!
-        </li>
-
-        <li class="button-container">
-          <social-sharing
-              :url="shareUrl"
-              inline-template
-              title="Vue Material Dashboard - Premium Admin Template for Vue.js"
-              hashtags="vuejs, dashboard, vuematerial"
-              twitter-user="creativetim"
-          >
-            <div class="centered-buttons">
-              <network
-                  network="twitter"
-                  class="md-button md-round md-twitter"
-                  url="https://vue-material-dashboard-laravel.creative-tim.com/"
-              >
-                <i class="fab fa-twitter"></i> · 45
-              </network>
-              <network
-                  network="facebook"
-                  url="https://vue-material-dashboard-laravel.creative-tim.com/"
-                  class="md-button md-round md-facebook"
-              >
-                <i class="fab fa-facebook-f"></i> · 50
-              </network>
-            </div>
-          </social-sharing>
-        </li>
-      </ul>
-    </div>
+                  <li class="header-title">Images</li>
+                  <li
+                      v-for="item in sidebarImages"
+                      :key="item.image"
+                      :class="{ active: item.active }"
+                      @click="changeSidebarImage(item)"
+                  >
+                      <a class="img-holder switch-trigger">
+                          <img :src="item.image" alt=""/>
+                      </a>
+                  </li>
+              </ul>
+          </md-menu-content>
+      </md-menu>
   </div>
 </template>
 <script>

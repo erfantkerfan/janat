@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\AllocatedLoan;
 use App\Fund;
+use App\Http\Requests\StoreAllocatedLoan;
 use App\Loan;
 use App\Traits\CommonCRUD;
 use App\Traits\Filter;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class AllocatedLoanController extends Controller
 {
@@ -95,14 +97,16 @@ class AllocatedLoanController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreAllocatedLoan $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StoreAllocatedLoan $request)
     {
+        DB::beginTransaction();
         $account = Account::findOrFail($request->get('account_id'));
         $loan = Loan::findOrFail($request->get('loan_id'));
-        return AllocatedLoan::create([
+        $fund = $account->fund()->first();
+        $createdAllocatedLoan = AllocatedLoan::create([
             'account_id' => $account->id,
             'loan_id' => $loan->id,
             'loan_amount' => $loan->loan_amount,
@@ -112,7 +116,20 @@ class AllocatedLoanController extends Controller
             'number_of_installments' => $loan->number_of_installments,
             'payroll_deduction' => $request->get('payroll_deduction')
         ]);
+        $withdrawalResult = $fund->withdrawal($loan->loan_amount);
+
+        if ($createdAllocatedLoan && $withdrawalResult) {
+            DB::commit();
+            return $this->show($createdAllocatedLoan->id);
+        } else {
+            DB::rollBack();
+            return $this->jsonResponseServerError([
+                'message' => 'مشکلی در تخصیص وام در پایگاه داده رخ داده است.'
+            ]);
+        }
 //        return $this->commonStore($request, AllocatedLoan::class);
+
+
     }
 
     /**

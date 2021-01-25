@@ -36,6 +36,16 @@
                         </div>
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
+                                موجودی صندوق
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="fund.balance" :disabled="true"/>
+                                </md-field>
+                            </div>
+                        </div>
+                        <div v-if="!isCreateForm()" class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
                                 تاریخ تعریف صندوق
                             </label>
                             <div class="md-layout-item">
