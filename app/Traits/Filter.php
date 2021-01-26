@@ -90,6 +90,14 @@ trait Filter
         return response(json_encode($response), Response::HTTP_OK)->header('Content-Type', 'application/json');
     }
 
+    private function jsonResponseErrorValidate($response) {
+        return response(json_encode($response), Response::HTTP_UNPROCESSABLE_ENTITY)->header('Content-Type', 'application/json');
+    }
+
+    private function jsonResponseServerError($response) {
+        return response(json_encode($response), Response::HTTP_INTERNAL_SERVER_ERROR)->header('Content-Type', 'application/json');
+    }
+
     private function jsonResponseError($message) {
         return response(json_encode($message), Response::HTTP_INTERNAL_SERVER_ERROR)->header('Content-Type', 'application/json');
     }

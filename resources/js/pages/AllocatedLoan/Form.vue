@@ -4,7 +4,7 @@
             <div class="md-layout-item md-size-100">
 
                 <div class="md-layout">
-                    <div  v-if="allocatedLoan.account" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                    <div v-if="allocatedLoan.account" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
                         <stats-card header-color="blue">
                             <template slot="header">
                                 <div class="card-icon">
@@ -27,7 +27,7 @@
                             </template>
                         </stats-card>
                     </div>
-                    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                    <div v-if="allocatedLoan.loan" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
                         <stats-card header-color="warning">
                             <template slot="header">
                                 <div class="card-icon">
@@ -38,7 +38,6 @@
                                     {{ allocatedLoan.loan.name }}
                                 </h3>
                             </template>
-
                             <template slot="footer">
                                 <div class="stats">
                                     <md-button
@@ -50,7 +49,7 @@
                             </template>
                         </stats-card>
                     </div>
-                    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                    <div v-if="allocatedLoan.loan" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
                         <stats-card header-color="green">
                             <template slot="header">
                                 <div class="card-icon">
@@ -72,7 +71,7 @@
                             </template>
                         </stats-card>
                     </div>
-                    <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                    <div v-if="allocatedLoan.loan" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
                         <stats-card header-color="rose">
                             <template slot="header">
                                 <div class="card-icon">
@@ -96,6 +95,7 @@
                 </div>
 
                 <md-card>
+                    <loading :active.sync="allocatedLoan.loading" :is-full-page="false"></loading>
                     <md-card-header class="md-card-header-text" :class="{'md-card-header-warning': !allocatedLoan.is_settled, 'md-card-header-blue': allocatedLoan.is_settled}">
                         <div class="card-text">
                             <h4 class="title">اقساط</h4>
@@ -124,7 +124,7 @@
                             </p>
                         </div>
                     </md-card-header>
-                    <md-card-content>
+                    <md-card-content v-if="allocatedLoan.installments">
                         <md-table :value="allocatedLoan.installments.list"
                                   table-header-color="green"
                                   :md-sort.sync="sortation.field"
@@ -153,14 +153,32 @@
                                         class="md-icon-button md-raised md-round md-info"
                                         style="margin: .2rem;"
                                     >
-                                        <md-icon>edit</md-icon>
+                                        <md-icon>preview</md-icon>
+                                        <md-tooltip md-direction="top">مشاهده تراکنش ها</md-tooltip>
+                                    </md-button>
+                                    <md-button
+                                        v-if="!item.is_settled"
+                                        :to="{ name: 'AllocatedLoanInstallment.AddPayment', params: {'allocated_loan_id': allocatedLoan.id, 'allocated_loan_installment_id': item.id} }"
+                                        class="md-icon-button md-raised md-round md-info"
+                                        style="margin: .2rem;"
+                                    >
+                                        <md-icon>payment</md-icon>
+                                        <md-tooltip md-direction="top">ثبت تراکنش جدید</md-tooltip>
+                                    </md-button>
+                                    <md-button
+                                        @click="confirmDeleteAllocatedLoanInstallment(item)"
+                                        class="md-icon-button md-raised md-round md-danger"
+                                        style="margin: .2rem;"
+                                    >
+                                        <md-icon>delete</md-icon>
+                                        <md-tooltip md-direction="top">حذف قسط</md-tooltip>
                                     </md-button>
                                 </md-table-cell>
                             </md-table-row>
                         </md-table>
                         <md-button
                             class="md-dense md-raised md-success"
-                            :to="{ name: 'AllocatedLoanInstallment.Create', params: {'allocated_loan_id': allocatedLoan.id} }">
+                            @click="createAllocatedLoanInstallment">
                             تعریف قسط جدید
                         </md-button>
                     </md-card-content>
@@ -176,12 +194,12 @@
                                     <div class="card-text">
                                         <h4 class="title">تاریخ قسط: {{installment.shamsiDate('created_at').date}}</h4>
                                         <p class="category">
-                                    <span v-if="installment.is_settled">
-                                        تسویه شده
-                                    </span>
+                                            <span v-if="installment.is_settled">
+                                                تسویه شده
+                                            </span>
                                             <span v-else>
-                                        تسویه نشده
-                                    </span>
+                                                تسویه نشده
+                                            </span>
                                             <br>
                                             کل پرداخت:
                                             {{installment.total_payments | currencyFormat}}
@@ -202,7 +220,8 @@
                                                     class="md-icon-button md-raised md-round md-info"
                                                     style="margin: .2rem;"
                                                 >
-                                                    <md-icon>edit</md-icon>
+                                                    <md-icon>preview</md-icon>
+                                                    <md-tooltip md-direction="top">مشاهده</md-tooltip>
                                                 </md-button>
                                             </md-table-cell>
                                         </md-table-row>
@@ -219,6 +238,14 @@
 
             </div>
         </div>
+        <md-dialog-confirm
+            :md-active.sync="confirmDialogShow"
+            md-title="توجه!"
+            :md-content="confirmDialogMessage"
+            md-confirm-text="بله"
+            md-cancel-text="خیر"
+            @md-cancel="hideConfirmDeleteAllocatedLoanInstallment"
+            @md-confirm="deleteAllocatedLoanInstallment" />
     </div>
 </template>
 
@@ -227,8 +254,8 @@
     import { AllocatedLoan } from '@/models/AllocatedLoan'
     import { AllocatedLoanInstallment } from "@/models/AllocatedLoanInstallment"
     import { priceFilterMixin, axiosMixin } from '@/mixins/Mixins'
-    import {Account} from "@/models/Account";
-    import {User} from "@/models/User";
+    import { Account } from "@/models/Account";
+    import { User } from "@/models/User";
 
     export default {
         watch: {
@@ -239,8 +266,11 @@
         components: { StatsCard },
         mixins: [priceFilterMixin, axiosMixin],
         data: () => ({
+            confirmDialogShow: false,
+            confirmDialogMessage: '',
             allocatedLoan: new AllocatedLoan(),
             newAllocatedLoan: new AllocatedLoan(),
+            allocatedLoanInstallment: new AllocatedLoanInstallment(),
             sortation: {
                 field: 'created_at',
                 order: 'asc'
@@ -368,7 +398,57 @@
                         that.newAllocatedLoan.account.user.loading = false;
                         that.newAllocatedLoan.account.user = new User()
                     })
-            }
+            },
+            createAllocatedLoanInstallment () {
+                this.allocatedLoan.loading = true;
+                this.allocatedLoanInstallment.loading = true;
+                let that = this
+                this.allocatedLoanInstallment.create({
+                    allocated_loan_id: this.allocatedLoan.id
+                })
+                    .then((response) => {
+                        that.getData()
+                        that.allocatedLoanInstallment.loading = false
+                        that.allocatedLoanInstallment = new AllocatedLoanInstallment(response.data)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'قسط با موفقیت ثبت شد'
+                        });
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        that.getData()
+                        that.allocatedLoanInstallment.loading = false
+                        that.allocatedLoanInstallment = new AllocatedLoanInstallment()
+                    })
+            },
+            confirmDeleteAllocatedLoanInstallment (allocatedLoanInstallment) {
+                this.allocatedLoanInstallment = allocatedLoanInstallment
+                this.confirmDialogMessage = 'آیا از حذف قسط تاریخ ' + allocatedLoanInstallment.shamsiDate('created_at').dateTime + ' اطمینان دارید؟'
+                this.confirmDialogShow = true
+            },
+            hideConfirmDeleteAllocatedLoanInstallment () {
+                this.confirmDialogShow = false
+            },
+            deleteAllocatedLoanInstallment () {
+                this.allocatedLoan.loading = true;
+                this.allocatedLoanInstallment.loading = true;
+                let that = this
+                this.allocatedLoanInstallment.delete()
+                    .then(() => {
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'قسط با موفقیت حذف شد'
+                        });
+                        that.getData()
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        that.getData()
+                    })
+            },
         }
     }
 </script>

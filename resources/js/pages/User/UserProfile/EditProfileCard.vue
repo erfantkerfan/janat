@@ -14,6 +14,16 @@
 
             <div class="md-layout">
                 <label class="md-layout-item md-size-15 md-form-label">
+                    کد کاربر:
+                </label>
+                <div class="md-layout-item">
+                    <md-field class="md-invalid">
+                        <md-input v-model="value.id" @input="updateUserModel" />
+                    </md-field>
+                </div>
+            </div>
+            <div class="md-layout">
+                <label class="md-layout-item md-size-15 md-form-label">
                     نام
                 </label>
                 <div class="md-layout-item">

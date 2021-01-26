@@ -4,12 +4,18 @@ export default {
             let errorMessage = ''
             if (error.response) {
                 // Request made and server responded
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
+                console.log(error.response.data)
+                console.log(error.response.status)
+                console.log(error.response.headers)
                 let statusCode = parseInt(error.response.status)
                 if (statusCode === 401) {
                     errorMessage = 'ابتدا وارد شوید.'
+                } else if (statusCode === 422) {
+                    for (let property in error.response.data.errors) {
+                        error.response.data.errors[property].forEach( (item) => {
+                            errorMessage = item + '<br>'
+                        })
+                    }
                 } else if (statusCode === 404) {
                     errorMessage = 'موردی یافت نشد!'
                 } else if (statusCode >499 && statusCode < 600) {

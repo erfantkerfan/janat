@@ -16,6 +16,7 @@ class CreateAllocatedLoanInstallmentsTable extends Migration
         Schema::create('allocated_loan_installments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('allocated_loan_id')->unsigned();
+            $table->integer('rate')->default(0)->comment('مبلغ قسط');
             $table->timestamps();
             $table->softDeletes();
 

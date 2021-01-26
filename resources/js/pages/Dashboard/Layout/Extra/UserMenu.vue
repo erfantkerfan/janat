@@ -22,7 +22,9 @@
                         <slot>
                             <li>
                                 <a @click="goToProfile">
-                                    <span class="sidebar-mini">MP</span>
+                                    <span class="sidebar-mini">
+                                        <md-icon>person</md-icon>
+                                    </span>
                                     <span class="sidebar-normal">حساب من</span>
                                 </a>
                             </li>
@@ -32,7 +34,9 @@
                                            value="viVMg6WzIMXAPgk9QFvOzpVZl5jahXKOhCSTziVW">
                                 </form>
                                 <a @click="logout">
-                                    <span class="sidebar-mini">L</span>
+                                    <span class="sidebar-mini">
+                                        <md-icon>power_settings_new</md-icon>
+                                    </span>
                                     <span class="sidebar-normal">خروج</span>
                                 </a>
                             </li>
@@ -56,7 +60,7 @@
                 if (this.authenticatedUser.f_name || this.authenticatedUser.l_name) {
                     return this.authenticatedUser.f_name + ' ' + this.authenticatedUser.l_name
                 } else {
-                    return ''
+                    return 'نام و نام خانوادگی ثبت نشده'
                 }
 
             },

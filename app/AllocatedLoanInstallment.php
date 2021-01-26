@@ -16,7 +16,8 @@ class AllocatedLoanInstallment extends Model
      * @var array
      */
     protected $fillable = [
-        'allocated_loan_id'
+        'allocated_loan_id',
+        'rate'
     ];
 
     /**

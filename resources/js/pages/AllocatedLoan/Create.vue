@@ -20,13 +20,19 @@
                                         </label>
                                         <div class="md-layout-item">
                                             <md-field class="md-invalid">
-                                                <md-input v-model="selectedUser.id" />
+                                                <md-input v-model="targetUserId" />
                                             </md-field>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="md-layout">
                                     <div class="md-layout-item">
+                                        <md-empty-state v-if="!selectedUser.loading && selectedUser.id !== null && selectedUser.accounts.list.length === 0"
+                                            class="md-warning"
+                                            md-icon="cancel_presentation"
+                                            md-label="حسابی برای کاربر انتخاب شده یافت نشد"
+                                        >
+                                        </md-empty-state>
                                         <md-table v-if="!selectedUser.loading && selectedUser.id !== null"
                                                   v-model="selectedUser.accounts.list"
                                                   @md-selected="onSelectAccount">
@@ -221,6 +227,7 @@
         components: { StatsCard, ListPagination },
         mixins: [priceFilterMixin, axiosMixin],
         data: () => ({
+            targetUserId: null,
             selectedUser: new User(),
             selectedFund: null,
             selectedAccount: null,
@@ -245,7 +252,7 @@
             showUserAccounts () {
                 let that = this
                 this.selectedUser.loading = true;
-                this.selectedUser.show(this.selectedUser.id)
+                this.selectedUser.show(this.targetUserId)
                     .then((response) => {
                         that.selectedUser.loading = false
                         that.selectedUser = new User(response.data)

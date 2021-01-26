@@ -141,6 +141,7 @@
     import { AllocatedLoan } from '@/models/AllocatedLoan'
     import { AllocatedLoanInstallment } from "@/models/AllocatedLoanInstallment"
     import { priceFilterMixin, axiosMixin, getFilterDropdownMixin } from '@/mixins/Mixins'
+    import moment from 'moment'
     import {User} from "@/models/User";
     import {FundList} from "@/models/Fund";
     import {LoanList} from "@/models/Loan";
@@ -196,7 +197,8 @@
             },
             loadTransactionFromAllocatedLoanData () {
                 this.transaction.cost = this.allocatedLoan.installment_rate
-                this.transaction.paid_at = new Date()
+                this.transaction.transaction_status.id = 1
+                this.transaction.paid_at = moment().format('YYYY-MM-DD HH:mm:ss')
             },
             createAllocatedLoanInstallment () {
                 this.allocatedLoanInstallment.loading = true;
@@ -238,8 +240,7 @@
                     })
                     .catch((error) => {
                         this.axios_handleError(error)
-                        that.transaction.loading = false;
-                        that.transaction = new Transaction()
+                        that.transaction.loading = false
                     })
             },
 
