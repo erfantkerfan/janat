@@ -1,0 +1,10 @@
+//@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import '../js/assets/scss/md/font-family';
+
+
+$total-font-family: 'Sahel'; // Sahel - Vazir
+
+body, h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p, .navbar, .brand, .btn-simple, a, .td-name, td {
+    font-family: $total-font-family, "Helvetica Neue","Open Sans",Arial,sans-serif;
+
+}

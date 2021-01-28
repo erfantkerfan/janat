@@ -26,8 +26,8 @@ class AllocatedLoanController extends Controller
      */
     public function index(Request $request)
     {
-//        return AllocatedLoan::settled()->get();
         $config = [
+            'returnModelQuery' => true,
             'eagerLoads'=> [
                 'account.user:id,f_name,l_name', 'loan', 'loan.fund'
             ],
@@ -71,7 +71,8 @@ class AllocatedLoanController extends Controller
                 ]
             ],
             'setAppends'=> [
-                'is_settled'
+                'is_settled',
+                'last_payment',
 //                'total_payments',
 //                'remaining_payable_amount',
 //                'count_of_paid_installments',
@@ -83,15 +84,20 @@ class AllocatedLoanController extends Controller
             ],
         ];
 
-//        $scopes = function ( & $modelQuery)
-//        {
-//            $modelQuery->settled();
-//        };
-
-        return $this->commonIndex($request,
+        $data = $this->commonIndex($request,
             AllocatedLoan::class,
             $config
         );
+        $allocatedLoanModelQuery = $data['modelQuery'];
+        $responseWithAttachedCollection = $data['responseWithAttachedCollection'];
+
+        $lastPaidAtAfter = ($request->has('last_paid_at_after')) ? $request->get('last_paid_at_after') : null;
+        $lastPaidAtBefore = ($request->has('last_paid_at_before')) ? $request->get('last_paid_at_before') : null;
+        if (isset($lastPaidAtAfter) || isset($lastPaidAtBefore)) {
+            $allocatedLoanModelQuery->lastPaymentPaidAt('>', $lastPaidAtAfter, '<', $lastPaidAtBefore);
+        }
+
+        return $responseWithAttachedCollection($allocatedLoanModelQuery);
     }
 
     /**
