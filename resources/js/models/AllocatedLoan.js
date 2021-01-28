@@ -2,7 +2,6 @@ import { Model, Collection } from 'js-abstract-model'
 // import {Account} from "./Account";
 import {Loan} from "./Loan";
 import {AllocatedLoanInstallmentList} from "./AllocatedLoanInstallment";
-import {Transaction} from "@/models/Transaction";
 
 class AllocatedLoan extends Model {
     constructor (user) {
@@ -26,10 +25,6 @@ class AllocatedLoan extends Model {
                 relatedModel: AllocatedLoanInstallmentList
             },
             { key: 'is_settled' },
-            {
-                key: 'last_payment',
-                relatedModel: Transaction
-            },
             { key: 'total_payments' },
             { key: 'remaining_payable_amount' },
             { key: 'count_of_paid_installments' },

@@ -4,14 +4,12 @@
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="assets/img/favicon.ico">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>صندوق جنت</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
-    <!-- Styles -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <link href="assets/css/landing-page.css" rel="stylesheet"/>
-    <link href="{{ mix('css/font.css') }}" rel="stylesheet">
 
     <!--     Fonts and icons     -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -30,13 +28,13 @@
                 <span class="icon-bar bar2"></span>
                 <span class="icon-bar bar3"></span>
             </button>
-            <a href="{{ url('/') }}">
+            <a href="http://www.creative-tim.com">
                 <div class="logo-container">
                     <div class="logo">
-                        <img src="/img/logo.png" alt="صندوق قرض الحسه جنت">
+                        <img src="assets/img/new_logo.png" alt="Creative Tim Logo">
                     </div>
                     <div class="brand">
-                        قرض الحسه جنت
+                        Creative Tim
                     </div>
                 </div>
             </a>
@@ -61,11 +59,11 @@
                     </li>
                 @else
                     <li>
-                        <a href="{{ route('login') }}">{{ __('navbar.Login') }}</a>
+                        <a href="{{ route('login') }}">Login</a>
                     </li>
                     @if (Route::has('register'))
                         <li>
-                            <a href="{{ route('register') }}">{{ __('navbar.Register') }}</a>
+                            <a href="{{ route('register') }}">Register</a>
                         </li>
                     @endif
                 @endauth
@@ -77,24 +75,21 @@
 <div class="wrapper">
     <div class="parallax filter-gradient blue" data-color="blue">
         <div class="parallax-background">
-            <img class="parallax-background-image" src="/assets/img/landing-page/xns6snpdxy5f.jpeg">
+            <img class="parallax-background-image" src="assets/img/template/bg3.jpg">
         </div>
         <div class= "container">
             <div class="row">
                 <div class="col-md-5 hidden-xs">
                     <div class="parallax-image">
-                        <img class="phone" src="/assets/img/landing-page/121641871902064719057100271551181214170178.png" style="margin-top: 20px"/>
+                        <img class="phone" src="assets/img/template/iphone3.png" style="margin-top: 20px"/>
                     </div>
                 </div>
                 <div class="col-md-6 col-md-offset-1">
                     <div class="description">
-                        <h2>صندوق قرض الحسنه جنت</h2>
+                        <h2>Awesome landing page.</h2>
                         <br>
-                        <h5 style="text-align: justify;">
-                            در این اوضاع‌ و احوال کدام بانک یا صندوق را سراغ دارید که با کارمزدها و سودهای کلان دود از سرتان بلند نکرده و کارتان را زود راه بیاندازد؟!!
-                        </h5>
+                        <h5>Be amazed by the best looking bootstrap landing page on the web! Your new app deserves an amazing page to show all of its features. Clear visual, light colours and beautifully aligned elements - they all try to make the users aware of your great app features!</h5>
                     </div>
-                    @if(false)
                     <div class="buttons">
                         <button class="btn btn-fill btn-neutral">
                             <i class="fa fa-apple"></i> Appstore
@@ -106,8 +101,25 @@
                             <i class="fa fa-windows"></i>
                         </button>
                     </div>
-                    @endif
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="section section-gray section-clients">
+        <div class="container text-center">
+            <h4 class="header-text">Friends in high places</h4>
+            <p>
+                Build customer confidence by listing your users! Anyone who has used your service and has been pleased with it should have a place here! From Fortune 500 to start-ups, all your app enthusiasts will be glad to be featured in this section. Moreover, users will feel confident seing someone vouching for your product!<br>
+            </p>
+            <div class="logos">
+                <ul class="list-unstyled">
+                    <li ><img src="assets/img/logos/adobe.png"/></li>
+                    <li ><img src="assets/img/logos/zendesk.png"/></li>
+                    <li ><img src="assets/img/logos/ebay.png"/></i>
+                    <li ><img src="assets/img/logos/evernote.png"/></li>
+                    <li ><img src="assets/img/logos/airbnb.png"/></li>
+                    <li ><img src="assets/img/logos/zappos.png"/></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -116,17 +128,18 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="description">
-                        <h4 class="header-text">وامی که هیچ سود و کارمزدی ندارد</h4>
-                        <p style="text-align: justify;">در این زمانه اعتماد اولین حرف را در رابطه انسان ها می زند. کاملا مشخص است که شما به اعضای خانواده خود راحتتر از همکارانتان قرض می دهید، چون به آن ها اعتماد دارید. همینطور که همه ما می دانیم، بانک به همین سادگی وام را متعلق به درخواست کننده نمی داند. که کاملا منطقی است چون بانک به شما اعتماد ندارد و شناختی به شما نیز ندارد. چک، سابقه بیمه، ضامن، فیش حقوقی، فتوکپی از اتمام اسناد هویتی و غیره همه از مواردی است که بانک از شما درخواست می کند تا به شما اعتماد پیدا کند. در صورتی که در صندوق های قرض الحسنه نیازی به این موارد نیست.</p>
+                        <h4 class="header-text">It's beautiful</h4>
+                        <p>And your app is also probably social, awesome, easy-to-use and vital to users. This is the place to enlist all the good things that your app has to share. Focus on the benefits that the uers will receive. Try to combine imaginery with text and show meaningful printscreens from your app, that will make it clear what exactly the basic functions are. </p>
+                        <p>Try to make it very clear for the people browsing the page that this product will enrich their life and will make a nice addition to the homescreen.
+                        <p>
                     </div>
                 </div>
                 <div class="col-md-5 col-md-offset-1 hidden-xs">
-                    <img src="/assets/img/landing-page/Family-bank-account-1.jpg"/>
+                    <img src="assets/img/template/mac.png"/>
                 </div>
             </div>
         </div>
     </div>
-    @if(false)
     <div class="section section-demo">
         <div class="container">
             <div class="row">
@@ -160,33 +173,9 @@
             </div>
         </div>
     </div>
-    @endif
-    <div class="section section-gray section-clients">
-        <div class="container text-center">
-            @if(false)
-                <h4 class="header-text">Friends in high places</h4>
-            @endif
-            <p>
-                این روزها دست، جیب و حساب خیلی‌ها خالی بوده و شرایط سخت اقتصادی عده‌ای را بیشتر تحت ‌فشار قرار داده است. در چنین شرایطی گاهی یک وام خوب با شرایط مناسب که با دخل ‌و خرج آدم‌ها جور دربیاید، می‌تواند گوشه‌ای از کار را گرفته و دوایی بر دردها باشد. اما در این اوضاع‌ و احوال کدام بانک یا صندوق را سراغ دارید که با کارمزدها و سودهای کلان دود ازسرتان بلند نکرده و کارتان را زود راه بیاندازد؟!!
-            </p>
-            @if(false)
-                <div class="logos">
-                    <ul class="list-unstyled">
-                        <li ><img src="assets/img/logos/adobe.png"/></li>
-                        <li ><img src="assets/img/logos/zendesk.png"/></li>
-                        <li ><img src="assets/img/logos/ebay.png"/></i>
-                        <li ><img src="assets/img/logos/evernote.png"/></li>
-                        <li ><img src="assets/img/logos/airbnb.png"/></li>
-                        <li ><img src="assets/img/logos/zappos.png"/></li>
-                    </ul>
-                </div>
-            @endif
-{{--                <img class="phone" src="/assets/img/landing-page/flat-icon-cashbox1.png" style="margin-top: 20px"/>--}}
-        </div>
-    </div>
     <div class="section section-features">
         <div class="container">
-            <h4 class="header-text text-center">ویژگی ها</h4>
+            <h4 class="header-text text-center">Features</h4>
             <div class="row">
                 <div class="col-md-4">
                     <div class="card card-blue">
@@ -194,7 +183,8 @@
                             <i class="pe-7s-note2"></i>
                         </div>
                         <div class="text">
-                            <h4>مدیریت آنلاین کاربران</h4>
+                            <h4>Online Customers Management</h4>
+                            <p>All appointments sync with your Google calendar so your availability is always up to date. See your schedule at a glance from any device.</p>
                         </div>
                     </div>
                 </div>
@@ -203,7 +193,8 @@
                         <div class="icon">
                             <i class="pe-7s-bell"></i>
                         </div>
-                        <h4>اعلان های هوشمند</h4>
+                        <h4>Smart Notifications on hands</h4>
+                        <p>Automatic text and email reminders make sure customers always remember their upcoming appointments.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -211,13 +202,13 @@
                         <div class="icon">
                             <i class="pe-7s-graph1"></i>
                         </div>
-                        <h4>نظارت بر تمام اطلاعات صندوق</h4>
+                        <h4>Know your business better now</h4>
+                        <p>Take payments and run your business on the go, in your store and then see how it all adds up with analytics.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    @if(false)
     <div class="section section-testimonial">
         <div class="container">
             <h4 class="header-text text-center">What people think</h4>
@@ -260,24 +251,18 @@
             </div>
         </div>
     </div>
-    @endif
     <div class="section section-no-padding">
         <div class="parallax filter-gradient blue" data-color="blue">
             <div class="parallax-background">
                 <img class ="parallax-background-image" src="assets/img/template/bg3.jpg"/>
             </div>
             <div class="info">
-                @if(false)
-                    <h1>Download this landing page for free!</h1>
-                @endif
-                <p>همین صندوق‌های کوچک قرض‌الحسنه که مبلغ آن در ابتدا به چشم هم نمی‌آید، می‌تواند گره از برخی مشکلات مالی یک خانواده باز کند.</p>
-                @if(false)
-                    <a href="http://www.creative-tim.com/product/awesome-landing-page" class="btn btn-neutral btn-lg btn-fill">DOWNLOAD</a>
-                @endif
+                <h1>Download this landing page for free!</h1>
+                <p>Beautiful multipurpose bootstrap landing page.</p>
+                <a href="http://www.creative-tim.com/product/awesome-landing-page" class="btn btn-neutral btn-lg btn-fill">DOWNLOAD</a>
             </div>
         </div>
     </div>
-    @if(false)
     <footer class="footer">
         <div class="container">
             <nav class="pull-left">
@@ -320,7 +305,6 @@
             </div>
         </div>
     </footer>
-    @endif
 </div>
 
 </body>

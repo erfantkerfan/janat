@@ -1,5 +1,5 @@
 import { Model, Collection } from 'js-abstract-model'
-import {Transaction, TransactionList} from "./Transaction";
+import {TransactionList} from "./Transaction";
 
 class AllocatedLoanInstallment extends Model {
     constructor (user) {
@@ -13,10 +13,6 @@ class AllocatedLoanInstallment extends Model {
             { key: 'rate' },
             { key: 'is_settled' },
             { key: 'total_payments' },
-            {
-                key: 'last_payment',
-                relatedModel: Transaction
-            },
             { key: 'remaining_payable_amount' },
             {
                 key: 'received_transactions',

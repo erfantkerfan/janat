@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -87,19 +86,19 @@ trait Filter
         }
     }
 
-    /**
-     * @param $response
-     * @return ResponseFactory|Response
-     */
     private function jsonResponseOk($response) {
         return response(json_encode($response), Response::HTTP_OK)->header('Content-Type', 'application/json');
     }
 
-    private function jsonResponseValidateError($response) {
+    private function jsonResponseErrorValidate($response) {
         return response(json_encode($response), Response::HTTP_UNPROCESSABLE_ENTITY)->header('Content-Type', 'application/json');
     }
 
     private function jsonResponseServerError($response) {
         return response(json_encode($response), Response::HTTP_INTERNAL_SERVER_ERROR)->header('Content-Type', 'application/json');
+    }
+
+    private function jsonResponseError($message) {
+        return response(json_encode($message), Response::HTTP_INTERNAL_SERVER_ERROR)->header('Content-Type', 'application/json');
     }
 }

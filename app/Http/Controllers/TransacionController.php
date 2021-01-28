@@ -93,7 +93,7 @@ class TransacionController extends Controller
 
         if ($dBTransactionValidator->fails()) {
             DB::rollBack();
-            return $this->jsonResponseValidateError([
+            return $this->jsonResponseErrorValidate([
                 'errors' => $dBTransactionValidator->errors()
             ]);
         } else {

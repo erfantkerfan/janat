@@ -27,7 +27,6 @@ class AllocatedLoanInstallment extends Model
      */
     protected $appends = [
         'is_settled',
-        'last_payment',
         'total_payments',
         'remaining_payable_amount'
     ];
@@ -44,15 +43,7 @@ class AllocatedLoanInstallment extends Model
 
     public function getTotalPaymentsAttribute()
     {
-        return $this->receivedTransactions->filter(function ($value) {
-            return $value['transaction_status_id'] === 1;
-        })->sum('cost');
-//        return $this->receivedTransactions()->paid()->sum('cost');
-    }
-
-    public function getLastPaymentAttribute()
-    {
-        return $this->receivedTransactions()->orderBy('paid_at', 'desc')->first();
+        return $this->receivedTransactions->sum('cost');
 //        return $this->receivedTransactions()->paid()->sum('cost');
     }
 
