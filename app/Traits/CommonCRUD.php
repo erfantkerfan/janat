@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Closure;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -13,7 +15,7 @@ trait CommonCRUD
      * @param Request $request
      * @param $modelClass
      * @param array $config
-     * @return Response
+     * @return array|Closure|ResponseFactory|Response
      */
     public function commonIndex(Request $request, $modelClass, array $config = [])
     {
@@ -59,20 +61,32 @@ trait CommonCRUD
 //        $this->join($modelQuery, $joins);
 //        $this->join1($modelQuery, $joins1);
 
-        if ($returnModelQuery) {
-            return $modelQuery;
-        }
 
+        $attachedCollection = null;
         if (count($setAppends) > 0) {
-            $attachedCoolection = $modelQuery->paginate($perPage)->getCollection()->map(function (& $item) use ($setAppends) {
-                return $item->setAppends($setAppends);
-            });
-            return $this->jsonResponseOk($modelQuery->paginate($perPage)->setCollection($attachedCoolection));
+            if ($returnModelQuery) {
+                $responseWithAttachedCollection = function($updatedModelQuery) use($perPage, $setAppends) {
+                        $attachedCollection = $updatedModelQuery->paginate($perPage)->getCollection()->map(function (& $item) use ($setAppends) {
+                            return $item->setAppends($setAppends);
+                        });
+                        return $this->jsonResponseOk($updatedModelQuery->paginate($perPage)->setCollection($attachedCollection));
+                };
+                return [
+                    'responseWithAttachedCollection' => $responseWithAttachedCollection,
+                    'modelQuery' => $modelQuery
+                ];
+            } else {
+                $attachedCollection = $modelQuery->paginate($perPage)->getCollection()->map(function (& $item) use ($setAppends) {
+                    return $item->setAppends($setAppends);
+                });
+            }
         }
 
+        if(isset($attachedCollection)) {
+            return $this->jsonResponseOk($modelQuery->paginate($perPage)->setCollection($attachedCollection));
+        }
 
         return $this->jsonResponseOk($modelQuery->paginate($perPage));
-
     }
 
     private function select(array $select, & $modelQuery, $modelClass) {

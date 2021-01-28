@@ -71,7 +71,7 @@ class FundController extends Controller
         if ($fund->save()) {
             return $this->show($fund->id);
         } else {
-            return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
+            return $this->jsonResponseServerError('مشکلی در ویرایش اطلاعات رخ داده است.');
         }
     }
 
@@ -87,7 +87,7 @@ class FundController extends Controller
         if ($fund->delete()) {
             return $this->jsonResponseOk([ 'message'=> 'صندوق با موفقیت حذف شد' ]);
         } else {
-            return $this->jsonResponseError('مشکلی در حذف اطلاعات رخ داده است.');
+            return $this->jsonResponseServerError('مشکلی در حذف اطلاعات رخ داده است.');
         }
     }
 }

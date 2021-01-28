@@ -1,8 +1,7 @@
 @import 'rtl';
 
 // Fonts
-//@import url('https://fonts.googleapis.com/css?family=Nunito');
-@import '../js/assets/scss/md/font-family';
+@import 'font';
 
 // Variables
 @import 'variables';
@@ -10,8 +9,17 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-$total-font-family: 'Sahel'; // Sahel - Vazir
+html, body, #app{
+    height: 100%;
+}
 body {
-    font-family: $total-font-family, sans-serif;
     text-align: right;
 }
+
+.background {
+    background-image: url('../../public/assets/img/template/bg3.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+}
+

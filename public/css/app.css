@@ -106,6 +106,29 @@
   font-family: inherit;
 }
 
+body,
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6,
+p,
+.navbar,
+.brand,
+.btn-simple,
+a,
+.td-name,
+td {
+  font-family: "Sahel", "Helvetica Neue", "Open Sans", Arial, sans-serif;
+}
+
 /*!
  * Bootstrap v4.5.3 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors
@@ -11009,8 +11032,20 @@ a.text-dark:focus {
   }
 }
 
+html,
+body,
+#app {
+  height: 100%;
+}
+
 body {
-  font-family: "Sahel", sans-serif;
   text-align: right;
+}
+
+.background {
+  background-image: url(/images/bg3.jpg?e52a1a0aaae7c3f6791d1df2e045835f);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
 }
 

@@ -160,6 +160,38 @@
                             </div>
                         </div>
                     </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    تاریخ پرداخت بعد از
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="filterData.lastPaidAtAfter"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    تاریخ پرداخت قبل از
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="filterData.lastPaidAtBefore"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <md-empty-state
                         v-if="!allocatedLoans.loading && allocatedLoans.list.length === 0"
                         class="md-warning"
@@ -288,6 +320,8 @@
                 f_name: null,
                 l_name: null,
                 SSN: null,
+                lastPaidAtBefore: null,
+                lastPaidAtAfter: null,
                 createdSinceDate: null,
                 createdTillDate: null
             }
@@ -321,6 +355,8 @@
                     SSN: this.filterData.SSN,
                     installment_rate: this.filterData.installment_rate,
                     number_of_installments: this.filterData.number_of_installments,
+                    last_paid_at_before: this.filterData.lastPaidAtBefore,
+                    last_paid_at_after: this.filterData.lastPaidAtAfter,
                     createdSinceDate: this.filterData.createdSinceDate,
                     createdTillDate: this.filterData.createdTillDate
                 })
