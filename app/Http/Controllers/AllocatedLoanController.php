@@ -37,7 +37,8 @@ class AllocatedLoanController extends Controller
                 'is_settled',
                 'loan_amount',
                 'installment_rate',
-                'number_of_installments'
+                'number_of_installments',
+                'payroll_deduction'
             ],
             'filterRelationIds'=> [
                 [
