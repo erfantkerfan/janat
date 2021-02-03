@@ -146,6 +146,20 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'account_id' => 'حساب',
+        'loan_id' => 'وام',
+        'loan_type_id' => 'نوع وام',
+        'transaction_status_id' => 'نوع تراکنش',
+        'allocated_loan_id' => 'وام تخصیص داده شده',
+        'payroll_deduction' => 'کسر از حقوق',
+        'number_of_installments' => 'تعداد اقساط',
+        'name' => 'نام',
+        'loan_amount' => 'مقدار وام',
+        'interest_rate' => 'نرخ کارمزد',
+        'cost' => 'مبلغ',
+        'paid_at' => 'تاریخ پرداخت',
+        'transaction_type' => 'نوع تراکنش'
+    ],
 
 ];
