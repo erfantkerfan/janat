@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Company;
+use App\Fund;
+use App\Loan;
+use App\Traits\Filter;
 use App\User;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\Support\Renderable;
 
 class HomeController extends Controller
 {
+    use Filter;
     /**
      * Create a new controller instance.
      *
@@ -15,7 +20,9 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('auth');
+        $this->middleware('auth', [
+            'except' => ['welcome', 'index']
+        ]);
     }
 
     /**
@@ -47,7 +54,23 @@ class HomeController extends Controller
      */
     public function dashboard(Request $request)
     {
-        $user = User::with(['accounts.fund', 'company', 'status', 'roles'])->find($request->user()->id)->makeHidden('user_pic');
-        return view('dashboard', ['user'=> $user]);
+        $user = User::with(['accounts.fund', 'company', 'status', 'roles'])
+            ->find($request->user()->id)
+            ->makeHidden('user_pic');
+        return view('dashboard', compact('user'));
+    }
+
+    public function dashboardData() {
+        $funds = Fund::all();
+        $counts = [
+            'users' => User::count(),
+            'funds' => Fund::count(),
+            'companies' => Company::count(),
+            'loans' => Loan::count()
+        ];
+        return $this->jsonResponseOk([
+            'funds' => $funds,
+            'counts' => $counts
+        ]);
     }
 }
