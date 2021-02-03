@@ -13,7 +13,7 @@ class StoreLoan extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,12 @@ class StoreLoan extends FormRequest
     public function rules()
     {
         return [
-            //
+            'fund_id' => ['required', 'integer', 'exists:funds,id'],
+            'loan_type_id' => ['required', 'integer', 'exists:loan_types,id'],
+            'name' => ['required', 'string'],
+            'loan_amount' => ['required', 'integer'],
+            'interest_rate' => ['required', 'integer'],
+            'number_of_installments' => ['required', 'integer']
         ];
     }
 }

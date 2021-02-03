@@ -49,6 +49,9 @@ import TransactionList from "@/pages/Transaction/List.vue";
 // Transaction Management
 import TransactionForm from "@/pages/Transaction/Form.vue";
 
+// PeriodicProcesses PaymentOfPayrollDeductions
+import PaymentOfPayrollDeductions from "@/pages/PeriodicProcesses/PaymentOfPayrollDeductions";
+
 // Pages
 import RtlSupport from "@/pages/Dashboard/Pages/RtlSupport.vue";
 import Login from "@/pages/Dashboard/Pages/Login.vue";
@@ -306,6 +309,24 @@ let allocatedLoanInstallmentsMenu = {
     ]
 };
 
+let periodicProcessesMenu = {
+    path: "/periodic_processes",
+    name: "PeriodicProcesses",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "payment_of_payroll_deductions",
+            name: "PaymentOfPayrollDeductions",
+            components: {default: PaymentOfPayrollDeductions},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداخت اقساط کسر از حقوق",
+                middleware: auth
+            }
+        }
+    ]
+};
+
 let transactionMenu = {
     path: "/transactions",
     name: "Transaction",
@@ -466,6 +487,7 @@ const routes = [
     allocatedLoansMenu,
     allocatedLoanInstallmentsMenu,
     transactionMenu,
+    periodicProcessesMenu,
     componentsMenu,
     authPages
 ];

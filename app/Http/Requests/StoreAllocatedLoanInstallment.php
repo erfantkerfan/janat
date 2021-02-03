@@ -13,7 +13,7 @@ class StoreAllocatedLoanInstallment extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class StoreAllocatedLoanInstallment extends FormRequest
     public function rules()
     {
         return [
-            //
+            'allocated_loan_id' => ['required', 'integer', 'exists:allocated_loans,id']
         ];
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\AllocatedLoan;
 use App\AllocatedLoanInstallment;
+use App\Classes\LoanCalculator;
+use App\Http\Requests\StoreAllocatedLoanInstallment;
 use App\Traits\CommonCRUD;
 use App\Traits\Filter;
 use Illuminate\Http\Request;
@@ -40,15 +42,22 @@ class AllocatedLoanInstallmentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreAllocatedLoanInstallment $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StoreAllocatedLoanInstallment $request)
     {
         $allocatedLoan = AllocatedLoan::findOrFail($request->get('allocated_loan_id'));
+        $loanCalculator = new LoanCalculator();
+        $installmentRate = $allocatedLoan->installment_rate;
+        if ($loanCalculator->isTimeToPayLastInstallment($allocatedLoan)) {
+            $lastInstallmentRate = $loanCalculator->getLastInstallmentRate($allocatedLoan);
+            $installmentRate = $lastInstallmentRate;
+        }
+
         $allocatedLoanInstallment = AllocatedLoanInstallment::create([
             'allocated_loan_id' => $allocatedLoan->id,
-            'rate' => $allocatedLoan->installment_rate
+            'rate' => $installmentRate
         ]);
         return $this->show($allocatedLoanInstallment->id);
     }
