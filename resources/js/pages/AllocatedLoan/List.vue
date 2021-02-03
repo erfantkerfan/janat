@@ -88,6 +88,7 @@
                         <div class="md-layout-item">
                             <md-checkbox v-model="filterData.settled">تسویه شده</md-checkbox>
                             <md-checkbox v-model="filterData.notSettled">تسویه نشده</md-checkbox>
+                            <md-checkbox v-model="filterData.payroll_deduction">کسر از حقوق</md-checkbox>
                         </div>
                     </div>
                     <div class="md-layout">
@@ -316,6 +317,7 @@
                 fund_id: null,
                 loan_id: null,
                 settled: false,
+                payroll_deduction: false,
                 notSettled: false,
                 f_name: null,
                 l_name: null,
@@ -349,6 +351,7 @@
                     loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null : this.filterData.loan_id,
                     settled: (this.filterData.settled === false) ? null : this.filterData.settled,
                     notSettled: (this.filterData.notSettled === false) ? null : this.filterData.notSettled,
+                    payroll_deduction: (this.filterData.payroll_deduction === false) ? null : 1,
                     loan_amount: this.filterData.loan_amount,
                     f_name: this.filterData.f_name,
                     l_name: this.filterData.l_name,

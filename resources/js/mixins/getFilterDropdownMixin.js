@@ -39,14 +39,16 @@ export default {
                   that.loans = new LoanList()
               })
       },
-      getFunds () {
+      getFunds (withEmpty) {
           let that = this
           this.funds.loading = true;
           this.funds.fetch()
               .then((response) => {
                   that.funds.loading = false;
                   that.funds = new FundList(response.data.data, response.data)
-                  this.funds.addItem(new Fund({id: 0, name: ''}))
+                  if (typeof withEmpty === 'undefined' || withEmpty) {
+                      this.funds.addItem(new Fund({id: 0, name: ''}))
+                  }
               })
               .catch((error) => {
                   this.$store.dispatch('alerts/fire', {

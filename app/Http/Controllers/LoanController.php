@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Fund;
 use App\Loan;
 use App\Traits\Filter;
+use App\Traits\CommonCRUD;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Traits\CommonCRUD;
+use App\Classes\LoanCalculator;
+use App\Http\Requests\StoreLoan;
 
 class LoanController extends Controller
 {
@@ -52,11 +53,20 @@ class LoanController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreLoan $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StoreLoan $request)
     {
+        $loanCalculator = new LoanCalculator();
+        $interestAmount = $loanCalculator->getInterestRate($request->get('loan_amount'),
+            $request->get('interest_rate'),
+            $request->get('number_of_installments'));
+        $roundedInstallmentsRate = $loanCalculator->getRoundedInstallmentsRate($request->get('loan_amount'),
+            $interestAmount,
+            $request->get('number_of_installments'));
+        $request->offsetSet('installment_rate', $roundedInstallmentsRate);
+        $request->offsetSet('interest_amount', $interestAmount);
         return $this->commonStore($request, Loan::class);
     }
 
