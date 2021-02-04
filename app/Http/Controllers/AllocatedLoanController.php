@@ -110,7 +110,6 @@ class AllocatedLoanController extends Controller
         DB::beginTransaction();
         $account = Account::findOrFail($request->get('account_id'));
         $loan = Loan::findOrFail($request->get('loan_id'));
-        $fund = $account->fund()->first();
         $createdAllocatedLoan = AllocatedLoan::create([
             'account_id' => $account->id,
             'loan_id' => $loan->id,
@@ -121,6 +120,9 @@ class AllocatedLoanController extends Controller
             'number_of_installments' => $loan->number_of_installments,
             'payroll_deduction' => $request->get('payroll_deduction')
         ]);
+
+        // fund withdrawal
+        $fund = $account->fund()->first();
         $withdrawalResult = $fund->withdrawal($loan->loan_amount);
 
         if ($createdAllocatedLoan && $withdrawalResult) {
