@@ -19,74 +19,96 @@ trait CommonCRUD
      */
     public function commonIndex(Request $request, $modelClass, array $config = [])
     {
+        // load variables
         $modelQuery = $modelClass::query();
-        $select = $this->getDefault($config, 'select', []);
-        $scopes = $this->getDefault($config, 'scopes', []);
-        $eagerLoads = $this->getDefault($config, 'eagerLoads', []);
-        $filterKeys = $this->getDefault($config, 'filterKeys', []);
-        $setAppends = $this->getDefault($config, 'setAppends', []);
-        $returnModelQuery = $this->getDefault($config, 'returnModelQuery', []);
-        $filterRelationIds = $this->getDefault($config, 'filterRelationIds', []);
-        $filterRelationKeys = $this->getDefault($config, 'filterRelationKeys', []);
-
+        extract($this->getConfigArray($config));
         $perPage = ($request->has('length')) ? $request->get('length') : 10;
-
         $modelQuery->with($eagerLoads);
 
+        // build filter query
         $this->sorting($request,$modelQuery);
-
         $this->select($select,$modelQuery, $modelClass);
-
+        $this->loadScopes($request, $modelQuery, $scopes);
         $this->filterByDate($request, $modelQuery);
+        $this->filterByKeys($request, $modelQuery, $filterKeys);
+        $this->filterByRelationKeys($request, $modelQuery, $filterRelationKeys);
+        $this->filterByRelationIds($request, $modelQuery, $filterRelationIds);
 
+        // load appends
+        $attachedCollection = null;
+        if ($returnModelQuery) {
+            return $this->getModelQueryWithAttachedCollectionClosure($modelQuery, $perPage, $setAppends);
+        } elseif (count($setAppends) > 0) {
+            $attachedCollection = $modelQuery->paginate($perPage)
+                ->getCollection()->map(function (& $item) use ($setAppends) {
+                return $item->setAppends($setAppends);
+            });
+        }
+
+        // return json response
+        if(isset($attachedCollection)) {
+            return $this->jsonResponseOk($modelQuery->paginate($perPage)->setCollection($attachedCollection));
+        }
+        return $this->jsonResponseOk($modelQuery->paginate($perPage));
+    }
+
+    private function getConfigArray($config) {
+        $configArray = [
+            'select' => $this->getDefault($config, 'select', []),
+            'scopes' => $this->getDefault($config, 'scopes', []),
+            'eagerLoads' => $this->getDefault($config, 'eagerLoads', []),
+            'filterKeys' => $this->getDefault($config, 'filterKeys', []),
+            'setAppends' => $this->getDefault($config, 'setAppends', []),
+            'returnModelQuery' => $this->getDefault($config, 'returnModelQuery', []),
+            'filterRelationIds' => $this->getDefault($config, 'filterRelationIds', []),
+            'filterRelationKeys' => $this->getDefault($config, 'filterRelationKeys', [])
+        ];
+
+        return $configArray;
+    }
+
+    private function getModelQueryWithAttachedCollectionClosure($modelQuery, $perPage, $setAppends) {
+        $responseWithAttachedCollection = function($updatedModelQuery) use($perPage, $setAppends) {
+            $attachedCollection = $updatedModelQuery->paginate($perPage)
+                ->getCollection()->map(function (& $item) use ($setAppends) {
+                    return $item->setAppends($setAppends);
+                });
+            return $this->jsonResponseOk(
+                $updatedModelQuery->paginate($perPage)
+                ->setCollection($attachedCollection)
+            );
+        };
+        return [
+            'responseWithAttachedCollection' => $responseWithAttachedCollection,
+            'modelQuery' => $modelQuery
+        ];
+    }
+
+    private function loadScopes(Request $request, & $modelQuery, $scopes) {
         foreach ($scopes as $item) {
             $scopeItem = ($request->has($item)) ? $request->get($item) : false;
             if ($scopeItem) {
                 $modelQuery->$item();
             }
         }
+    }
 
+    private function filterByKeys(Request $request, & $modelQuery, $filterKeys) {
         foreach ($filterKeys as $item) {
             $this->filterByKey($request, $item, $modelQuery);
         }
+    }
 
+    private function filterByRelationKeys(Request $request, & $modelQuery, $filterRelationKeys) {
         foreach ($filterRelationKeys as $item) {
             $this->filterByRelationKey($request, $item, $modelQuery);
         }
+    }
 
+    private function filterByRelationIds(Request $request, & $modelQuery, $filterRelationIds) {
         foreach ($filterRelationIds as $item) {
             $this->filterByRelationId($request, $item, $modelQuery);
         }
-
-//        $this->join($modelQuery, $joins);
-//        $this->join1($modelQuery, $joins1);
-
-
-        $attachedCollection = null;
-        if (count($setAppends) > 0) {
-            if ($returnModelQuery) {
-                $responseWithAttachedCollection = function($updatedModelQuery) use($perPage, $setAppends) {
-                        $attachedCollection = $updatedModelQuery->paginate($perPage)->getCollection()->map(function (& $item) use ($setAppends) {
-                            return $item->setAppends($setAppends);
-                        });
-                        return $this->jsonResponseOk($updatedModelQuery->paginate($perPage)->setCollection($attachedCollection));
-                };
-                return [
-                    'responseWithAttachedCollection' => $responseWithAttachedCollection,
-                    'modelQuery' => $modelQuery
-                ];
-            } else {
-                $attachedCollection = $modelQuery->paginate($perPage)->getCollection()->map(function (& $item) use ($setAppends) {
-                    return $item->setAppends($setAppends);
-                });
-            }
-        }
-
-        if(isset($attachedCollection)) {
-            return $this->jsonResponseOk($modelQuery->paginate($perPage)->setCollection($attachedCollection));
-        }
-
-        return $this->jsonResponseOk($modelQuery->paginate($perPage));
     }
 
     private function select(array $select, & $modelQuery, $modelClass) {
@@ -145,7 +167,13 @@ trait CommonCRUD
         if ($model->save()) {
             return $this->show($model->id);
         } else {
-            return $this->jsonResponseError('مشکلی در ویرایش اطلاعات رخ داده است.');
+            return $this->jsonResponseServerError([
+                'errors' => [
+                    'commonUpdate' => [
+                        'مشکلی در ویرایش اطلاعات رخ داده است.'
+                    ]
+                ]
+            ]);
         }
     }
 
@@ -160,7 +188,13 @@ trait CommonCRUD
         if ($model->delete()) {
             return $this->jsonResponseOk([ 'message'=> 'حذف با موفقیت انجام شد.' ]);
         } else {
-            return $this->jsonResponseError('مشکلی در حذف اطلاعات رخ داده است.');
+            return $this->jsonResponseServerError([
+                'errors' => [
+                    'commonDestroy' => [
+                        'مشکلی در حذف اطلاعات رخ داده است.'
+                    ]
+                ]
+            ]);
         }
     }
 }
