@@ -34,8 +34,8 @@ class LoanCalculator
         $remainingPayableAmount = $allocatedLoan->remaining_payable_amount;
         $installmentRate = $allocatedLoan->installment_rate;
         if (
-        ($remainingPayableAmount > (2 * $installmentRate)) &&
-        ($remainingPayableAmount < (3 * $installmentRate))
+        ($remainingPayableAmount > (1 * $installmentRate)) &&
+        ($remainingPayableAmount < (2 * $installmentRate))
         ) {
             return true;
         } else {

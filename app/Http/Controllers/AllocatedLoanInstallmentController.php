@@ -47,7 +47,16 @@ class AllocatedLoanInstallmentController extends Controller
      */
     public function store(StoreAllocatedLoanInstallment $request)
     {
-        $allocatedLoan = AllocatedLoan::findOrFail($request->get('allocated_loan_id'));
+        $allocatedLoan = AllocatedLoan::with('installments')->findOrFail($request->get('allocated_loan_id'))->setAppends(['has_unsettled_installment']);
+        if ($allocatedLoan->has_unsettled_installment) {
+            return $this->jsonResponseValidateError([
+                'errors' => [
+                    'has_unsettled_installment' => [
+                        'برای این وام قسط پرداخت نشده وجود دارد.'
+                    ]
+                ]
+            ]);
+        }
         $loanCalculator = new LoanCalculator();
         $installmentRate = $allocatedLoan->installment_rate;
         if ($loanCalculator->isTimeToPayLastInstallment($allocatedLoan)) {
@@ -108,7 +117,13 @@ class AllocatedLoanInstallmentController extends Controller
         if (AllocatedLoanInstallment::find($id)->delete()) {
             return $this->jsonResponseOk([ 'message'=> 'حذف با موفقیت انجام شد.' ]);
         } else {
-            return $this->jsonResponseServerError('مشکلی در حذف اطلاعات رخ داده است.');
+            return $this->jsonResponseServerError([
+                'errors' => [
+                    'allocatedLoanInstallment_destroy' => [
+                        'مشکلی در حذف اطلاعات رخ داده است.'
+                    ]
+                ]
+            ]);
         }
     }
 }
