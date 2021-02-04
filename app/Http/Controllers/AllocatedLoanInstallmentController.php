@@ -47,7 +47,16 @@ class AllocatedLoanInstallmentController extends Controller
      */
     public function store(StoreAllocatedLoanInstallment $request)
     {
-        $allocatedLoan = AllocatedLoan::findOrFail($request->get('allocated_loan_id'));
+        $allocatedLoan = AllocatedLoan::with('installments')->findOrFail($request->get('allocated_loan_id'))->setAppends(['has_unsettled_installment']);
+        if ($allocatedLoan->has_unsettled_installment) {
+            return $this->jsonResponseValidateError([
+                'errors' => [
+                    'has_unsettled_installment' => [
+                        'برای این وام قسط پرداخت نشده وجود دارد.'
+                    ]
+                ]
+            ]);
+        }
         $loanCalculator = new LoanCalculator();
         $installmentRate = $allocatedLoan->installment_rate;
         if ($loanCalculator->isTimeToPayLastInstallment($allocatedLoan)) {

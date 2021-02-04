@@ -205,7 +205,7 @@
                         :md-sort.sync="filterData.sortation.field"
                         :md-sort-order.sync="filterData.sortation.order"
                         :md-sort-fn="customSort"
-                        class="paginated-table table-striped table-hover"
+                        class="paginated-table table-hover"
                     >
                         <md-table-toolbar>
                             <md-field>
@@ -227,8 +227,10 @@
                             </md-field>
                         </md-table-toolbar>
                         <md-table-row v-if="!allocatedLoans.loading && allocatedLoans.list.length > 0"
-                                      slot="md-table-row" slot-scope="{ item }"
-                                      :class="getInstallmentRowClass(item)">
+                                      slot="md-table-row"
+                                      slot-scope="{ item }"
+                                      :class="{ 'table-success': item.is_settled }"
+                        >
                             <md-table-cell md-label="نام" md-sort-by="account.user.f_name">
                                 {{item.account.user.f_name}}
                             </md-table-cell>
@@ -241,8 +243,8 @@
                             <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
                                 {{item.installment_rate | currencyFormat}}
                             </md-table-cell>
-                            <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
-                                {{item.number_of_installments}}
+                            <md-table-cell md-label="نام وام" md-sort-by="loan.name">
+                                {{item.loan.name}}
                             </md-table-cell>
                             <md-table-cell md-label="نام صندوق" md-sort-by="loan.fund.name">
                                 {{item.loan.fund.name}}
@@ -410,19 +412,7 @@
             customSort() {
                 this.getList()
                 return false;
-            },
-            getInstallmentRowClass (item) {
-                if (item.is_settled) {
-                    return 'table-success'
-                }
-                return ''
-                // {
-                //     "table-success": id === 1,
-                //     "table-info": id === 3,
-                //     "table-danger": id === 5,
-                //     "table-warning": id === 7
-                // }
-            },
+            }
         }
 
     }
