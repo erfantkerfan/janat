@@ -21,28 +21,22 @@ trait CommonCRUD
     {
         // load variables
         $modelQuery = $modelClass::query();
-        extract($this->getConfigArray($config));
+        $configArray = $this->getConfigArray($config);
         $perPage = ($request->has('length')) ? $request->get('length') : 10;
-        $modelQuery->with($eagerLoads);
 
-        // build filter query
-        $this->sorting($request,$modelQuery);
-        $this->select($select,$modelQuery, $modelClass);
-        $this->loadScopes($request, $modelQuery, $scopes);
-        $this->filterByDate($request, $modelQuery);
-        $this->filterByKeys($request, $modelQuery, $filterKeys);
-        $this->filterByRelationKeys($request, $modelQuery, $filterRelationKeys);
-        $this->filterByRelationIds($request, $modelQuery, $filterRelationIds);
+        $this->buildFilterQuery($request,$modelQuery, $modelClass, $configArray);
 
         // load appends
         $attachedCollection = null;
-        if ($returnModelQuery) {
+        $setAppends = $configArray['setAppends'];
+        if ($configArray['returnModelQuery']) {
             return $this->getModelQueryWithAttachedCollectionClosure($modelQuery, $perPage, $setAppends);
-        } elseif (count($setAppends) > 0) {
-            $attachedCollection = $modelQuery->paginate($perPage)
-                ->getCollection()->map(function (& $item) use ($setAppends) {
-                return $item->setAppends($setAppends);
-            });
+        } elseif (count($configArray['setAppends']) > 0) {
+            $attachedCollection = $this->getAttachedCollection($modelQuery, $setAppends, $perPage);
+//                $modelQuery->paginate($perPage)
+//                    ->getCollection()->map(function (& $item) use ($setAppends) {
+//                    return $item->setAppends($setAppends);
+//                });
         }
 
         // return json response
@@ -50,6 +44,17 @@ trait CommonCRUD
             return $this->jsonResponseOk($modelQuery->paginate($perPage)->setCollection($attachedCollection));
         }
         return $this->jsonResponseOk($modelQuery->paginate($perPage));
+    }
+
+    private function buildFilterQuery($request, & $modelQuery, $modelClass, $configArray) {
+        $this->sorting($request,$modelQuery);
+        $this->select($configArray['select'],$modelQuery, $modelClass);
+        $this->loadScopes($request, $modelQuery, $configArray['scopes']);
+        $this->filterByDate($request, $modelQuery);
+        $this->filterByKeys($request, $modelQuery, $configArray['filterKeys']);
+        $this->filterByRelationKeys($request, $modelQuery, $configArray['filterRelationKeys']);
+        $this->filterByRelationIds($request, $modelQuery, $configArray['filterRelationIds']);
+        $modelQuery->with($configArray['eagerLoads']);
     }
 
     private function getConfigArray($config) {
@@ -67,12 +72,16 @@ trait CommonCRUD
         return $configArray;
     }
 
+    private function getAttachedCollection(& $updatedModelQuery, $setAppends, $perPage) {
+        return $updatedModelQuery->paginate($perPage)
+            ->getCollection()->map(function (& $item) use ($setAppends) {
+                return $item->setAppends($setAppends);
+            });
+    }
+
     private function getModelQueryWithAttachedCollectionClosure($modelQuery, $perPage, $setAppends) {
         $responseWithAttachedCollection = function($updatedModelQuery) use($perPage, $setAppends) {
-            $attachedCollection = $updatedModelQuery->paginate($perPage)
-                ->getCollection()->map(function (& $item) use ($setAppends) {
-                    return $item->setAppends($setAppends);
-                });
+            $attachedCollection = $this->getAttachedCollection($updatedModelQuery, $setAppends, $perPage);
             return $this->jsonResponseOk(
                 $updatedModelQuery->paginate($perPage)
                 ->setCollection($attachedCollection)
