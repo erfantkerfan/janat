@@ -117,7 +117,13 @@ class AllocatedLoanInstallmentController extends Controller
         if (AllocatedLoanInstallment::find($id)->delete()) {
             return $this->jsonResponseOk([ 'message'=> 'حذف با موفقیت انجام شد.' ]);
         } else {
-            return $this->jsonResponseServerError('مشکلی در حذف اطلاعات رخ داده است.');
+            return $this->jsonResponseServerError([
+                'errors' => [
+                    'allocatedLoanInstallment_destroy' => [
+                        'مشکلی در حذف اطلاعات رخ داده است.'
+                    ]
+                ]
+            ]);
         }
     }
 }
