@@ -194,8 +194,6 @@
             allocatedLoanInstallment: new AllocatedLoanInstallment(),
             transaction: new Transaction()
         }),
-        created () {
-        },
         mounted() {
             this.getData()
             this.getTransactionStatus(false)

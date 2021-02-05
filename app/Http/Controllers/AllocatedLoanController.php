@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Loan;
 use App\Account;
 use App\AllocatedLoan;
-use App\Fund;
-use App\Http\Requests\StoreAllocatedLoan;
-use App\Loan;
-use App\Traits\CommonCRUD;
 use App\Traits\Filter;
-use App\User;
+use App\Traits\CommonCRUD;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreAllocatedLoan;
 
 class AllocatedLoanController extends Controller
 {
@@ -37,7 +35,8 @@ class AllocatedLoanController extends Controller
                 'is_settled',
                 'loan_amount',
                 'installment_rate',
-                'number_of_installments'
+                'number_of_installments',
+                'payroll_deduction'
             ],
             'filterRelationIds'=> [
                 [
@@ -94,7 +93,7 @@ class AllocatedLoanController extends Controller
         $lastPaidAtAfter = ($request->has('last_paid_at_after')) ? $request->get('last_paid_at_after') : null;
         $lastPaidAtBefore = ($request->has('last_paid_at_before')) ? $request->get('last_paid_at_before') : null;
         if (isset($lastPaidAtAfter) || isset($lastPaidAtBefore)) {
-            $allocatedLoanModelQuery->lastPaymentPaidAt('>', $lastPaidAtAfter, '<', $lastPaidAtBefore);
+            $allocatedLoanModelQuery->lastPaymentPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore);
         }
 
         return $responseWithAttachedCollection($allocatedLoanModelQuery);

@@ -88,6 +88,7 @@
                         <div class="md-layout-item">
                             <md-checkbox v-model="filterData.settled">تسویه شده</md-checkbox>
                             <md-checkbox v-model="filterData.notSettled">تسویه نشده</md-checkbox>
+                            <md-checkbox v-model="filterData.payroll_deduction">کسر از حقوق</md-checkbox>
                         </div>
                     </div>
                     <div class="md-layout">
@@ -204,7 +205,7 @@
                         :md-sort.sync="filterData.sortation.field"
                         :md-sort-order.sync="filterData.sortation.order"
                         :md-sort-fn="customSort"
-                        class="paginated-table table-striped table-hover"
+                        class="paginated-table table-hover"
                     >
                         <md-table-toolbar>
                             <md-field>
@@ -226,8 +227,10 @@
                             </md-field>
                         </md-table-toolbar>
                         <md-table-row v-if="!allocatedLoans.loading && allocatedLoans.list.length > 0"
-                                      slot="md-table-row" slot-scope="{ item }"
-                                      :class="getInstallmentRowClass(item)">
+                                      slot="md-table-row"
+                                      slot-scope="{ item }"
+                                      :class="{ 'table-success': item.is_settled }"
+                        >
                             <md-table-cell md-label="نام" md-sort-by="account.user.f_name">
                                 {{item.account.user.f_name}}
                             </md-table-cell>
@@ -240,8 +243,8 @@
                             <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
                                 {{item.installment_rate | currencyFormat}}
                             </md-table-cell>
-                            <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
-                                {{item.number_of_installments}}
+                            <md-table-cell md-label="نام وام" md-sort-by="loan.name">
+                                {{item.loan.name}}
                             </md-table-cell>
                             <md-table-cell md-label="نام صندوق" md-sort-by="loan.fund.name">
                                 {{item.loan.fund.name}}
@@ -316,6 +319,7 @@
                 fund_id: null,
                 loan_id: null,
                 settled: false,
+                payroll_deduction: false,
                 notSettled: false,
                 f_name: null,
                 l_name: null,
@@ -349,6 +353,7 @@
                     loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null : this.filterData.loan_id,
                     settled: (this.filterData.settled === false) ? null : this.filterData.settled,
                     notSettled: (this.filterData.notSettled === false) ? null : this.filterData.notSettled,
+                    payroll_deduction: (this.filterData.payroll_deduction === false) ? null : 1,
                     loan_amount: this.filterData.loan_amount,
                     f_name: this.filterData.f_name,
                     l_name: this.filterData.l_name,
@@ -407,19 +412,7 @@
             customSort() {
                 this.getList()
                 return false;
-            },
-            getInstallmentRowClass (item) {
-                if (item.is_settled) {
-                    return 'table-success'
-                }
-                return ''
-                // {
-                //     "table-success": id === 1,
-                //     "table-info": id === 3,
-                //     "table-danger": id === 5,
-                //     "table-warning": id === 7
-                // }
-            },
+            }
         }
 
     }

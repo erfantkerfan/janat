@@ -33,7 +33,7 @@
                                 </md-field>
                             </div>
                         </div>
-                        <div class="md-layout">
+                        <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 مبلغ هر قسط
                             </label>
@@ -63,7 +63,7 @@
                                 </md-field>
                             </div>
                         </div>
-                        <div class="md-layout">
+                        <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 مقدار کارمزد
                             </label>
@@ -142,8 +142,8 @@
         }),
         mounted() {
             this.getData()
-            this.getFunds()
-            this.getLoanTypes()
+            this.getFunds(false)
+            this.getLoanTypes(false)
         },
         methods: {
             isCreateForm () {
@@ -185,7 +185,6 @@
                     .catch((error) => {
                         this.axios_handleError(error)
                         that.loan.loading = false;
-                        that.loan = new Loan()
                     })
             },
             createLoan () {
@@ -207,7 +206,6 @@
                     .catch((error) => {
                         this.axios_handleError(error)
                         that.loan.loading = false;
-                        that.loan = new Loan()
                     })
             }
         }

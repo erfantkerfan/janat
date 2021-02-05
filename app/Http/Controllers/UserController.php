@@ -132,7 +132,13 @@ class UserController extends Controller
     public function setUserPic(Request $request)
     {
         if (!$request->file('user_pic') || !$request->get('id')) {
-            return $this->jsonResponseServerError('مشکلی در ویرایش اطلاعات رخ داده است.');
+            return $this->jsonResponseServerError([
+                'errors' => [
+                    'user_setUserPic' => [
+                        'مشکلی در ویرایش اطلاعات رخ داده است.'
+                    ]
+                ]
+            ]);
         }
 
         $user = User::findOrFail($request->get('id'))->makeVisible('user_pic');
@@ -141,7 +147,13 @@ class UserController extends Controller
         if ($user->save()) {
             return $this->getUserPic($user->id);
         } else {
-            return $this->jsonResponseServerError('مشکلی در ویرایش اطلاعات رخ داده است.');
+            return $this->jsonResponseServerError([
+                'errors' => [
+                    'user_setUserPic' => [
+                        'مشکلی در ویرایش اطلاعات رخ داده است.'
+                    ]
+                ]
+            ]);
         }
     }
 
@@ -172,7 +184,13 @@ class UserController extends Controller
         $oldUserPass = $user->password;
 
         if (!$request->user()->hasRole('admin') && !Hash::check($oldPass, $oldUserPass)) {
-            return $this->jsonResponseServerError('نام کاربری قبلی صحیح نمی باشد');
+            return $this->jsonResponseServerError([
+                'errors' => [
+                    'user_resetPass' => [
+                        'نام کاربری قبلی صحیح نمی باشد'
+                    ]
+                ]
+            ]);
         }
 
         $user->password = $newPass;
@@ -181,7 +199,13 @@ class UserController extends Controller
             $user = User::with(['accounts', 'company', 'status'])->findOrFail($user->id)->makeHidden('user_pic');
             return $this->jsonResponseOk($user);
         } else {
-            return $this->jsonResponseServerError('مشکلی در ویرایش اطلاعات رخ داده است.');
+            return $this->jsonResponseServerError([
+                'errors' => [
+                    'user_resetPass' => [
+                        'مشکلی در ویرایش اطلاعات رخ داده است.'
+                    ]
+                ]
+            ]);
         }
     }
 

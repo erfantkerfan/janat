@@ -2,10 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Kirschbaum\PowerJoins\PowerJoins;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AllocatedLoan extends Model
 {
@@ -35,6 +35,7 @@ class AllocatedLoan extends Model
     protected $appends = [
         'payable_amount'
 //        'is_settled',
+//        'has_unsettled_installment',
 //        'last_payment',
 //        'total_payments',
 //        'remaining_payable_amount',
@@ -65,6 +66,11 @@ class AllocatedLoan extends Model
     public function getTotalPaymentsAttribute()
     {
         return $this->installments->sum('total_payments');
+    }
+
+    public function getHasUnsettledInstallmentAttribute()
+    {
+        return $this->installments->contains('is_settled', '===', false);
     }
 
     public function getLastPaymentAttribute()
