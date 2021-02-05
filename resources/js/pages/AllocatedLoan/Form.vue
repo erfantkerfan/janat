@@ -89,6 +89,9 @@
                                 <br>
                                 تعداد اقساط:
                                 {{ allocatedLoan.number_of_installments }}
+                                <p v-if="allocatedLoan.payroll_deduction">
+                                    کسر از حقوق
+                                </p>
                             </template>
                         </stats-card>
                     </div>
@@ -357,8 +360,9 @@
                     return 'table-danger'
                 } else if (!item.is_settled) {
                     return 'table-warning'
+                } else {
+                    return 'table-success'
                 }
-                return '';
                 // {
                 //     "table-success": id === 1,
                 //     "table-info": id === 3,

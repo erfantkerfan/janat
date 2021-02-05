@@ -48,8 +48,71 @@
                             </div>
                         </div>
                     </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <md-button class="md-dense md-raised md-info" @click="pay">پرداخت</md-button>
+                            </div>
+                        </div>
+                    </div>
                     <vue-confirm-dialog></vue-confirm-dialog>
                     <loading :active.sync="allocatedLoans.loading" :is-full-page="false"></loading>
+
+                    <md-empty-state
+                        v-if="payRequestIsSent && !allocatedLoans.loading && allocatedLoans.list.length === 0"
+                        class="md-warning"
+                        md-icon="cancel_presentation"
+                        md-label="در بازه انتخاب شده هیچ وام کسر از حقوقی وجود ندارد که پرداختی قسط نداشته باشد."
+                    >
+                    </md-empty-state>
+                    <md-table
+                        :value="allocatedLoans.list"
+                        class="table-hover"
+                    >
+                        <md-table-row slot="md-table-row"
+                                      slot-scope="{ item }"
+                                      :class="getInstallmentRowClass(item)"
+                        >
+                            <md-table-cell md-label="نام" md-sort-by="account.user.f_name">
+                                {{item.account.user.f_name}}
+                            </md-table-cell>
+                            <md-table-cell md-label="نام خانوادگی" md-sort-by="account.user.l_name">
+                                {{item.account.user.l_name}}
+                            </md-table-cell>
+                            <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
+                                {{item.loan_amount | currencyFormat}}
+                            </md-table-cell>
+                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
+                                {{item.installment_rate | currencyFormat}}
+                            </md-table-cell>
+                            <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
+                                {{item.number_of_installments}}
+                            </md-table-cell>
+                            <md-table-cell md-label="نام صندوق" md-sort-by="loan.fund.name">
+                                {{item.loan.fund.name}}
+                            </md-table-cell>
+                            <md-table-cell md-label="وضعیت">
+                                <span v-if="item.is_settled">
+                                    تسویه شده
+                                </span>
+                                <span v-else>
+                                    تسویه نشده
+                                </span>
+                            </md-table-cell>
+                            <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
+                                {{item.shamsiDate('created_at').dateTime}}
+                            </md-table-cell>
+                            <md-table-cell md-label="عملیات">
+                                <md-button
+                                    @click="openLinkInNewTab(item.id)"
+                                    class="md-icon-button md-raised md-round md-info"
+                                    style="margin: .2rem;"
+                                >
+                                    <md-icon>edit</md-icon>
+                                </md-button>
+                            </md-table-cell>
+                        </md-table-row>
+                    </md-table>
                 </md-card-content>
             </md-card>
         </div>
@@ -58,23 +121,57 @@
 
 <script>
     import {AllocatedLoanList} from '@/models/AllocatedLoan'
+    import moment from 'moment-jalaali'
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         name: 'PaymentOfPayrollDeductions',
         mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         data: () => ({
+            payRequestIsSent: false,
             allocatedLoans: new AllocatedLoanList(),
             paySinceDate: null,
             payTillDate: null
         }),
         mounted() {
-            this.getList()
-            this.getFunds()
-            this.getLoans()
+            this.loadDatePicker()
+            // this.getList()
+            // this.getFunds()
+            // this.getLoans()
             this.allocatedLoans.loading = false
         },
         methods: {
+            loadDatePicker () {
+                this.paySinceDate = moment().startOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
+                this.payTillDate = moment().endOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
+            },
+            pay () {
+                this.allocatedLoans.loading = true
+                axios.get('/api/allocated_loans/pay_periodic_payroll_deduction', {
+                    params: {
+                        pay_since_date: this.paySinceDate,
+                        pay_till_date: this.payTillDate
+                    }
+                })
+                .then( (response) => {
+                    this.allocatedLoans.loading = false
+                    this.payRequestIsSent = true
+                    this.allocatedLoans = new AllocatedLoanList(response.data)
+                    if(this.allocatedLoans.list.length > 0) {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'برای اقساط کسر از حقوق تسویه نشده ای که در بازه زمانی انتخاب شده پرداختی نداشته اند به صورت کسر از حقوق برای آنها قسط و تراکنش ثبت شد و لیست وام آنها برای شما نمایش داده می شود.'
+                        });
+                    }
+                })
+                .catch( () => {
+                    this.allocatedLoans.loading = false
+                })
+            },
+            openLinkInNewTab (allocatedLoanId) {
+                window.open('/dashboard#/allocated_loan/' + allocatedLoanId, '_blank');
+            },
             loadDatePickers () {
                 this.paySinceDate = moment().format('YYYY-MM-DD HH:mm:ss')
                 this.payTillDate = moment().format('YYYY-MM-DD HH:mm:ss')
@@ -159,8 +256,9 @@
             getInstallmentRowClass (item) {
                 if (item.is_settled) {
                     return 'table-success'
+                } else {
+                    return 'table-danger'
                 }
-                return ''
                 // {
                 //     "table-success": id === 1,
                 //     "table-info": id === 3,
