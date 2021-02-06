@@ -17,7 +17,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class TransacionController extends Controller
+class TransactionController extends Controller
 {
     use Filter, CommonCRUD;
 
@@ -81,9 +81,14 @@ class TransacionController extends Controller
         DB::beginTransaction();
         $transactionStatus = TransactionStatus::findOrFail($request->get('transaction_status_id'));
         $cost = $request->get('cost');
+        $paid_as_payroll_deduction = false;
+        if ($request->has('paid_as_payroll_deduction') && $request->get('paid_as_payroll_deduction') == 1) {
+            $paid_as_payroll_deduction = true;
+        }
         $transaction = Transaction::create([
             'cost' => $cost,
             'manager_comment' => $request->get('manager_comment'),
+            'paid_as_payroll_deduction' => $paid_as_payroll_deduction,
             'user_comment' => $request->get('user_comment'),
             'transaction_status_id' => $transactionStatus->id,
             'deadline_at' => $request->get('deadline_at'),

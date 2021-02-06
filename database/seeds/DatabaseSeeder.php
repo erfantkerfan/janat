@@ -167,7 +167,7 @@ class TransactionStatusSeeder extends Seeder {
         DBAssistant::resetTable('transaction_statuses');
 
         TransactionStatus::create([
-            'name' => 'payed',
+            'name' => 'paid',
             'display_name' => 'پرداخت شده',
             'description' => ''
         ]);

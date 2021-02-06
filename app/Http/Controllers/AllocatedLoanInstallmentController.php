@@ -47,7 +47,9 @@ class AllocatedLoanInstallmentController extends Controller
      */
     public function store(StoreAllocatedLoanInstallment $request)
     {
-        $allocatedLoan = AllocatedLoan::with('installments')->findOrFail($request->get('allocated_loan_id'))->setAppends(['has_unsettled_installment']);
+        $allocatedLoan = AllocatedLoan::with('installments')
+            ->findOrFail($request->get('allocated_loan_id'))
+            ->setAppends(['has_unsettled_installment']);
         if ($allocatedLoan->has_unsettled_installment) {
             return $this->jsonResponseValidateError([
                 'errors' => [

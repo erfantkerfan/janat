@@ -76,9 +76,14 @@ class AllocatedLoan extends Model
     public function getLastPaymentAttribute()
     {
         $installments = $this->installments()->get();
-        $lastInstallmentsPayments = $installments->pluck('last_payment')->filter(function ($value) {
-            return isset($value);
-        })->flatten()->sortByDesc('paid_at')->flatten()->first();
+        $lastInstallmentsPayments = $installments->pluck('last_payment')
+            ->filter(function ($value) {
+                return isset($value);
+            })
+            ->flatten()
+            ->sortByDesc('paid_at')
+            ->flatten()
+            ->first();
 
         return $lastInstallmentsPayments;
     }
@@ -191,6 +196,32 @@ class AllocatedLoan extends Model
 
         $result = DB::select($rawQuery);
         $query->whereIn('id', collect($result)->map(function($x){ return (array) $x; })->toArray());
+//        dd($query->whereIn('id', [22])->toSql());
+//        $query->whereIn('id', [123123123]);
+    }
+
+    public function scopeLastPaymentNotPaidAt($query, $operator, $date, $operator2 = null, $date2 = null) {
+        $whereClause1 = "AND `transactions`.`paid_at` $operator '$date'";
+        $whereClause2 = (isset($operator2) && isset($date2)) ? "AND `transactions`.`paid_at` $operator2 '$date2'" : '';
+        $rawQuery = "
+            SELECT `id`
+            FROM (
+                SELECT `allocated_loans`.`id`, `transactions`.`paid_at`
+                FROM `transactions`
+                INNER JOIN `transaction_recipients` ON `transactions`.`id` = `transaction_recipients`.`transaction_id`
+                INNER JOIN `allocated_loan_installments` ON `transaction_recipients`.`transaction_recipients_id` = `allocated_loan_installments`.`id`
+                AND `transaction_recipients`.`transaction_recipients_type` = 'App\\\AllocatedLoanInstallment'
+                AND `allocated_loan_installments`.`deleted_at` IS NULL
+                INNER JOIN `allocated_loans` ON `allocated_loan_installments`.`allocated_loan_id` = `allocated_loans`.`id`
+                AND `allocated_loans`.`deleted_at` IS NULL
+                WHERE `transactions`.`deleted_at` IS NULL
+                $whereClause1
+                $whereClause2
+                ORDER BY `transactions`.`paid_at` DESC
+            ) AS tbl";
+
+        $result = DB::select($rawQuery);
+        $query->whereNotIn('id', collect($result)->map(function($x){ return (array) $x; })->toArray());
 //        dd($query->whereIn('id', [22])->toSql());
 //        $query->whereIn('id', [123123123]);
     }

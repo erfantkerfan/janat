@@ -16,6 +16,7 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('cost')->nullable()->comment('مبلغ تراکنش');
+            $table->boolean('paid_as_payroll_deduction')->default(false)->comment('پرداخت به صورت کسر از حقوق');
             $table->timestamp('deadline_at')->nullable()->comment('مهلت پرداخت');
             $table->timestamp('paid_at')->nullable()->comment('تاریخ پرداخت');
             $table->longText('manager_comment')->nullable()->comment('توضیح مسئول درباره تراکنش');
