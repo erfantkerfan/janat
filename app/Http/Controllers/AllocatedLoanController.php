@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\AllocatedLoanInstallment;
+use App\Classes\LoanCalculator;
+use App\Http\Requests\StoreAllocatedLoanInstallment;
+use App\Http\Requests\StoreTransaction;
 use App\Loan;
 use App\Account;
 use App\AllocatedLoan;
 use App\Traits\Filter;
 use App\Traits\CommonCRUD;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -110,7 +115,6 @@ class AllocatedLoanController extends Controller
         DB::beginTransaction();
         $account = Account::findOrFail($request->get('account_id'));
         $loan = Loan::findOrFail($request->get('loan_id'));
-        $fund = $account->fund()->first();
         $createdAllocatedLoan = AllocatedLoan::create([
             'account_id' => $account->id,
             'loan_id' => $loan->id,
@@ -121,6 +125,9 @@ class AllocatedLoanController extends Controller
             'number_of_installments' => $loan->number_of_installments,
             'payroll_deduction' => $request->get('payroll_deduction')
         ]);
+
+        // fund withdrawal
+        $fund = $account->fund()->first();
         $withdrawalResult = $fund->withdrawal($loan->loan_amount);
 
         if ($createdAllocatedLoan && $withdrawalResult) {
@@ -153,7 +160,7 @@ class AllocatedLoanController extends Controller
                 'loan',
                 'loan.fund'
             )
-            ->find($id)
+            ->findOrFail($id)
             ->setAppends([
                 'is_settled',
                 'total_payments',
@@ -185,5 +192,86 @@ class AllocatedLoanController extends Controller
     public function destroy(AllocatedLoan $allocatedLoan)
     {
         return $this->commonDestroy($allocatedLoan);
+    }
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function payPeriodicPayrollDeduction(Request $request)
+    {
+        $lastPaidAtAfter = $request->get('pay_since_date');
+        $lastPaidAtBefore = $request->get('pay_till_date');
+
+        $targetAllocatedLoan = AllocatedLoan::with('account.user:id,f_name,l_name', 'loan', 'loan.fund', 'installments')
+            ->notSettled()
+            ->where('payroll_deduction', '=', '1')
+            ->lastPaymentNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
+            ->get();
+
+        $hasProblem = false;
+        $targetAllocatedLoan->each(function($allocatedLoanItem, $key) {
+            $notSettledInstallment = $this->getNotSettledInstallment($allocatedLoanItem);
+
+            if (isset($notSettledInstallment)) {
+                $request = new StoreTransaction();
+                $request->replace([
+                    'transaction_status_id' => 1,
+                    'paid_as_payroll_deduction' => 1,
+                    'cost' => $notSettledInstallment->rate,
+                    'paid_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'transaction_type' => 'user_pay_installment',
+                    'allocated_loan_installment_id' => $notSettledInstallment->id
+                ]);
+                $transactionController = new TransactionController();
+                $storeTransactionResult = $transactionController->store($request);
+                if ($storeTransactionResult->getStatusCode() !== 200) {
+                    $hasProblem = true;
+                }
+            } else {
+                $hasProblem = true;
+            }
+        });
+
+        if (!$hasProblem) {
+            $setAppends = ['is_settled', 'last_payment'];
+            $targetAllocatedLoan->map(function (& $item) use ($setAppends) {
+                return $item->setAppends($setAppends);
+            });
+            return $this->jsonResponseOk($targetAllocatedLoan);
+        } else {
+            return $this->jsonResponseValidateError([
+                'errors' => [
+                    'has_unsettled_installment' => [
+                        'مشکلی در ثبت پرداخت ها رخ داده است. لطفا مجددا تلاش کنید.'
+                    ]
+                ]
+            ]);
+        }
+    }
+
+    private function getNotSettledInstallment($allocatedLoanItem) {
+        $notSettledInstallment = null;
+        $notSettledInstallments = $allocatedLoanItem->installments
+            ->filter(function ($value) {
+                return ($value->is_settled === false);
+            })
+            ->sortByDesc('created_at');
+        if ($notSettledInstallments->count() > 0) {
+            $notSettledInstallment = $notSettledInstallments->first();
+        } else {
+            $request = new StoreAllocatedLoanInstallment();
+            $request->replace(['allocated_loan_id' => $allocatedLoanItem->id]);
+            $allocatedLoanInstallmentController = new AllocatedLoanInstallmentController();
+            $storeAllocatedLoanResult = $allocatedLoanInstallmentController->store($request);
+            if ($storeAllocatedLoanResult->getStatusCode() === 200) {
+                $notSettledInstallment = json_decode($storeAllocatedLoanResult->getContent());
+            }
+        }
+
+        return $notSettledInstallment;
     }
 }
