@@ -19,28 +19,26 @@
 <html lang="en" dir="rtl">
 <head>
     <meta charset="utf-8">
+    <link rel="icon" type="image/png" href="img/logo.png">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-      <title>Sandogh</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=1">
 
-  <!-- Anti-flicker snippet (recommended)  -->
-  <style>.async-hide { opacity: 0 !important} </style>
-  <script>(function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
-    h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
-    (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
-  })(window,document.documentElement,'async-hide','dataLayer',4000,
-    {'GTM-K9BGS8K':true});
-  </script>
+    <!-- Anti-flicker snippet (recommended)  -->
+    <style>
+        .async-hide {
+            opacity: 0 !important
+        }
+    </style>
 
-  <!-- Canonical SEO -->
-<!--  <link rel=canonical href=https://www.creative-tim.com/product/vue-material-dashboard-laravel>-->
+    <!-- Canonical SEO -->
+    <!--  <link rel=canonical href=https://www.creative-tim.com/product/vue-material-dashboard-laravel>-->
 
 {{--  <!--  Social tags      -->--}}
 {{--  <meta name=keywords content="creative tim, updivision, html dashboard, vue, vuejs, laravel, json:api, json, api, html css dashboard laravel, vue material dashboard laravel, vue material dashboard, material vue admin, vue dashboard, vue admin, web dashboard, bootstrap 4 dashboard laravel, bootstrap 4, css3 dashboard, bootstrap 4 admin laravel, material ui dashboard bootstrap 4 laravel, frontend, responsive bootstrap 4 dashboard, material design, material laravel bootstrap 4 dashboard">--}}
@@ -71,18 +69,19 @@
 {{--  <meta property=og:description content="Vue Material Dashboard Laravel helps you build awesome apps with a flexible architecture. It comes with UI components, a Vue Material frontend and an API-powered Laravel backend.">--}}
 {{--  <meta property=og:site_name content="Creative Tim">--}}
 
-  <!--     Fonts and icons     -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,300italic,400italic">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css" rel="stylesheet">
+<!--     Fonts and icons     -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,300italic,400italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-{{--  <!-- Google Tag Manager -->--}}
-{{--<!--  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':-->--}}
-{{--<!--      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],-->--}}
-{{--<!--    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=-->--}}
-{{--<!--    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);-->--}}
-{{--<!--  })(window,document,'script','dataLayer','GTM-NKDMSK6');</script>-->--}}
-{{--  <!-- End Google Tag Manager -->--}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css" rel="stylesheet">
+
+    {{--  <!-- Google Tag Manager -->--}}
+    {{--<!--  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':-->--}}
+    {{--<!--      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],-->--}}
+    {{--<!--    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=-->--}}
+    {{--<!--    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);-->--}}
+    {{--<!--  })(window,document,'script','dataLayer','GTM-NKDMSK6');</script>-->--}}
+    {{--  <!-- End Google Tag Manager -->--}}
 </head>
 
 <body class="sidebar-image rtl">
@@ -92,7 +91,7 @@
 {{--<!-- End Google Tag Manager (noscript) -->--}}
 
 <div id="dashboard_app">
-    <app :user="{{ json_encode($user) }}" ></app>
+    <app :user="{{ json_encode($user) }}"></app>
 </div>
 <!-- built files will be auto injected -->
 
