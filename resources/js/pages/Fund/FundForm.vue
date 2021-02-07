@@ -32,18 +32,23 @@
                                 <md-field class="md-invalid">
                                     <md-input v-model="fund.monthly_payment"/>
                                 </md-field>
+                                {{ fund.monthly_payment | currencyFormat}}
+                                <br>
+                                {{ digitsToWords(fund.monthly_payment) }}
                             </div>
                         </div>
+                        <hr>
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 موجودی صندوق
                             </label>
                             <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="fund.balance" :disabled="true"/>
-                                </md-field>
+                                {{ fund.balance | currencyFormat}}
+                                <br>
+                                {{ digitsToWords(fund.balance) }}
                             </div>
                         </div>
+                        <hr>
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 تاریخ تعریف صندوق
@@ -68,7 +73,7 @@
                 </md-card>
             </div>
         </div>
-        <div class="md-layout-item md-size-40 md-small-size-100">
+        <div v-if="!isCreateForm()" class="md-layout-item md-size-40 md-small-size-100">
             <md-card>
                 <md-card-header class="md-card-header-icon md-card-header-blue">
                     <div class="card-icon">
@@ -201,8 +206,8 @@
 </template>
 
 <script>
-    import {Fund} from '@/models/Fund';
-    import {Loan, LoanList} from '@/models/Loan';
+    import {Fund} from '@/models/Fund'
+    import {Loan, LoanList} from '@/models/Loan'
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {

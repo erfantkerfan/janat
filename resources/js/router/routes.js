@@ -463,6 +463,7 @@ const routes = [
     // },
     {
         path: "/",
+        name: 'DashboardLayout',
         component: DashboardLayout,
         meta: {
             rtlActive: true,
@@ -471,9 +472,10 @@ const routes = [
         children: [
             {
                 path: "/",
-                name: "پیشخوان",
+                name: 'Dashboard',
                 components: {default: Dashboard},
                 meta: {
+                    displayName: "پیشخوان",
                     rtlActive: true,
                     middleware: auth
                 }

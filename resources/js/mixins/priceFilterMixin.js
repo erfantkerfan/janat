@@ -1,3 +1,5 @@
+import persianJs from 'persianjs'
+
 export default {
     filters: {
         currencyFormat: function (value) {
@@ -23,6 +25,12 @@ export default {
         }
     },
     methods: {
+        digitsToWords (digits) {
+            if (!digits) {
+                return ''
+            }
+            return persianJs(digits).digitsToWords()
+        },
         currencyFormatInput (event) {
             this.transaction.cost = this.toEnDigit(event)
         },
