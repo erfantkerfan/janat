@@ -31,8 +31,12 @@
                                 <md-field class="md-invalid">
                                     <md-input v-model="loan.loan_amount"/>
                                 </md-field>
+                                {{ loan.loan_amount | currencyFormat}}
+                                <br>
+                                {{ digitsToWords(loan.loan_amount) }}
                             </div>
                         </div>
+                        <hr>
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 مبلغ هر قسط
@@ -41,8 +45,12 @@
                                 <md-field class="md-invalid">
                                     <md-input v-model="loan.installment_rate"/>
                                 </md-field>
+                                {{ loan.installment_rate | currencyFormat}}
+                                <br>
+                                {{ digitsToWords(loan.installment_rate) }}
                             </div>
                         </div>
+                        <hr>
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 تعداد اقساط
@@ -63,16 +71,18 @@
                                 </md-field>
                             </div>
                         </div>
+                        <hr>
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 مقدار کارمزد
                             </label>
                             <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="loan.interest_amount"/>
-                                </md-field>
+                                {{ loan.interest_amount | currencyFormat}}
+                                <br>
+                                {{ digitsToWords(loan.interest_amount) }}
                             </div>
                         </div>
+                        <hr>
                         <md-field>
                             <label>نوع وام:</label>
                             <md-select v-model="loan.loan_type.id" name="pages">
@@ -128,7 +138,7 @@
 
 <script>
     import {Loan} from '@/models/Loan'
-    import { getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -136,7 +146,7 @@
                 this.loan.fund_id = this.loan.fund.id
             }
         },
-        mixins: [getFilterDropdownMixin, axiosMixin],
+        mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
         data: () => ({
             loan: new Loan(),
         }),
