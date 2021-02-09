@@ -1,6 +1,9 @@
 .md-menu-content {
     max-width: 400px;
     max-height: 40vh;
+    .md-select-menu {
+        z-index: 99999;
+    }
 }
 .md-dialog {
     z-index: 99999;

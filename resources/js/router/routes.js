@@ -10,6 +10,9 @@ import UserProfile from "@/pages/User/UserProfile/UserProfile.vue";
 // User Management
 import ListUserPage from "@/pages/User/list/ListUserPage.vue";
 
+// User AddPayment
+import UserAddPaymentForm from "@/pages/User/AddPayment";
+
 // Company List
 import CompanyList from "@/pages/Company/List.vue";
 
@@ -97,6 +100,16 @@ let userMenu = {
             meta: {
                 rtlActive: true,
                 displayName: "ساخت کاربر جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":user_id/:account_id/:fund_id/add_payment",
+            name: "User.AddPayment",
+            components: {default: UserAddPaymentForm},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداختی جدید کاربر به صندوق",
                 middleware: auth
             }
         },

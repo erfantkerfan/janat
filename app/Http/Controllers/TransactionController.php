@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Account;
 use App\AllocatedLoan;
 use App\AllocatedLoanInstallment;
 use App\Company;
@@ -125,18 +126,22 @@ class TransactionController extends Controller
     }
 
     private function userChargeFund(Request $request, Transaction $transaction) {
-        Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
+        $validator = Validator::make($request->all(), [
             'account_id' => 'required|exists:accounts,id',
-        ])->validate();
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
 
-        $user = User::findOrFail($request->get('user_id'));
-        $account = User::findOrFail($request->get('account_id'));
+        $account = Account::findOrFail($request->get('account_id'));
+        $user = $account->user()->first();
         $fund = $account->fund()->first();
         $cost = $request->get('cost');
         $transaction->userPayers()->attach($user, ['cost'=> $cost]);
         $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
         $fund->deposit($cost);
+
+        return $validator;
     }
 
     private function companyChargeFund(Request $request, Transaction $transaction) {
