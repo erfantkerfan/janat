@@ -12,7 +12,8 @@
                     <md-icon>check</md-icon>
                 </md-button>
             </div>
-            <input v-if="!isCreateForm() && cardUserNewImage === null" v-show="false" type="file" ref="userProfilePic" @change="bufferUserPic($event)" />
+            <input v-if="!isCreateForm() && cardUserNewImage === null" v-show="false" type="file" ref="userProfilePic"
+                   @change="bufferUserPic($event)"/>
             <h6 class="category text-gray">{{ value.f_name }} {{ value.l_name }}</h6>
             <h4 class="card-title">{{ value.company.name }}</h4>
             <p class="card-description">
@@ -53,7 +54,9 @@
                         <md-table-row slot="md-table-row" slot-scope="{ item }">
                             <md-table-cell md-label="نام صندوق" md-sort-by="name">{{item.fund.name}}</md-table-cell>
                             <md-table-cell md-label="شماره حساب" md-sort-by="email">{{item.acc_number}}</md-table-cell>
-                            <md-table-cell md-label="تاریخ عضویت" md-sort-by="created_at">{{item.shamsiDate('joined_at').date}}</md-table-cell>
+                            <md-table-cell md-label="تاریخ عضویت" md-sort-by="created_at">
+                                {{item.shamsiDate('joined_at').date}}
+                            </md-table-cell>
                             <md-table-cell md-label="عملیات">
                                 <md-button
                                     class="md-icon-button md-raised md-round md-info"
@@ -115,52 +118,55 @@
             </md-field>
 
             <md-dialog :md-active.sync="createAccountShowDialog">
-                <md-dialog-title>ایجاد حساب جدید</md-dialog-title>
+                <md-dialog-title v-if="editAccountState">ویرایش حساب</md-dialog-title>
+                <md-dialog-title v-else>ایجاد حساب جدید</md-dialog-title>
 
                 <md-dialog-content>
                     <div style="height: 300px;display: flex;flex-flow: column;justify-content: center;">
-                        <md-empty-state
-                            v-if="funds.list.length === 0"
-                            class="md-warning"
-                            md-icon="cancel_presentation"
-                            md-label="صندوقی یافت نشد"
-                            md-description="برای ایجاد حساب ابتدا یک صندوق برای سیستم تعریف کنید"
-                        >
-                        </md-empty-state>
-                        <md-button
-                            v-if="funds.list.length === 0"
-                            class="md-dense md-raised md-primary"
-                            @click="createAccountShowDialog = true">
-                            برای ایجاد صندوق کلیک کنید
-                        </md-button>
-                        <md-field v-if="funds.list.length > 0">
-                            <label>انتخاب صندوق:</label>
-                            <md-select v-model="newAccount.fund.id">
-                                <md-option
-                                    v-for="item in funds.list"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id"
-                                >
-                                    {{ item.name }}
-                                </md-option>
-                            </md-select>
-                        </md-field>
-                        <md-field v-if="funds.list.length > 0">
-                            <label>شماره حساب</label>
-                            <md-input v-model="newAccount.acc_number" />
-                        </md-field>
-                        <div v-if="funds.list.length > 0" class="md-layout">
-                            <label class="md-layout-item md-size-40 md-form-label">
-                                تاریخ عضویت
-                            </label>
-                            <div class="md-layout-item md-size-100">
-                                <date-picker
-                                    v-model="newAccount.joined_at"
-                                    type="datetime"
-                                    :editable="true"
-                                    format="YYYY-MM-DD HH:mm:ss"
-                                    display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                        <div v-if="funds.list.length === 0">
+                            <md-empty-state
+                                class="md-warning"
+                                md-icon="cancel_presentation"
+                                md-label="صندوقی یافت نشد"
+                                md-description="برای ایجاد حساب ابتدا یک صندوق برای سیستم تعریف کنید"
+                            >
+                            </md-empty-state>
+                            <md-button
+                                class="md-dense md-raised md-primary"
+                                @click="createAccountShowDialog = true">
+                                برای ایجاد صندوق کلیک کنید
+                            </md-button>
+                        </div>
+                        <div v-if="funds.list.length > 0">
+                            <md-field>
+                                <label>انتخاب صندوق:</label>
+                                <md-select v-model="newAccount.fund.id">
+                                    <md-option
+                                        v-for="item in funds.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                            <md-field>
+                                <label>شماره حساب</label>
+                                <md-input v-model="newAccount.acc_number"/>
+                            </md-field>
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-40 md-form-label">
+                                    تاریخ عضویت
+                                </label>
+                                <div class="md-layout-item md-size-100">
+                                    <date-picker
+                                        v-model="newAccount.joined_at"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -168,12 +174,35 @@
 
                 <md-dialog-actions>
                     <md-button class="md-default" @click="createAccountShowDialog = false">انتصراف</md-button>
-                    <md-button v-if="funds.list.length > 0 & !editAccountState" class="md-success" @click="createNewAccount">ذخیره</md-button>
-                    <md-button v-if="funds.list.length > 0 & editAccountState" class="md-success" @click="editAccount">ذخیره</md-button>
+                    <md-button v-if="funds.list.length > 0 && !editAccountState"
+                               class="md-success"
+                               @click="createNewAccount"
+                    >
+                        ذخیره
+                    </md-button>
+                    <md-button v-if="funds.list.length > 0 && editAccountState"
+                               class="md-success"
+                               @click="editAccount"
+                    >
+                        ذخیره
+                    </md-button>
+                    <md-button v-if="funds.list.length > 0 && editAccountState"
+                               class="md-success"
+                               :to="{
+                                    name: 'User.AddPayment',
+                                    params: {
+                                        user_id: value.id,
+                                        account_id: newAccount.id,
+                                        fund_id: newAccount.fund.id
+                                    }
+                                }">
+                        واریز وجه از طرف کاربر به صندوق
+                    </md-button>
                 </md-dialog-actions>
             </md-dialog>
 
-            <loading :active.sync="companies.loading || userStatuses.loading || value.loading" :is-full-page="false"></loading>
+            <loading :active.sync="companies.loading || userStatuses.loading || value.loading"
+                     :is-full-page="false"></loading>
 
             <vue-confirm-dialog></vue-confirm-dialog>
 
@@ -184,7 +213,7 @@
 <script>
     import {User} from '@/models/User'
     import {Account} from '@/models/Account'
-    import { getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
+    import {getFilterDropdownMixin, axiosMixin} from '@/mixins/Mixins'
 
     export default {
         name: 'user-profile-card',
@@ -203,7 +232,7 @@
         props: {
             value: {
                 type: User,
-                default () {
+                default() {
                     return new User()
                 }
             }
@@ -232,10 +261,10 @@
             this.getUserStatus()
         },
         methods: {
-            isCreateForm () {
+            isCreateForm() {
                 return (this.$route.name === 'User.Create')
             },
-            bufferUserPic ($event) {
+            bufferUserPic($event) {
                 const toBase64 = file => new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.readAsDataURL(file);
@@ -245,43 +274,43 @@
 
                 let that = this
                 toBase64($event.target.files[0])
-                .then((result)=> {
-                    that.cardUserNewImage = $event.target.files[0]
-                    that.cardUserImage = result
-                })
-                .catch((error) => {
-                    this.axios_handleError(error)
-                    that.clearUserPicBuffer()
-                })
+                    .then((result) => {
+                        that.cardUserNewImage = $event.target.files[0]
+                        that.cardUserImage = result
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        that.clearUserPicBuffer()
+                    })
             },
-            clearUserPicBuffer (newUserPic) {
+            clearUserPicBuffer(newUserPic) {
                 this.cardUserNewImage = null
                 if (!newUserPic) {
                     newUserPic = this.authenticatedUser.user_pic
                 }
                 this.cardUserImage = newUserPic
             },
-            updateUserPic () {
+            updateUserPic() {
                 this.$emit('updateUserPic', this.cardUserNewImage)
             },
-            updateUserModel () {
+            updateUserModel() {
                 this.value.status_id = this.value.status.id
                 this.value.company_id = this.value.company.id
                 this.$emit('input', this.value)
             },
-            showAddAccountDialog () {
+            showAddAccountDialog() {
                 this.editAccountState = false
                 this.createAccountShowDialog = true
             },
-            showEditAccountDialog (item) {
+            showEditAccountDialog(item) {
                 this.newAccount = item
                 this.editAccountState = true
                 this.createAccountShowDialog = true
             },
-            closeAccountDialog () {
+            closeAccountDialog() {
                 this.createAccountShowDialog = false
             },
-            createNewAccount () {
+            createNewAccount() {
                 let that = this
                 this.value.loading = true
                 this.updateUserModel()
@@ -301,7 +330,7 @@
                         that.closeAccountDialog()
                     })
             },
-            editAccount () {
+            editAccount() {
                 let that = this
                 this.value.loading = true
                 this.updateUserModel()
@@ -342,7 +371,7 @@
                 item.loading = true;
                 let that = this;
                 item.delete()
-                    .then(function(response) {
+                    .then(function (response) {
                         that.$emit('update')
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
@@ -358,7 +387,7 @@
                     });
             },
 
-            getUserPic () {
+            getUserPic() {
                 this.value.getUserPic(this.$route.params.id)
                     .then((response) => {
                         // this.user.loading = false;

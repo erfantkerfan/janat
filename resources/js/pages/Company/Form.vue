@@ -53,8 +53,24 @@
                     </md-card-content>
 
                     <md-card-actions>
-                        <md-button type="submit" @click="updateCompany">
+                        <md-button type="submit"
+                                   class="md-info"
+                                   @click="updateCompany"
+                        >
                             ذخیره اطلاعات
+                        </md-button>
+                        <md-button v-if="!isCreateForm()"
+                                   type="submit"
+                                   class="md-success"
+                                   :to="{
+                                        name: 'Company.AddPayment',
+                                        params: {
+                                            company_id: company.id,
+                                            fund_id: company.fund.id
+                                            }
+                                        }"
+                        >
+                            ثبت واریز وجه به صندوق
                         </md-button>
                     </md-card-actions>
 
