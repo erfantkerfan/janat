@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Account;
 use App\AllocatedLoan;
 use App\AllocatedLoanInstallment;
 use App\Company;
@@ -94,7 +95,7 @@ class TransactionController extends Controller
             'deadline_at' => $request->get('deadline_at'),
             'paid_at' => $request->get('paid_at')
         ]);
-        $dBTransactionValidator = $this->attachTransaction($request, $transaction);
+        $dBTransactionValidator = $this->attachTransactionAndChangeFundBalance($request, $transaction);
 
         if ($dBTransactionValidator->fails()) {
             DB::rollBack();
@@ -107,51 +108,61 @@ class TransactionController extends Controller
         }
     }
 
-    private function attachTransaction(Request $request, Transaction $transaction) {
+    private function attachTransactionAndChangeFundBalance(Request $request, Transaction $transaction) {
         $transaction_type = $request->get('transaction_type');
         $dBTransactionValidator = true;
 
         if ($transaction_type === 'user_charge_fund') {
-            $dBTransactionValidator = $this->attachAndChangeFundBalance_userChargeFund($request, $transaction);
+            $dBTransactionValidator = $this->userChargeFund($request, $transaction);
         } else if ($transaction_type === 'company_charge_fund') {
-            $dBTransactionValidator = $this->attachAndChangeFundBalance_companyChargeFund($request, $transaction);
+            $dBTransactionValidator = $this->companyChargeFund($request, $transaction);
         } else if ($transaction_type === 'fund_pay_loan') {
-            $dBTransactionValidator = $this->attachAndChangeFundBalance_fundPayLoan($request, $transaction);
+            $dBTransactionValidator = $this->fundPayLoan($request, $transaction);
         } else if ($transaction_type === 'user_pay_installment') {
-            $dBTransactionValidator = $this->attachAndChangeFundBalance_userPayInstallment($request, $transaction);
+            $dBTransactionValidator = $this->userPayInstallment($request, $transaction);
         }
 
         return $dBTransactionValidator;
     }
 
-    private function attachAndChangeFundBalance_userChargeFund(Request $request, Transaction $transaction) {
-        Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
+    private function userChargeFund(Request $request, Transaction $transaction) {
+        $validator = Validator::make($request->all(), [
             'account_id' => 'required|exists:accounts,id',
-        ])->validate();
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
 
-        $user = User::findOrFail($request->get('user_id'));
-        $account = User::findOrFail($request->get('account_id'));
+        $account = Account::findOrFail($request->get('account_id'));
+        $user = $account->user()->first();
         $fund = $account->fund()->first();
         $cost = $request->get('cost');
         $transaction->userPayers()->attach($user, ['cost'=> $cost]);
         $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
         $fund->deposit($cost);
+
+        return $validator;
     }
 
-    private function attachAndChangeFundBalance_companyChargeFund(Request $request, Transaction $transaction) {
-        Validator::make($request->all(), [
+    private function companyChargeFund(Request $request, Transaction $transaction) {
+        $validator = Validator::make($request->all(), [
             'company_id' => 'required|exists:companies,id'
-        ])->validate();
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
+
         $company = Company::findOrFail($request->get('company_id'));
         $fund = $company->fund()->first();
         $cost = $request->get('cost');
         $transaction->companyPayers()->attach($company, ['cost'=> $cost]);
         $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
         $fund->deposit($cost);
+
+        return $validator;
     }
 
-    private function attachAndChangeFundBalance_fundPayLoan(Request $request, Transaction $transaction) {
+    private function fundPayLoan(Request $request, Transaction $transaction) {
         Validator::make($request->all(), [
             'allocated_loan_id' => 'required|exists:allocated_loans,id'
         ])->validate();
@@ -163,7 +174,7 @@ class TransactionController extends Controller
         $fund->withdrawal($cost);
     }
 
-    private function attachAndChangeFundBalance_userPayInstallment(Request $request, Transaction $transaction) {
+    private function userPayInstallment(Request $request, Transaction $transaction) {
         $validator = Validator::make($request->all(), [
             'allocated_loan_installment_id' => 'required|exists:allocated_loan_installments,id'
         ]);

@@ -10,11 +10,17 @@ import UserProfile from "@/pages/User/UserProfile/UserProfile.vue";
 // User Management
 import ListUserPage from "@/pages/User/list/ListUserPage.vue";
 
+// User AddPayment
+import UserAddPaymentForm from "@/pages/User/AddPayment";
+
 // Company List
 import CompanyList from "@/pages/Company/List.vue";
 
 // Company Management
 import CompanyForm from "@/pages/Company/Form.vue";
+
+// Company AddPayment
+import CompanyAddPaymentForm from "@/pages/Company/AddPayment";
 
 // Fund List
 import FundList from "@/pages/Fund/FundList.vue";
@@ -40,7 +46,7 @@ import AllocatedLoanCreateForm from "@/pages/AllocatedLoan/Create.vue";
 // AllocatedLoanInstallment CreateForm
 import AllocatedLoanInstallmentCreateForm from "@/pages/AllocatedLoanInstallment/Create.vue";
 
-// AllocatedLoanInstallment CreateForm
+// AllocatedLoanInstallment AddPayment
 import AllocatedLoanInstallmentAddPaymentForm from "@/pages/AllocatedLoanInstallment/AddPayment";
 
 // Transaction List
@@ -98,6 +104,16 @@ let userMenu = {
             }
         },
         {
+            path: ":user_id/:account_id/:fund_id/add_payment",
+            name: "User.AddPayment",
+            components: {default: UserAddPaymentForm},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداختی جدید کاربر به صندوق",
+                middleware: auth
+            }
+        },
+        {
             path: ":id",
             name: "User.Show",
             components: {default: UserProfile},
@@ -132,6 +148,16 @@ let companiesMenu = {
             meta: {
                 rtlActive: true,
                 displayName: "ساخت شرکت جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":company_id/:fund_id/add_payment",
+            name: "Company.AddPayment",
+            components: {default: CompanyAddPaymentForm},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداختی جدید شرکت به صندوق",
                 middleware: auth
             }
         },
@@ -286,7 +312,8 @@ let allocatedLoanInstallmentsMenu = {
                 displayName: "تعریف قسط جدید",
                 middleware: auth
             }
-        },{
+        },
+        {
             path: ":allocated_loan_id/:allocated_loan_installment_id/add_payment",
             name: "AllocatedLoanInstallment.AddPayment",
             components: {default: AllocatedLoanInstallmentAddPaymentForm},
