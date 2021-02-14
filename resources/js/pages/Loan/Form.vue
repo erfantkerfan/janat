@@ -26,6 +26,7 @@
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 مبلغ وام
+                                ({{ currencyUnit }})
                             </label>
                             <div class="md-layout-item">
                                 <md-field class="md-invalid">
@@ -36,21 +37,19 @@
                                 {{ digitsToWords(loan.loan_amount) }}
                             </div>
                         </div>
-                        <hr>
+                        <hr v-if="!isCreateForm()">
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 مبلغ هر قسط
+                                ({{ currencyUnit }})
                             </label>
                             <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="loan.installment_rate"/>
-                                </md-field>
                                 {{ loan.installment_rate | currencyFormat}}
                                 <br>
                                 {{ digitsToWords(loan.installment_rate) }}
                             </div>
                         </div>
-                        <hr>
+                        <hr v-if="!isCreateForm()">
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 تعداد اقساط
@@ -61,20 +60,19 @@
                                 </md-field>
                             </div>
                         </div>
-                        <div class="md-layout">
+                        <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 نرخ کارمزد
                             </label>
                             <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="loan.interest_rate"/>
-                                </md-field>
+                                {{ loan.interest_rate }}%
                             </div>
                         </div>
-                        <hr>
+                        <hr v-if="!isCreateForm()">
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 مقدار کارمزد
+                                ({{ currencyUnit }})
                             </label>
                             <div class="md-layout-item">
                                 {{ loan.interest_amount | currencyFormat}}
@@ -82,7 +80,7 @@
                                 {{ digitsToWords(loan.interest_amount) }}
                             </div>
                         </div>
-                        <hr>
+                        <hr v-if="!isCreateForm()">
                         <md-field>
                             <label>نوع وام:</label>
                             <md-select v-model="loan.loan_type.id" name="pages">

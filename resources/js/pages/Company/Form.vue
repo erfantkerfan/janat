@@ -24,19 +24,16 @@
                                 </md-field>
                             </div>
                         </div>
-                        <md-field>
-                            <label>صندوق:</label>
-                            <md-select v-model="company.fund.id" name="pages">
-                                <md-option
-                                    v-for="item in funds.list"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id"
-                                >
-                                    {{ item.name }}
-                                </md-option>
-                            </md-select>
-                        </md-field>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                نام مسئول
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="company.undertaker"/>
+                                </md-field>
+                            </div>
+                        </div>
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 تاریخ تعریف شرکت

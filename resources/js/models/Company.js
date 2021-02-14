@@ -10,6 +10,7 @@ class Company extends Model {
             },
             { key: 'id' },
             { key: 'name' },
+            { key: 'undertaker' },
             {
                 key: 'fund',
                 relatedModel: Fund

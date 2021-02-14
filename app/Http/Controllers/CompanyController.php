@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Company;
+use App\Http\Requests\StoreCompany;
 use App\Traits\Filter;
 use App\Traits\CommonCRUD;
 use Exception;
@@ -42,10 +43,10 @@ class CompanyController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreCompany $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StoreCompany $request)
     {
         return $this->commonStore($request, Company::class);
     }

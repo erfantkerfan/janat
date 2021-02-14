@@ -1,24 +1,24 @@
 <?php
 
-use App\Account;
-use App\AllocatedLoan;
-use App\AllocatedLoanInstallment;
-use App\Company;
-use App\Fund;
-use App\Loan;
-use App\LoanType;
-use App\Transaction;
-use App\TransactionStatus;
 use App\User;
-use App\UserStatus;
+use App\Loan;
+use App\Fund;
+use App\Setting;
+use App\Account;
+use App\Company;
 use App\UserType;
+use App\LoanType;
 use Faker\Factory;
-use Faker\Provider\Image;
+use App\UserStatus;
+use App\Transaction;
+use App\AllocatedLoan;
+use App\TransactionStatus;
 use Illuminate\Database\Seeder;
+use App\AllocatedLoanInstallment;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TransactionStatusSeeder::class);
         $this->call(FundTableSeeder::class);
         $this->call(CompanyTableSeeder::class);
+        $this->call(SettingTableSeeder::class);
 
         $this->call(FakeData::class);
     }
@@ -208,6 +209,31 @@ class CompanyTableSeeder extends Seeder {
     }
 }
 
+class SettingTableSeeder extends Seeder {
+
+    public function run()
+    {
+        DBAssistant::resetTable('settings');
+        $values = [
+            [
+                'name' => 'loan_interest_per_month',
+                'display_name' => 'کارمزد وام برای هر ماه قسط',
+                'value' => '0',
+                'order' => 1
+            ],
+            [
+                'name' => 'currency_unit',
+                'display_name' => 'واحد ارز',
+                'value' => 'ریال',
+                'order' => 2
+            ]
+        ];
+        foreach ($values as $value) {
+            Setting::create($value);
+        }
+    }
+}
+
 class FakeData extends Seeder {
 
     public function run()
@@ -233,6 +259,7 @@ class FakeFund extends Seeder {
         for ($i = 1; $i < self::$countOfObject; $i++) {
             Fund::create([
                 'name' => $faker->companyField(),
+                'undertaker' => $faker->firstName.' '.$faker->lastName,
                 'balance' => $faker->numberBetween(10000000, 50000000),
                 'monthly_payment' => $faker->numberBetween(15000, 20000),
                 'created_at' => $faker->dateTime()
@@ -257,6 +284,7 @@ class FakeCompany extends Seeder {
             Company::create([
                 'name' => $faker->company,
                 'fund_id' => $fund->id,
+                'undertaker' => $faker->firstName.' '.$faker->lastName,
                 'created_at' => $faker->dateTime()
             ]);
         }
@@ -326,9 +354,9 @@ class FakeAccount extends Seeder {
             $user = FakeUser::getRandomObject();
             $fund = FakeFund::getRandomObject();
             Account::create([
-                'acc_number' => $faker->bankAccountNumber,
                 'fund_id' => $fund->id,
                 'user_id' => $user->id,
+                'payroll_deduction' => rand(0, 1),
                 'joined_at' => $faker->dateTime(),
                 'created_at' => $faker->dateTime()
             ]);
