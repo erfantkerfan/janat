@@ -1,6 +1,6 @@
 <template>
     <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-60 md-small-size-100">
+        <div class="md-layout-item md-size-100 md-small-size-100">
             <div class="md-layout-item md-size-100">
                 <md-card>
                     <md-card-header class="md-card-header-icon md-card-header-green">
@@ -15,7 +15,7 @@
                     <md-card-content>
 
                         <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
+                            <label class="md-layout-item md-size-25 md-form-label">
                                 نام صندوق
                             </label>
                             <div class="md-layout-item">
@@ -25,32 +25,47 @@
                             </div>
                         </div>
                         <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                میزان شهریه
+                            <label class="md-layout-item md-size-25 md-form-label">
+                                نام مسئول
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-input v-model="fund.undertaker"/>
+                                </md-field>
+                            </div>
+                        </div>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-25 md-form-label">
+                                ماهانه
+                                ({{ currencyUnit }})
                             </label>
                             <div class="md-layout-item">
                                 <md-field class="md-invalid">
                                     <md-input v-model="fund.monthly_payment"/>
                                 </md-field>
                                 {{ fund.monthly_payment | currencyFormat}}
-                                <br>
-                                {{ digitsToWords(fund.monthly_payment) }}
                             </div>
+                            <md-tooltip md-direction="top">
+                                {{ digitsToWords(fund.monthly_payment) }}
+                            </md-tooltip>
                         </div>
                         <hr>
                         <div v-if="!isCreateForm()" class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
+                            <label class="md-layout-item md-size-25 md-form-label">
                                 موجودی صندوق
+                                ({{ currencyUnit }})
                             </label>
                             <div class="md-layout-item">
-                                {{ fund.balance | currencyFormat}}
-                                <br>
-                                {{ digitsToWords(fund.balance) }}
+                                <md-field class="md-invalid">
+                                    {{ fund.balance | currencyFormat}}
+                                </md-field>
                             </div>
+                            <md-tooltip md-direction="top">
+                                {{ digitsToWords(fund.balance) }}
+                            </md-tooltip>
                         </div>
-                        <hr>
                         <div v-if="!isCreateForm()" class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
+                            <label class="md-layout-item md-size-25 md-form-label">
                                 تاریخ تعریف صندوق
                             </label>
                             <div class="md-layout-item">
@@ -73,7 +88,7 @@
                 </md-card>
             </div>
         </div>
-        <div v-if="!isCreateForm()" class="md-layout-item md-size-40 md-small-size-100">
+        <div v-if="!isCreateForm()" class="md-layout-item md-size-100 md-small-size-100">
             <md-card>
                 <md-card-header class="md-card-header-icon md-card-header-blue">
                     <div class="card-icon">
@@ -99,8 +114,8 @@
                     >
                         <md-table-row slot="md-table-row" slot-scope="{ item }">
                             <md-table-cell md-label="نام" md-sort-by="name">{{item.name}}</md-table-cell>
-                            <md-table-cell md-label="مبلغ وام" md-sort-by="email">{{item.loan_amount | currencyFormat}}</md-table-cell>
-                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="email">{{item.installment_rate | currencyFormat}}</md-table-cell>
+                            <md-table-cell :md-label="'مبلغ وام '+'(' + currencyUnit + ')'" md-sort-by="email">{{item.loan_amount | currencyFormat}}</md-table-cell>
+                            <md-table-cell :md-label="'مبلغ هر قسط '+'(' + currencyUnit + ')'" md-sort-by="email">{{item.installment_rate | currencyFormat}}</md-table-cell>
                             <md-table-cell md-label="تعداد اقساط" md-sort-by="email">{{item.number_of_installments}}</md-table-cell>
                             <md-table-cell md-label="عملیات">
                                 <md-button

@@ -1,6 +1,9 @@
 import persianJs from 'persianjs'
 
 export default {
+    data: () => ({
+        currencyUnit: 'ریال',
+    }),
     filters: {
         currencyFormat: function (value) {
             if (!value) return ''

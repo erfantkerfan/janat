@@ -16,6 +16,7 @@ class CreateCompaniesTable extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('name')->comment('نام شرکت');
+            $table->text('undertaker')->comment('نام مسئول');
             $table->bigInteger('fund_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();

@@ -53,7 +53,7 @@
                     >
                         <md-table-row slot="md-table-row" slot-scope="{ item }">
                             <md-table-cell md-label="نام صندوق" md-sort-by="name">{{item.fund.name}}</md-table-cell>
-                            <md-table-cell md-label="شماره حساب" md-sort-by="email">{{item.acc_number}}</md-table-cell>
+                            <md-table-cell md-label="شماره حساب" md-sort-by="email">{{item.id}}</md-table-cell>
                             <md-table-cell md-label="تاریخ عضویت" md-sort-by="created_at">
                                 {{item.shamsiDate('joined_at').date}}
                             </md-table-cell>
@@ -138,6 +138,11 @@
                             </md-button>
                         </div>
                         <div v-if="funds.list.length > 0">
+                            <div v-if="editAccountState" class="md-layout">
+                                شماره حساب
+                                {{ newAccount.id }}
+                                <br>
+                            </div>
                             <md-field>
                                 <label>انتخاب صندوق:</label>
                                 <md-select v-model="newAccount.fund.id">
@@ -147,14 +152,13 @@
                                         :label="item.name"
                                         :value="item.id"
                                     >
-                                        {{ item.name }}
+                                        {{ item.name }} (ماهانه: {{ item.monthly_payment | currencyFormat }}{{ currencyUnit }})
                                     </md-option>
                                 </md-select>
                             </md-field>
-                            <md-field>
-                                <label>شماره حساب</label>
-                                <md-input v-model="newAccount.acc_number"/>
-                            </md-field>
+                            <div class="md-layout">
+                                <md-checkbox v-model="newAccount.payroll_deduction">کسر از حقوق</md-checkbox>
+                            </div>
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-40 md-form-label">
                                     تاریخ عضویت
@@ -213,7 +217,7 @@
 <script>
     import {User} from '@/models/User'
     import {Account} from '@/models/Account'
-    import {getFilterDropdownMixin, axiosMixin} from '@/mixins/Mixins'
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin} from '@/mixins/Mixins'
 
     export default {
         name: 'user-profile-card',
@@ -228,7 +232,7 @@
                 this.newAccount.fund_id = this.newAccount.fund.id
             }
         },
-        mixins: [getFilterDropdownMixin, axiosMixin],
+        mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
         props: {
             value: {
                 type: User,

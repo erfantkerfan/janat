@@ -159,7 +159,9 @@ return [
         'interest_rate' => 'نرخ کارمزد',
         'cost' => 'مبلغ',
         'paid_at' => 'تاریخ پرداخت',
-        'transaction_type' => 'نوع تراکنش'
+        'transaction_type' => 'نوع تراکنش',
+        'monthly_payment' => 'ماهانه',
+        'undertaker' => 'مسئول',
     ],
 
 ];

@@ -11,23 +11,23 @@
         <md-card-content>
             <div class="md-layout">
                 <div class="md-layout-item md-size-100">
-                    <md-field v-if="isCreateForm" class="md-invalid">
+                    <md-field v-if="isCreateForm()" class="md-invalid">
                         <label>کلمه عبور</label>
                         <md-input v-model="value.password" type="password" @input="updateUserModel"/>
                     </md-field>
-                    <md-field v-if="isCreateForm" class="md-invalid">
+                    <md-field v-if="isCreateForm()" class="md-invalid">
                         <label>تکرار عبور</label>
                         <md-input v-model="value.password_confirmation" type="password" @input="updateUserModel"/>
                     </md-field>
-                    <md-field v-if="!$auth.isSuperAdmin && !isCreateForm" class="md-invalid">
+                    <md-field v-if="!$auth.isSuperAdmin && !isCreateForm()" class="md-invalid">
                         <label>کلمه عبور فعلی</label>
                         <md-input v-model="password" type="password"/>
                     </md-field>
-                    <md-field v-if="!isCreateForm" class="md-invalid">
+                    <md-field v-if="!isCreateForm()" class="md-invalid">
                         <label>کلمه عبور جدید</label>
                         <md-input v-model="new_password" type="password"/>
                     </md-field>
-                    <md-field v-if="!isCreateForm" class="md-invalid">
+                    <md-field v-if="!isCreateForm()" class="md-invalid">
                         <label>تکرار کلمه عبور جدید</label>
                         <md-input v-model="confirm_password" type="password"/>
                     </md-field>
@@ -35,7 +35,7 @@
             </div>
             <loading :active.sync="value.loading" :is-full-page="false"></loading>
         </md-card-content>
-        <md-card-actions v-if="!isCreateForm">
+        <md-card-actions v-if="!isCreateForm()">
             <md-button @click="changePassword">
                 تغییر کلمه عبور
             </md-button>
