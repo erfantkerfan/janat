@@ -23,7 +23,7 @@
                             </div>
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
-                                    میزان شهریه
+                                    ماهانه
                                 </label>
                                 <div class="md-layout-item">
                                     {{ fund.monthly_payment | currencyFormat}}

@@ -7,7 +7,7 @@
                         <h4 class="title">نام صندوق: {{account.fund.name}}</h4>
                         <p class="category">
                             شماره حساب:
-                            {{account.acc_number}}
+                            {{account.id}}
                             -
                             تاریخ عضویت:
                             {{account.shamsiDate('joined_at').date}}

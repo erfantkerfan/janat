@@ -28,7 +28,6 @@ class StoreLoan extends FormRequest
             'loan_type_id' => ['required', 'integer', 'exists:loan_types,id'],
             'name' => ['required', 'string'],
             'loan_amount' => ['required', 'integer'],
-            'interest_rate' => ['required', 'integer'],
             'number_of_installments' => ['required', 'integer']
         ];
     }

@@ -53,6 +53,10 @@ class CreateUsersTable extends Migration
                 ->onupdate('cascade');
         });
         DB::statement("ALTER TABLE users ADD user_pic  MEDIUMBLOB AFTER l_name");
+//        DB::statement('ALTER TABLE users AUTO_INCREMENT = 1001;');
+//        DB::update("ALTER TABLE users AUTO_INCREMENT = 1001;");
+//        $prefix = DB::getTablePrefix();
+//        DB::update("ALTER TABLE ".$prefix."users AUTO_INCREMENT = 1000;");
     }
 
     /**

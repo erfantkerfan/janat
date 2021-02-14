@@ -17,6 +17,7 @@ class Fund extends Model
      */
     protected $fillable = [
         'name',
+        'undertaker',
         'balance',
         'monthly_payment'
     ];

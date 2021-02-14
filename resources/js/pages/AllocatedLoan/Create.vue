@@ -16,7 +16,7 @@
                                 <div class="md-layout">
                                     <div class="md-layout-item">
                                         <label class="md-layout-item md-size-15 md-form-label">
-                                            کد کاربر:
+                                            کد عضویت:
                                         </label>
                                         <div class="md-layout-item">
                                             <md-field class="md-invalid">
@@ -50,7 +50,7 @@
                                                     {{ item.fund.name }}
                                                 </md-table-cell>
                                                 <md-table-cell  md-label="شماره حساب">
-                                                    {{ item.acc_number }}
+                                                    {{ item.id }}
                                                 </md-table-cell>
                                                 <md-table-cell  md-label="تعداد وام های دریافت شده">
                                                     {{ item.allocated_loans.list.length }}
@@ -182,7 +182,7 @@
                                 {{ selectedUser.l_name }}
                                 <br>
                                 حساب:
-                                {{ selectedAccount.acc_number }}
+                                {{ selectedAccount.id }}
                                 <md-chip v-if="selectedAccount.fund.id !== selectedFund.id" class="md-primary">
                                     حساب کاربر متعلق به صندوق انتخاب شده نیست
                                 </md-chip>

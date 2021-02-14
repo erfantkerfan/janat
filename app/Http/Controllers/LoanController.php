@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateLoanRequest;
 use App\Loan;
+use App\Setting;
 use App\Traits\Filter;
 use App\Traits\CommonCRUD;
 use Illuminate\Http\Request;
@@ -58,15 +60,7 @@ class LoanController extends Controller
      */
     public function store(StoreLoan $request)
     {
-        $loanCalculator = new LoanCalculator();
-        $interestAmount = $loanCalculator->getInterestRate($request->get('loan_amount'),
-            $request->get('interest_rate'),
-            $request->get('number_of_installments'));
-        $roundedInstallmentsRate = $loanCalculator->getRoundedInstallmentsRate($request->get('loan_amount'),
-            $interestAmount,
-            $request->get('number_of_installments'));
-        $request->offsetSet('installment_rate', $roundedInstallmentsRate);
-        $request->offsetSet('interest_amount', $interestAmount);
+        $this->prepareLoanData($request);
         return $this->commonStore($request, Loan::class);
     }
 
@@ -85,13 +79,33 @@ class LoanController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param UpdateLoanRequest $request
      * @param Loan $loan
      * @return Response
      */
-    public function update(Request $request, Loan $loan)
+    public function update(UpdateLoanRequest $request, Loan $loan)
     {
+        $this->prepareLoanData($request);
         return $this->commonUpdate($request, $loan);
+    }
+
+    private function prepareLoanData(& $request) {
+        // LoanCalculator
+        $loanCalculator = new LoanCalculator();
+        $loanInterestPerMonth = Setting::where('name', 'loan_interest_per_month')->first()->value;
+        $interestRate = $loanCalculator->getInterestRate($request->get('loan_amount'),
+            $loanInterestPerMonth,
+            $request->get('number_of_installments'));
+        $interestAmount = $loanCalculator->getInterestAmount($loanInterestPerMonth,
+            $request->get('number_of_installments'));
+        $roundedInstallmentsRate = $loanCalculator->getRoundedInstallmentsRate($request->get('loan_amount'),
+            $interestAmount,
+            $request->get('number_of_installments'));
+
+        // $request offsetSet
+        $request->offsetSet('installment_rate', $roundedInstallmentsRate);
+        $request->offsetSet('interest_amount', $interestAmount);
+        $request->offsetSet('interest_rate', $interestRate);
     }
 
     /**

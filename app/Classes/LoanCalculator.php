@@ -8,7 +8,18 @@ use App\AllocatedLoan;
 
 class LoanCalculator
 {
-    public function getInterestRate($loanAmount, $interestRate, $numberOfInstallments) {
+    public function getInterestRate($loanAmount, $loanInterestPerMonth, $numberOfInstallments) {
+        $interestAmount = $loanInterestPerMonth*$numberOfInstallments;
+        $interestRate = ($interestAmount/$loanAmount) * 100;
+        return $interestRate;
+    }
+
+    public function getInterestAmount($loanInterestPerMonth, $numberOfInstallments) {
+        $interestAmount = $loanInterestPerMonth*$numberOfInstallments;
+        return $interestAmount;
+    }
+
+    public function getInterestRate_newType($loanAmount, $interestRate, $numberOfInstallments) {
         $calc1 = $interestRate/1200;
         $calc2 = (pow((1+$calc1), $numberOfInstallments));
         $installmentRate = ($loanAmount*$calc1*$calc2)/($calc2-1);
