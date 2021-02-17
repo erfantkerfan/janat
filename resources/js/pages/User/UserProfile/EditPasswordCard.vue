@@ -4,7 +4,10 @@
             <div class="card-icon">
                 <md-icon>vpn_key</md-icon>
             </div>
-            <h4 class="title">
+            <h4 v-if="isCreateForm()" class="title">
+                تعریف کلمه عبور
+            </h4>
+            <h4 v-else class="title">
                 ویرایش کلمه عبور
             </h4>
         </md-card-header>

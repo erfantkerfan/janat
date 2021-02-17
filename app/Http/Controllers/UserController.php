@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUser;
 use App\Traits\CommonCRUD;
 use App\User;
 use Exception;
@@ -51,10 +52,10 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreUser $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StoreUser $request)
     {
         return $this->commonStore($request, User::class);
     }
