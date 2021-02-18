@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUser;
+use App\Http\Requests\ResetUserPasswordRequest;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Traits\CommonCRUD;
 use App\User;
 use Exception;
@@ -52,10 +54,10 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreUser $request
+     * @param StoreUserRequest $request
      * @return Response
      */
-    public function store(StoreUser $request)
+    public function store(StoreUserRequest $request)
     {
         return $this->commonStore($request, User::class);
     }
@@ -161,11 +163,11 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param UpdateUserRequest $request
      * @param User $user
      * @return ResponseFactory|Response
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         return $this->commonUpdate($request, $user);
     }
@@ -173,11 +175,11 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param ResetUserPasswordRequest $request
      * @param User $user
      * @return ResponseFactory|Response
      */
-    public function resetPass(Request $request, User $user)
+    public function resetPass(ResetUserPasswordRequest $request, User $user)
     {
         $oldPass = $request->get('oldPass');
         $newPass = Hash::make($request->get('newPass'));
