@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Account;
+use App\Http\Requests\StoreAccountRequest;
 use App\Traits\CommonCRUD;
 use App\Traits\Filter;
 use Exception;
@@ -33,10 +34,10 @@ class AccountController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreAccountRequest $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StoreAccountRequest $request)
     {
         return $this->commonStore($request, Account::class);
     }

@@ -303,6 +303,7 @@
                 this.$emit('input', this.value)
             },
             showAddAccountDialog() {
+                this.newAccount = new Account()
                 this.editAccountState = false
                 this.createAccountShowDialog = true
             },
@@ -319,8 +320,12 @@
                 this.value.loading = true
                 this.updateUserModel()
                 this.newAccount.user_id = this.$route.params.id
+                if (!this.newAccount.payroll_deduction) {
+                    this.newAccount.payroll_deduction = false
+                }
                 this.newAccount.create()
                     .then((response) => {
+                        this.value.loading = false
                         that.$emit('update', this.value)
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
@@ -330,8 +335,8 @@
                         that.closeAccountDialog()
                     })
                     .catch((error) => {
+                        this.value.loading = false
                         this.axios_handleError(error)
-                        that.closeAccountDialog()
                     })
             },
             editAccount() {
@@ -341,6 +346,7 @@
                 this.newAccount.user_id = this.$route.params.id
                 this.newAccount.update()
                     .then((response) => {
+                        this.value.loading = false
                         that.$emit('update', this.value)
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
@@ -350,8 +356,8 @@
                         that.closeAccountDialog()
                     })
                     .catch((error) => {
+                        this.value.loading = false
                         this.axios_handleError(error)
-                        that.closeAccountDialog()
                     })
             },
             confirmRemove(item) {

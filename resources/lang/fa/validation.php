@@ -178,6 +178,10 @@ return [
         'company_id' => 'شرکت',
         'status_id' => 'وضعیت',
         'user_type_id' => 'نوع کاربر',
+        'fund_id' => 'صندوق',
+        'user_id' => 'کاربر',
+        'payroll_deduction' => 'کسر از حقوق',
+        'joined_at' => 'تاریخ عضویت',
     ],
 
 ];

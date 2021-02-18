@@ -37,13 +37,13 @@ const Auth = {
                             $store.getters['users/user'].loading = false;
                         })
                 },
-                setUser (user) {
+                setUser: (user) => {
                     $store.dispatch('users/setUser', user)
                 },
-                user () {
+                user: () => {
                     return $store.getters['users/user']
                 },
-                isSuperAdmin () {
+                isSuperAdmin: () => {
                     return $store.getters['users/user'].hasSuperAdminRole()
                 }
             }
