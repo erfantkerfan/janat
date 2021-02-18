@@ -205,8 +205,7 @@
                     })
                     .catch((error) => {
                         this.axios_handleError(error)
-                        that.user.loading = false;
-                        that.user = new User()
+                        that.user.loading = false
                     })
             }
         }

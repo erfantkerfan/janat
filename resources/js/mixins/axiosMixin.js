@@ -10,6 +10,8 @@ export default {
                 let statusCode = parseInt(error.response.status)
                 if (statusCode === 401) {
                     errorMessage = 'ابتدا وارد شوید.'
+                } else if (statusCode === 403) {
+                    errorMessage = 'دسترسی مجاز برای انجام این کار را ندارید.'
                 } else if (statusCode === 422) {
                     for (let property in error.response.data.errors) {
                         error.response.data.errors[property].forEach( (item) => {

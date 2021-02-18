@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2.5|^8.0",
         "ext-json": "*",
+        "anetwork/validation": "^2.2",
         "fideloper/proxy": "^4.4",
         "hekmatinasser/verta": "^1.11",
         "kirschbaum-development/eloquent-power-joins": "^2.3",

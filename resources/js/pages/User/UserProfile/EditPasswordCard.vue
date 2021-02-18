@@ -4,7 +4,10 @@
             <div class="card-icon">
                 <md-icon>vpn_key</md-icon>
             </div>
-            <h4 class="title">
+            <h4 v-if="isCreateForm()" class="title">
+                تعریف کلمه عبور
+            </h4>
+            <h4 v-else class="title">
                 ویرایش کلمه عبور
             </h4>
         </md-card-header>
@@ -29,7 +32,7 @@
                     </md-field>
                     <md-field v-if="!isCreateForm()" class="md-invalid">
                         <label>تکرار کلمه عبور جدید</label>
-                        <md-input v-model="confirm_password" type="password"/>
+                        <md-input v-model="confirm_new_password" type="password"/>
                     </md-field>
                 </div>
             </div>
@@ -65,9 +68,11 @@
         data: () => ({
             password: null,
             new_password: null,
-            confirm_password: null
+            confirm_new_password: null
         }),
-
+        created() {
+            console.log('$auth', this.$auth().isSuperAdmin())
+        },
         methods: {
             isCreateForm () {
                 return (this.$route.name === 'User.Create')
@@ -75,55 +80,9 @@
             updateUserModel() {
                 this.$emit('input', this.value)
             },
-            isValidPassword (password) {
-                if (!password) {
-                    this.$store.dispatch('alerts/fire', {
-                        icon: 'error',
-                        title: 'توجه',
-                        message: 'کلمه عبور را وارد کنید'
-                    });
-                    return false
-                }
-
-                if (password.length < 4) {
-                    this.$store.dispatch('alerts/fire', {
-                        icon: 'error',
-                        title: 'توجه',
-                        message: 'کلمه عبور باید بیش از سه کاراکتر باشد'
-                    });
-                    return false
-                }
-
-                return true
-            },
-            isValid () {
-                if (this.new_password !== this.confirm_password) {
-                    this.$store.dispatch('alerts/fire', {
-                        icon: 'error',
-                        title: 'توجه',
-                        message: 'کلمه عبور جدید و تکرار کلمه عبول جدید متفاوت هستند'
-                    });
-                    return false
-                }
-
-                if (
-                    (!this.logedInUser.hasSuperAdminRole() && (!this.isValidPassword(this.password) || !this.isValidPassword(this.new_password)))
-                    ||
-                    (this.logedInUser.hasSuperAdminRole() && !this.isValidPassword(this.new_password))
-                ) {
-                    return false
-                }
-
-                return true
-            },
             changePassword() {
-
-                if (!this.isValid()) {
-                    return false
-                }
-
                 let that = this
-                this.value.updatePassword(this.password, this.new_password)
+                this.value.updatePassword(this.password, this.new_password, this.confirm_new_password)
                     .then((response) => {
                         that.$emit('update')
                         that.$store.dispatch('alerts/fire', {

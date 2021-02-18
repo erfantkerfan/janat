@@ -109,7 +109,7 @@ class User extends Model {
         return this.crud.update(url, formData);
     }
 
-    updatePassword (oldPass, newPass, id, url) {
+    updatePassword (oldPass, newPass, confirmNewPassword, id, url) {
         if (!this.baseRoute) {
             return new Promise(() => {
                 throw new Error('baseRoute is not set');
@@ -125,7 +125,11 @@ class User extends Model {
         }
 
 
-        return this.crud.update(url, {oldPass, newPass});
+        return this.crud.update(url, {
+            'old_pass': oldPass,
+            'new_pass': newPass,
+            'confirm_new_password': confirmNewPassword
+        });
     }
 
     setFullName () {
