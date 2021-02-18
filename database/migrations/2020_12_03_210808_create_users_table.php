@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('SSN')->unique()->comment('کد ملی');
             $table->string('staff_code')->nullable()->unique()->comment('کد پرسنلی');
             $table->string('password')->comment('کلمه عبور');
-            $table->integer('salary')->default(0)->comment('حقوق ماهانه');
+            $table->integer('salary')->nullable()->default(0)->comment('حقوق ماهانه');
             $table->string('address')->nullable()->comment('آدرس');
             $table->string('phone')->nullable()->comment('تلفن ثابت');
             $table->string('mobile')->nullable()->comment('تلفن همراه');

@@ -26,7 +26,7 @@
                 md-label="حسابی یافت نشد"
             >
             </md-empty-state>
-            <md-card v-if="!isCreateForm() && value.accounts.list.length > 0">
+            <md-card v-if="!isCreateForm()">
                 <md-card-header class="md-card-header-text md-card-header-blue" style="text-align: right">
                     <div class="card-icon" style="padding: 0">
                         <md-button
@@ -36,7 +36,7 @@
                             ایجاد حساب جدید
                         </md-button>
                     </div>
-                    <div class="card-text">
+                    <div v-if="value.accounts.list.length > 0" class="card-text">
                         <h4 class="title">حساب های کاربر</h4>
                         <p class="category">
                             تعداد حساب های کاربر:
@@ -44,7 +44,7 @@
                         </p>
                     </div>
                 </md-card-header>
-                <md-card-content>
+                <md-card-content v-if="value.accounts.list.length > 0">
                     <md-table
                         :value="value.accounts.list"
                         :md-sort.sync="sortation.field"
@@ -303,6 +303,7 @@
                 this.$emit('input', this.value)
             },
             showAddAccountDialog() {
+                this.newAccount = new Account()
                 this.editAccountState = false
                 this.createAccountShowDialog = true
             },
@@ -319,8 +320,12 @@
                 this.value.loading = true
                 this.updateUserModel()
                 this.newAccount.user_id = this.$route.params.id
+                if (!this.newAccount.payroll_deduction) {
+                    this.newAccount.payroll_deduction = false
+                }
                 this.newAccount.create()
                     .then((response) => {
+                        this.value.loading = false
                         that.$emit('update', this.value)
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
@@ -330,8 +335,8 @@
                         that.closeAccountDialog()
                     })
                     .catch((error) => {
+                        this.value.loading = false
                         this.axios_handleError(error)
-                        that.closeAccountDialog()
                     })
             },
             editAccount() {
@@ -341,6 +346,7 @@
                 this.newAccount.user_id = this.$route.params.id
                 this.newAccount.update()
                     .then((response) => {
+                        this.value.loading = false
                         that.$emit('update', this.value)
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
@@ -350,8 +356,8 @@
                         that.closeAccountDialog()
                     })
                     .catch((error) => {
+                        this.value.loading = false
                         this.axios_handleError(error)
-                        that.closeAccountDialog()
                     })
             },
             confirmRemove(item) {
