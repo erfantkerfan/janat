@@ -13,11 +13,23 @@
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
-                                    نام
+                                    نام شرکت
                                 </label>
                                 <div class="md-layout-item">
                                     <md-field class="md-invalid">
                                         <md-input v-model="filterData.name" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    نام مسئول
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.undertaker" />
                                     </md-field>
                                 </div>
                             </div>
@@ -67,6 +79,9 @@
                         <md-table-row slot="md-table-row" slot-scope="{ item }">
                             <md-table-cell md-label="نام شرکت" md-sort-by="name">
                                 {{item.name}}
+                            </md-table-cell>
+                            <md-table-cell md-label="نام مسئول" md-sort-by="undertaker">
+                                {{item.undertaker}}
                             </md-table-cell>
                             <md-table-cell md-label="نام صندوق" md-sort-by="fund.name">
                                 {{item.fund.name}}
@@ -131,6 +146,7 @@
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 name: null,
+                undertaker: null,
                 fund_id: null,
             }
         }),
@@ -153,7 +169,8 @@
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
-                    name: this.filterData.name
+                    name: this.filterData.name,
+                    undertaker: this.filterData.undertaker
                 })
                     .then((response) => {
                         this.companies.loading = false

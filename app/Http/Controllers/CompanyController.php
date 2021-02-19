@@ -27,7 +27,8 @@ class CompanyController extends Controller
                 'fund'
             ],
             'filterKeys'=> [
-                'name'
+                'name',
+                'undertaker'
             ],
             'filterRelationIds'=> [
                 [
