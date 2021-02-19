@@ -12,7 +12,7 @@
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
+                                <label class="md-layout-item md-size-25 md-form-label">
                                     نام
                                 </label>
                                 <div class="md-layout-item">
@@ -24,7 +24,7 @@
                         </div>
                         <div class="md-layout-item">
                             <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
+                                <label class="md-layout-item md-size-25 md-form-label">
                                     نام خانوادگی
                                 </label>
                                 <div class="md-layout-item">
@@ -34,146 +34,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="md-layout">
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    کد عضویت
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.id" />
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    کد پرسنلی
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.staff_code" />
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    کد ملی
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.SSN" />
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="md-layout">
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    تلفن ثابت
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.phone" />
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    تلفن همراه
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.mobile" />
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    شرکت
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field>
-                                        <md-select v-model="filterData.company_id" name="pages">
-                                            <md-option
-                                                v-for="item in companies.list"
-                                                :key="item.id"
-                                                :label="item.name"
-                                                :value="item.id"
-                                            >
-                                                {{ item.name }}
-                                            </md-option>
-                                        </md-select>
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="md-layout">
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    وضعیت
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field>
-                                        <md-select v-model="filterData.status_id" name="pages">
-                                            <md-option
-                                                v-for="item in userStatuses.list"
-                                                :key="item.id"
-                                                :label="item.display_name"
-                                                :value="item.id"
-                                            >
-                                                {{ item.display_name }}
-                                            </md-option>
-                                        </md-select>
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    از تاریخ
-                                </label>
-                                <div class="md-layout-item">
-                                    <date-picker
-                                        v-model="filterData.createdSinceDate"
-                                        type="datetime"
-                                        :editable="true"
-                                        format="YYYY-MM-DD HH:mm:ss"
-                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    تا تاریخ
-                                </label>
-                                <div class="md-layout-item">
-                                    <date-picker
-                                        v-model="filterData.createdTillDate"
-                                        type="datetime"
-                                        :editable="true"
-                                        format="YYYY-MM-DD HH:mm:ss"
-                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="md-layout">
                         <div class="md-layout-item">
                             <md-field>
                                 <label>صندوق:</label>
@@ -188,6 +48,124 @@
                                     </md-option>
                                 </md-select>
                             </md-field>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-25 md-form-label">
+                                    کد عضویت
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.id" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-25 md-form-label">
+                                    کد پرسنلی
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.staff_code" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-25 md-form-label">
+                                    کد ملی
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.SSN" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-25 md-form-label">
+                                    تلفن ثابت
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.phone" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-25 md-form-label">
+                                    تلفن همراه
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.mobile" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <md-field>
+                                <label>شرکت:</label>
+                                <md-select v-model="filterData.company_id" name="pages">
+                                    <md-option
+                                        v-for="item in companies.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <md-field>
+                                <label>وضعیت:</label>
+                                <md-select v-model="filterData.status_id" name="pages">
+                                    <md-option
+                                        v-for="item in userStatuses.list"
+                                        :key="item.id"
+                                        :label="item.display_name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.display_name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                از تاریخ
+                            </label>
+                            <date-picker
+                                v-model="filterData.createdSinceDate"
+                                type="datetime"
+                                :editable="true"
+                                format="YYYY-MM-DD HH:mm:ss"
+                                display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                        </div>
+                        <div class="md-layout-item">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                تا تاریخ
+                            </label>
+                            <date-picker
+                                v-model="filterData.createdTillDate"
+                                type="datetime"
+                                :editable="true"
+                                format="YYYY-MM-DD HH:mm:ss"
+                                display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
                         </div>
                     </div>
                     <div class="text-right">
