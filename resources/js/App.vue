@@ -13,9 +13,10 @@ Vue.component('paginate', Paginate)
 
 export default {
     name: 'App',
-    props: ['user'],
+    props: ['user', 'settings'],
     created() {
         this.$auth().setUser(this.user)
+        this.$store.commit('settings/SET_SETTINGS', this.settings)
     }
 };
 </script>

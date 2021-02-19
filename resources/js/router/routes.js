@@ -58,6 +58,9 @@ import TransactionForm from "@/pages/Transaction/Form.vue";
 // PeriodicProcesses PaymentOfPayrollDeductions
 import PaymentOfPayrollDeductions from "@/pages/PeriodicProcesses/PaymentOfPayrollDeductions";
 
+// PeriodicProcesses PaymentOfPayrollDeductions
+import Settings from "@/pages/Settings/Settings";
+
 // Pages
 import RtlSupport from "@/pages/Dashboard/Pages/RtlSupport.vue";
 import Login from "@/pages/Dashboard/Pages/Login.vue";
@@ -392,7 +395,23 @@ let transactionMenu = {
     ]
 };
 
-
+let settingMenu = {
+    path: "/setting",
+    name: "Setting",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "/setting",
+            name: "Setting",
+            components: {default: Settings},
+            meta: {
+                rtlActive: true,
+                displayName: "لیست تراکنش ها",
+                middleware: auth
+            }
+        }
+    ]
+};
 
 
 let componentsMenu = {
@@ -518,7 +537,8 @@ const routes = [
     transactionMenu,
     periodicProcessesMenu,
     componentsMenu,
-    authPages
+    authPages,
+    settingMenu
 ];
 
 export default routes;

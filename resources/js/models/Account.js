@@ -13,7 +13,14 @@ class Account extends Model {
             { key: 'id' },
             { key: 'user_id' },
             { key: 'user' },
-            { key: 'payroll_deduction' },
+            {
+                key: 'payroll_deduction',
+                value: function (itemVal) {
+                    return !!itemVal;
+                }
+            },
+
+
             // {
             //     key: 'user',
             //     relatedModel: User
