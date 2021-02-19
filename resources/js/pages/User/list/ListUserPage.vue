@@ -34,6 +34,32 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    کد عضویت
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.id" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    کد پرسنلی
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.staff_code" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
@@ -200,6 +226,12 @@
                             </md-field>
                         </md-table-toolbar>
                         <md-table-row v-if="!users.loading && users.list.length > 0" slot="md-table-row" slot-scope="{ item }">
+                            <md-table-cell md-label="کد عضویت" md-sort-by="id">
+                                {{item.id}}
+                            </md-table-cell>
+                            <md-table-cell md-label="کد پرسنلی" md-sort-by="staff_code">
+                                {{item.staff_code}}
+                            </md-table-cell>
                             <md-table-cell md-label="نام" md-sort-by="f_name">
                                 {{item.f_name}}
                             </md-table-cell>
@@ -268,6 +300,8 @@
                 f_name: null,
                 l_name: null,
                 phone: null,
+                id: null,
+                staff_code: null,
                 SSN: null,
                 status_id: null,
                 company_id: null,
@@ -299,6 +333,8 @@
                     f_name: this.filterData.f_name,
                     l_name: this.filterData.l_name,
                     phone: this.filterData.phone,
+                    id: this.filterData.id,
+                    staff_code: this.filterData.staff_code,
                     SSN: this.filterData.SSN,
                     fund_id: (this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     status_id: (this.filterData.status_id === 0) ? null: this.filterData.status_id,
