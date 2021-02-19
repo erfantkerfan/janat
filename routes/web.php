@@ -11,19 +11,20 @@
 |
 */
 
-use App\Http\Controllers\AllocatedLoanController;
-use App\Http\Controllers\AllocatedLoanInstallmentController;
 use App\Http\Controllers\FundController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanController;
-use App\Http\Controllers\LoanTypeController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\TransactionStatusController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\UserStatusController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\LoanTypeController;
 use App\Http\Controllers\UserTypeController;
+use App\Http\Controllers\UserStatusController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\AllocatedLoanController;
+use App\Http\Controllers\TransactionStatusController;
+use App\Http\Controllers\AllocatedLoanInstallmentController;
 
 Route::get('/', [HomeController::class, 'welcome'])->name('web.welcome');
 
@@ -51,6 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('accounts', '\\'. AccountController::class);
         Route::resource('transactions', '\\'. TransactionController::class);
         Route::resource('transaction_statuses', '\\'. TransactionStatusController::class);
+        Route::resource('settings', '\\'. SettingController::class);
     });
 });
 

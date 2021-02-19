@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Company;
 use App\Fund;
 use App\Loan;
+use App\Setting;
 use App\Traits\Filter;
 use App\User;
 use Illuminate\Http\Request;
@@ -57,7 +58,8 @@ class HomeController extends Controller
         $user = User::with(['accounts.fund', 'company', 'status', 'roles'])
             ->find($request->user()->id)
             ->makeHidden('user_pic');
-        return view('dashboard', compact('user'));
+        $settings = Setting::get();
+        return view('dashboard', compact('user', 'settings'));
     }
 
     public function dashboardData() {

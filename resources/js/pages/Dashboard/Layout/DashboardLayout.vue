@@ -73,6 +73,13 @@
                         path: '/transactions/list',
                       }"
                 />
+                <sidebar-item
+                    :link="{
+                        name: 'تنظیمات',
+                        icon: 'settings',
+                        path: '/setting',
+                      }"
+                />
 
 
                 <sidebar-item
