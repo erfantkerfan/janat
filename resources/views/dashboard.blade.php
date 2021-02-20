@@ -91,7 +91,9 @@
 {{--<!-- End Google Tag Manager (noscript) -->--}}
 
 <div id="dashboard_app">
-    <app :user="{{ json_encode($user) }}"></app>
+    <app :user="{{ json_encode($user) }}"
+         :settings="{{ json_encode($settings) }}"
+    ></app>
 </div>
 <!-- built files will be auto injected -->
 

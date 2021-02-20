@@ -68,7 +68,7 @@
                                 <md-button
                                     class="md-icon-button md-raised md-round md-danger"
                                     style="margin: .2rem;"
-                                    @click="confirmRemove(item)"
+                                    @click="confirmRemoveAccount(item)"
                                 >
                                     <md-icon>delete</md-icon>
                                 </md-button>
@@ -360,7 +360,7 @@
                         this.axios_handleError(error)
                     })
             },
-            confirmRemove(item) {
+            confirmRemoveAccount(item) {
                 let that = this
                 this.$confirm(
                     {
@@ -371,13 +371,13 @@
                         },
                         callback: confirm => {
                             if (confirm) {
-                                that.remove(item)
+                                that.removeAccount(item)
                             }
                         }
                     }
                 )
             },
-            remove(item) {
+            removeAccount(item) {
                 item.loading = true;
                 let that = this;
                 item.delete()
@@ -396,7 +396,6 @@
                         item.loading = false;
                     });
             },
-
             getUserPic() {
                 this.value.getUserPic(this.$route.params.id)
                     .then((response) => {

@@ -29,8 +29,10 @@ class UserController extends Controller
     {
         $config = [
             'filterKeys'=> [
+                'id',
                 'f_name',
                 'l_name',
+                'staff_code',
                 'SSN',
                 'phone',
                 'mobile',
@@ -44,7 +46,7 @@ class UserController extends Controller
                 ]
             ],
             'select'=> [
-                'id', 'f_name','l_name','SSN', 'phone', 'mobile', 'created_at'
+                'id', 'f_name','l_name','SSN', 'staff_code', 'phone', 'mobile', 'created_at'
             ]
         ];
 

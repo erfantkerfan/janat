@@ -2,8 +2,11 @@ import persianJs from 'persianjs'
 
 export default {
     data: () => ({
-        currencyUnit: 'ریال',
+        currencyUnit: '',
     }),
+    created () {
+        this.currencyUnit = this.$store.getters['settings/currencyUnit']
+    },
     filters: {
         currencyFormat: function (value) {
             if (!value) return ''
