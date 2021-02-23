@@ -58,7 +58,10 @@ import TransactionForm from "@/pages/Transaction/Form.vue";
 // PeriodicProcesses PaymentOfPayrollDeductions
 import PaymentOfPayrollDeductions from "@/pages/PeriodicProcesses/PaymentOfPayrollDeductions";
 
-// PeriodicProcesses PaymentOfPayrollDeductions
+// PeriodicProcesses PayFundMonthlyPaymentByPayrollDeduction
+import PayFundMonthlyPaymentByPayrollDeduction from "@/pages/PeriodicProcesses/PayFundMonthlyPaymentByPayrollDeduction";
+
+// Settings
 import Settings from "@/pages/Settings/Settings";
 
 // Pages
@@ -353,6 +356,16 @@ let periodicProcessesMenu = {
                 displayName: "پرداخت اقساط کسر از حقوق",
                 middleware: auth
             }
+        },
+        {
+            path: "pay_fund_monthly_payment_by_payroll_deduction",
+            name: "PayFundMonthlyPaymentByPayrollDeduction",
+            components: {default: PayFundMonthlyPaymentByPayrollDeduction},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداخت ماهانه صندوق به صورت کسر از حقوق",
+                middleware: auth
+            }
         }
     ]
 };
@@ -412,7 +425,6 @@ let settingMenu = {
         }
     ]
 };
-
 
 let componentsMenu = {
     path: "/components",

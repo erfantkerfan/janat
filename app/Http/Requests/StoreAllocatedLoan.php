@@ -26,7 +26,9 @@ class StoreAllocatedLoan extends FormRequest
         return [
             'account_id' => ['required', 'integer', 'exists:accounts,id'],
             'loan_id' => ['required', 'integer', 'exists:loans,id'],
-            'payroll_deduction' => ['required', 'boolean']
+            'payroll_deduction' => ['required', 'boolean'],
+            'paid_at' => ['required', 'date_format:Y-m-d H:i:s'],
+            'manager_comment' => ['sometimes', 'nullable', 'string']
         ];
     }
 }
