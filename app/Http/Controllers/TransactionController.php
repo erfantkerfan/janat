@@ -82,10 +82,11 @@ class TransactionController extends Controller
         DB::beginTransaction();
         $transactionStatus = TransactionStatus::findOrFail($request->get('transaction_status_id'));
         $cost = $request->get('cost');
-        $paid_as_payroll_deduction = false;
+        $paid_as_payroll_deduction = 0;
         if ($request->has('paid_as_payroll_deduction') && $request->get('paid_as_payroll_deduction') == 1) {
-            $paid_as_payroll_deduction = true;
+            $paid_as_payroll_deduction = 1;
         }
+
         $transaction = Transaction::create([
             'cost' => $cost,
             'manager_comment' => $request->get('manager_comment'),
@@ -95,9 +96,13 @@ class TransactionController extends Controller
             'deadline_at' => $request->get('deadline_at'),
             'paid_at' => $request->get('paid_at')
         ]);
+
+//        DB::commit();
+//        return;
+
         $dBTransactionValidator = $this->attachTransactionAndChangeFundBalance($request, $transaction);
 
-        if ($dBTransactionValidator->fails()) {
+        if ($dBTransactionValidator === false) {
             DB::rollBack();
             return $this->jsonResponseValidateError([
                 'errors' => $dBTransactionValidator->errors()
@@ -134,10 +139,9 @@ class TransactionController extends Controller
         }
 
         $account = Account::findOrFail($request->get('account_id'));
-        $user = $account->user()->first();
         $fund = $account->fund()->first();
         $cost = $request->get('cost');
-        $transaction->userPayers()->attach($user, ['cost'=> $cost]);
+        $transaction->accountPayers()->attach($account, ['cost'=> $cost]);
         $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
         $fund->deposit($cost);
 
@@ -163,15 +167,21 @@ class TransactionController extends Controller
     }
 
     private function fundPayLoan(Request $request, Transaction $transaction) {
-        Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'allocated_loan_id' => 'required|exists:allocated_loans,id'
-        ])->validate();
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
+
         $allocatedLoan = AllocatedLoan::findOrFail($request->get('allocated_loan_id'));
         $fund = $allocatedLoan->account->fund()->first();
         $cost = $request->get('cost');
         $transaction->fundPayers()->attach($fund, ['cost'=> $cost]);
         $transaction->allocatedLoanRecipients()->attach($allocatedLoan, ['cost'=> $cost]);
         $fund->withdrawal($cost);
+
+        return $validator;
     }
 
     private function userPayInstallment(Request $request, Transaction $transaction) {

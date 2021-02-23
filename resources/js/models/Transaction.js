@@ -80,6 +80,8 @@ class Transaction extends Model {
             return 'شرکت'
         } else if (modelType === 'App\\User') {
             return 'شخص'
+        } else if (modelType === 'App\\Account') {
+            return 'شماره حساب'
         } else if (modelType === 'App\\Fund') {
             return 'صندوق'
         } else if (modelType === 'App\\AllocatedLoan') {
@@ -92,6 +94,8 @@ class Transaction extends Model {
     getRelatedModelLabel(modelType, modelValue) {
         if (modelType === 'App\\Company') {
             return modelValue.name
+        } else if (modelType === 'App\\Account') {
+            return modelValue.id
         } else if (modelType === 'App\\User') {
             return modelValue.f_name + ' ' + modelValue.l_name
         } else if (modelType === 'App\\Fund') {
@@ -116,6 +120,8 @@ class Transaction extends Model {
             return '/company/'+modelValue.id
         } else if (modelType === 'App\\User') {
             return '/user/'+modelValue.id
+        } else if (modelType === 'App\\Account') {
+            return '/account/'+modelValue.id
         } else if (modelType === 'App\\Fund') {
             return '/fund/'+modelValue.id
         } else if (modelType === 'App\\AllocatedLoan') {

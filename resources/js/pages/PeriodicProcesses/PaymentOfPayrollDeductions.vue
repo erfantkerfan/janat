@@ -165,7 +165,8 @@
                         });
                     }
                 })
-                .catch( () => {
+                .catch( (error) => {
+                    this.axios_handleError(error)
                     this.allocatedLoans.loading = false
                 })
             },

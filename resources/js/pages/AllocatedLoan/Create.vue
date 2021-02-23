@@ -195,6 +195,41 @@
                                 <br>
                                 <md-checkbox v-model="allocatedLoan.payroll_deduction">پرداخت اقساط به صورت کسر از حقوق</md-checkbox>
                                 <br>
+                                <md-card>
+                                    <md-card-header class="md-card-header-icon md-card-header-green">
+                                        <div class="card-icon">
+                                            <md-icon>payments</md-icon>
+                                        </div>
+                                        <h4 class="title">
+                                            اطلاعات تراکنش
+                                        </h4>
+                                    </md-card-header>
+                                    <md-card-content>
+                                        <div class="md-layout">
+                                            <label class="md-layout-item md-size-15 md-form-label">
+                                                توضیحات مدیر
+                                            </label>
+                                            <div class="md-layout-item">
+                                                <md-field class="md-invalid">
+                                                    <md-textarea v-model="managerComment" />
+                                                </md-field>
+                                            </div>
+                                        </div>
+                                        <div class="md-layout">
+                                            <label class="md-layout-item md-size-15 md-form-label">
+                                                تاریخ پرداخت
+                                            </label>
+                                            <div class="md-layout-item">
+                                                <date-picker
+                                                    v-model="paidAt"
+                                                    type="datetime"
+                                                    :editable="true"
+                                                    format="YYYY-MM-DD HH:mm:ss"
+                                                    display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                            </div>
+                                        </div>
+                                    </md-card-content>
+                                </md-card>
                                 <md-button class="md-dense md-raised md-success" @click="createAllocatedLoan">
                                     ثبت
                                 </md-button>
@@ -227,6 +262,8 @@
         components: { StatsCard, ListPagination },
         mixins: [priceFilterMixin, axiosMixin],
         data: () => ({
+            paidAt: null,
+            managerComment: null,
             targetUserId: null,
             selectedUser: new User(),
             selectedFund: null,
@@ -313,7 +350,11 @@
                 this.allocatedLoan.create({
                     account_id: this.selectedAccount.id,
                     loan_id: this.selectedLoan.id,
-                    payroll_deduction: this.allocatedLoan.payroll_deduction
+                    paid_at: this.paidAt,
+                    manager_comment: this.managerComment,
+                    payroll_deduction: this.allocatedLoan.payroll_deduction,
+                    payroll_deduction: this.allocatedLoan.payroll_deduction,
+                    payroll_deduction: this.allocatedLoan.payroll_deduction,
                 })
                     .then((response) => {
                         that.allocatedLoan.loading = false;
@@ -328,7 +369,6 @@
                     .catch((error) => {
                         this.axios_handleError(error)
                         that.allocatedLoan.loading = false;
-                        that.allocatedLoan = new AllocatedLoan()
                     })
             },
 

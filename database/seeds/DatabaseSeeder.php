@@ -495,7 +495,7 @@ class FakeTransaction extends Seeder {
     }
 
     private function userChargeFund($faker, $transactionStatus) {
-        $user = FakeUser::getRandomObject();
+        $account = FakeAccount::getRandomObject();
         $fund = FakeFund::getRandomObject();
         $cost = $fund->monthly_payment;
         $transaction = Transaction::create([
@@ -507,7 +507,7 @@ class FakeTransaction extends Seeder {
             'paid_at' => $faker->dateTime(),
             'created_at' => $faker->dateTime()
         ]);
-        $transaction->userPayers()->attach($user, ['cost'=> $cost]);
+        $transaction->accountPayers()->attach($account, ['cost'=> $cost]);
         $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
     }
 
