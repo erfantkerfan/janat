@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('loans', '\\'. LoanController::class);
         Route::resource('loan_types', '\\'. LoanTypeController::class);
         Route::get('allocated_loans/pay_periodic_payroll_deduction', [AllocatedLoanController::class, 'payPeriodicPayrollDeduction']);
+        Route::get('account/pay_periodic_payroll_deduction_for_charge_fund', [AccountController::class, 'payPeriodicPayrollDeductionForChargeFund']);
         Route::resource('allocated_loans', '\\'. AllocatedLoanController::class);
         Route::resource('allocated_loan_Installments', '\\'. AllocatedLoanInstallmentController::class);
         Route::resource('accounts', '\\'. AccountController::class);

@@ -115,6 +115,8 @@ class AllocatedLoanController extends Controller
         DB::beginTransaction();
         $account = Account::findOrFail($request->get('account_id'));
         $loan = Loan::findOrFail($request->get('loan_id'));
+
+        // create allocated loan
         $createdAllocatedLoan = AllocatedLoan::create([
             'account_id' => $account->id,
             'loan_id' => $loan->id,
@@ -126,11 +128,21 @@ class AllocatedLoanController extends Controller
             'payroll_deduction' => $request->get('payroll_deduction')
         ]);
 
-        // fund withdrawal
-        $fund = $account->fund()->first();
-        $withdrawalResult = $fund->withdrawal($loan->loan_amount);
+        // create transaction and fund withdrawal
+        $storeTransactionRequest = new StoreTransaction();
+        $storeTransactionRequest->replace([
+            'cost' => $loan->loan_amount,
+            'transaction_status_id' => 1,
+            'paid_as_payroll_deduction' => 0,
+            'paid_at' => $request->get('paid_at'),
+            'manager_comment' => $request->get('manager_comment'),
+            'transaction_type' => 'fund_pay_loan',
+            'allocated_loan_id' => $createdAllocatedLoan->id
+        ]);
+        $transactionController = new TransactionController();
+        $storeTransactionResult = $transactionController->store($storeTransactionRequest);
 
-        if ($createdAllocatedLoan && $withdrawalResult) {
+        if ($createdAllocatedLoan && $storeTransactionResult->getStatusCode() === 200) {
             DB::commit();
             return $this->show($createdAllocatedLoan->id);
         } else {
@@ -209,11 +221,11 @@ class AllocatedLoanController extends Controller
         $targetAllocatedLoan = AllocatedLoan::with('account.user:id,f_name,l_name', 'loan', 'loan.fund', 'installments')
             ->notSettled()
             ->where('payroll_deduction', '=', '1')
-            ->lastPaymentNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
+            ->lastPayrollDeductionForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
 
         $hasProblem = false;
-        $targetAllocatedLoan->each(function($allocatedLoanItem, $key) {
+        foreach ($targetAllocatedLoan as $allocatedLoanItem) {
             $notSettledInstallment = $this->getNotSettledInstallment($allocatedLoanItem);
 
             if (isset($notSettledInstallment)) {
@@ -234,7 +246,7 @@ class AllocatedLoanController extends Controller
             } else {
                 $hasProblem = true;
             }
-        });
+        }
 
         if (!$hasProblem) {
             $setAppends = ['is_settled', 'last_payment'];

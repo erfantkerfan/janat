@@ -22,6 +22,7 @@ class Transaction extends Model
         'manager_comment',
         'user_comment',
         'transaction_status_id',
+        'paid_as_payroll_deduction',
         'parent_transaction_id'
     ];
 
@@ -38,6 +39,11 @@ class Transaction extends Model
     public function userPayers()
     {
         return $this->morphedByMany(User::class, 'transaction_payers');
+    }
+
+    public function accountPayers()
+    {
+        return $this->morphedByMany(Account::class, 'transaction_payers');
     }
 
     public function companyPayers()

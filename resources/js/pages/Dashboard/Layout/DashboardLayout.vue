@@ -46,9 +46,16 @@
                 <sidebar-item :opened="false" :link="{ name: 'فرایند های دوره ای', icon: '360' }">
                     <sidebar-item
                         :link="{
-                        name: 'پرداخت کسر از حقوق ها',
+                        name: 'پرداخت اقساط کسر از حقوق',
                         icon: 'how_to_vote',
                         path: '/periodic_processes/payment_of_payroll_deductions',
+                      }"
+                    />
+                    <sidebar-item
+                        :link="{
+                        name: 'پرداخت ماهانه کسر از حقوق',
+                        icon: 'how_to_vote',
+                        path: '/periodic_processes/pay_fund_monthly_payment_by_payroll_deduction',
                       }"
                     />
                 </sidebar-item>
