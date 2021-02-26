@@ -190,8 +190,7 @@ class FundTableSeeder extends Seeder {
     {
         DBAssistant::resetTable('funds');
         Fund::create([
-            'name' => 'صندوق قرض الحسنه دانشگاه شهید عباسپور',
-            'monthly_payment' => 10000
+            'name' => 'صندوق قرض الحسنه دانشگاه شهید عباسپور'
         ]);
     }
 }
@@ -261,7 +260,6 @@ class FakeFund extends Seeder {
                 'name' => $faker->companyField(),
                 'undertaker' => $faker->firstName.' '.$faker->lastName,
                 'balance' => $faker->numberBetween(10000000, 50000000),
-                'monthly_payment' => $faker->numberBetween(15000, 20000),
                 'created_at' => $faker->dateTime()
             ]);
         }
@@ -356,6 +354,7 @@ class FakeAccount extends Seeder {
             Account::create([
                 'fund_id' => $fund->id,
                 'user_id' => $user->id,
+                'monthly_payment' => $faker->numberBetween(15000, 20000),
                 'payroll_deduction' => rand(0, 1),
                 'joined_at' => $faker->dateTime(),
                 'created_at' => $faker->dateTime()
@@ -497,7 +496,7 @@ class FakeTransaction extends Seeder {
     private function userChargeFund($faker, $transactionStatus) {
         $account = FakeAccount::getRandomObject();
         $fund = FakeFund::getRandomObject();
-        $cost = $fund->monthly_payment;
+        $cost = $account->monthly_payment;
         $transaction = Transaction::create([
             'cost' => $cost,
             'manager_comment' => $faker->paragraph,
@@ -514,7 +513,7 @@ class FakeTransaction extends Seeder {
     private function companyChargeFund($faker, $transactionStatus) {
         $company = FakeCompany::getRandomObject();
         $fund = FakeFund::getRandomObject();
-        $cost = $fund->monthly_payment;
+        $cost = rand(1000, 10000);
         $transaction = Transaction::create([
             'cost' => $cost,
             'manager_comment' => $faker->paragraph,

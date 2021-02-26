@@ -22,18 +22,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
-                                    پرداخت ماهیانه
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.monthly_payment" />
-                                    </md-field>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="md-layout">
                         <div class="md-layout-item">
@@ -106,9 +94,6 @@
                             <md-table-cell md-label="نام صندوق" md-sort-by="name">
                                 {{item.name}}
                             </md-table-cell>
-                            <md-table-cell :md-label="'پرداخت ماهیانه '+'(' + currencyUnit + ')'" md-sort-by="monthly_payment">
-                                {{ item.monthly_payment | currencyFormat }}
-                            </md-table-cell>
                             <md-table-cell :md-label="'موجودی '+'(' + currencyUnit + ')'" md-sort-by="balance">
                                 {{ item.balance | currencyFormat }}
                             </md-table-cell>
@@ -168,7 +153,6 @@
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 name: null,
-                monthly_payment: null,
                 createdSinceDate: null,
                 createdTillDate: null
             }
@@ -191,7 +175,6 @@
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     name: this.filterData.name,
-                    monthly_payment: this.filterData.monthly_payment,
                     createdSinceDate: this.filterData.createdSinceDate,
                     createdTillDate: this.filterData.createdTillDate
                 })

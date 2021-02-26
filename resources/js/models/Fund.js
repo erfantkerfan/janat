@@ -11,7 +11,6 @@ class Fund extends Model {
             { key: 'name' },
             { key: 'undertaker' },
             { key: 'balance' },
-            { key: 'monthly_payment' },
             { key: 'created_at' },
             { key: 'updated_at' }
         ])

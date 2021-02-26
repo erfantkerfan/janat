@@ -34,22 +34,6 @@
                                 </md-field>
                             </div>
                         </div>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-25 md-form-label">
-                                ماهانه
-                                ({{ currencyUnit }})
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="fund.monthly_payment"/>
-                                </md-field>
-                                {{ fund.monthly_payment | currencyFormat}}
-                            </div>
-                            <md-tooltip md-direction="top">
-                                {{ digitsToWords(fund.monthly_payment) }}
-                            </md-tooltip>
-                        </div>
-                        <hr>
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-25 md-form-label">
                                 موجودی صندوق
