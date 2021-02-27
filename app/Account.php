@@ -19,6 +19,7 @@ class Account extends Model
     protected $fillable = [
         'user_id',
         'fund_id',
+        'monthly_payment',
         'payroll_deduction',
         'joined_at'
     ];

@@ -17,15 +17,8 @@ class CreateCompaniesTable extends Migration
             $table->bigIncrements('id');
             $table->text('name')->comment('نام شرکت');
             $table->text('undertaker')->comment('نام مسئول');
-            $table->bigInteger('fund_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreign('fund_id')
-                ->references('id')
-                ->on('funds')
-                ->onDelete('cascade')
-                ->onupdate('cascade');
         });
     }
 

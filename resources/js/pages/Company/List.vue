@@ -34,21 +34,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="md-layout-item">
-                            <md-field>
-                                <label>صندوق:</label>
-                                <md-select v-model="filterData.fund_id" name="pages">
-                                    <md-option
-                                        v-for="item in funds.list"
-                                        :key="item.id"
-                                        :label="item.name"
-                                        :value="item.id"
-                                    >
-                                        {{ item.name }}
-                                    </md-option>
-                                </md-select>
-                            </md-field>
-                        </div>
                     </div>
                     <md-table
                         :value="companies.list"
@@ -119,7 +104,6 @@
 
 <script>
 
-    import {Fund, FundList} from '@/models/Fund'
     import {CompanyList} from '@/models/Company'
     import ListPagination from '@/components/ListPagination'
     import { axiosMixin } from '@/mixins/Mixins'
@@ -137,7 +121,6 @@
         },
         data: () => ({
             companies: new CompanyList(),
-            funds: new FundList(),
             filterData: {
                 sortation: {
                     field: "created_at",
@@ -146,13 +129,11 @@
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 name: null,
-                undertaker: null,
-                fund_id: null,
+                undertaker: null
             }
         }),
         mounted() {
             this.getList()
-            this.getfunds()
         },
         methods: {
             clickCallback (data) {
@@ -168,7 +149,6 @@
                     sortation_field: this.filterData.sortation.field,
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
-                    fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     name: this.filterData.name,
                     undertaker: this.filterData.undertaker
                 })
@@ -180,21 +160,6 @@
                         this.axios_handleError(error)
                         this.companies.loading = false
                         this.companies = new CompanyList()
-                    })
-            },
-            getfunds () {
-                let that = this
-                this.funds.loading = true;
-                this.funds.fetch()
-                    .then((response) => {
-                        that.funds.loading = false;
-                        that.funds = new FundList(response.data.data, response.data)
-                        this.funds.addItem(new Fund({id: 0, name: ''}))
-                    })
-                    .catch((error) => {
-                        this.axios_handleError(error)
-                        that.funds.loading = false;
-                        that.funds = new FundList()
                     })
             },
             confirmRemove(item) {

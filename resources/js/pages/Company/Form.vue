@@ -45,7 +45,7 @@
                             </div>
                         </div>
 
-                        <loading :active.sync="company.loading || funds.loading" :is-full-page="false"></loading>
+                        <loading :active.sync="company.loading" :is-full-page="false"></loading>
 
                     </md-card-content>
 
@@ -78,7 +78,6 @@
 </template>
 
 <script>
-    import {FundList} from '@/models/Fund'
     import {Company} from '@/models/Company'
     import { axiosMixin } from '@/mixins/Mixins'
 
@@ -91,12 +90,10 @@
         },
         mixins: [axiosMixin],
         data: () => ({
-            company: new Company(),
-            funds: new FundList()
+            company: new Company()
         }),
         mounted() {
             this.getData();
-            this.getfunds();
         },
         methods: {
             isCreateForm () {
@@ -116,20 +113,6 @@
                         this.axios_handleError(error)
                         this.company.loading = false;
                         this.company = new Company()
-                    })
-            },
-            getfunds () {
-                let that = this
-                this.funds.loading = true;
-                this.funds.fetch()
-                    .then((response) => {
-                        that.funds.loading = false;
-                        that.funds = new FundList(response.data.data, response.data)
-                    })
-                    .catch((error) => {
-                        this.axios_handleError(error)
-                        that.funds.loading = false;
-                        that.funds = new FundList()
                     })
             },
             updateCompany () {
@@ -152,7 +135,6 @@
                     .catch((error) => {
                         this.axios_handleError(error)
                         that.company.loading = false;
-                        that.company = new Company()
                     })
             },
             createCompany () {
@@ -174,7 +156,6 @@
                     .catch((error) => {
                         this.axios_handleError(error)
                         that.company.loading = false;
-                        that.company = new Company()
                     })
             }
         }

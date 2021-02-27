@@ -25,6 +25,7 @@ class StoreAccountRequest extends FormRequest
     {
         return [
             'joined_at' => ['required', 'date'],
+            'monthly_payment' => ['required', 'integer'],
             'payroll_deduction' => ['sometimes', 'nullable', 'boolean'],
             'fund_id' => ['required', 'integer', 'exists:funds,id'],
             'user_id' => ['required', 'integer', 'exists:users,id']
