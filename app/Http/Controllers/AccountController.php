@@ -26,6 +26,10 @@ class AccountController extends Controller
     public function index(Request $request)
     {
         $config = [
+            'filterKeys'=> [
+                'payroll_deduction',
+                'monthly_payment'
+            ],
             'eagerLoads'=> [
                 'user:id,f_name,l_name', 'fund', 'allocatedLoans'
             ]
@@ -97,12 +101,11 @@ class AccountController extends Controller
 
         $hasProblem = false;
         foreach ($targetAccount as $accountItem) {
-            $fund = $accountItem->fund()->first();
             $request = new StoreTransaction();
             $request->replace([
                 'transaction_status_id' => 1,
                 'paid_as_payroll_deduction' => 1,
-                'cost' => $fund->monthly_payment,
+                'cost' => $accountItem->monthly_payment,
                 'paid_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'transaction_type' => 'user_charge_fund',
                 'account_id' => $accountItem->id

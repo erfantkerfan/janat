@@ -61,7 +61,7 @@
                 </sidebar-item>
                 <sidebar-item
                     :link="{
-                        name: 'مدیریت کاربران',
+                        name: 'مدیریت اعضا',
                         icon: 'groups',
                         path: '/user/list',
                       }"

@@ -17,6 +17,7 @@ class CreateAccountsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('fund_id')->unsigned();
+            $table->integer('monthly_payment')->default(0)->comment('شهریه صندوق (ماهانه)');
             $table->boolean('payroll_deduction')->default(false)->comment('پرداخت شهریه به صورت کسر از حقوق');
             $table->timestamp('joined_at')->nullable()->comment('زمان عضویت در صندوق');
             $table->timestamps();

@@ -25,8 +25,7 @@ class StoreFund extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'undertaker' => ['required', 'string'],
-            'monthly_payment' => ['required', 'integer'],
+            'undertaker' => ['required', 'string']
         ];
     }
 }

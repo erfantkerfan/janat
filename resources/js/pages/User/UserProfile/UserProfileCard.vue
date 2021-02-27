@@ -152,13 +152,29 @@
                                         :label="item.name"
                                         :value="item.id"
                                     >
-                                        {{ item.name }} (ماهانه: {{ item.monthly_payment | currencyFormat }}{{ currencyUnit }})
+                                        {{ item.name }}
                                     </md-option>
                                 </md-select>
                             </md-field>
                             <div class="md-layout">
                                 <md-checkbox v-model="newAccount.payroll_deduction">کسر از حقوق</md-checkbox>
                             </div>
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-25 md-form-label">
+                                    ماهانه
+                                    ({{ currencyUnit }})
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="newAccount.monthly_payment"/>
+                                    </md-field>
+                                    {{ newAccount.monthly_payment | currencyFormat}}
+                                </div>
+                                <md-tooltip md-direction="top">
+                                    {{ digitsToWords(newAccount.monthly_payment) }}
+                                </md-tooltip>
+                            </div>
+                            <hr>
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-40 md-form-label">
                                     تاریخ عضویت

@@ -24,8 +24,7 @@ class FundController extends Controller
     {
         $config = [
             'filterKeys'=> [
-                'name',
-                'monthly_payment'
+                'name'
             ]
         ];
 

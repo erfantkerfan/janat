@@ -23,12 +23,12 @@
                             </div>
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
-                                    ماهانه
+                                    ماهانه تعریف شده برای حساب کاربر
                                 </label>
                                 <div class="md-layout-item">
-                                    {{ fund.monthly_payment | currencyFormat}}
+                                    {{ account.monthly_payment | currencyFormat}}
                                     <br>
-                                    {{ digitsToWords(fund.monthly_payment) }}
+                                    {{ digitsToWords(account.monthly_payment) }}
                                 </div>
                             </div>
                             <hr>
@@ -269,6 +269,7 @@
     import {Fund} from "@/models/Fund";
     import {Company} from "@/models/Company";
     import {User} from "@/models/User";
+    import {Account} from "@/models/Account";
 
     export default {
         name: 'Create',
@@ -276,6 +277,7 @@
         mixins: [priceFilterMixin, axiosMixin, getFilterDropdownMixin],
         data: () => ({
             fund: new Fund(),
+            account: new Account(),
             user: new User(),
             transaction: new Transaction()
         }),
@@ -286,8 +288,22 @@
         methods: {
             getData () {
                 this.getFund()
+                this.getAccount()
                 this.getUser()
                 this.loadTransactionDefaultData()
+            },
+            getAccount () {
+                this.account.loading = true;
+                this.account.show(this.$route.params.account_id)
+                    .then((response) => {
+                        this.account.loading = false;
+                        this.account = new Account(response.data)
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        this.account.loading = false;
+                        this.account = new Account()
+                    })
             },
             getFund () {
                 this.fund.loading = true;

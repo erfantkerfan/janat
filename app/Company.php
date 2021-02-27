@@ -17,7 +17,7 @@ class Company extends Model
      */
     protected $fillable = [
         'name',
-        'fund_id'
+        'undertaker'
     ];
 
     public function fund()
