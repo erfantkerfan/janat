@@ -203,7 +203,7 @@ class CompanyTableSeeder extends Seeder {
         $fund = Fund::where('id', 1)->first();
         Company::create([
             'name' => 'دانشگاه شهید عباسپور',
-            'fund_id' => $fund->id
+            'undertaker' => 'مدیر سیستم'
         ]);
     }
 }
@@ -278,10 +278,8 @@ class FakeCompany extends Seeder {
     {
         $faker = Factory::create('fa_IR');
         for ($i = 1; $i < self::$countOfObject; $i++) {
-            $fund = FakeFund::getRandomObject();
             Company::create([
                 'name' => $faker->company,
-                'fund_id' => $fund->id,
                 'undertaker' => $faker->firstName.' '.$faker->lastName,
                 'created_at' => $faker->dateTime()
             ]);
