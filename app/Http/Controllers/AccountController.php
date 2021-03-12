@@ -129,4 +129,13 @@ class AccountController extends Controller
             ]);
         }
     }
+
+    /**
+     * @param Account $account
+     * @return Response
+     */
+    public function getBalance(Account $account)
+    {
+        return $this->jsonResponseOk($account->totalPaidSalaries());
+    }
 }

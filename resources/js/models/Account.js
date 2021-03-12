@@ -14,6 +14,7 @@ class Account extends Model {
             { key: 'user_id' },
             { key: 'user' },
             { key: 'monthly_payment' },
+            { key: 'balance' },
             {
                 key: 'payroll_deduction',
                 value: function (itemVal) {
@@ -38,6 +39,20 @@ class Account extends Model {
             { key: 'created_at' },
             { key: 'updated_at' }
         ])
+    }
+
+    getBalance () {
+        let that = this
+        return new Promise((myResolve, myReject) => {
+            axios.get(this.baseRoute + '/' + this.id + '/balance')
+                .then( (response) => {
+                    that.balance = response.data
+                    myResolve(response)
+                })
+                .catch( (error) => {
+                    myReject(error)
+                })
+        });
     }
 
 }

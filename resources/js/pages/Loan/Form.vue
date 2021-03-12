@@ -34,7 +34,7 @@
                                 </md-field>
                                 {{ loan.loan_amount | currencyFormat}}
                                 <br>
-                                {{ digitsToWords(loan.loan_amount) }}
+                                {{ digitsToWords(loan.loan_amount) }} {{ currencyUnit }}
                             </div>
                         </div>
                         <hr v-if="!isCreateForm()">
@@ -46,7 +46,7 @@
                             <div class="md-layout-item">
                                 {{ loan.installment_rate | currencyFormat}}
                                 <br>
-                                {{ digitsToWords(loan.installment_rate) }}
+                                {{ digitsToWords(loan.installment_rate) }} {{ currencyUnit }}
                             </div>
                         </div>
                         <hr v-if="!isCreateForm()">
@@ -77,7 +77,7 @@
                             <div class="md-layout-item">
                                 {{ loan.interest_amount | currencyFormat}}
                                 <br>
-                                {{ digitsToWords(loan.interest_amount) }}
+                                {{ digitsToWords(loan.interest_amount) }} {{ currencyUnit }}
                             </div>
                         </div>
                         <hr v-if="!isCreateForm()">
