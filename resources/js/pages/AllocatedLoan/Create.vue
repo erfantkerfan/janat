@@ -12,6 +12,8 @@
                                 <p class="category">انتخاب فرد وام گیرنده</p>
                                 <h3 v-if="selectedUser.f_name !== null || selectedUser.l_name !== null" class="title">
                                     {{ selectedUser.f_name+' '+selectedUser.l_name }}
+                                    <br>
+                                    (کد ملی: {{ selectedUser.SSN }})
                                 </h3>
                                 <div class="md-layout">
                                     <div class="md-layout-item">
@@ -33,9 +35,10 @@
                                             md-label="حسابی برای کاربر انتخاب شده یافت نشد"
                                         >
                                         </md-empty-state>
-                                        <md-table v-if="!selectedUser.loading && selectedUser.id !== null"
+                                        <md-table v-if="!selectedUser.loading && selectedUser.id !== null && !hasDefaultAccount"
                                                   v-model="selectedUser.accounts.list"
-                                                  @md-selected="onSelectAccount">
+                                                  @md-selected="onSelectAccount"
+                                        >
                                             <md-table-toolbar>
                                                 <h1 class="md-title">حساب های کاربر</h1>
                                             </md-table-toolbar>
@@ -44,6 +47,7 @@
                                                 slot="md-table-row"
                                                 slot-scope="{ item }"
                                                 md-selectable="single"
+
                                                 md-auto-select
                                             >
                                                 <md-table-cell  md-label="صندوق">
@@ -264,6 +268,7 @@
         data: () => ({
             paidAt: null,
             managerComment: null,
+            hasDefaultAccount: false,
             targetUserId: null,
             selectedUser: new User(),
             selectedFund: null,
@@ -280,19 +285,19 @@
             installment: new AllocatedLoanInstallment(),
             installmentTransactionsShowDialog: false
         }),
-        created () {
-        },
         mounted() {
-            this.getFunds()
+            this.getData()
+            console.log('gg', this.$route.params.account_id)
         },
         methods: {
             showUserAccounts () {
                 let that = this
-                this.selectedUser.loading = true;
+                this.selectedUser.loading = true
                 this.selectedUser.show(this.targetUserId)
                     .then((response) => {
                         that.selectedUser.loading = false
                         that.selectedUser = new User(response.data)
+                        that.selectDefaultAccount()
                     })
                     .catch((error) => {
                         that.axios_handleError(error)
@@ -373,20 +378,18 @@
             },
 
             getData () {
-                if (this.isCreateForm()) {
-                    return false
+                this.getFunds()
+                this.targetUserId = this.$route.params.user_id
+                this.showUserAccounts()
+            },
+            selectDefaultAccount () {
+                const defaultAccount = this.selectedUser.accounts.list.find( item => parseInt(item.id) === parseInt(this.$route.params.account_id))
+                if (defaultAccount) {
+                    this.onSelectAccount(defaultAccount)
+                    this.hasDefaultAccount = true
+                } else {
+                    this.hasDefaultAccount = false
                 }
-                this.allocatedLoan.loading = true;
-                this.allocatedLoan.show(this.$route.params.id)
-                    .then((response) => {
-                        this.allocatedLoan.loading = false;
-                        this.allocatedLoan = new AllocatedLoan(response.data)
-                    })
-                    .catch((error) => {
-                        this.axios_handleError(error)
-                        this.allocatedLoan.loading = false;
-                        this.allocatedLoan = new AllocatedLoan()
-                    })
             },
             updateAllocatedLoan () {
                 if (this.isCreateForm()) {

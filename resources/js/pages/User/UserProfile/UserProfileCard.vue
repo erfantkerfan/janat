@@ -193,6 +193,31 @@
                 </md-dialog-content>
 
                 <md-dialog-actions>
+
+                    <md-button v-if="funds.list.length > 0 && editAccountState"
+                               class="md-success"
+                               :to="{
+                                    name: 'User.AddPayment',
+                                    params: {
+                                        user_id: value.id,
+                                        account_id: newAccount.id,
+                                        fund_id: newAccount.fund.id
+                                    }
+                                }">
+                        واریز وجه از طرف کاربر به صندوق
+                    </md-button>
+                    <md-button v-if="funds.list.length > 0 && editAccountState"
+                               class="md-success"
+                               :to="{
+                                    name: 'AllocatedLoan.Create',
+                                    params: {
+                                        user_id: value.id,
+                                        account_id: newAccount.id,
+                                    }
+                                }">
+                        تخصیص وام
+                    </md-button>
+                    <br>
                     <md-button class="md-default" @click="createAccountShowDialog = false">انتصراف</md-button>
                     <md-button v-if="funds.list.length > 0 && !editAccountState"
                                class="md-success"
@@ -205,18 +230,6 @@
                                @click="editAccount"
                     >
                         ذخیره
-                    </md-button>
-                    <md-button v-if="funds.list.length > 0 && editAccountState"
-                               class="md-success"
-                               :to="{
-                                    name: 'User.AddPayment',
-                                    params: {
-                                        user_id: value.id,
-                                        account_id: newAccount.id,
-                                        fund_id: newAccount.fund.id
-                                    }
-                                }">
-                        واریز وجه از طرف کاربر به صندوق
                     </md-button>
                 </md-dialog-actions>
             </md-dialog>
