@@ -45,7 +45,7 @@
                                 </md-field>
                             </div>
                             <md-tooltip md-direction="top">
-                                {{ digitsToWords(fund.balance) }}
+                                {{ digitsToWords(fund.balance) }} {{ currencyUnit }}
                             </md-tooltip>
                         </div>
                         <div v-if="!isCreateForm()" class="md-layout">
