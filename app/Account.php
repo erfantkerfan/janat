@@ -39,6 +39,21 @@ class Account extends Model
         return $this->hasMany(AllocatedLoan::class);
     }
 
+    public function salaries()
+    {
+        return $this->morphToMany(Transaction::class, 'transaction_payers');
+    }
+
+    public function paidSalaries()
+    {
+        return $this->salaries()->where('transaction_status_id', 1);
+    }
+
+    public function totalPaidSalaries()
+    {
+        return $this->paidSalaries()->get()->sum('cost');
+    }
+
     public function scopeHasPayrollDeduction($query) {
         $query->where('payroll_deduction', 1);
     }

@@ -122,7 +122,7 @@
                 <md-dialog-title v-else>ایجاد حساب جدید</md-dialog-title>
 
                 <md-dialog-content>
-                    <div style="height: 300px;display: flex;flex-flow: column;justify-content: center;">
+                    <div>
                         <div v-if="funds.list.length === 0">
                             <md-empty-state
                                 class="md-warning"
@@ -168,11 +168,33 @@
                                     <md-field class="md-invalid">
                                         <md-input v-model="newAccount.monthly_payment"/>
                                     </md-field>
-                                    {{ newAccount.monthly_payment | currencyFormat}}
+                                    <span>
+                                        {{ newAccount.monthly_payment | currencyFormat}}
+                                      <md-tooltip>
+                                          {{ digitsToWords(newAccount.monthly_payment) }} {{ currencyUnit }}
+                                      </md-tooltip>
+                                    </span>
                                 </div>
-                                <md-tooltip md-direction="top">
-                                    {{ digitsToWords(newAccount.monthly_payment) }}
-                                </md-tooltip>
+                            </div>
+                            <hr>
+                            <div class="md-layout">
+                                <md-button
+                                    v-if="showAccountBalanceBtn"
+                                    @click="showAccountBalance"
+                                    :disabled="newAccount.loading"
+                                >
+                                    مشاهده موجودی
+                                    <md-progress-spinner v-if="newAccount.loading" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+                                </md-button>
+                                <label v-if="!showAccountBalanceBtn" class="md-layout-item md-size-45 md-form-label">
+                                    جمع پرداختی های ماهانه:
+                                    ({{ currencyUnit }})
+                                </label>
+                                <div v-if="!showAccountBalanceBtn" class="md-layout-item">
+                                    {{ newAccount.balance | currencyFormat}}
+                                    <br>
+                                    {{ digitsToWords(newAccount.balance) }} {{ currencyUnit }}
+                                </div>
                             </div>
                             <hr>
                             <div class="md-layout">
@@ -274,6 +296,7 @@
             return {
                 newAccount: new Account(),
                 createAccountShowDialog: false,
+                showAccountBalanceBtn: true,
                 editAccountState: false,
                 cardUserImage: '',
                 cardUserNewImage: null,
@@ -296,6 +319,18 @@
         methods: {
             isCreateForm() {
                 return (this.$route.name === 'User.Create')
+            },
+            showAccountBalance () {
+                this.newAccount.loading = true
+                this.newAccount.getBalance()
+                .then((response) => {
+                    this.showAccountBalanceBtn = false
+                    this.newAccount.loading = false
+                })
+                .catch( (errpr) => {
+                    this.newAccount.loading = false
+                    this.showAccountBalanceBtn = true
+                })
             },
             bufferUserPic($event) {
                 const toBase64 = file => new Promise((resolve, reject) => {
@@ -335,11 +370,13 @@
                 this.newAccount = new Account()
                 this.editAccountState = false
                 this.createAccountShowDialog = true
+                this.showAccountBalanceBtn = true
             },
             showEditAccountDialog(item) {
                 this.newAccount = item
                 this.editAccountState = true
                 this.createAccountShowDialog = true
+                this.showAccountBalanceBtn = true
             },
             closeAccountDialog() {
                 this.createAccountShowDialog = false
