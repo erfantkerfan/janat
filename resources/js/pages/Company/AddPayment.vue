@@ -28,7 +28,7 @@
                                 <div class="md-layout-item">
                                     {{ fund.monthly_payment | currencyFormat}}
                                     <br>
-                                    {{ digitsToWords(fund.monthly_payment) }}
+                                    {{ digitsToWords(fund.monthly_payment) }} {{ currencyUnit }}
                                 </div>
                             </div>
                             <hr>
@@ -39,7 +39,7 @@
                                 <div class="md-layout-item">
                                     {{ fund.balance | currencyFormat}}
                                     <br>
-                                    {{ digitsToWords(fund.balance) }}
+                                    {{ digitsToWords(fund.balance) }} {{ currencyUnit }}
                                 </div>
                             </div>
                             <hr>

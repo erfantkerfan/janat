@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('account/pay_periodic_payroll_deduction_for_charge_fund', [AccountController::class, 'payPeriodicPayrollDeductionForChargeFund']);
         Route::resource('allocated_loans', '\\'. AllocatedLoanController::class);
         Route::resource('allocated_loan_Installments', '\\'. AllocatedLoanInstallmentController::class);
+        Route::get('accounts/{account}/balance', [AccountController::class, 'getBalance']);
         Route::resource('accounts', '\\'. AccountController::class);
         Route::resource('transactions', '\\'. TransactionController::class);
         Route::resource('transaction_statuses', '\\'. TransactionStatusController::class);

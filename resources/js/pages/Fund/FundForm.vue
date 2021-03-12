@@ -15,7 +15,7 @@
                     <md-card-content>
 
                         <div class="md-layout">
-                            <label class="md-layout-item md-size-25 md-form-label">
+                            <label class="md-layout-item md-size-15 md-form-label">
                                 نام صندوق
                             </label>
                             <div class="md-layout-item">
@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <div class="md-layout">
-                            <label class="md-layout-item md-size-25 md-form-label">
+                            <label class="md-layout-item md-size-15 md-form-label">
                                 نام مسئول
                             </label>
                             <div class="md-layout-item">
@@ -45,7 +45,7 @@
                                 </md-field>
                             </div>
                             <md-tooltip md-direction="top">
-                                {{ digitsToWords(fund.balance) }}
+                                {{ digitsToWords(fund.balance) }} {{ currencyUnit }}
                             </md-tooltip>
                         </div>
                         <div v-if="!isCreateForm()" class="md-layout">

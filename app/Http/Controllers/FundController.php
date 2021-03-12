@@ -53,7 +53,7 @@ class FundController extends Controller
      */
     public function show($id)
     {
-        $fund = Fund::with(['companies'])->find($id);
+        $fund = Fund::find($id);
         return $this->jsonResponseOk($fund);
     }
 
