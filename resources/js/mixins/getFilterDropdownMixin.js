@@ -26,7 +26,7 @@ export default {
               .then((response) => {
                   that.loans.loading = false
                   that.loans = new LoanList(response.data.data, response.data)
-                  this.loans.addItem(new Loan({id: 0, name: ''}))
+                  this.loans.addItem(new Loan({id: 0, name: '-'}))
               })
               .catch((error) => {
                   this.$store.dispatch('alerts/fire', {
@@ -47,7 +47,7 @@ export default {
                   that.funds.loading = false;
                   that.funds = new FundList(response.data.data, response.data)
                   if (typeof withEmpty === 'undefined' || withEmpty) {
-                      this.funds.addItem(new Fund({id: 0, name: ''}))
+                      this.funds.addItem(new Fund({id: 0, name: '-'}))
                   }
               })
               .catch((error) => {
@@ -68,7 +68,7 @@ export default {
                   this.userTypes.loading = false;
                   this.userTypes = new UserTypeList(response.data.data, response.data)
                   if (typeof withEmpty === 'undefined' || withEmpty) {
-                      this.userTypes.addItem(new UserType({id: 0, display_name: ''}))
+                      this.userTypes.addItem(new UserType({id: 0, display_name: '-'}))
                   }
               })
               .catch((error) => {
@@ -89,7 +89,7 @@ export default {
                   this.companies.loading = false;
                   this.companies = new CompanyList(response.data.data, response.data)
                   if (typeof withEmpty === 'undefined' || withEmpty) {
-                      this.companies.addItem(new Company({id: 0, name: ''}))
+                      this.companies.addItem(new Company({id: 0, name: '-'}))
                   }
               })
               .catch((error) => {
@@ -111,7 +111,7 @@ export default {
                   that.loanTypes.loading = false
                   that.loanTypes = new LoanTypeList(response.data.data, response.data)
                   if (typeof withEmpty === 'undefined' || withEmpty) {
-                      this.loanTypes.addItem(new LoanType({id: 0, name: ''}))
+                      this.loanTypes.addItem(new LoanType({id: 0, name: '-'}))
                   }
               })
               .catch((error) => {
@@ -132,7 +132,7 @@ export default {
                   this.userStatuses.loading = false;
                   this.userStatuses = new UserStatusList(response.data.data, response.data)
                   if (typeof withEmpty === 'undefined' || withEmpty) {
-                      this.userStatuses.addItem(new UserStatus({id: 0, display_name: ''}))
+                      this.userStatuses.addItem(new UserStatus({id: 0, display_name: '-'}))
                   }
               })
               .catch((error) => {
@@ -153,7 +153,7 @@ export default {
                   this.transactionStatuses.loading = false;
                   this.transactionStatuses = new TransactionStatusList(response.data.data, response.data)
                   if (typeof withEmpty === 'undefined' || withEmpty) {
-                      this.transactionStatuses.addItem(new TransactionStatus({id: 0, display_name: ''}))
+                      this.transactionStatuses.addItem(new TransactionStatus({id: 0, display_name: '-'}))
                   }
               })
               .catch((error) => {

@@ -70,6 +70,17 @@
 <!--                    :md-sort-order.sync="sortation.order"-->
 <!--                    :md-sort-fn="customSort"-->
 
+                    <md-field>
+                        <Json-excel
+                            v-if="!accounts.loading && accounts.list.length > 0"
+                            :data="accounts.list"
+                            :fields="json_fields"
+                        >
+                            <md-button class="md-dense md-icon-button md-raised md-info">
+                                <md-icon>calendar_view_month</md-icon>
+                            </md-button>
+                        </Json-excel>
+                    </md-field>
                     <md-table
                         :value="accounts.list"
                         class="paginated-table table-striped table-hover"
@@ -100,13 +111,34 @@
 </template>
 
 <script>
+    import JsonExcel from 'vue-json-excel'
     import {AccountList} from '@/models/Account'
     import moment from 'moment-jalaali'
-    import { priceFilterMixin, axiosMixin } from '@/mixins/Mixins'
+    import { priceFilterMixin, axiosMixin, dateMixin } from '@/mixins/Mixins'
 
     export default {
         name: 'PayFundMonthlyPaymentByPayrollDeduction',
-        mixins: [priceFilterMixin, axiosMixin],
+        mixins: [priceFilterMixin, axiosMixin, dateMixin],
+        computed: {
+            json_fields () {
+                return {
+                    'نام': 'user.f_name',
+                    'نام خانوادگی': 'user.l_name',
+                    'شماره عضویت': 'user.id',
+                    'شماره حساب': 'id',
+                    'نام صندوق': 'fund.name',
+                    'تاریخ ایجاد': {
+                        field: 'created_at',
+                        callback: (value) => {
+                            return this.shamsiDate(value).dateTime
+                        }
+                    }
+                }
+            }
+        },
+        components: {
+            JsonExcel
+        },
         data: () => ({
             payRequestIsSent: false,
             accounts: new AccountList(),

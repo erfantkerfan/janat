@@ -58,14 +58,11 @@
                                         :label="item.name"
                                         :value="item.id"
                                     >
-                                        <div>
                                             صندوق:
                                             {{ item.fund.name }}
-                                        </div>
-                                        <div>
+                                        <br>
                                             وام:
                                             {{ item.name }}
-                                        </div>
                                     </md-option>
                                 </md-select>
                             </md-field>
@@ -209,8 +206,17 @@
                     >
                         <md-table-toolbar>
                             <md-field>
-                                <md-button class="md-dense md-raised md-info" @click="getList">جستجو</md-button>
-<!--                                <md-button class="md-dense md-raised md-primary" to="/allocated_loan/create">افزودن</md-button>-->
+                                <md-button class="md-dense md-icon-button md-raised md-primary" @click="getList">
+                                    <md-icon>search</md-icon>
+                                </md-button>
+                                <Json-excel
+                                    :data="allocatedLoans.list"
+                                    :fields="json_fields"
+                                >
+                                    <md-button class="md-dense md-icon-button md-raised md-info">
+                                        <md-icon>calendar_view_month</md-icon>
+                                    </md-button>
+                                </Json-excel>
                             </md-field>
                             <md-field>
                                 <label>تعداد در هر صفحه:</label>
@@ -292,7 +298,8 @@
 
     import {AllocatedLoanList} from '@/models/AllocatedLoan'
     import ListPagination from '@/components/ListPagination'
-    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
+    import JsonExcel from 'vue-json-excel'
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin, dateMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -300,9 +307,38 @@
                 this.getList()
             }
         },
-        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
+        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin, dateMixin],
+        computed: {
+            json_fields () {
+                return {
+                    'نام': 'account.user.f_name',
+                    'نام خانوادگی': 'account.user.l_name',
+                    'مبلغ وام': 'loan_amount',
+                    'مبلغ هر قسط': 'installment_rate',
+                    'نام وام': 'loan.name',
+                    'نام صندوق': 'loan.fund.name',
+                    'وضعیت': {
+                        field: 'is_settled',
+                        callback: (value) => {
+                            if (value) {
+                                return 'تسویه شده'
+                            } else {
+                                return 'تسویه نشده'
+                            }
+                        },
+                    },
+                    'تاریخ ایجاد': {
+                        field: 'created_at',
+                        callback: (value) => {
+                            return this.shamsiDate(value).dateTime
+                        }
+                    },
+                }
+            }
+        },
         components: {
             ListPagination,
+            JsonExcel
         },
         data: () => ({
             allocatedLoans: new AllocatedLoanList(),
