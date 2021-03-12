@@ -65,6 +65,17 @@
                         md-label="در بازه انتخاب شده هیچ وام کسر از حقوقی وجود ندارد که پرداختی قسط نداشته باشد."
                     >
                     </md-empty-state>
+                    <md-field>
+                        <Json-excel
+                            v-if="!allocatedLoans.loading && allocatedLoans.list.length > 0"
+                            :data="allocatedLoans.list"
+                            :fields="json_fields"
+                        >
+                            <md-button class="md-dense md-icon-button md-raised md-info">
+                                <md-icon>calendar_view_month</md-icon>
+                            </md-button>
+                        </Json-excel>
+                    </md-field>
                     <md-table
                         :value="allocatedLoans.list"
                         class="table-hover"
@@ -78,6 +89,9 @@
                             </md-table-cell>
                             <md-table-cell md-label="نام خانوادگی" md-sort-by="account.user.l_name">
                                 {{item.account.user.l_name}}
+                            </md-table-cell>
+                            <md-table-cell md-label="شماره عضویت" md-sort-by="account.user.l_name">
+                                {{item.account.user.id}}
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
                                 {{item.loan_amount | currencyFormat}}
@@ -120,13 +134,46 @@
 </template>
 
 <script>
+    import JsonExcel from 'vue-json-excel'
     import {AllocatedLoanList} from '@/models/AllocatedLoan'
     import moment from 'moment-jalaali'
-    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin, dateMixin } from '@/mixins/Mixins'
 
     export default {
         name: 'PaymentOfPayrollDeductions',
-        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
+        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin, dateMixin],
+        computed: {
+            json_fields () {
+                return {
+                    'نام': 'account.user.f_name',
+                    'نام خانوادگی': 'account.user.l_name',
+                    'شماره عضویت': 'account.user.id',
+                    'مبلغ وام': 'loan_amount',
+                    'مبلغ هر قسط': 'installment_rate',
+                    'تعداد اقساط': 'number_of_installments',
+                    'نام صندوق': 'loan.fund.name',
+                    'وضعیت': {
+                        field: 'is_settled',
+                        callback: (value) => {
+                            if (value) {
+                                return 'تسویه شده'
+                            } else {
+                                return 'تسویه نشده'
+                            }
+                        },
+                    },
+                    'تاریخ ایجاد': {
+                        field: 'created_at',
+                        callback: (value) => {
+                            return this.shamsiDate(value).dateTime
+                        }
+                    }
+                }
+            }
+        },
+        components: {
+            JsonExcel
+        },
         data: () => ({
             payRequestIsSent: false,
             allocatedLoans: new AllocatedLoanList(),

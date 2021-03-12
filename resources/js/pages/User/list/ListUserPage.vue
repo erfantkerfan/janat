@@ -186,8 +186,21 @@
                     >
                         <md-table-toolbar>
                             <md-field>
-                                <md-button class="md-dense md-raised md-info" @click="getList">جستجو</md-button>
-                                <md-button class="md-dense md-raised md-primary" to="/user/create">افزودن کاربر</md-button>
+                                <md-button class="md-dense md-icon-button md-raised md-primary" @click="getList">
+                                    <md-icon>search</md-icon>
+                                </md-button>
+                                <md-button class="md-dense md-icon-button md-raised md-primary" to="/user/create">
+                                    <md-icon>library_add</md-icon>
+                                </md-button>
+                                <Json-excel
+                                    v-if="!users.loading && users.list.length > 0"
+                                    :data="users.list"
+                                    :fields="json_fields"
+                                >
+                                    <md-button class="md-dense md-icon-button md-raised md-info">
+                                        <md-icon>calendar_view_month</md-icon>
+                                    </md-button>
+                                </Json-excel>
                             </md-field>
                             <md-field>
                                 <label>تعداد در هر صفحه:</label>
@@ -252,9 +265,10 @@
 
 <script>
 
+    import JsonExcel from 'vue-json-excel'
     import { UserList } from '@/models/User'
     import ListPagination from '@/components/ListPagination'
-    import { getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
+    import { getFilterDropdownMixin, axiosMixin, dateMixin } from '@/mixins/Mixins'
 
     export default {
         watch: {
@@ -262,9 +276,29 @@
                 this.getList()
             }
         },
-        mixins: [getFilterDropdownMixin, axiosMixin],
+        mixins: [getFilterDropdownMixin, axiosMixin, dateMixin],
+        computed: {
+            json_fields () {
+                return {
+                    'کد عضویت': 'id',
+                    'کد پرسنلی': 'staff_code',
+                    'نام': 'f_name',
+                    'نام خانوادگی': 'l_name',
+                    'کد ملی': 'SSN',
+                    'شماره همراه': 'mobile',
+                    'تلفن ثابت': 'phone',
+                    'تاریخ ایجاد': {
+                        field: 'created_at',
+                        callback: (value) => {
+                            return this.shamsiDate(value).dateTime
+                        }
+                    },
+                }
+            }
+        },
         components: {
-            ListPagination
+            ListPagination,
+            JsonExcel
         },
         data: () => ({
             users: new UserList(),
