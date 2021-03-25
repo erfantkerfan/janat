@@ -198,7 +198,7 @@
                                     :fields="json_fields"
                                 >
                                     <md-button class="md-dense md-icon-button md-raised md-info">
-                                        <md-icon>calendar_view_month</md-icon>
+                                        <md-icon>file_download</md-icon>
                                     </md-button>
                                 </Json-excel>
                             </md-field>
