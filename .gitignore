@@ -5,6 +5,7 @@
 /public/css/*
 /public/css/app.css
 /public/js/*
+/public/fonts/*
 /public/js/app.js
 /public/mix-manifest.json
 /storage/*.key
