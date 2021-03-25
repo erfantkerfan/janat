@@ -12,6 +12,8 @@ window.Vue = require('vue');
 
 import axios from "axios";
 
+import 'material-design-icons/iconfont/material-icons.css' // Ensure you are using css-loader
+
 // Plugins
 // import App from "./App.vue";
 import VueAxios from "vue-axios";
