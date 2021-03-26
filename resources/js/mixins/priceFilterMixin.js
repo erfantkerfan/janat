@@ -37,6 +37,11 @@ export default {
             }
             return persianJs(digits).digitsToWords()
         },
+        convertToCurrencyFormat (value) {
+            if (!value) return ''
+            value = this.toEnDigit(value.toString())
+            return parseInt(value).toLocaleString('fa')
+        },
         currencyFormatInput (event) {
             this.transaction.cost = this.toEnDigit(event)
         },

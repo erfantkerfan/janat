@@ -23,32 +23,7 @@
                                 </md-field>
                             </div>
                         </div>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                مبلغ وام
-                                ({{ currencyUnit }})
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="loan.loan_amount"/>
-                                </md-field>
-                                {{ loan.loan_amount | currencyFormat}}
-                                <br>
-                                {{ digitsToWords(loan.loan_amount) }} {{ currencyUnit }}
-                            </div>
-                        </div>
-                        <hr v-if="!isCreateForm()">
-                        <div v-if="!isCreateForm()" class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                مبلغ هر قسط
-                                ({{ currencyUnit }})
-                            </label>
-                            <div class="md-layout-item">
-                                {{ loan.installment_rate | currencyFormat}}
-                                <br>
-                                {{ digitsToWords(loan.installment_rate) }} {{ currencyUnit }}
-                            </div>
-                        </div>
+                        <price-input v-if="!isCreateForm()" v-model="loan.installment_rate" :label="'مبلغ هر قسط'" :disabled="true" />
                         <hr v-if="!isCreateForm()">
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
@@ -69,17 +44,7 @@
                             </div>
                         </div>
                         <hr v-if="!isCreateForm()">
-                        <div v-if="!isCreateForm()" class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                مقدار کارمزد
-                                ({{ currencyUnit }})
-                            </label>
-                            <div class="md-layout-item">
-                                {{ loan.interest_amount | currencyFormat}}
-                                <br>
-                                {{ digitsToWords(loan.interest_amount) }} {{ currencyUnit }}
-                            </div>
-                        </div>
+                        <price-input v-if="!isCreateForm()" v-model="loan.interest_amount" :label="'مقدار کارمزد'" :disabled="true" />
                         <hr v-if="!isCreateForm()">
                         <md-field>
                             <label>نوع وام:</label>
@@ -136,9 +101,11 @@
 
 <script>
     import {Loan} from '@/models/Loan'
+    import PriceInput from '@/components/PriceInput'
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
+        components: {PriceInput},
         watch: {
             'loan.fund.id': function () {
                 this.loan.fund_id = this.loan.fund.id

@@ -81,14 +81,23 @@
                                 تاریخ ایجاد:
                                 {{ allocatedLoan.shamsiDate('created_at').date }}
                                 <br>
-                                مبلغ وام:
-                                {{ allocatedLoan.loan_amount }}
-                                <br>
-                                مبلغ هر قسط وام:
-                                {{ allocatedLoan.installment_rate }}
-                                <br>
                                 تعداد اقساط:
                                 {{ allocatedLoan.number_of_installments }}
+                                <hr>
+                                <price-input
+                                    v-model="allocatedLoan.loan_amount"
+                                    :label="'مبلغ وام'"
+                                    :label-size="100"
+                                    :disabled="true"
+                                />
+                                <hr>
+                                <price-input
+                                    v-model="allocatedLoan.installment_rate"
+                                    :label="'مبلغ هر قسط وام'"
+                                    :label-size="100"
+                                    :disabled="true"
+                                />
+                                <hr>
                                 <p v-if="allocatedLoan.payroll_deduction">
                                     کسر از حقوق
                                 </p>
@@ -156,7 +165,7 @@
                                         class="md-icon-button md-raised md-round md-info"
                                         style="margin: .2rem;"
                                     >
-                                        <md-icon>preview</md-icon>
+                                        <md-icon>pageview</md-icon>
                                         <md-tooltip md-direction="top">مشاهده تراکنش ها</md-tooltip>
                                     </md-button>
                                     <md-button
@@ -223,7 +232,7 @@
                                                     class="md-icon-button md-raised md-round md-info"
                                                     style="margin: .2rem;"
                                                 >
-                                                    <md-icon>preview</md-icon>
+                                                    <md-icon>pageview</md-icon>
                                                     <md-tooltip md-direction="top">مشاهده</md-tooltip>
                                                 </md-button>
                                             </md-table-cell>
@@ -257,6 +266,7 @@
     import { AllocatedLoan } from '@/models/AllocatedLoan'
     import { AllocatedLoanInstallment } from "@/models/AllocatedLoanInstallment"
     import { priceFilterMixin, axiosMixin } from '@/mixins/Mixins'
+    import PriceInput from '@/components/PriceInput'
     import { Account } from "@/models/Account";
     import { User } from "@/models/User";
 
@@ -266,7 +276,7 @@
                 this.allocatedLoan.fund_id = this.allocatedLoan.fund.id
             }
         },
-        components: { StatsCard },
+        components: { StatsCard, PriceInput },
         mixins: [priceFilterMixin, axiosMixin],
         data: () => ({
             confirmDialogShow: false,
