@@ -101,4 +101,16 @@ class User extends Authenticatable
             return $carry + $accountSettlesAllocatedLoans;
         });
     }
+
+    public function scopeHasLoanPayrollDeduction($query) {
+        $query->whereHas('accounts.allocatedLoans', function($q){
+            $q->where('allocated_loans.payroll_deduction', '=', 1);
+        });
+    }
+
+    public function scopeHasAccountPayrollDeduction($query) {
+        $query->whereHas('accounts', function($q){
+            $q->where('accounts.payroll_deduction', '=', 1);
+        });
+    }
 }
