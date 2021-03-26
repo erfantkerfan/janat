@@ -98,9 +98,7 @@
                                     :disabled="true"
                                 />
                                 <hr>
-                                <p v-if="allocatedLoan.payroll_deduction">
-                                    کسر از حقوق
-                                </p>
+                                <md-chip v-if="allocatedLoan.payroll_deduction" class="md-accent">کسر از حقوق</md-chip>
                             </template>
                         </stats-card>
                     </div>
@@ -121,9 +119,11 @@
                                 <br>
                                 کل مبلغ پرداختی:
                                 {{ allocatedLoan.total_payments | currencyFormat }}
-                                -
+                                {{ currencyUnit }}
+                                <br>
                                 مبلغ قابل پرداخت باقیمانده:
                                 {{ allocatedLoan.remaining_payable_amount | currencyFormat}}
+                                {{ currencyUnit }}
                                 <br>
                                 تعداد
                                 {{ allocatedLoan.count_of_paid_installments }}
@@ -146,9 +146,9 @@
                             <md-table-row slot="md-table-row"
                                           slot-scope="{ item }"
                                           :class="getInstallmentRowClass(item)">
-                                <md-table-cell md-label="مبلغ قسط" md-sort-by="rate">{{ item.rate | currencyFormat }}</md-table-cell>
-                                <md-table-cell md-label="کل پرداختی" md-sort-by="total_payments">{{ item.total_payments | currencyFormat }}</md-table-cell>
-                                <md-table-cell md-label="مبلغ قابل پرداخت باقیمانده" md-sort-by="remaining_payable_amount">{{ item.remaining_payable_amount | currencyFormat }}</md-table-cell>
+                                <md-table-cell md-label="مبلغ قسط" md-sort-by="rate">{{ item.rate | currencyFormat }} {{ currencyUnit }}</md-table-cell>
+                                <md-table-cell md-label="کل پرداختی" md-sort-by="total_payments">{{ item.total_payments | currencyFormat }} {{ currencyUnit }}</md-table-cell>
+                                <md-table-cell md-label="مبلغ قابل پرداخت باقیمانده" md-sort-by="remaining_payable_amount">{{ item.remaining_payable_amount | currencyFormat }} {{ currencyUnit }}</md-table-cell>
                                 <md-table-cell md-label="وضعیت" md-sort-by="is_settled">
                                     <span v-if="item.is_settled">
                                         تسویه شده

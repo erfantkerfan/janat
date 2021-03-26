@@ -243,10 +243,10 @@
                             <md-table-cell md-label="نام خانوادگی" md-sort-by="account.user.l_name">
                                 {{item.account.user.l_name}}
                             </md-table-cell>
-                            <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
+                            <md-table-cell :md-label="'مبلغ وام'+'('+currencyUnit+')'" md-sort-by="loan_amount">
                                 {{item.loan_amount | currencyFormat}}
                             </md-table-cell>
-                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
+                            <md-table-cell :md-label="'مبلغ هر قسط'+'('+currencyUnit+')'" md-sort-by="installment_rate">
                                 {{item.installment_rate | currencyFormat}}
                             </md-table-cell>
                             <md-table-cell md-label="نام وام" md-sort-by="loan.name">

@@ -9,7 +9,7 @@ export default {
     },
     filters: {
         currencyFormat: function (value) {
-            if (!value) return ''
+            if (!value) return '0'
             value = value.toString()
             value = value.replace(new RegExp('٬', 'g'), '')
             const digits = [
