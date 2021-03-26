@@ -1,4 +1,6 @@
 import persianJs from 'persianjs'
+// import PN from 'persian-number'
+import NumberToPersianWord from 'number_to_persian_word'
 
 export default {
     data: () => ({
@@ -35,7 +37,8 @@ export default {
             if (!digits) {
                 return ''
             }
-            return persianJs(digits).digitsToWords()
+
+            return NumberToPersianWord.convert(digits)
         },
         convertToCurrencyFormat (value) {
             if (!value) return ''

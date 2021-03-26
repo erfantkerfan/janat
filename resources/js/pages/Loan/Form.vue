@@ -23,6 +23,8 @@
                                 </md-field>
                             </div>
                         </div>
+                        <price-input v-model="loan.loan_amount" :label="'مبلغ وام'" />
+                        <hr v-if="!isCreateForm()">
                         <price-input v-if="!isCreateForm()" v-model="loan.installment_rate" :label="'مبلغ هر قسط'" :disabled="true" />
                         <hr v-if="!isCreateForm()">
                         <div class="md-layout">
