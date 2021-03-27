@@ -4,13 +4,21 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import Vue from "vue";
+import Vue from 'vue'
 
-require('./bootstrap');
+require('./bootstrap')
 
-window.Vue = require('vue');
+window.Vue = require('vue')
 
-import axios from "axios";
+import axios from "axios"
+
+// fonts
+// Ensure you are using css-loader
+import 'material-design-icons/iconfont/material-icons.css'
+
+// change font variable in (resources/js/assets/scss/md/_variables.scss)
+import '../sass/fonts/sahel/Farsi-Digits-Without-Latin/sahel.scss'
+// import '../sass/fonts/vazir/Farsi-Digits-Without-Latin/vazir.scss'
 
 // Plugins
 // import App from "./App.vue";

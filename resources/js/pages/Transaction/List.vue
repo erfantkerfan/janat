@@ -172,7 +172,7 @@
                                     {{item.getRelatedModelLabel(related_recipient.transaction_recipients_type, related_recipient.transaction_recipients)}}
                                 </div>
                             </md-table-cell>
-                            <md-table-cell md-label="مبلغ" md-sort-by="cost">
+                            <md-table-cell :md-label="'مبلغ'+'('+currencyUnit+')'" md-sort-by="cost">
                                 {{item.cost | currencyFormat}}
                             </md-table-cell>
                             <md-table-cell md-label="وضعیت" md-sort-by="parent_transaction_id">

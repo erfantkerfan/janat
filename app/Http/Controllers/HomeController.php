@@ -62,6 +62,21 @@ class HomeController extends Controller
         return view('dashboard', compact('user', 'settings'));
     }
 
+    public function debug(Request $request)
+    {
+        $user = User::with([
+                'accounts.allocatedLoans',
+//                'paidTransactions'
+            ])
+            ->hasLoanPayrollDeduction()
+            ->hasAccountPayrollDeduction()
+//            ->dd();
+        ->get();
+
+
+        return $user;
+    }
+
     public function dashboardData() {
         $funds = Fund::all();
         $counts = [

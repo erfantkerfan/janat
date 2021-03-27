@@ -34,20 +34,7 @@
                                 </md-field>
                             </div>
                         </div>
-                        <div v-if="!isCreateForm()" class="md-layout">
-                            <label class="md-layout-item md-size-25 md-form-label">
-                                موجودی صندوق
-                                ({{ currencyUnit }})
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    {{ fund.balance | currencyFormat}}
-                                </md-field>
-                            </div>
-                            <md-tooltip md-direction="top">
-                                {{ digitsToWords(fund.balance) }} {{ currencyUnit }}
-                            </md-tooltip>
-                        </div>
+                        <price-input v-if="!isCreateForm()" v-model="fund.balance" :label="'موجودی صندوق'" :disabled="true" />
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-25 md-form-label">
                                 تاریخ تعریف صندوق
@@ -207,10 +194,12 @@
 <script>
     import {Fund} from '@/models/Fund'
     import {Loan, LoanList} from '@/models/Loan'
+    import PriceInput from '@/components/PriceInput'
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         name: "fund-form",
+        components: {PriceInput},
         mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
         data: () => ({
             fund: new Fund(),

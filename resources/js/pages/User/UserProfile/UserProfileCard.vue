@@ -179,7 +179,7 @@
                             <hr>
                             <div class="md-layout">
                                 <md-button
-                                    v-if="showAccountBalanceBtn"
+                                    v-if="editAccountState && showAccountBalanceBtn"
                                     @click="showAccountBalance"
                                     :disabled="newAccount.loading"
                                 >

@@ -51,7 +51,7 @@
                                                 class="md-icon-button md-raised md-round md-info"
                                                 style="margin: .2rem;"
                                             >
-                                                <md-icon>preview</md-icon>
+                                                <md-icon>pageview</md-icon>
                                                 <md-tooltip md-direction="top">مشاهده</md-tooltip>
                                             </md-button>
                                         </md-table-cell>

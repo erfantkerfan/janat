@@ -47,6 +47,10 @@ class UserController extends Controller
             ],
             'select'=> [
                 'id', 'f_name','l_name','SSN', 'staff_code', 'phone', 'mobile', 'created_at'
+            ],
+            'scopes'=> [
+                'hasLoanPayrollDeduction',
+                'hasAccountPayrollDeduction'
             ]
         ];
 

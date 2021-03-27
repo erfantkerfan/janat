@@ -14,8 +14,8 @@
     <link href="{{ mix('css/font.css') }}" rel="stylesheet">
 
     <!--     Fonts and icons     -->
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400,300' rel='stylesheet' type='text/css'>
+{{--    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">--}}
+{{--    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400,300' rel='stylesheet' type='text/css'>--}}
     <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
 
 </head>
@@ -50,8 +50,7 @@
                     </li>
                     <li>
                         <a class="dropdown-item" href="{{ route('logout') }}"
-                           onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             {{ __('navbar.Logout') }}
                         </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST">

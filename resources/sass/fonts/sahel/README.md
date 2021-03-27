@@ -1,7 +1,7 @@
 # Sahel-Font
 A Persian (Farsi) Font with variable version
 
-![Sahel-VF](./sample-variable.gif)
+![Sahel-VF](sample-variable.gif)
 
 فونت فارسی ساحل  
 [نمایش فونت](http://rastikerdar.github.io/sahel-font/)  

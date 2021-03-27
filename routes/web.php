@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('web.panel.dashboard');
     Route::group(['prefix' => 'api'], function () {
         Route::get('dashboard', [HomeController::class, 'dashboardData'])->name('api.panel.dashboardData');
+//        Route::get('debug', [HomeController::class, 'debug'])->name('api.debug');
         Route::resource('users', '\\'.UserController::class);
         Route::group(['prefix' => 'users'], function () {
             Route::get('{user}/get_user_pic', [UserController::class, 'getUserPic'])->name('api.panel.getUserPic');
