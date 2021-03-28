@@ -14,7 +14,7 @@ class CreateTransactionStatusesTable extends Migration
     public function up()
     {
         Schema::create('transaction_statuses', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->tinyIncrements('id');
             $table->string('name')->nullable()->comment('نام وضعیت');
             $table->string('display_name')->nullable()->comment('نام قابل نمایش این وضعیت');
             $table->longText('description')->nullable()->comment('توضیح درباره وضعیت');
