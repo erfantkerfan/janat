@@ -46,6 +46,14 @@
                             </div>
                         </div>
 
+
+                        <md-button v-if="!showFundIncomes && !fund.loading" type="submit" @click="getIncomes">
+                            نمایش اطلاعات دریافتی صندوق
+                        </md-button>
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_charge_fund" :label="'مجموع ماهانه ها و واریزی های خیرین'" :disabled="true" />
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_installments_interest" :label="'مجموع کارمزد اقساط'" :disabled="true" />
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_all" :label="'مجموع تمام دریافتی های صندوق'" :disabled="true" />
+
                         <loading :active.sync="fund.loading" :is-full-page="false"></loading>
 
                     </md-card-content>
@@ -205,6 +213,7 @@
             fund: new Fund(),
             loan: new Loan(),
             loans: new LoanList(),
+            showFundIncomes: false,
             editLoanState: false,
             createLoanShowDialog: false,
         }),
@@ -352,6 +361,27 @@
                         this.axios_handleError(error)
                         that.fund.loading = false;
                         that.fund = new Fund()
+                    })
+            },
+            getIncomes () {
+                let that = this
+                this.fund.loading = true;
+                this.fund.getIncomes()
+                    .then((response) => {
+
+                        that.fund.loading = false;
+                        that.showFundIncomes = true;
+                        that.fund.incomes = response.data
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'اطلاعات دریافتی صندوق محاسبه شد'
+                        });
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        that.fund.loading = false;
+                        that.showFundIncomes = false;
                     })
             },
             createFund () {

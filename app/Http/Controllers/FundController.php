@@ -57,7 +57,6 @@ class FundController extends Controller
         return $this->jsonResponseOk($fund);
     }
 
-
     /**
      * Update the specified resource in storage.
      *
@@ -102,5 +101,10 @@ class FundController extends Controller
                 ]
             ]);
         }
+    }
+
+    public function getIncomes(Fund $fund) {
+        $fund = Fund::findorfail($fund->id)->setAppends(['incomes']);
+        return $this->jsonResponseOk($fund->incomes);
     }
 }
