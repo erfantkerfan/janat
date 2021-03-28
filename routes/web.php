@@ -35,23 +35,32 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'api'], function () {
         Route::get('dashboard', [HomeController::class, 'dashboardData'])->name('api.panel.dashboardData');
 //        Route::get('debug', [HomeController::class, 'debug'])->name('api.debug');
-        Route::resource('users', '\\'.UserController::class);
         Route::group(['prefix' => 'users'], function () {
             Route::get('{user}/get_user_pic', [UserController::class, 'getUserPic'])->name('api.panel.getUserPic');
             Route::put('{user}/set_user_pic', [UserController::class, 'setUserPic'])->name('api.panel.getUserPic');
             Route::put('{user}/reset_pass', [UserController::class, 'resetPass'])->name('api.panel.getUserPic');
         });
+        Route::resource('users', '\\'.UserController::class);
         Route::resource('user_statuses', '\\'. UserStatusController::class);
         Route::resource('user_types', '\\'. UserTypeController::class);
         Route::resource('companies', '\\'. CompanyController::class);
+        Route::group(['prefix' => 'funds'], function () {
+            Route::get('{fund}/get_incomes', [FundController::class, 'getIncomes'])->name('api.panel.getUserPic');
+        });
         Route::resource('funds', '\\'. FundController::class);
         Route::resource('loans', '\\'. LoanController::class);
         Route::resource('loan_types', '\\'. LoanTypeController::class);
-        Route::get('allocated_loans/pay_periodic_payroll_deduction', [AllocatedLoanController::class, 'payPeriodicPayrollDeduction']);
-        Route::get('account/pay_periodic_payroll_deduction_for_charge_fund', [AccountController::class, 'payPeriodicPayrollDeductionForChargeFund']);
+        Route::group(['prefix' => 'allocated_loans'], function () {
+            Route::get('pay_periodic_payroll_deduction', [AllocatedLoanController::class, 'payPeriodicPayrollDeduction'])
+                ->name('api.panel.allocated_loans.pay_periodic_payroll_deduction');
+        });
         Route::resource('allocated_loans', '\\'. AllocatedLoanController::class);
         Route::resource('allocated_loan_Installments', '\\'. AllocatedLoanInstallmentController::class);
-        Route::get('accounts/{account}/balance', [AccountController::class, 'getBalance']);
+        Route::group(['prefix' => 'accounts'], function () {
+            Route::get('{account}/balance', [AccountController::class, 'getBalance']);
+            Route::get('pay_periodic_payroll_deduction_for_charge_fund', [AccountController::class, 'payPeriodicPayrollDeductionForChargeFund'])
+                ->name('api.panel.accounts.pay_periodic_payroll_deduction_for_charge_fund');
+        });
         Route::resource('accounts', '\\'. AccountController::class);
         Route::resource('transactions', '\\'. TransactionController::class);
         Route::resource('transaction_statuses', '\\'. TransactionStatusController::class);

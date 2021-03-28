@@ -64,6 +64,10 @@ class HomeController extends Controller
 
     public function debug(Request $request)
     {
+        $fundId = 2;
+//        $fundId = 1;
+        $fund = Fund::findorfail($fundId)->setAppends(['incomes']);
+        return $fund;
         $user = User::with([
                 'accounts.allocatedLoans',
 //                'paidTransactions'

@@ -21,6 +21,22 @@ class Fund extends Model
         'balance'
     ];
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+//        'incomes'
+        //        'is_settled',
+        //        'has_unsettled_installment',
+        //        'last_payment',
+        //        'total_payments',
+        //        'remaining_payable_amount',
+        //        'count_of_paid_installments',
+        //        'count_of_remaining_installments',
+    ];
+
     public function deposit($money) {
         $this->balance += $money;
         return $this->save();
@@ -54,5 +70,44 @@ class Fund extends Model
     public function receivedTransactions()
     {
         return $this->morphToMany(Transaction::class, 'transaction_recipients');
+    }
+
+    public function getIncomesAttribute()
+    {
+        $transactionType_userChargeFund = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND'))->first();
+        $transactionType_companyChargeFund = TransactionType::where('name', config('constants.TRANSACTION_TYPE_COMPANY_CHARGE_FUND'))->first();
+        $transactionType_userPayInstallment = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT'))->first();
+
+        $sumOfChargeFund = $this->receivedTransactions()->whereIn('transaction_type_id', [
+            $transactionType_userChargeFund->id,
+            $transactionType_companyChargeFund->id
+        ])->sum('transactions.cost');
+        $sumOfChargeFund = floatval ($sumOfChargeFund);
+
+        $sumOfInstallmentsInterest = 0;
+        $userChargeFundTransaction = $this->loans()
+            ->with([
+                'allocatedLoans.installments.receivedTransactions' => function ($query) use ($transactionType_userPayInstallment) {
+                    $query->where('transaction_type_id', '=', $transactionType_userPayInstallment->id);
+                }
+            ])->get();
+        $userChargeFundTransaction->each(function ($loanItem) use (& $sumOfInstallmentsInterest) {
+            $loanItem->allocatedLoans->each(function ($allocatedLoanItem) use (& $sumOfInstallmentsInterest) {
+                $interestAmountPerMonth = $allocatedLoanItem->interest_amount / $allocatedLoanItem->number_of_installments;
+                $allocatedLoanItem->installments->each(function ($installmentItem) use (& $sumOfInstallmentsInterest, $interestAmountPerMonth) {
+                    $installmentItem->receivedTransactions->each(function ($received_transactionItem) use (& $sumOfInstallmentsInterest, $interestAmountPerMonth) {
+                        $sumOfInstallmentsInterest += $interestAmountPerMonth;
+                    });
+                });
+            });
+        });
+
+        $sumOfall = $sumOfChargeFund + $sumOfInstallmentsInterest;
+
+        return [
+            'sum_of_charge_fund' => $sumOfChargeFund,
+            'sum_of_installments_interest' => $sumOfInstallmentsInterest,
+            'sum_of_all' => $sumOfall
+        ];
     }
 }

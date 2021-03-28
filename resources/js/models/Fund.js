@@ -7,6 +7,14 @@ class Fund extends Model {
                 key: 'baseRoute',
                 default: 'api/funds'
             },
+            {
+                key: 'incomes',
+                default: {
+                    sum_of_charge_fund: 0,
+                    sum_of_installments_interest: 0,
+                    sum_of_all: 0
+                }
+            },
             { key: 'id' },
             { key: 'name' },
             { key: 'undertaker' },
@@ -16,6 +24,9 @@ class Fund extends Model {
         ])
     }
 
+    getIncomes() {
+        return this.show(this.id, this.baseRoute + '/' + this.id + '/get_incomes')
+    }
 }
 
 class FundList extends Collection {
