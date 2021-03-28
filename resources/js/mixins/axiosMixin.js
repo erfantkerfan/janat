@@ -42,6 +42,10 @@ export default {
                 title: 'توجه',
                 message: errorMessage
             });
+
+            if (statusCode === 401) {
+                window.location.reload()
+            }
         }
     }
 };
