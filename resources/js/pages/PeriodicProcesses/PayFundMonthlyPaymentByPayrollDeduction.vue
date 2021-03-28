@@ -159,7 +159,7 @@
             },
             pay () {
                 this.accounts.loading = true
-                axios.get('/api/account/pay_periodic_payroll_deduction_for_charge_fund', {
+                axios.get('/api/accounts/pay_periodic_payroll_deduction_for_charge_fund', {
                     params: {
                         pay_since_date: this.paySinceDate,
                         pay_till_date: this.payTillDate
