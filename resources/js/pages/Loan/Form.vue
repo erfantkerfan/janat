@@ -90,7 +90,7 @@
                     </md-card-content>
 
                     <md-card-actions>
-                        <md-button type="submit" @click="updateLoan">
+                        <md-button @click="updateLoan">
                             ذخیره اطلاعات
                         </md-button>
                     </md-card-actions>
@@ -160,7 +160,7 @@
                         });
                     })
                     .catch((error) => {
-                        that.axios_handleError(error)
+                        this.axios_handleError(error)
                         that.loan.loading = false;
                     })
             },
@@ -181,7 +181,7 @@
                         that.$router.push({ path: '/loan/'+that.loan.id })
                     })
                     .catch((error) => {
-                        that.axios_handleError(error)
+                        this.axios_handleError(error)
                         that.loan.loading = false;
                     })
             }

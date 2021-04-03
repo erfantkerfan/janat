@@ -87,6 +87,14 @@
                         </div>
                         <loading :active.sync="transaction.loading" :is-full-page="false"></loading>
                     </md-card-content>
+                    <md-card-actions>
+                        <md-button class="md-info" @click="updateTransaction">
+                            ذخیره اطلاعات
+                        </md-button>
+                        <md-button class="md-danger" @click="confirmRemove">
+                            حذف
+                        </md-button>
+                    </md-card-actions>
                 </md-card>
 
                 <md-card v-if="transaction.related_payers">
@@ -143,6 +151,7 @@
                     </md-card-content>
                 </md-card>
 
+                <vue-confirm-dialog></vue-confirm-dialog>
             </div>
         </div>
     </div>
@@ -200,9 +209,9 @@
                 let that = this
                 this.transaction.loading = true;
                 this.transaction.update()
-                    .then((response) => {
+                    .then(() => {
                         that.transaction.loading = false;
-                        that.transaction = new Transaction(response.data)
+                        // that.transaction = new Transaction(response.data)
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
@@ -236,7 +245,41 @@
                         that.transaction.loading = false;
                         that.transaction = new Transaction()
                     })
-            }
+            },
+            confirmRemove() {
+                this.$confirm(
+                    {
+                        message: `از حذف تراکنش اطمینان دارید؟`,
+                        button: {
+                            no: 'خیر',
+                            yes: 'بله'
+                        },
+                        callback: confirm => {
+                            if (confirm) {
+                                this.remove()
+                            }
+                        }
+                    }
+                )
+            },
+            remove() {
+                let that = this;
+                that.transaction.loading = true;
+                that.transaction.delete()
+                    .then(function() {
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'تراکنش با موفقیت حذف شد'
+                        })
+                        that.$router.push({name:'Transaction.List'})
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        that.transaction.editMode = false
+                        that.transaction.loading = false
+                    });
+            },
         }
     }
 </script>
