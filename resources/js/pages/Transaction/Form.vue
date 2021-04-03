@@ -154,12 +154,12 @@
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
-        components: {PriceInput},
         watch: {
             'transaction.transaction_status.id': function () {
                 this.transaction.transaction_statusـid = this.transaction.transaction_status.id
             }
         },
+        components: {PriceInput},
         mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         data: () => ({
             transaction: new Transaction(),
@@ -210,7 +210,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.transaction.loading = false;
                         that.transaction = new Transaction()
                     })
@@ -232,7 +232,7 @@
                         that.$router.push({ path: '/allocated_loan/'+that.transaction.id })
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.transaction.loading = false;
                         that.transaction = new Transaction()
                     })

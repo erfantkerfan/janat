@@ -227,6 +227,18 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $userWithhasNotSettledLoan = $user->setAppends(['hasNotSettledLoan']);
+
+        if ($userWithhasNotSettledLoan->hasNotSettledLoan) {
+            return $this->jsonResponseValidateError([
+                'errors' => [
+                    'has_relations' => [
+                        'کاربر انتخاب شده دارای وام تسویه نشده است.'
+                    ]
+                ]
+            ]);
+        }
+
         return $this->commonDestroy($user);
     }
 }

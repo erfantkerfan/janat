@@ -53,13 +53,17 @@ Route::group(['middleware' => 'auth'], function () {
         Route::group(['prefix' => 'allocated_loans'], function () {
             Route::get('pay_periodic_payroll_deduction', [AllocatedLoanController::class, 'payPeriodicPayrollDeduction'])
                 ->name('api.panel.allocated_loans.pay_periodic_payroll_deduction');
+            Route::get('rollback_pay_periodic_payroll_deduction', [AllocatedLoanController::class, 'rollbackPayPeriodicPayrollDeduction'])
+                ->name('api.panel.allocated_loans.rollback_pay_periodic_payroll_deduction');
         });
         Route::resource('allocated_loans', '\\'. AllocatedLoanController::class);
         Route::resource('allocated_loan_Installments', '\\'. AllocatedLoanInstallmentController::class);
         Route::group(['prefix' => 'accounts'], function () {
             Route::get('{account}/balance', [AccountController::class, 'getBalance']);
-            Route::get('pay_periodic_payroll_deduction_for_charge_fund', [AccountController::class, 'payPeriodicPayrollDeductionForChargeFund'])
-                ->name('api.panel.accounts.pay_periodic_payroll_deduction_for_charge_fund');
+            Route::get('pay_periodic_payroll_deduction', [AccountController::class, 'payPeriodicPayrollDeductionForChargeFund'])
+                ->name('api.panel.accounts.pay_periodic_payroll_deduction');
+            Route::get('rollback_pay_periodic_payroll_deduction', [AccountController::class, 'rollbackPayPeriodicPayrollDeduction'])
+                ->name('api.panel.accounts.rollback_pay_periodic_payroll_deduction');
         });
         Route::resource('accounts', '\\'. AccountController::class);
         Route::resource('transactions', '\\'. TransactionController::class);

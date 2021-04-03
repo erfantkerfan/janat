@@ -81,6 +81,22 @@ class User extends Authenticatable
         return $this->morphToMany(Transaction::class, 'transaction_payers');
     }
 
+    public function getHasNotSettledLoanAttribute()
+    {
+        $hasNotSettledLoan = false;
+        $userWithAccounts = $this->accounts()->get()->map(function (& $item) {
+            return $item->setAppends(['hasNotSettledLoan']);
+        });
+
+        $userWithAccounts->each(function ($userWithAccount) use (& $hasNotSettledLoan) {
+            if ($userWithAccount->hasNotSettledLoan) {
+                $hasNotSettledLoan = true;
+            }
+        });
+
+        return $hasNotSettledLoan;
+    }
+
     public function getCountOfAllocatedLoansAttribute()
     {
         return $this->accounts->reduce(function ($carry, $item) {

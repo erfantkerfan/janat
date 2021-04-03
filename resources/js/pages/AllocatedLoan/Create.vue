@@ -372,7 +372,7 @@
                         that.$router.push({ path: '/allocated_loan/'+newAllocatedLoan.id })
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.allocatedLoan.loading = false;
                     })
             },
@@ -409,7 +409,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.allocatedLoan.loading = false;
                         that.allocatedLoan = new AllocatedLoan()
                     })

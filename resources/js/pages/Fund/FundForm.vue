@@ -249,7 +249,7 @@
                         that.getLoans()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.closeLoanDialog()
                     })
             },
@@ -269,7 +269,7 @@
                         that.closeAccountDialog()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.closeAccountDialog()
                     })
             },
@@ -335,7 +335,7 @@
                         that.loans = new LoanList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.loans.loading = false;
                         that.loans = new LoanList()
                     })
@@ -358,7 +358,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.fund.loading = false;
                         that.fund = new Fund()
                     })
@@ -379,7 +379,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.fund.loading = false;
                         that.showFundIncomes = false;
                     })
@@ -401,7 +401,7 @@
                         that.$router.push({ path: '/fund/'+that.fund.id })
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.fund.loading = false;
                         that.fund = new Fund()
                     })

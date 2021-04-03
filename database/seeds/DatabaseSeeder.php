@@ -108,6 +108,11 @@ class TransactionTypeSeeder extends Seeder {
     {
         DBAssistant::resetTable('transaction_types');
 
+//        TransactionType::create([
+//            'name' => 'monthly payment of the user to the fund',
+//            'display_name' => 'پرداخت ماهانه کاربر به صندوق',
+//            'description' => 'ماهانه ای که کاربر می بایست هر ماه به صندوق واریز کند'
+//        ]);
         TransactionType::create([
             'name' => 'user charge fund',
             'display_name' => 'کمک مالی کاربر به صندوق',

@@ -217,7 +217,7 @@
                         that.createTransaction()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.allocatedLoanInstallment.loading = false;
                         that.allocatedLoanInstallment = new AllocatedLoan()
                     })
@@ -239,7 +239,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.transaction.loading = false
                     })
             },
@@ -321,7 +321,7 @@
                         that.$router.push({ path: '/allocated_loan/'+newAllocatedLoan.id })
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.allocatedLoan.loading = false;
                         that.allocatedLoan = new AllocatedLoan()
                     })
@@ -346,7 +346,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.allocatedLoan.loading = false;
                         that.allocatedLoan = new AllocatedLoan()
                     })

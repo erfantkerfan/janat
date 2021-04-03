@@ -352,7 +352,7 @@
                         that.getData()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.transaction.loading = false
                         that.getData()
                     })

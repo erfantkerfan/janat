@@ -291,7 +291,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.allocatedLoan.loading = false;
                         that.allocatedLoan = new AllocatedLoan()
                     })
@@ -313,7 +313,7 @@
                         that.$router.push({ path: '/allocated_loan/'+that.allocatedLoan.id })
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.allocatedLoan.loading = false;
                         that.allocatedLoan = new AllocatedLoan()
                     })
@@ -360,7 +360,7 @@
                         that.newAllocatedLoan.account.user = new User(response.data)
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.newAllocatedLoan.account.user.loading = false;
                         that.newAllocatedLoan.account.user = new User()
                     })

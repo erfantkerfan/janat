@@ -20,7 +20,7 @@
                     :link="{ name: 'پیشخوان', icon: 'dashboard', path: '/' }"
                 />
 
-                <sidebar-item :opened="false" :link="{ name: 'تعاریف اولیه', icon: 'category' }">
+                <sidebar-item :opened="false" :link="{ name: 'تعاریف اولیه', icon: 'layers' }">
                     <sidebar-item
                         :link="{
                         name: 'صندوق ها',
@@ -43,18 +43,18 @@
                       }"
                     />
                 </sidebar-item>
-                <sidebar-item :opened="false" :link="{ name: 'فرایند های دوره ای', icon: '360' }">
+                <sidebar-item :opened="false" :link="{ name: 'فرایند های دوره ای', icon: 'autorenew' }">
                     <sidebar-item
                         :link="{
                         name: 'پرداخت اقساط کسر از حقوق',
-                        icon: 'how_to_vote',
+                        icon: 'account_balance',
                         path: '/periodic_processes/payment_of_payroll_deductions',
                       }"
                     />
                     <sidebar-item
                         :link="{
                         name: 'پرداخت ماهانه کسر از حقوق',
-                        icon: 'how_to_vote',
+                        icon: 'class',
                         path: '/periodic_processes/pay_fund_monthly_payment_by_payroll_deduction',
                       }"
                     />
