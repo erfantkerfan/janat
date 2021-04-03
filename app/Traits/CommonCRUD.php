@@ -206,4 +206,15 @@ trait CommonCRUD
             ]);
         }
     }
+
+    public function getHasRelations($modelClass, $relations) {
+        $hasRelations = [];
+        foreach ($relations as $relation) {
+            if (!$modelClass->$relation()->exists()) {
+                $hasRelations []= $relation;
+            }
+        }
+
+        return $hasRelations;
+    }
 }

@@ -186,15 +186,16 @@
                                     مشاهده موجودی
                                     <md-progress-spinner v-if="newAccount.loading" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
                                 </md-button>
-                                <label v-if="!showAccountBalanceBtn" class="md-layout-item md-size-45 md-form-label">
-                                    جمع پرداختی های ماهانه:
-                                    ({{ currencyUnit }})
-                                </label>
-                                <div v-if="!showAccountBalanceBtn" class="md-layout-item">
-                                    {{ newAccount.balance | currencyFormat}}
-                                    <br>
-                                    {{ digitsToWords(newAccount.balance) }} {{ currencyUnit }}
-                                </div>
+
+
+                                <price-input
+                                    v-if="!showAccountBalanceBtn"
+                                    v-model="newAccount.balance"
+                                    :label="'جمع پرداختی های ماهانه و کمک مالی به صندوق'"
+                                    :label-size="40"
+                                    :disabled="true"
+                                />
+
                             </div>
                             <hr>
                             <div class="md-layout">
@@ -268,10 +269,12 @@
 <script>
     import {User} from '@/models/User'
     import {Account} from '@/models/Account'
+    import PriceInput from '@/components/PriceInput'
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin} from '@/mixins/Mixins'
 
     export default {
         name: 'user-profile-card',
+        components: {PriceInput},
         watch: {
             'value.status.id': function () {
                 this.value.status_id = this.value.status.id
@@ -347,7 +350,7 @@
                         that.cardUserImage = result
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.clearUserPicBuffer()
                     })
             },
@@ -456,7 +459,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.$emit('update')
                         item.editMode = false;
                         item.loading = false;

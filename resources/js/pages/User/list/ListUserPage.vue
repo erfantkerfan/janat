@@ -395,7 +395,7 @@
                 let that = this;
                 item.delete()
                     .then(function(response) {
-                        this.$store.dispatch('alerts/fire', {
+                        that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
                             message: 'کاربر با موفقیت حذف شد'
@@ -403,7 +403,7 @@
                         that.getList()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         item.editMode = false;
                         item.loading = false;
                     });

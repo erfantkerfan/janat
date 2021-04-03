@@ -81,17 +81,10 @@
                                 </h4>
                             </md-card-header>
                             <md-card-content>
-                                <div class="md-layout">
-                                    <label class="md-layout-item md-size-15 md-form-label">
-                                        مبلغ
-                                    </label>
-                                    <div class="md-layout-item">
-                                        <md-field class="md-invalid">
-<!--                                            <md-input :value="transaction.cost | currencyFormat" @input="currencyFormatInput"/>-->
-                                            <md-input v-model="transaction.cost"/>
-                                        </md-field>
-                                    </div>
-                                </div>
+                                <price-input
+                                    v-model="transaction.cost"
+                                    :label="'مبلغ'"
+                                />
                                 <div class="md-layout">
                                     <label class="md-layout-item md-size-15 md-form-label">
                                         توضیحات مدیر
@@ -173,6 +166,7 @@
 
 <script>
     import ListPagination from '@/components/ListPagination'
+    import PriceInput from '@/components/PriceInput'
     import { StatsCard } from "@/components"
     import { AllocatedLoan } from '@/models/AllocatedLoan'
     import { AllocatedLoanInstallment } from "@/models/AllocatedLoanInstallment"
@@ -187,7 +181,7 @@
                 this.allocatedLoan.fund_id = this.allocatedLoan.fund.id
             }
         },
-        components: { StatsCard, ListPagination },
+        components: { StatsCard, ListPagination, PriceInput },
         mixins: [priceFilterMixin, axiosMixin, getFilterDropdownMixin],
         data: () => ({
             allocatedLoan: new AllocatedLoan(),
@@ -252,7 +246,7 @@
                         that.getData()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.transaction.loading = false
                         that.getData()
                     })

@@ -11,6 +11,7 @@ use App\Account;
 use App\AllocatedLoan;
 use App\Traits\Filter;
 use App\Traits\CommonCRUD;
+use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -263,6 +264,27 @@ class AllocatedLoanController extends Controller
                 ]
             ]);
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function rollbackPayPeriodicPayrollDeduction(Request $request)
+    {
+        $lastPaidAtAfter = $request->get('pay_since_date');
+        $lastPaidAtBefore = $request->get('pay_till_date');
+
+        Transaction::whereHas('transactionType', function ($query) use ($lastPaidAtAfter, $lastPaidAtBefore) {
+            $query->where('transaction_types.name', '=', config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT'));
+        })
+            ->where('transaction_status_id', '=', 1)
+            ->where('paid_as_payroll_deduction', '=', 1)
+            ->where('paid_at', '>=', $lastPaidAtAfter)
+            ->where('paid_at', '<=', $lastPaidAtBefore)
+            ->delete();
+
+        return $this->jsonResponseOk(null);
     }
 
     private function getNotSettledInstallment($allocatedLoanItem) {

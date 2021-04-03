@@ -133,7 +133,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.company.loading = false;
                     })
             },
@@ -154,7 +154,7 @@
                         that.$router.push({ path: '/company/'+that.company.id })
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.company.loading = false;
                     })
             }

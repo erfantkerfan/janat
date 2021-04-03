@@ -363,7 +363,7 @@
                         that.getList()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         item.editMode = false
                         item.loading = false
                     });

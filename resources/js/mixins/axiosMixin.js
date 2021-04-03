@@ -2,12 +2,12 @@ export default {
     methods: {
         axios_handleError (error) {
             let errorMessage = ''
+            let statusCode = parseInt(error.response.status)
             if (error.response) {
                 // Request made and server responded
                 console.log(error.response.data)
                 console.log(error.response.status)
                 console.log(error.response.headers)
-                let statusCode = parseInt(error.response.status)
                 if (statusCode === 401) {
                     errorMessage = 'ابتدا وارد شوید.'
                 } else if (statusCode === 403) {

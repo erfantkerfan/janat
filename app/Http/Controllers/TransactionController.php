@@ -80,22 +80,22 @@ class TransactionController extends Controller
      */
     public function store(StoreTransaction $request)
     {
-        DB::beginTransaction();
         $transactionStatus = TransactionStatus::findOrFail($request->get('transaction_status_id'));
         $cost = $request->get('cost');
         $paid_as_payroll_deduction = 0;
-        if ($request->has('paid_as_payroll_deduction') && $request->get('paid_as_payroll_deduction') == 1) {
+        if ($request->has('paid_as_payroll_deduction') && $request->get('paid_as_payroll_deduction')) {
             $paid_as_payroll_deduction = 1;
         }
 
         $transactionType = $this->getTransactionType($request);
+
         if (!$transactionType) {
-            DB::rollBack();
             return $this->jsonResponseValidateError([
                 'errors' => 'نوع تراکنش معتبر نیست.'
             ]);
         }
 
+        DB::beginTransaction();
         $transaction = Transaction::create([
             'cost' => $cost,
             'manager_comment' => $request->get('manager_comment'),
