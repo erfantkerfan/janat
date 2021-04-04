@@ -272,7 +272,7 @@
                             title: 'توجه',
                             message: 'تراکنش با موفقیت حذف شد'
                         })
-                        that.$router.push({name:'Transaction.List'})
+                        that.$router.go(-1)
                     })
                     .catch((error) => {
                         this.axios_handleError(error)

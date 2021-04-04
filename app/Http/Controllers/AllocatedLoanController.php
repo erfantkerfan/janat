@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\AllocatedLoanInstallment;
-use App\Classes\LoanCalculator;
 use App\Http\Requests\StoreAllocatedLoanInstallment;
 use App\Http\Requests\StoreTransaction;
 use App\Loan;
 use App\Account;
 use App\AllocatedLoan;
+use App\Setting;
 use App\Traits\Filter;
 use App\Traits\CommonCRUD;
 use App\Transaction;
@@ -128,11 +127,20 @@ class AllocatedLoanController extends Controller
             'number_of_installments' => $loan->number_of_installments,
             'payroll_deduction' => $request->get('payroll_deduction')
         ]);
+        $typeOfLoanInterestPayment = Setting::where('name', 'type_of_loan_interest_payment')->first()->value;
+
+        if ($typeOfLoanInterestPayment === 'monthly_payment') {
+            $transactionCost = $loan->loan_amount;
+        } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
+            $transactionCost = $loan->loan_amount - $loan->interest_amount;
+        } else {
+            $transactionCost = $loan->loan_amount;
+        }
 
         // create transaction and fund withdrawal
         $storeTransactionRequest = new StoreTransaction();
         $storeTransactionRequest->replace([
-            'cost' => $loan->loan_amount,
+            'cost' => $transactionCost,
             'transaction_status_id' => 1,
             'paid_as_payroll_deduction' => 0,
             'paid_at' => $request->get('paid_at'),
@@ -152,9 +160,6 @@ class AllocatedLoanController extends Controller
                 'message' => 'مشکلی در تخصیص وام در پایگاه داده رخ داده است.'
             ]);
         }
-//        return $this->commonStore($request, AllocatedLoan::class);
-
-
     }
 
     /**
