@@ -97,6 +97,20 @@ class User extends Authenticatable
         return $hasNotSettledLoan;
     }
 
+    public function getTotalCreditAttribute()
+    {
+        $totalCredit = 0;
+        $userWithAccounts = $this->accounts()->get()->map(function (& $item) {
+            return $item->setAppends(['hasNotSettledLoan']);
+        });
+
+        $userWithAccounts->each(function ($userWithAccount) use (& $totalCredit) {
+            $totalCredit += $userWithAccount->totalPaidSalaries();
+        });
+
+        return $totalCredit;
+    }
+
     public function getCountOfAllocatedLoansAttribute()
     {
         return $this->accounts->reduce(function ($carry, $item) {

@@ -170,17 +170,10 @@
                                 </h4>
                             </md-card-header>
                             <md-card-content>
-                                <div class="md-layout">
-                                    <label class="md-layout-item md-size-15 md-form-label">
-                                        مبلغ
-                                    </label>
-                                    <div class="md-layout-item">
-                                        <md-field class="md-invalid">
-<!--                                            <md-input :value="transaction.cost | currencyFormat" @input="currencyFormatInput"/>-->
-                                            <md-input v-model="transaction.cost"/>
-                                        </md-field>
-                                    </div>
-                                </div>
+                                <price-input
+                                    v-model="transaction.cost"
+                                    :label="'مبلغ'"
+                                />
                                 <div class="md-layout">
                                     <label class="md-layout-item md-size-15 md-form-label">
                                         توضیحات مدیر
@@ -267,13 +260,13 @@
     import moment from 'moment'
     import {Transaction} from "@/models/Transaction";
     import {Fund} from "@/models/Fund";
-    import {Company} from "@/models/Company";
+    import PriceInput from '@/components/PriceInput'
     import {User} from "@/models/User";
     import {Account} from "@/models/Account";
 
     export default {
         name: 'Create',
-        components: { StatsCard, ListPagination },
+        components: { StatsCard, ListPagination, PriceInput },
         mixins: [priceFilterMixin, axiosMixin, getFilterDropdownMixin],
         data: () => ({
             fund: new Fund(),
