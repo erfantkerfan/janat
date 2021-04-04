@@ -81,17 +81,24 @@
                                 تاریخ ایجاد:
                                 {{ allocatedLoan.shamsiDate('created_at').date }}
                                 <br>
-                                مبلغ وام:
-                                {{ allocatedLoan.loan_amount }}
-                                <br>
-                                مبلغ هر قسط وام:
-                                {{ allocatedLoan.installment_rate }}
-                                <br>
                                 تعداد اقساط:
                                 {{ allocatedLoan.number_of_installments }}
-                                <p v-if="allocatedLoan.payroll_deduction">
-                                    کسر از حقوق
-                                </p>
+                                <hr>
+                                <price-input
+                                    v-model="allocatedLoan.loan_amount"
+                                    :label="'مبلغ وام'"
+                                    :label-size="100"
+                                    :disabled="true"
+                                />
+                                <hr>
+                                <price-input
+                                    v-model="allocatedLoan.installment_rate"
+                                    :label="'مبلغ هر قسط وام'"
+                                    :label-size="100"
+                                    :disabled="true"
+                                />
+                                <hr>
+                                <md-chip v-if="allocatedLoan.payroll_deduction" class="md-accent">کسر از حقوق</md-chip>
                             </template>
                         </stats-card>
                     </div>
@@ -112,9 +119,11 @@
                                 <br>
                                 کل مبلغ پرداختی:
                                 {{ allocatedLoan.total_payments | currencyFormat }}
-                                -
+                                {{ currencyUnit }}
+                                <br>
                                 مبلغ قابل پرداخت باقیمانده:
                                 {{ allocatedLoan.remaining_payable_amount | currencyFormat}}
+                                {{ currencyUnit }}
                                 <br>
                                 تعداد
                                 {{ allocatedLoan.count_of_paid_installments }}
@@ -137,9 +146,9 @@
                             <md-table-row slot="md-table-row"
                                           slot-scope="{ item }"
                                           :class="getInstallmentRowClass(item)">
-                                <md-table-cell md-label="مبلغ قسط" md-sort-by="rate">{{ item.rate | currencyFormat }}</md-table-cell>
-                                <md-table-cell md-label="کل پرداختی" md-sort-by="total_payments">{{ item.total_payments | currencyFormat }}</md-table-cell>
-                                <md-table-cell md-label="مبلغ قابل پرداخت باقیمانده" md-sort-by="remaining_payable_amount">{{ item.remaining_payable_amount | currencyFormat }}</md-table-cell>
+                                <md-table-cell md-label="مبلغ قسط" md-sort-by="rate">{{ item.rate | currencyFormat }} {{ currencyUnit }}</md-table-cell>
+                                <md-table-cell md-label="کل پرداختی" md-sort-by="total_payments">{{ item.total_payments | currencyFormat }} {{ currencyUnit }}</md-table-cell>
+                                <md-table-cell md-label="مبلغ قابل پرداخت باقیمانده" md-sort-by="remaining_payable_amount">{{ item.remaining_payable_amount | currencyFormat }} {{ currencyUnit }}</md-table-cell>
                                 <md-table-cell md-label="وضعیت" md-sort-by="is_settled">
                                     <span v-if="item.is_settled">
                                         تسویه شده
@@ -156,7 +165,7 @@
                                         class="md-icon-button md-raised md-round md-info"
                                         style="margin: .2rem;"
                                     >
-                                        <md-icon>preview</md-icon>
+                                        <md-icon>pageview</md-icon>
                                         <md-tooltip md-direction="top">مشاهده تراکنش ها</md-tooltip>
                                     </md-button>
                                     <md-button
@@ -223,7 +232,7 @@
                                                     class="md-icon-button md-raised md-round md-info"
                                                     style="margin: .2rem;"
                                                 >
-                                                    <md-icon>preview</md-icon>
+                                                    <md-icon>pageview</md-icon>
                                                     <md-tooltip md-direction="top">مشاهده</md-tooltip>
                                                 </md-button>
                                             </md-table-cell>
@@ -257,6 +266,7 @@
     import { AllocatedLoan } from '@/models/AllocatedLoan'
     import { AllocatedLoanInstallment } from "@/models/AllocatedLoanInstallment"
     import { priceFilterMixin, axiosMixin } from '@/mixins/Mixins'
+    import PriceInput from '@/components/PriceInput'
     import { Account } from "@/models/Account";
     import { User } from "@/models/User";
 
@@ -266,7 +276,7 @@
                 this.allocatedLoan.fund_id = this.allocatedLoan.fund.id
             }
         },
-        components: { StatsCard },
+        components: { StatsCard, PriceInput },
         mixins: [priceFilterMixin, axiosMixin],
         data: () => ({
             confirmDialogShow: false,
@@ -328,7 +338,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.allocatedLoan.loading = false;
                         that.allocatedLoan = new AllocatedLoan()
                     })
@@ -350,7 +360,7 @@
                         that.$router.push({ path: '/allocated_loan/'+that.allocatedLoan.id })
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.allocatedLoan.loading = false;
                         that.allocatedLoan = new AllocatedLoan()
                     })
@@ -398,7 +408,7 @@
                         that.newAllocatedLoan.account.user = new User(response.data)
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.newAllocatedLoan.account.user.loading = false;
                         that.newAllocatedLoan.account.user = new User()
                     })
@@ -421,7 +431,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.getData()
                         that.allocatedLoanInstallment.loading = false
                         that.allocatedLoanInstallment = new AllocatedLoanInstallment()
@@ -449,7 +459,7 @@
                         that.getData()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.getData()
                     })
             },

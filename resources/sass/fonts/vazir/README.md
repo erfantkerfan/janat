@@ -15,7 +15,7 @@ A Persian (Farsi) Font
 فرآیند تولید بسته نهایی شامل انواع نسخه‌ها و فرمت‌ها توسط ابزار [fontbuilder](https://github.com/rastikerdar/fontbuilder) انجام می‌شود.
 
 ## نمونه متن Sample:
-![نمونه متن فونت وزیر](./sample.png)
+![نمونه متن فونت وزیر](sample.png)
 
 ## طریقه استفاده در صفحات وب:
 

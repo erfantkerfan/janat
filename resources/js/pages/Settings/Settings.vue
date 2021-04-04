@@ -135,7 +135,7 @@
                         that.$router.push({ path: '/loan/'+that.loan.id })
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.loan.loading = false;
                     })
             }

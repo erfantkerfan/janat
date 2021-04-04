@@ -131,6 +131,12 @@
                     </div>
                     <div class="md-layout">
                         <div class="md-layout-item">
+                            <md-checkbox v-model="filterData.hasLoanPayrollDeduction">دارای وام کسر از حقوق</md-checkbox>
+                            <md-checkbox v-model="filterData.hasAccountPayrollDeduction">دارای ماهانه کسر از حقوق</md-checkbox>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
                             <md-field>
                                 <label>وضعیت:</label>
                                 <md-select v-model="filterData.status_id" name="pages">
@@ -198,7 +204,7 @@
                                     :fields="json_fields"
                                 >
                                     <md-button class="md-dense md-icon-button md-raised md-info">
-                                        <md-icon>calendar_view_month</md-icon>
+                                        <md-icon>file_download</md-icon>
                                     </md-button>
                                 </Json-excel>
                             </md-field>
@@ -309,6 +315,8 @@
                 },
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
+                hasLoanPayrollDeduction: false,
+                hasAccountPayrollDeduction: false,
                 f_name: null,
                 l_name: null,
                 phone: null,
@@ -341,6 +349,8 @@
                     page,
                     sortation_field: this.filterData.sortation.field,
                     sortation_order: this.filterData.sortation.order,
+                    hasLoanPayrollDeduction: (this.filterData.hasLoanPayrollDeduction === false) ? null : this.filterData.hasLoanPayrollDeduction,
+                    hasAccountPayrollDeduction: (this.filterData.hasAccountPayrollDeduction === false) ? null : this.filterData.hasAccountPayrollDeduction,
                     length: this.filterData.perPage,
                     f_name: this.filterData.f_name,
                     l_name: this.filterData.l_name,
@@ -385,7 +395,7 @@
                 let that = this;
                 item.delete()
                     .then(function(response) {
-                        this.$store.dispatch('alerts/fire', {
+                        that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
                             message: 'کاربر با موفقیت حذف شد'
@@ -393,7 +403,7 @@
                         that.getList()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         item.editMode = false;
                         item.loading = false;
                     });

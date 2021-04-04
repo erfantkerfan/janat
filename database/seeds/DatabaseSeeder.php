@@ -1,5 +1,6 @@
 <?php
 
+use App\TransactionType;
 use App\User;
 use App\Loan;
 use App\Fund;
@@ -33,6 +34,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserStatusSeeder::class);
         $this->call(UserTypeSeeder::class);
         $this->call(LoanTypeSeeder::class);
+        $this->call(TransactionTypeSeeder::class);
         $this->call(UserTableSeeder::class);
         $this->call(PermissionsSeeder::class);
         $this->call(TransactionStatusSeeder::class);
@@ -100,6 +102,77 @@ class UserTypeSeeder extends Seeder {
     }
 }
 
+class TransactionTypeSeeder extends Seeder {
+
+    public function run()
+    {
+        DBAssistant::resetTable('transaction_types');
+
+//        TransactionType::create([
+//            'name' => 'monthly payment of the user to the fund',
+//            'display_name' => 'پرداخت ماهانه کاربر به صندوق',
+//            'description' => 'ماهانه ای که کاربر می بایست هر ماه به صندوق واریز کند'
+//        ]);
+        TransactionType::create([
+            'name' => 'user charge fund',
+            'display_name' => 'کمک مالی کاربر به صندوق',
+            'description' => 'کاربر خیر به صندوق کمک مالی می کند'
+        ]);
+        TransactionType::create([
+            'name' => 'company charge fund',
+            'display_name' => 'کمک مالی شرکت به صندوق',
+            'description' => 'شرکت خیر به صندوق کمک مالی می کند'
+        ]);
+        TransactionType::create([
+            'name' => 'user pay installment',
+            'display_name' => 'پرداخت قسط کاربر',
+            'description' => 'کاربر قسط وام خود را به حساب صندوق واریز می کند.'
+        ]);
+        TransactionType::create([
+            'name' => 'fund pay loan',
+            'display_name' => 'پرداخت وام از صندوق به حساب کاربر',
+            'description' => 'صندوق مبلغ وام را به حساب کاربر واربز می کند.'
+        ]);
+        TransactionType::create([
+            'name' => 'user withdraws from account',
+            'display_name' => 'برداشت کاربر از حساب صندوق',
+            'description' => 'کاربر از موجودی خود در صندوق برداشت می کند.'
+        ]);
+        TransactionType::create([
+            'name' => 'include sub-transactions',
+            'display_name' => 'شامل ریز تراکنش ها',
+            'description' => 'این تراکنش شامل ریز تراکنش هایی از انواع تراکنش های دیگر است.'
+        ]);
+    }
+
+    public static function getRandomObject() {
+        return UserType::where('id', Factory::create()->numberBetween(1, 3))->first();
+    }
+}
+
+class TransactionStatusSeeder extends Seeder {
+
+    public function run()
+    {
+        DBAssistant::resetTable('transaction_statuses');
+
+        TransactionStatus::create([
+            'name' => 'paid',
+            'display_name' => 'پرداخت شده',
+            'description' => ''
+        ]);
+        TransactionStatus::create([
+            'name' => 'pending',
+            'display_name' => 'در انتظار پرداخت',
+            'description' => ''
+        ]);
+    }
+
+    public static function getRandomObject() {
+        return TransactionStatus::where('id', Factory::create()->numberBetween(1, 2))->first();
+    }
+}
+
 class LoanTypeSeeder extends Seeder {
 
     public function run()
@@ -158,29 +231,6 @@ class PermissionsSeeder extends Seeder {
 
         $user = User::where('SSN', 'admin')->first();
         $user->assignRole([$role->name]);
-    }
-}
-
-class TransactionStatusSeeder extends Seeder {
-
-    public function run()
-    {
-        DBAssistant::resetTable('transaction_statuses');
-
-        TransactionStatus::create([
-            'name' => 'paid',
-            'display_name' => 'پرداخت شده',
-            'description' => ''
-        ]);
-        TransactionStatus::create([
-            'name' => 'pending',
-            'display_name' => 'در انتظار پرداخت',
-            'description' => ''
-        ]);
-    }
-
-    public static function getRandomObject() {
-        return TransactionStatus::where('id', Factory::create()->numberBetween(1, 2))->first();
     }
 }
 
@@ -494,12 +544,14 @@ class FakeTransaction extends Seeder {
     private function userChargeFund($faker, $transactionStatus) {
         $account = FakeAccount::getRandomObject();
         $fund = FakeFund::getRandomObject();
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND'))->first();
         $cost = $account->monthly_payment;
         $transaction = Transaction::create([
             'cost' => $cost,
             'manager_comment' => $faker->paragraph,
             'user_comment' => $faker->paragraph,
             'transaction_status_id' => $transactionStatus->id,
+            'transaction_type_id' => $transactionType->id,
             'deadline_at' => $faker->dateTime(),
             'paid_at' => $faker->dateTime(),
             'created_at' => $faker->dateTime()
@@ -511,12 +563,14 @@ class FakeTransaction extends Seeder {
     private function companyChargeFund($faker, $transactionStatus) {
         $company = FakeCompany::getRandomObject();
         $fund = FakeFund::getRandomObject();
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_COMPANY_CHARGE_FUND'))->first();
         $cost = rand(1000, 10000);
         $transaction = Transaction::create([
             'cost' => $cost,
             'manager_comment' => $faker->paragraph,
             'user_comment' => $faker->paragraph,
             'transaction_status_id' => $transactionStatus->id,
+            'transaction_type_id' => $transactionType->id,
             'deadline_at' => $faker->dateTime(),
             'paid_at' => $faker->dateTime(),
             'created_at' => $faker->dateTime()
@@ -528,12 +582,14 @@ class FakeTransaction extends Seeder {
     private function fundPayLoan($faker, $transactionStatus) {
         $fund = FakeFund::getRandomObject();
         $allocatedLoan = FakeAllocatedLoan::getRandomObject();
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_FUND_PAY_LOAN'))->first();
         $cost = $allocatedLoan->loan_amount;
         $transaction = Transaction::create([
             'cost' => $cost,
             'manager_comment' => $faker->paragraph,
             'user_comment' => $faker->paragraph,
             'transaction_status_id' => $transactionStatus->id,
+            'transaction_type_id' => $transactionType->id,
             'deadline_at' => $faker->dateTime(),
             'paid_at' => $faker->dateTime(),
             'created_at' => $faker->dateTime()
@@ -543,6 +599,7 @@ class FakeTransaction extends Seeder {
     }
 
     private function userPayInstallment($faker, $transactionStatus) {
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT'))->first();
         $allocatedLoanInstallment = FakeAllocatedLoanInstallment::getRandomObject();
         $user = $allocatedLoanInstallment->allocatedLoan->account->user()->first();
 
@@ -558,6 +615,7 @@ class FakeTransaction extends Seeder {
             'manager_comment' => $faker->paragraph,
             'user_comment' => $faker->paragraph,
             'transaction_status_id' => $transactionStatus->id,
+            'transaction_type_id' => $transactionType->id,
             'deadline_at' => $faker->dateTime(),
             'paid_at' => $faker->dateTime(),
             'created_at' => $faker->dateTime()

@@ -22,12 +22,8 @@ class CreateTransactionsTable extends Migration
             $table->longText('manager_comment')->nullable()->comment('توضیح مسئول درباره تراکنش');
             $table->longText('user_comment')->nullable()->comment('توضیح کاربر درباره تراکنش');
 
-            $table->bigInteger('transaction_status_id')->nullable()->unsigned()->comment('وضعیت تراکنش');
-
-//            $table->bigInteger('user_id')->nullable()->unsigned()->comment('کاربر');
-//            $table->bigInteger('fund_id')->nullable()->unsigned()->comment('صندوق');
-//            $table->bigInteger('company_id')->nullable()->unsigned()->comment('شرکت');
-//            $table->bigInteger('allocated_loan_id')->nullable()->unsigned()->comment('وام تخصیص داده شده');
+            $table->tinyInteger('transaction_status_id')->nullable()->unsigned()->comment('وضعیت تراکنش');
+            $table->tinyInteger('transaction_type_id')->nullable()->unsigned()->comment('وضعیت تراکنش');
 
             $table->bigInteger('parent_transaction_id')->nullable()->unsigned()->comment('تراکنش کلی که شامل ریز تراکنش ها هست');
             $table->timestamps();
@@ -38,30 +34,11 @@ class CreateTransactionsTable extends Migration
                 ->on('transaction_statuses')
                 ->onDelete('cascade')
                 ->onupdate('cascade');
-
-//            $table->foreign('user_id')
-//                ->references('id')
-//                ->on('users')
-//                ->onDelete('cascade')
-//                ->onupdate('cascade');
-//
-//            $table->foreign('fund_id')
-//                ->references('id')
-//                ->on('funds')
-//                ->onDelete('cascade')
-//                ->onupdate('cascade');
-//
-//            $table->foreign('company_id')
-//                ->references('id')
-//                ->on('companies')
-//                ->onDelete('cascade')
-//                ->onupdate('cascade');
-//
-//            $table->foreign('allocated_loan_id')
-//                ->references('id')
-//                ->on('allocated_loans')
-//                ->onDelete('cascade')
-//                ->onupdate('cascade');
+            $table->foreign('transaction_type_id')
+                ->references('id')
+                ->on('transaction_types')
+                ->onDelete('cascade')
+                ->onupdate('cascade');
 
             $table->foreign('parent_transaction_id')
                 ->references('id')

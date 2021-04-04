@@ -47,6 +47,10 @@ class UserController extends Controller
             ],
             'select'=> [
                 'id', 'f_name','l_name','SSN', 'staff_code', 'phone', 'mobile', 'created_at'
+            ],
+            'scopes'=> [
+                'hasLoanPayrollDeduction',
+                'hasAccountPayrollDeduction'
             ]
         ];
 
@@ -223,6 +227,18 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $userWithhasNotSettledLoan = $user->setAppends(['hasNotSettledLoan']);
+
+        if ($userWithhasNotSettledLoan->hasNotSettledLoan) {
+            return $this->jsonResponseValidateError([
+                'errors' => [
+                    'has_relations' => [
+                        'کاربر انتخاب شده دارای وام تسویه نشده است.'
+                    ]
+                ]
+            ]);
+        }
+
         return $this->commonDestroy($user);
     }
 }

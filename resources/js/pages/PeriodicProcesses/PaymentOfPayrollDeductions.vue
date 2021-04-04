@@ -4,7 +4,7 @@
             <md-card>
                 <md-card-header class="md-card-header-icon md-card-header-green">
                     <div class="card-icon">
-                        <md-icon>how_to_vote</md-icon>
+                        <md-icon>autorenew</md-icon>
                     </div>
                     <h4 class="title">پرداخت کسر از حقوق ها</h4>
                 </md-card-header>
@@ -52,6 +52,7 @@
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <md-button class="md-dense md-raised md-info" @click="pay">پرداخت</md-button>
+                                <md-button class="md-dense md-raised md-danger" @click="rollback">برگشت</md-button>
                             </div>
                         </div>
                     </div>
@@ -72,7 +73,7 @@
                             :fields="json_fields"
                         >
                             <md-button class="md-dense md-icon-button md-raised md-info">
-                                <md-icon>calendar_view_month</md-icon>
+                                <md-icon>file_download</md-icon>
                             </md-button>
                         </Json-excel>
                     </md-field>
@@ -216,6 +217,27 @@
                     this.axios_handleError(error)
                     this.allocatedLoans.loading = false
                 })
+            },
+            rollback () {
+                this.allocatedLoans.loading = true
+                axios.get('/api/allocated_loans/rollback_pay_periodic_payroll_deduction', {
+                    params: {
+                        pay_since_date: this.paySinceDate,
+                        pay_till_date: this.payTillDate
+                    }
+                })
+                    .then( () => {
+                        this.allocatedLoans.loading = false
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'تمام تراکنش های کسر از حقوق مربوط به اقساط که در بازه زمانی انتخاب شده پرداخت شده بودند حذف شدند.'
+                        })
+                    })
+                    .catch( (error) => {
+                        this.axios_handleError(error)
+                        this.allocatedLoans.loading = false
+                    })
             },
             openLinkInNewTab (allocatedLoanId) {
                 window.open('/dashboard#/allocated_loan/' + allocatedLoanId, '_blank');

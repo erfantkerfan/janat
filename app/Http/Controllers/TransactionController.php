@@ -12,6 +12,7 @@ use App\Traits\CommonCRUD;
 use App\Traits\Filter;
 use App\Transaction;
 use App\TransactionStatus;
+use App\TransactionType;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -79,20 +80,29 @@ class TransactionController extends Controller
      */
     public function store(StoreTransaction $request)
     {
-        DB::beginTransaction();
         $transactionStatus = TransactionStatus::findOrFail($request->get('transaction_status_id'));
         $cost = $request->get('cost');
         $paid_as_payroll_deduction = 0;
-        if ($request->has('paid_as_payroll_deduction') && $request->get('paid_as_payroll_deduction') == 1) {
+        if ($request->has('paid_as_payroll_deduction') && $request->get('paid_as_payroll_deduction')) {
             $paid_as_payroll_deduction = 1;
         }
 
+        $transactionType = $this->getTransactionType($request);
+
+        if (!$transactionType) {
+            return $this->jsonResponseValidateError([
+                'errors' => 'نوع تراکنش معتبر نیست.'
+            ]);
+        }
+
+        DB::beginTransaction();
         $transaction = Transaction::create([
             'cost' => $cost,
             'manager_comment' => $request->get('manager_comment'),
             'paid_as_payroll_deduction' => $paid_as_payroll_deduction,
             'user_comment' => $request->get('user_comment'),
             'transaction_status_id' => $transactionStatus->id,
+            'transaction_type_id' => $transactionType->id,
             'deadline_at' => $request->get('deadline_at'),
             'paid_at' => $request->get('paid_at')
         ]);
@@ -110,6 +120,29 @@ class TransactionController extends Controller
         } else {
             DB::commit();
             return $this->show($transaction->id);
+        }
+    }
+
+    private function getTransactionType(Request $request) {
+        $transaction_type = $request->get('transaction_type');
+        $constantType = '';
+        if ($transaction_type === 'user_charge_fund') {
+            $constantType = config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND');
+        } else if ($transaction_type === 'company_charge_fund') {
+            $constantType = config('constants.TRANSACTION_TYPE_COMPANY_CHARGE_FUND');
+        } else if ($transaction_type === 'fund_pay_loan') {
+            $constantType = config('constants.TRANSACTION_TYPE_FUND_PAY_LOAN');
+        } else if ($transaction_type === 'user_pay_installment') {
+            $constantType = config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT');
+        } else {
+            return false;
+        }
+        $transactionType = TransactionType::where('name', $constantType)->first();
+
+        if (isset($transactionType)) {
+            return $transactionType;
+        } else {
+            return false;
         }
     }
 

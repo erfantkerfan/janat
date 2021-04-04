@@ -34,20 +34,7 @@
                                 </md-field>
                             </div>
                         </div>
-                        <div v-if="!isCreateForm()" class="md-layout">
-                            <label class="md-layout-item md-size-25 md-form-label">
-                                موجودی صندوق
-                                ({{ currencyUnit }})
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    {{ fund.balance | currencyFormat}}
-                                </md-field>
-                            </div>
-                            <md-tooltip md-direction="top">
-                                {{ digitsToWords(fund.balance) }} {{ currencyUnit }}
-                            </md-tooltip>
-                        </div>
+                        <price-input v-if="!isCreateForm()" v-model="fund.balance" :label="'موجودی صندوق'" :disabled="true" />
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-25 md-form-label">
                                 تاریخ تعریف صندوق
@@ -58,6 +45,14 @@
                                 </md-field>
                             </div>
                         </div>
+
+
+                        <md-button v-if="!showFundIncomes && !fund.loading" type="submit" @click="getIncomes">
+                            نمایش اطلاعات دریافتی صندوق
+                        </md-button>
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_charge_fund" :label="'مجموع ماهانه ها و واریزی های خیرین'" :disabled="true" />
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_installments_interest" :label="'مجموع کارمزد اقساط'" :disabled="true" />
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_all" :label="'مجموع تمام دریافتی های صندوق'" :disabled="true" />
 
                         <loading :active.sync="fund.loading" :is-full-page="false"></loading>
 
@@ -207,15 +202,18 @@
 <script>
     import {Fund} from '@/models/Fund'
     import {Loan, LoanList} from '@/models/Loan'
+    import PriceInput from '@/components/PriceInput'
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
         name: "fund-form",
+        components: {PriceInput},
         mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
         data: () => ({
             fund: new Fund(),
             loan: new Loan(),
             loans: new LoanList(),
+            showFundIncomes: false,
             editLoanState: false,
             createLoanShowDialog: false,
         }),
@@ -251,7 +249,7 @@
                         that.getLoans()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.closeLoanDialog()
                     })
             },
@@ -271,7 +269,7 @@
                         that.closeAccountDialog()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.closeAccountDialog()
                     })
             },
@@ -337,7 +335,7 @@
                         that.loans = new LoanList(response.data.data, response.data)
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.loans.loading = false;
                         that.loans = new LoanList()
                     })
@@ -360,9 +358,30 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.fund.loading = false;
                         that.fund = new Fund()
+                    })
+            },
+            getIncomes () {
+                let that = this
+                this.fund.loading = true;
+                this.fund.getIncomes()
+                    .then((response) => {
+
+                        that.fund.loading = false;
+                        that.showFundIncomes = true;
+                        that.fund.incomes = response.data
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'اطلاعات دریافتی صندوق محاسبه شد'
+                        });
+                    })
+                    .catch((error) => {
+                        that.axios_handleError(error)
+                        that.fund.loading = false;
+                        that.showFundIncomes = false;
                     })
             },
             createFund () {
@@ -382,7 +401,7 @@
                         that.$router.push({ path: '/fund/'+that.fund.id })
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.fund.loading = false;
                         that.fund = new Fund()
                     })

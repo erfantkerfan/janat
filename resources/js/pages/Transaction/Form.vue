@@ -12,16 +12,10 @@
                         </h4>
                     </md-card-header>
                     <md-card-content>
-                        <div class="md-layout">
-                            <label class="md-layout-item md-size-15 md-form-label">
-                                مبلغ
-                            </label>
-                            <div class="md-layout-item">
-                                <md-field class="md-invalid">
-                                    <md-input v-model="transaction.cost"/>
-                                </md-field>
-                            </div>
-                        </div>
+                        <price-input
+                            v-model="transaction.cost"
+                            :label="'مبلغ'"
+                        />
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 توضیحات مدیر
@@ -114,7 +108,7 @@
                                         class="md-icon-button md-raised md-round md-info"
                                         style="margin: .2rem;"
                                     >
-                                        <md-icon>edit</md-icon>
+                                        <md-icon>pageview</md-icon>
                                     </md-button>
                                 </md-table-cell>
                             </md-table-row>
@@ -141,7 +135,7 @@
                                         class="md-icon-button md-raised md-round md-info"
                                         style="margin: .2rem;"
                                     >
-                                        <md-icon>edit</md-icon>
+                                        <md-icon>pageview</md-icon>
                                     </md-button>
                                 </md-table-cell>
                             </md-table-row>
@@ -156,6 +150,7 @@
 
 <script>
     import { Transaction } from '@/models/Transaction'
+    import PriceInput from '@/components/PriceInput'
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
     export default {
@@ -164,6 +159,7 @@
                 this.transaction.transaction_statusـid = this.transaction.transaction_status.id
             }
         },
+        components: {PriceInput},
         mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         data: () => ({
             transaction: new Transaction(),
@@ -214,7 +210,7 @@
                         });
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.transaction.loading = false;
                         that.transaction = new Transaction()
                     })
@@ -236,7 +232,7 @@
                         that.$router.push({ path: '/allocated_loan/'+that.transaction.id })
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.transaction.loading = false;
                         that.transaction = new Transaction()
                     })

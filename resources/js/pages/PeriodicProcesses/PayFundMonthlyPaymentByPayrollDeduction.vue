@@ -4,7 +4,7 @@
             <md-card>
                 <md-card-header class="md-card-header-icon md-card-header-green">
                     <div class="card-icon">
-                        <md-icon>how_to_vote</md-icon>
+                        <md-icon>autorenew</md-icon>
                     </div>
                     <h4 class="title">پرداخت ماهانه صندوق به صورت کسر از حقوق</h4>
                 </md-card-header>
@@ -52,6 +52,7 @@
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <md-button class="md-dense md-raised md-info" @click="pay">پرداخت</md-button>
+                                <md-button class="md-dense md-raised md-danger" @click="rollback">برگشت</md-button>
                             </div>
                         </div>
                     </div>
@@ -77,7 +78,7 @@
                             :fields="json_fields"
                         >
                             <md-button class="md-dense md-icon-button md-raised md-info">
-                                <md-icon>calendar_view_month</md-icon>
+                                <md-icon>file_download</md-icon>
                             </md-button>
                         </Json-excel>
                     </md-field>
@@ -159,7 +160,7 @@
             },
             pay () {
                 this.accounts.loading = true
-                axios.get('/api/account/pay_periodic_payroll_deduction_for_charge_fund', {
+                axios.get('/api/accounts/pay_periodic_payroll_deduction', {
                     params: {
                         pay_since_date: this.paySinceDate,
                         pay_till_date: this.payTillDate
@@ -176,6 +177,27 @@
                                 message: 'برای حساب هایی که پرداخت کسر از حقوق ثبت شده و در بازه زمانی انتخاب شده پرداخت کسر از حقوق نداشته اند تراکنش ثبت شد و لیست حساب ها برای شما نمایش داده می شود.'
                             });
                         }
+                    })
+                    .catch( (error) => {
+                        this.axios_handleError(error)
+                        this.accounts.loading = false
+                    })
+            },
+            rollback () {
+                this.accounts.loading = true
+                axios.get('/api/accounts/rollback_pay_periodic_payroll_deduction', {
+                    params: {
+                        pay_since_date: this.paySinceDate,
+                        pay_till_date: this.payTillDate
+                    }
+                })
+                    .then( () => {
+                        this.accounts.loading = false
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'تمام تراکنش های کسر از حقوق مربوط به شهریه که در بازه زمانی انتخاب شده پرداخت شده بودند حذف شدند.'
+                        })
                     })
                     .catch( (error) => {
                         this.axios_handleError(error)

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTransactionStatusesTable extends Migration
+class CreateTransactionTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateTransactionStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('transaction_statuses', function (Blueprint $table) {
+        Schema::create('transaction_types', function (Blueprint $table) {
             $table->tinyIncrements('id');
-            $table->string('name')->nullable()->comment('نام وضعیت');
-            $table->string('display_name')->nullable()->comment('نام قابل نمایش این وضعیت');
-            $table->longText('description')->nullable()->comment('توضیح درباره وضعیت');
+            $table->string('name')->nullable()->comment('نام');
+            $table->string('display_name')->nullable()->comment('نام قابل نمایش');
+            $table->longText('description')->nullable()->comment('توضیح نوع تراکنش');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +30,6 @@ class CreateTransactionStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('transaction_statuses');
+        Schema::dropIfExists('transaction_types');
     }
 }

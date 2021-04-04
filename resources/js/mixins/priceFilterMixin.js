@@ -1,4 +1,6 @@
 import persianJs from 'persianjs'
+// import PN from 'persian-number'
+import NumberToPersianWord from 'number_to_persian_word'
 
 export default {
     data: () => ({
@@ -9,7 +11,7 @@ export default {
     },
     filters: {
         currencyFormat: function (value) {
-            if (!value) return ''
+            if (!value) return '0'
             value = value.toString()
             value = value.replace(new RegExp('٬', 'g'), '')
             const digits = [
@@ -35,7 +37,13 @@ export default {
             if (!digits) {
                 return ''
             }
-            return persianJs(digits).digitsToWords()
+
+            return NumberToPersianWord.convert(digits)
+        },
+        convertToCurrencyFormat (value) {
+            if (!value) return ''
+            value = this.toEnDigit(value.toString())
+            return parseInt(value).toLocaleString('fa')
         },
         currencyFormatInput (event) {
             this.transaction.cost = this.toEnDigit(event)

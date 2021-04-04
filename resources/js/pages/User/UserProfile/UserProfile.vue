@@ -181,7 +181,7 @@
                         that.refreshAuthenticatedUserDataIfNeed()
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.user.loading = false;
                         that.user = new User()
                     })
@@ -204,7 +204,7 @@
                         that.$router.push({path: '/user/' + that.user.id})
                     })
                     .catch((error) => {
-                        this.axios_handleError(error)
+                        that.axios_handleError(error)
                         that.user.loading = false
                     })
             }

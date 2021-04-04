@@ -62,6 +62,25 @@ class HomeController extends Controller
         return view('dashboard', compact('user', 'settings'));
     }
 
+    public function debug(Request $request)
+    {
+        $fundId = 2;
+//        $fundId = 1;
+        $fund = Fund::findorfail($fundId)->setAppends(['incomes']);
+        return $fund;
+        $user = User::with([
+                'accounts.allocatedLoans',
+//                'paidTransactions'
+            ])
+            ->hasLoanPayrollDeduction()
+            ->hasAccountPayrollDeduction()
+//            ->dd();
+        ->get();
+
+
+        return $user;
+    }
+
     public function dashboardData() {
         $funds = Fund::all();
         $counts = [
