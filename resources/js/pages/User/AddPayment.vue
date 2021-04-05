@@ -330,7 +330,7 @@
             },
             createTransaction () {
                 this.transaction.loading = true;
-                this.transaction.transaction_type = 'user_charge_fund'
+                this.transaction.transaction_type = this.$route.params.payment_type
                 this.transaction.account_id = this.$route.params.account_id
                 let that = this
                 this.transaction.create()
@@ -340,7 +340,7 @@
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
-                            message: 'اطلاعات تراکنش پرداخت شرکت به صندوق با موفقیت ثبت شد'
+                            message: 'اطلاعات تراکنش با موفقیت ثبت شد'
                         });
                         that.getData()
                     })

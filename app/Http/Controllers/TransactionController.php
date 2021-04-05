@@ -8,6 +8,7 @@ use App\AllocatedLoanInstallment;
 use App\Company;
 use App\Fund;
 use App\Http\Requests\StoreTransaction;
+use App\Setting;
 use App\Traits\CommonCRUD;
 use App\Traits\Filter;
 use App\Transaction;
@@ -112,7 +113,7 @@ class TransactionController extends Controller
 
         $dBTransactionValidator = $this->attachTransactionAndChangeFundBalance($request, $transaction);
 
-        if ($dBTransactionValidator === false) {
+        if ($dBTransactionValidator->fails()) {
             DB::rollBack();
             return $this->jsonResponseValidateError([
                 'errors' => $dBTransactionValidator->errors()
@@ -128,8 +129,10 @@ class TransactionController extends Controller
         $constantType = '';
         if ($transaction_type === 'user_charge_fund') {
             $constantType = config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND');
-        } else if ($transaction_type === 'company_charge_fund') {
-            $constantType = config('constants.TRANSACTION_TYPE_COMPANY_CHARGE_FUND');
+        } else if ($transaction_type === 'user_charge_fund') {
+            $constantType = config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND');
+        } else if ($transaction_type === 'user_withdraw_from_account') {
+            $constantType = config('constants.TRANSACTION_TYPE_USER_WITHDRAW_FROM_ACCOUNT');
         } else if ($transaction_type === 'fund_pay_loan') {
             $constantType = config('constants.TRANSACTION_TYPE_FUND_PAY_LOAN');
         } else if ($transaction_type === 'user_pay_installment') {
@@ -152,6 +155,8 @@ class TransactionController extends Controller
 
         if ($transaction_type === 'user_charge_fund') {
             $dBTransactionValidator = $this->userChargeFund($request, $transaction);
+        } else if ($transaction_type === 'user_withdraw_from_account') {
+            $dBTransactionValidator = $this->userWithdrawAccount($request, $transaction);
         } else if ($transaction_type === 'company_charge_fund') {
             $dBTransactionValidator = $this->companyChargeFund($request, $transaction);
         } else if ($transaction_type === 'fund_pay_loan') {
@@ -177,6 +182,35 @@ class TransactionController extends Controller
         $transaction->accountPayers()->attach($account, ['cost'=> $cost]);
         $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
         $fund->deposit($cost);
+
+        return $validator;
+    }
+
+    private function userWithdrawAccount(Request $request, Transaction $transaction) {
+        $validator = Validator::make($request->all(), [
+            'account_id' => 'required|exists:accounts,id',
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
+
+        $currencyUnit = Setting::where('name', 'currency_unit')->first()->value;
+        $cost = $request->get('cost');
+        $account = Account::findOrFail($request->get('account_id'));
+        $validator = Validator::make($request->all(), [
+            'cost' => 'numeric|max:'.($account->totalPaidSalaries())
+        ], $messages = [
+            'max' => [
+                'numeric' => "موجودی حساب کاربر :max $currencyUnit و مبلغ درخواستی $cost $currencyUnit می باشد که از موجودی حساب کاربر بیشتر است.",
+            ]
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
+        $fund = $account->fund()->first();
+        $transaction->fundPayers()->attach($fund, ['cost'=> $cost]);
+        $transaction->accountRecipients()->attach($account, ['cost'=> $cost]);
+        $fund->withdrawal($cost);
 
         return $validator;
     }

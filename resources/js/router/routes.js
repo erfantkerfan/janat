@@ -110,7 +110,7 @@ let userMenu = {
             }
         },
         {
-            path: ":user_id/:account_id/:fund_id/add_payment",
+            path: ":user_id/:account_id/:fund_id/:payment_type",
             name: "User.AddPayment",
             components: {default: UserAddPaymentForm},
             meta: {

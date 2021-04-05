@@ -41,7 +41,10 @@ class Account extends Model
 
     public function salaries()
     {
-        return $this->morphToMany(Transaction::class, 'transaction_payers');
+        $transactionTypes = TransactionType::select('id')->where('name', config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND'))
+            ->get()->pluck('id');
+        return $this->morphToMany(Transaction::class, 'transaction_payers')
+            ->whereIn('transactions.transaction_type_id', $transactionTypes);
     }
 
     public function paidSalaries()
@@ -52,6 +55,24 @@ class Account extends Model
     public function totalPaidSalaries()
     {
         return $this->paidSalaries()->get()->sum('cost');
+    }
+
+    public function withdraws()
+    {
+        $transactionTypes = TransactionType::select('id')->where('name', config('constants.TRANSACTION_TYPE_USER_WITHDRAW_FROM_ACCOUNT'))
+            ->get()->pluck('id');
+        return $this->morphToMany(Transaction::class, 'transaction_recipients')
+            ->whereIn('transactions.transaction_type_id', $transactionTypes);
+    }
+
+    public function paidWithdraws()
+    {
+        return $this->withdraws()->where('transaction_status_id', 1);
+    }
+
+    public function totalPaidWithdraws()
+    {
+        return $this->paidWithdraws()->get()->sum('cost');
     }
 
     public function getNotSettledLoanAttribute()

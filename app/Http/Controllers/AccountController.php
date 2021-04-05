@@ -159,6 +159,6 @@ class AccountController extends Controller
      */
     public function getBalance(Account $account)
     {
-        return $this->jsonResponseOk($account->totalPaidSalaries());
+        return $this->jsonResponseOk($account->totalPaidSalaries() - $account->totalPaidWithdraws());
     }
 }

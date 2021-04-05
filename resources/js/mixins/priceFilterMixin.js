@@ -41,7 +41,7 @@ export default {
             return NumberToPersianWord.convert(digits)
         },
         convertToCurrencyFormat (value) {
-            if (!value) return ''
+            if (!value) return '0'
             value = this.toEnDigit(value.toString())
             return parseInt(value).toLocaleString('fa')
         },
