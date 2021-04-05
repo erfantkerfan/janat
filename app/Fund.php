@@ -84,23 +84,44 @@ class Fund extends Model
         ])->sum('transactions.cost');
         $sumOfChargeFund = floatval ($sumOfChargeFund);
 
-        $sumOfInstallmentsInterest = 0;
         $userChargeFundTransaction = $this->loans()
             ->with([
                 'allocatedLoans.installments.receivedTransactions' => function ($query) use ($transactionType_userPayInstallment) {
                     $query->where('transaction_type_id', '=', $transactionType_userPayInstallment->id);
                 }
             ])->get();
-        $userChargeFundTransaction->each(function ($loanItem) use (& $sumOfInstallmentsInterest) {
-            $loanItem->allocatedLoans->each(function ($allocatedLoanItem) use (& $sumOfInstallmentsInterest) {
-                $interestAmountPerMonth = $allocatedLoanItem->interest_amount / $allocatedLoanItem->number_of_installments;
-                $allocatedLoanItem->installments->each(function ($installmentItem) use (& $sumOfInstallmentsInterest, $interestAmountPerMonth) {
-                    $installmentItem->receivedTransactions->each(function ($received_transactionItem) use (& $sumOfInstallmentsInterest, $interestAmountPerMonth) {
-                        $sumOfInstallmentsInterest += $interestAmountPerMonth;
+
+        $typeOfLoanInterestPayment = Setting::where('name', 'type_of_loan_interest_payment')->first()->value;
+        $sumOfInstallmentsInterest = 0;
+        if ($typeOfLoanInterestPayment === 'monthly_payment') {
+            $userChargeFundTransaction->each(function ($loanItem) use (& $sumOfInstallmentsInterest) {
+                $loanItem->allocatedLoans->each(function ($allocatedLoanItem) use (& $sumOfInstallmentsInterest) {
+                    $interestAmountPerMonth = $allocatedLoanItem->interest_amount / $allocatedLoanItem->number_of_installments;
+                    $allocatedLoanItem->installments->each(function ($installmentItem) use (& $sumOfInstallmentsInterest, $interestAmountPerMonth) {
+                        $installmentItem->receivedTransactions->each(function ($received_transactionItem) use (& $sumOfInstallmentsInterest, $interestAmountPerMonth) {
+                            $sumOfInstallmentsInterest += $interestAmountPerMonth;
+                        });
                     });
                 });
             });
-        });
+        } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
+            $userChargeFundTransaction->each(function ($loanItem) use (& $sumOfInstallmentsInterest) {
+                $loanItem->allocatedLoans->each(function ($allocatedLoanItem) use (& $sumOfInstallmentsInterest) {
+                    $sumOfInstallmentsInterest += $allocatedLoanItem->interest_amount;
+                });
+            });
+        } else {
+            $userChargeFundTransaction->each(function ($loanItem) use (& $sumOfInstallmentsInterest) {
+                $loanItem->allocatedLoans->each(function ($allocatedLoanItem) use (& $sumOfInstallmentsInterest) {
+                    $interestAmountPerMonth = $allocatedLoanItem->interest_amount / $allocatedLoanItem->number_of_installments;
+                    $allocatedLoanItem->installments->each(function ($installmentItem) use (& $sumOfInstallmentsInterest, $interestAmountPerMonth) {
+                        $installmentItem->receivedTransactions->each(function ($received_transactionItem) use (& $sumOfInstallmentsInterest, $interestAmountPerMonth) {
+                            $sumOfInstallmentsInterest += $interestAmountPerMonth;
+                        });
+                    });
+                });
+            });
+        }
 
         $sumOfall = $sumOfChargeFund + $sumOfInstallmentsInterest;
 

@@ -92,18 +92,14 @@ class LoanController extends Controller
     private function prepareLoanData(& $request) {
         // LoanCalculator
         $loanCalculator = new LoanCalculator();
-        $loanInterestPerMonth = Setting::where('name', 'loan_interest_per_month')->first()->value;
-        $interestRate = $loanCalculator->getInterestRate($request->get('loan_amount'),
-            $loanInterestPerMonth,
-            $request->get('number_of_installments'));
-        $interestAmount = $loanCalculator->getInterestAmount($loanInterestPerMonth,
-            $request->get('number_of_installments'));
-        $roundedInstallmentsRate = $loanCalculator->getRoundedInstallmentsRate($request->get('loan_amount'),
+        [
+            $installmentRate,
             $interestAmount,
-            $request->get('number_of_installments'));
+            $interestRate
+        ] = $loanCalculator->prepareLoanData($request->get('loan_amount'), $request->get('number_of_installments'));
 
         // $request offsetSet
-        $request->offsetSet('installment_rate', $roundedInstallmentsRate);
+        $request->offsetSet('installment_rate', $installmentRate);
         $request->offsetSet('interest_amount', $interestAmount);
         $request->offsetSet('interest_rate', $interestRate);
     }

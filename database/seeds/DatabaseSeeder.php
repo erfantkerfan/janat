@@ -1,5 +1,6 @@
 <?php
 
+use App\Classes\LoanCalculator;
 use App\TransactionType;
 use App\User;
 use App\Loan;
@@ -267,7 +268,7 @@ class SettingTableSeeder extends Seeder {
             [
                 'name' => 'loan_interest_per_month',
                 'display_name' => 'کارمزد وام برای هر ماه قسط',
-                'value' => '0',
+                'value' => '1000',
                 'order' => 1
             ],
             [
@@ -275,6 +276,12 @@ class SettingTableSeeder extends Seeder {
                 'display_name' => 'واحد ارز',
                 'value' => 'ریال',
                 'order' => 2
+            ],
+            [
+                'name' => 'type_of_loan_interest_payment',
+                'display_name' => 'نحوه پرداخت کارمزد وام',
+                'value' => 'paid_at_first', //monthly_payment
+                'order' => 3
             ]
         ];
         foreach ($values as $value) {
@@ -427,15 +434,20 @@ class FakeLoan extends Seeder {
             $loanType = LoanTypeSeeder::getRandomObject();
             $loan_amount = $faker->numberBetween(1000, 1000000);
             $number_of_installments = $faker->numberBetween(10, 20);
-            $interest_rate = $faker->numberBetween(0, 5);
-            $interest_amount = ($interest_rate/100) * $loan_amount;
-            $installment_rate = ($interest_amount + $loan_amount) / $number_of_installments;
+            // LoanCalculator
+            $loanCalculator = new LoanCalculator();
+            [
+                $installmentRate,
+                $interestAmount,
+                $interestRate
+            ] = $loanCalculator->prepareLoanData($loan_amount, $number_of_installments);
+
             Loan::create([
                 'name' => $faker->companyField(),
                 'loan_amount' => $loan_amount,
-                'interest_rate' => $interest_rate,
-                'interest_amount' => $interest_amount,
-                'installment_rate' => $installment_rate,
+                'interest_rate' => $interestRate,
+                'interest_amount' => $interestAmount,
+                'installment_rate' => $installmentRate,
                 'number_of_installments' => $number_of_installments,
                 'fund_id' => $fund->id,
                 'loan_type_id' => $loanType->id,

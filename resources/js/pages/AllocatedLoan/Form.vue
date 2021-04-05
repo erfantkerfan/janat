@@ -4,7 +4,7 @@
             <div class="md-layout-item md-size-100">
 
                 <div class="md-layout">
-                    <div v-if="allocatedLoan.account" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                    <div v-if="allocatedLoan.account" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33">
                         <stats-card header-color="blue">
                             <template slot="header">
                                 <div class="card-icon">
@@ -27,7 +27,7 @@
                             </template>
                         </stats-card>
                     </div>
-                    <div v-if="allocatedLoan.loan" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                    <div v-if="allocatedLoan.loan" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33">
                         <stats-card header-color="warning">
                             <template slot="header">
                                 <div class="card-icon">
@@ -49,7 +49,7 @@
                             </template>
                         </stats-card>
                     </div>
-                    <div v-if="allocatedLoan.loan" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                    <div v-if="allocatedLoan.loan" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33">
                         <stats-card header-color="green">
                             <template slot="header">
                                 <div class="card-icon">
@@ -71,7 +71,7 @@
                             </template>
                         </stats-card>
                     </div>
-                    <div v-if="allocatedLoan.loan" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+                    <div v-if="allocatedLoan.loan" class="md-layout-item">
                         <stats-card header-color="rose">
                             <template slot="header">
                                 <div class="card-icon">
@@ -94,6 +94,13 @@
                                 <price-input
                                     v-model="allocatedLoan.installment_rate"
                                     :label="'مبلغ هر قسط وام'"
+                                    :label-size="100"
+                                    :disabled="true"
+                                />
+                                <hr>
+                                <price-input
+                                    v-model="allocatedLoan.interest_amount"
+                                    :label="'مبلغ کارمزد'"
                                     :label-size="100"
                                     :disabled="true"
                                 />

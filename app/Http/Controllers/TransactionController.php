@@ -262,6 +262,7 @@ class TransactionController extends Controller
             'relatedPayers.transactionPayers',
             'relatedRecipients.transactionRecipients'
         ])->find($id);
+
         return $this->jsonResponseOk($data);
     }
 
@@ -269,22 +270,22 @@ class TransactionController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  \App\Transaction  $transacion
+     * @param Transaction $transaction
      * @return Response
      */
-    public function update(Request $request, Transaction $transacion)
+    public function update(Request $request, Transaction $transaction): Response
     {
-        //
+        return $this->commonUpdate($request, $transaction);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Transaction  $transacion
+     * @param Transaction $transaction
      * @return Response
      */
-    public function destroy(Transaction $transacion)
+    public function destroy(Transaction $transaction): Response
     {
-        //
+        return $this->commonDestroy($transaction);
     }
 }

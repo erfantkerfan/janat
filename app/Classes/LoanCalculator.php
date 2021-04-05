@@ -5,6 +5,7 @@ namespace App\Classes;
 
 
 use App\AllocatedLoan;
+use App\Setting;
 
 class LoanCalculator
 {
@@ -32,13 +33,18 @@ class LoanCalculator
         return $interestAmount;
     }
 
-    public function getRoundedInstallmentsRate($loanAmount, $interestAmount, $numberOfInstallments) {
+    public function getRoundedInstallmentsRate($loanAmount, $interestAmount, $numberOfInstallments, $typeOfLoanInterestPayment) {
         $padding = 100;
-        $payableAmount = $loanAmount + $interestAmount;
+        if ($typeOfLoanInterestPayment === 'monthly_payment') {
+            $payableAmount = $loanAmount + $interestAmount;
+        } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
+            $payableAmount = $loanAmount - $interestAmount;
+        } else {
+            $payableAmount = $loanAmount + $interestAmount;
+        }
         $installmentsRateWithoutRound = $payableAmount / $numberOfInstallments;
-        $roundedInstallmentsRate = floor($installmentsRateWithoutRound / $padding) * $padding;
 
-        return $roundedInstallmentsRate;
+        return floor($installmentsRateWithoutRound / $padding) * $padding;
     }
 
     public function isTimeToPayLastInstallment(AllocatedLoan $allocatedLoan) {
@@ -57,5 +63,28 @@ class LoanCalculator
     public function getLastInstallmentRate(AllocatedLoan $allocatedLoan) {
         $remainingPayableAmount = $allocatedLoan->remaining_payable_amount;
         return $remainingPayableAmount;
+    }
+
+    public function prepareLoanData($loanAmount, $numberOfInstallments) {
+        $loanInterestPerMonth = Setting::where('name', 'loan_interest_per_month')->first()->value;
+        $typeOfLoanInterestPayment = Setting::where('name', 'type_of_loan_interest_payment')->first()->value;
+        $interestRate = $this->getInterestRate(
+            $loanAmount,
+            $loanInterestPerMonth,
+            $numberOfInstallments
+        );
+        $interestAmount = $this->getInterestAmount($loanInterestPerMonth, $numberOfInstallments);
+        $roundedInstallmentsRate = $this->getRoundedInstallmentsRate(
+            $loanAmount,
+            $interestAmount,
+            $numberOfInstallments,
+            $typeOfLoanInterestPayment
+        );
+
+        return [
+            $roundedInstallmentsRate,
+            $interestAmount,
+            $interestRate,
+        ];
     }
 }
