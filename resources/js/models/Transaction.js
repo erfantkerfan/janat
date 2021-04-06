@@ -18,6 +18,7 @@ class Transaction extends Model {
 
             { key: 'transaction_type' },
             { key: 'user_id' },
+            { key: 'fund_id' },
             { key: 'account_id' },
             { key: 'company_id' },
             { key: 'allocated_loan_id' },

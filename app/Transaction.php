@@ -47,9 +47,19 @@ class Transaction extends Model
         return $this->morphedByMany(User::class, 'transaction_payers');
     }
 
+    public function userRecipients()
+    {
+        return $this->morphedByMany(User::class, 'transaction_recipients');
+    }
+
     public function accountPayers()
     {
         return $this->morphedByMany(Account::class, 'transaction_payers');
+    }
+
+    public function accountRecipients()
+    {
+        return $this->morphedByMany(Account::class, 'transaction_recipients');
     }
 
     public function companyPayers()

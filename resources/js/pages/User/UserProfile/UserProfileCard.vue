@@ -139,7 +139,7 @@
                         </div>
                         <div v-if="funds.list.length > 0">
                             <div v-if="editAccountState" class="md-layout">
-                                شماره حساب
+                                شماره حساب:
                                 {{ newAccount.id }}
                                 <br>
                             </div>
@@ -159,23 +159,10 @@
                             <div class="md-layout">
                                 <md-checkbox v-model="newAccount.payroll_deduction">کسر از حقوق</md-checkbox>
                             </div>
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-25 md-form-label">
-                                    ماهانه
-                                    ({{ currencyUnit }})
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="newAccount.monthly_payment"/>
-                                    </md-field>
-                                    <span>
-                                        {{ newAccount.monthly_payment | currencyFormat}}
-                                      <md-tooltip>
-                                          {{ digitsToWords(newAccount.monthly_payment) }} {{ currencyUnit }}
-                                      </md-tooltip>
-                                    </span>
-                                </div>
-                            </div>
+                            <price-input
+                                v-model="newAccount.monthly_payment"
+                                :label="'ماهانه'"
+                            />
                             <hr>
                             <div class="md-layout">
                                 <md-button
@@ -211,36 +198,58 @@
                                         display-format="dddd jDD jMMMM jYYYY ساعت HH:mm"/>
                                 </div>
                             </div>
+
+                            <div class="md-layout">
+                                <md-button v-if="funds.list.length > 0 && editAccountState"
+                                           class="md-layout-item md-size-100 md-success"
+                                           :to="{
+                                                name: 'User.AddPayment',
+                                                params: {
+                                                    user_id: value.id,
+                                                    account_id: newAccount.id,
+                                                    fund_id: newAccount.fund.id,
+                                                    payment_type: 'user_charge_fund'
+                                                }
+                                            }"
+                                >
+                                    واریز وجه از طرف کاربر به صندوق
+                                </md-button>
+                            </div>
+                            <div class="md-layout">
+                                <md-button v-if="funds.list.length > 0 && editAccountState"
+                                           class="md-layout-item md-size-100 md-success"
+                                           :to="{
+                                                name: 'User.AddPayment',
+                                                params: {
+                                                    user_id: value.id,
+                                                    account_id: newAccount.id,
+                                                    fund_id: newAccount.fund.id,
+                                                    payment_type: 'user_withdraw_from_account'
+                                                }
+                                            }"
+                                >
+                                    برداشت وجه کاربر از صندوق
+                                </md-button>
+                            </div>
+                            <div class="md-layout">
+                                <md-button v-if="funds.list.length > 0 && editAccountState"
+                                           class="md-success md-layout-item md-size-100"
+                                           :to="{
+                                                    name: 'AllocatedLoan.Create',
+                                                    params: {
+                                                        user_id: value.id,
+                                                        account_id: newAccount.id,
+                                                    }
+                                                }"
+                                >
+                                    تخصیص وام
+                                </md-button>
+                            </div>
                         </div>
                     </div>
                 </md-dialog-content>
 
                 <md-dialog-actions>
-
-                    <md-button v-if="funds.list.length > 0 && editAccountState"
-                               class="md-success"
-                               :to="{
-                                    name: 'User.AddPayment',
-                                    params: {
-                                        user_id: value.id,
-                                        account_id: newAccount.id,
-                                        fund_id: newAccount.fund.id
-                                    }
-                                }">
-                        واریز وجه از طرف کاربر به صندوق
-                    </md-button>
-                    <md-button v-if="funds.list.length > 0 && editAccountState"
-                               class="md-success"
-                               :to="{
-                                    name: 'AllocatedLoan.Create',
-                                    params: {
-                                        user_id: value.id,
-                                        account_id: newAccount.id,
-                                    }
-                                }">
-                        تخصیص وام
-                    </md-button>
-                    <br>
                     <md-button class="md-default" @click="createAccountShowDialog = false">انتصراف</md-button>
                     <md-button v-if="funds.list.length > 0 && !editAccountState"
                                class="md-success"
