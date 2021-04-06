@@ -19,13 +19,14 @@ class Fund extends Model {
             { key: 'name' },
             { key: 'undertaker' },
             { key: 'balance' },
+            { key: 'expenses' },
             { key: 'created_at' },
             { key: 'updated_at' }
         ])
     }
 
-    getIncomes() {
-        return this.show(this.id, this.baseRoute + '/' + this.id + '/get_incomes')
+    getIncomesAndExpenses() {
+        return this.show(this.id, this.baseRoute + '/' + this.id + '/get_incomes_and_expenses')
     }
 }
 

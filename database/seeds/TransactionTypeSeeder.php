@@ -46,6 +46,11 @@ class TransactionTypeSeeder extends Seeder
                 'description' => 'صندوق مبلغ وام را به حساب کاربر واربز می کند.'
             ],
             [
+                'name' => 'pay fund expenses',
+                'display_name' => 'پرداخت هزینه های صندوق',
+                'description' => 'پرداخت هزینه های مربوط به امور صندوق از جانب در آمد های صندوق مانند ماهانه ها و یا کارمزد وام ها.'
+            ],
+            [
                 'name' => 'user withdraws from account',
                 'display_name' => 'برداشت کاربر از حساب صندوق',
                 'description' => 'کاربر از موجودی خود در صندوق برداشت می کند.'

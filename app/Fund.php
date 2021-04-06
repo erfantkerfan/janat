@@ -67,6 +67,12 @@ class Fund extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function paidTransactions()
+    {
+        return $this->morphToMany(Transaction::class, 'transaction_payers')
+            ->where('transactions.transaction_status_id', 1);
+    }
+
     public function receivedTransactions()
     {
         return $this->morphToMany(Transaction::class, 'transaction_recipients');
@@ -131,4 +137,21 @@ class Fund extends Model
             'sum_of_all' => $sumOfall
         ];
     }
+
+    public function getExpensesAttribute()
+    {
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_PAY_FUND_EXPENSES'))->first();
+
+        $sumOfExpenses = $this->paidTransactions()->whereIn('transaction_type_id', [
+            $transactionType->id,
+        ])->sum('transactions.cost');
+        $sumOfExpenses = floatval ($sumOfExpenses);
+//        $sumOfExpenses = $this->paidTransactions()->whereIn('transaction_type_id', [
+//            $transactionType->id,
+//        ])->dump();
+
+
+        return $sumOfExpenses;
+    }
+
 }
