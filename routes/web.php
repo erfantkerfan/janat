@@ -37,8 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
 //        Route::get('debug', [HomeController::class, 'debug'])->name('api.debug');
         Route::group(['prefix' => 'users'], function () {
             Route::get('{user}/get_user_pic', [UserController::class, 'getUserPic'])->name('api.panel.getUserPic');
-            Route::put('{user}/set_user_pic', [UserController::class, 'setUserPic'])->name('api.panel.getUserPic');
-            Route::put('{user}/reset_pass', [UserController::class, 'resetPass'])->name('api.panel.getUserPic');
+            Route::put('{user}/set_user_pic', [UserController::class, 'setUserPic'])->name('api.panel.user.setPic');
+            Route::put('{user}/reset_pass', [UserController::class, 'resetPass'])->name('api.panel.user.resetPass');
             Route::get('{user}/get_total_balance', [UserController::class, 'getTotalBalance'])->name('api.panel.getUserTotalBalance');
         });
         Route::resource('users', '\\'.UserController::class);
@@ -46,7 +46,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('user_types', '\\'. UserTypeController::class);
         Route::resource('companies', '\\'. CompanyController::class);
         Route::group(['prefix' => 'funds'], function () {
-            Route::get('{fund}/get_incomes_and_expenses', [FundController::class, 'getIncomesAndExpenses'])->name('api.panel.getUserPic');
+            Route::get('{fund}/get_incomes_and_expenses', [FundController::class, 'getIncomesAndExpenses'])->name('api.panel.fund.getIncomesAndExpenses');
+            Route::get('{fund}/get_expense_transactions', [FundController::class, 'getExpenseTransactions'])->name('api.panel.getExpensesTransactions');
         });
         Route::resource('funds', '\\'. FundController::class);
         Route::resource('loans', '\\'. LoanController::class);
