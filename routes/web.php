@@ -45,7 +45,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('user_types', '\\'. UserTypeController::class);
         Route::resource('companies', '\\'. CompanyController::class);
         Route::group(['prefix' => 'funds'], function () {
-            Route::get('{fund}/get_incomes', [FundController::class, 'getIncomes'])->name('api.panel.getUserPic');
+            Route::get('{fund}/get_incomes_and_expenses', [FundController::class, 'getIncomesAndExpenses'])->name('api.panel.getUserPic');
         });
         Route::resource('funds', '\\'. FundController::class);
         Route::resource('loans', '\\'. LoanController::class);

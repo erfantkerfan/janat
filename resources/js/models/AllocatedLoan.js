@@ -30,6 +30,8 @@ class AllocatedLoan extends Model {
                 key: 'last_payment',
                 relatedModel: Transaction
             },
+            { key: 'interest_rate' },
+            { key: 'interest_amount' },
             { key: 'total_payments' },
             { key: 'remaining_payable_amount' },
             { key: 'count_of_paid_installments' },

@@ -8,6 +8,7 @@ use App\AllocatedLoanInstallment;
 use App\Company;
 use App\Fund;
 use App\Http\Requests\StoreTransaction;
+use App\Setting;
 use App\Traits\CommonCRUD;
 use App\Traits\Filter;
 use App\Transaction;
@@ -91,7 +92,11 @@ class TransactionController extends Controller
 
         if (!$transactionType) {
             return $this->jsonResponseValidateError([
-                'errors' => 'نوع تراکنش معتبر نیست.'
+                'errors' => [
+                    'transaction_type' => [
+                        'نوع تراکنش معتبر نیست.'
+                    ]
+                ]
             ]);
         }
 
@@ -107,12 +112,9 @@ class TransactionController extends Controller
             'paid_at' => $request->get('paid_at')
         ]);
 
-//        DB::commit();
-//        return;
-
         $dBTransactionValidator = $this->attachTransactionAndChangeFundBalance($request, $transaction);
 
-        if ($dBTransactionValidator === false) {
+        if ($dBTransactionValidator->fails()) {
             DB::rollBack();
             return $this->jsonResponseValidateError([
                 'errors' => $dBTransactionValidator->errors()
@@ -128,10 +130,14 @@ class TransactionController extends Controller
         $constantType = '';
         if ($transaction_type === 'user_charge_fund') {
             $constantType = config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND');
+        } else if ($transaction_type === 'user_withdraw_from_account') {
+            $constantType = config('constants.TRANSACTION_TYPE_USER_WITHDRAW_FROM_ACCOUNT');
         } else if ($transaction_type === 'company_charge_fund') {
             $constantType = config('constants.TRANSACTION_TYPE_COMPANY_CHARGE_FUND');
         } else if ($transaction_type === 'fund_pay_loan') {
             $constantType = config('constants.TRANSACTION_TYPE_FUND_PAY_LOAN');
+        } else if ($transaction_type === 'pay_fund_expenses') {
+            $constantType = config('constants.TRANSACTION_TYPE_PAY_FUND_EXPENSES');
         } else if ($transaction_type === 'user_pay_installment') {
             $constantType = config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT');
         } else {
@@ -152,10 +158,14 @@ class TransactionController extends Controller
 
         if ($transaction_type === 'user_charge_fund') {
             $dBTransactionValidator = $this->userChargeFund($request, $transaction);
+        } else if ($transaction_type === 'user_withdraw_from_account') {
+            $dBTransactionValidator = $this->userWithdrawAccount($request, $transaction);
         } else if ($transaction_type === 'company_charge_fund') {
             $dBTransactionValidator = $this->companyChargeFund($request, $transaction);
         } else if ($transaction_type === 'fund_pay_loan') {
             $dBTransactionValidator = $this->fundPayLoan($request, $transaction);
+        } else if ($transaction_type === 'pay_fund_expenses') {
+            $dBTransactionValidator = $this->payFundExpenses($request, $transaction);
         } else if ($transaction_type === 'user_pay_installment') {
             $dBTransactionValidator = $this->userPayInstallment($request, $transaction);
         }
@@ -177,6 +187,35 @@ class TransactionController extends Controller
         $transaction->accountPayers()->attach($account, ['cost'=> $cost]);
         $transaction->fundRecipients()->attach($fund, ['cost'=> $cost]);
         $fund->deposit($cost);
+
+        return $validator;
+    }
+
+    private function userWithdrawAccount(Request $request, Transaction $transaction) {
+        $validator = Validator::make($request->all(), [
+            'account_id' => 'required|exists:accounts,id',
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
+
+        $currencyUnit = Setting::where('name', 'currency_unit')->first()->value;
+        $cost = $request->get('cost');
+        $account = Account::findOrFail($request->get('account_id'));
+        $validator = Validator::make($request->all(), [
+            'cost' => 'numeric|max:'.($account->totalPaidSalaries())
+        ], $messages = [
+            'max' => [
+                'numeric' => "موجودی حساب کاربر :max $currencyUnit و مبلغ درخواستی $cost $currencyUnit می باشد که از موجودی حساب کاربر بیشتر است.",
+            ]
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
+        $fund = $account->fund()->first();
+        $transaction->fundPayers()->attach($fund, ['cost'=> $cost]);
+        $transaction->accountRecipients()->attach($account, ['cost'=> $cost]);
+        $fund->withdrawal($cost);
 
         return $validator;
     }
@@ -212,6 +251,34 @@ class TransactionController extends Controller
         $cost = $request->get('cost');
         $transaction->fundPayers()->attach($fund, ['cost'=> $cost]);
         $transaction->allocatedLoanRecipients()->attach($allocatedLoan, ['cost'=> $cost]);
+        $fund->withdrawal($cost);
+
+        return $validator;
+    }
+
+    private function payFundExpenses(Request $request, Transaction $transaction) {
+        $validator = Validator::make($request->all(), [
+            'fund_id' => 'required|exists:funds,id'
+        ]);
+        if($validator->fails()) {
+            return $validator;
+        }
+
+        $currencyUnit = Setting::where('name', 'currency_unit')->first()->value;
+        $fund = Fund::findOrFail($request->get('fund_id'))->setAppends(['incomes', 'expenses']);
+        $cost = $request->get('cost');
+        $maxCost = $fund->incomes['sum_of_all'] - $fund->expenses;
+            $validator = Validator::make($request->all(), [
+            'cost' => 'numeric|max:'.$maxCost
+        ], $messages = [
+            'max' => [
+                'numeric' => "مجموع کل درآمد های صندوق با احتساب هزینه ها $maxCost $currencyUnit می باشد و مبلغ درخواستی برای هزینه جدید $cost $currencyUnit می باشد که از درآمد صندوق بیشتر است.",
+            ]
+        ]);
+
+        $user = User::where('SSN', '=', 'admin')->first();
+        $transaction->fundPayers()->attach($fund, ['cost'=> $cost]);
+        $transaction->userRecipients()->attach($user, ['cost'=> $cost]);
         $fund->withdrawal($cost);
 
         return $validator;
@@ -262,6 +329,7 @@ class TransactionController extends Controller
             'relatedPayers.transactionPayers',
             'relatedRecipients.transactionRecipients'
         ])->find($id);
+
         return $this->jsonResponseOk($data);
     }
 
@@ -269,22 +337,22 @@ class TransactionController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  \App\Transaction  $transacion
+     * @param Transaction $transaction
      * @return Response
      */
-    public function update(Request $request, Transaction $transacion)
+    public function update(Request $request, Transaction $transaction): Response
     {
-        //
+        return $this->commonUpdate($request, $transaction);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Transaction  $transacion
+     * @param Transaction $transaction
      * @return Response
      */
-    public function destroy(Transaction $transacion)
+    public function destroy(Transaction $transaction): Response
     {
-        //
+        return $this->commonDestroy($transaction);
     }
 }

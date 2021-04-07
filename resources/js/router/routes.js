@@ -28,6 +28,9 @@ import FundList from "@/pages/Fund/FundList.vue";
 // Fund Management
 import FundForm from "@/pages/Fund/FundForm.vue";
 
+// Fund AddPayment
+import FundAddPaymentForm from "@/pages/Fund/AddPayment";
+
 // Loan List
 import LoanList from "@/pages/Loan/List.vue";
 
@@ -110,7 +113,7 @@ let userMenu = {
             }
         },
         {
-            path: ":user_id/:account_id/:fund_id/add_payment",
+            path: ":user_id/:account_id/:fund_id/:payment_type",
             name: "User.AddPayment",
             components: {default: UserAddPaymentForm},
             meta: {
@@ -202,6 +205,16 @@ let fundsMenu = {
             meta: {
                 rtlActive: true,
                 displayName: "ساخت صندوق جدید",
+                middleware: auth
+            }
+        },
+        {
+            path: ":fund_id/pay_fund_expenses",
+            name: "Fund.AddPayment",
+            components: {default: FundAddPaymentForm},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداخت هزینه برای صندوق",
                 middleware: auth
             }
         },

@@ -40,7 +40,22 @@
                                 </md-button>
                             </label>
                             <div class="md-layout-item">
-                                <md-field class="md-invalid">
+                                <md-field v-if="item.name === 'type_of_loan_interest_payment'">
+                                    <label>صندوق:</label>
+                                    <md-select v-model="item.value" :disabled="!item.editMode">
+                                        <md-option
+                                            :value="'paid_at_first'"
+                                        >
+                                            پرداخت کارمزد وام به صورت یکجا در ابتدای دریافت وام
+                                        </md-option>
+                                        <md-option
+                                            :value="'monthly_payment'"
+                                        >
+                                            پرداخت کارمزد به صورت ماهانه
+                                        </md-option>
+                                    </md-select>
+                                </md-field>
+                                <md-field v-else class="md-invalid">
                                     <md-input v-model="item.value" :disabled="!item.editMode"/>
                                 </md-field>
                             </div>

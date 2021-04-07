@@ -227,15 +227,22 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $userWithhasNotSettledLoan = $user->setAppends(['hasNotSettledLoan']);
+        $userWithHasNotSettledLoan = $user->setAppends(['hasNotSettledLoan', 'totalCredit']);
+        $errors = [];
+        if ($userWithHasNotSettledLoan->hasNotSettledLoan) {
+            $errors['has_relations'] = [
+                'کاربر انتخاب شده دارای وام تسویه نشده است.'
+            ];
+        }
+        if ($userWithHasNotSettledLoan->totalCredit > 0) {
+            $errors['has_credit'] = [
+                'کاربر انتخاب شده دارای موجودی در صندوق است.'
+            ];
+        }
 
-        if ($userWithhasNotSettledLoan->hasNotSettledLoan) {
+        if (count($errors) > 0) {
             return $this->jsonResponseValidateError([
-                'errors' => [
-                    'has_relations' => [
-                        'کاربر انتخاب شده دارای وام تسویه نشده است.'
-                    ]
-                ]
+                'errors' => $errors
             ]);
         }
 

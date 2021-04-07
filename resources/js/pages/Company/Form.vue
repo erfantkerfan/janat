@@ -50,8 +50,7 @@
                     </md-card-content>
 
                     <md-card-actions>
-                        <md-button type="submit"
-                                   class="md-info"
+                        <md-button class="md-info"
                                    @click="updateCompany"
                         >
                             ذخیره اطلاعات

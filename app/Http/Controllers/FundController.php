@@ -103,8 +103,9 @@ class FundController extends Controller
         }
     }
 
-    public function getIncomes(Fund $fund) {
-        $fund = Fund::findorfail($fund->id)->setAppends(['incomes']);
-        return $this->jsonResponseOk($fund->incomes);
+    public function getIncomesAndExpenses(Fund $fund) {
+        $fund = Fund::findorfail($fund->id)->setAppends(['incomes', 'expenses']);
+
+        return $this->jsonResponseOk($fund);
     }
 }

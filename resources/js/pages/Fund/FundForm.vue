@@ -47,12 +47,30 @@
                         </div>
 
 
-                        <md-button v-if="!showFundIncomes && !fund.loading" type="submit" @click="getIncomes">
-                            نمایش اطلاعات دریافتی صندوق
+                        <md-button v-if="!showFundIncomes && !fund.loading" type="submit" @click="getIncomesAndExpenses">
+                            نمایش هزینه ها و دریافتی های صندوق
                         </md-button>
+
                         <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_charge_fund" :label="'مجموع ماهانه ها و واریزی های خیرین'" :disabled="true" />
                         <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_installments_interest" :label="'مجموع کارمزد اقساط'" :disabled="true" />
                         <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_all" :label="'مجموع تمام دریافتی های صندوق'" :disabled="true" />
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.expenses" :label="'مجموع هزینه های صندوق'" :disabled="true" />
+
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="sumOfIncomesAndExpenses" :label="'مجموع هزینه ها و درآمد های صندوق'" :disabled="true" />
+
+                        <div class="md-layout">
+                            <md-button v-if="!isCreateForm() && !fund.loading"
+                                       class="md-layout-item md-size-100 md-success"
+                                       :to="{
+                                            name: 'Fund.AddPayment',
+                                            params: {
+                                                fund_id: fund.id
+                                            }
+                                        }"
+                            >
+                                پرداخت هزینه برای صندوق
+                            </md-button>
+                        </div>
 
                         <loading :active.sync="fund.loading" :is-full-page="false"></loading>
 
@@ -214,6 +232,7 @@
             loan: new Loan(),
             loans: new LoanList(),
             showFundIncomes: false,
+            sumOfIncomesAndExpenses: 0,
             editLoanState: false,
             createLoanShowDialog: false,
         }),
@@ -363,15 +382,17 @@
                         that.fund = new Fund()
                     })
             },
-            getIncomes () {
+            getIncomesAndExpenses () {
                 let that = this
                 this.fund.loading = true;
-                this.fund.getIncomes()
+                this.fund.getIncomesAndExpenses()
                     .then((response) => {
 
                         that.fund.loading = false;
                         that.showFundIncomes = true;
-                        that.fund.incomes = response.data
+                        that.fund.incomes = response.data.incomes
+                        that.fund.expenses = response.data.expenses
+                        that.sumOfIncomesAndExpenses = (that.fund.incomes.sum_of_all-that.fund.expenses)
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
