@@ -65,7 +65,18 @@ class AllocatedLoan extends Model
 
     public function getTotalPaymentsAttribute()
     {
-        return $this->installments->sum('total_payments');
+        $totalPayments = 0;
+        $typeOfLoanInterestPayment = Setting::where('name', 'type_of_loan_interest_payment')->first()->value;
+
+        if ($typeOfLoanInterestPayment === 'monthly_payment') {
+            $totalPayments = $this->installments->sum('total_payments');
+        } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
+            $totalPayments = $this->installments->sum('total_payments') + $this->interest_amount;
+        } else {
+            $totalPayments = $this->installments->sum('total_payments');
+        }
+
+        return $totalPayments;
     }
 
     public function getHasUnsettledInstallmentAttribute()
@@ -105,7 +116,17 @@ class AllocatedLoan extends Model
 
     public function getPayableAmountAttribute()
     {
-        return $this->loan_amount + $this->interest_amount;
+        $payableAmount = 0;
+        $typeOfLoanInterestPayment = Setting::where('name', 'type_of_loan_interest_payment')->first()->value;
+
+        if ($typeOfLoanInterestPayment === 'monthly_payment') {
+            $payableAmount = $this->loan_amount + $this->interest_amount;
+        } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
+            $payableAmount = $this->loan_amount;
+        } else {
+            $payableAmount = $this->loan_amount + $this->interest_amount;
+        }
+        return $payableAmount;
     }
 
     public function getIsSettledAttribute()
