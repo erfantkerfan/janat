@@ -387,15 +387,41 @@
                 //     "table-warning": id === 7
                 // }
             },
-            customSort (value) {
+            customSort(value) {
                 return value.sort((a, b) => {
-                    const sortBy = this.sortation.field
-
-                    if (this.sortation.order === 'desc') {
-                        return a[sortBy].toString().localeCompare(b[sortBy])
+                    let sortBy = this.sortation.field
+                    if (sortBy.includes('.')) {
+                        sortBy = sortBy.split('.')
                     }
 
-                    return b[sortBy].toString().localeCompare(a[sortBy])
+                    function getObject (object, keys) {
+                        if (!Array.isArray(keys)) {
+                            return object[keys]
+                        }
+                        let newObject = Object.create(object);
+                        keys.forEach((item) => {
+                            newObject = newObject[item]
+                        })
+
+                        return newObject
+                    }
+
+                    let aSortBy = getObject(a, sortBy)
+                    let bSortBy = getObject(b, sortBy)
+                    if (this.sortation.order === 'desc') {
+                        if (isNaN(aSortBy.toString().trim())) {
+                            return aSortBy.toString().localeCompare(bSortBy)
+                        } else {
+                            return aSortBy - bSortBy
+                        }
+                    }
+
+                    if (isNaN(aSortBy.toString().trim())) {
+                        return bSortBy.toString().localeCompare(aSortBy)
+                    } else {
+                        return bSortBy - aSortBy
+                    }
+
                 })
             },
             showInstallmentTransactions (installment) {

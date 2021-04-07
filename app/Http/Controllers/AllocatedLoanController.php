@@ -224,7 +224,7 @@ class AllocatedLoanController extends Controller
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
 
-        $targetAllocatedLoan = AllocatedLoan::with('account.user:id,f_name,l_name', 'loan', 'loan.fund', 'installments')
+        $targetAllocatedLoan = AllocatedLoan::with('account.user:id,f_name,l_name,staff_code', 'loan', 'loan.fund', 'installments')
             ->notSettled()
             ->where('payroll_deduction', '=', '1')
             ->lastPayrollDeductionForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
@@ -255,7 +255,13 @@ class AllocatedLoanController extends Controller
         }
 
         if (!$hasProblem) {
-            $setAppends = ['is_settled', 'last_payment'];
+            $setAppends = [
+                'is_settled',
+                'total_payments',
+                'remaining_payable_amount',
+                'count_of_paid_installments',
+                'count_of_remaining_installments'
+            ];
             $targetAllocatedLoan->map(function (& $item) use ($setAppends) {
                 return $item->setAppends($setAppends);
             });

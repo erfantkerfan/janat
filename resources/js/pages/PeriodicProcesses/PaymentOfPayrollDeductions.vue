@@ -12,7 +12,8 @@
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <div class="md-layout">
-                                پرداخت اقساط کسر از حقوق تسویه نشده ای که در بازه زمانی انتخاب شده زیر پرداختی نداشته اند
+                                پرداخت اقساط کسر از حقوق تسویه نشده ای که در بازه زمانی انتخاب شده زیر پرداختی نداشته
+                                اند
                             </div>
                         </div>
                     </div>
@@ -28,7 +29,7 @@
                                         type="datetime"
                                         :editable="true"
                                         format="YYYY-MM-DD HH:mm:ss"
-                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm"/>
                                 </div>
                             </div>
                         </div>
@@ -43,7 +44,7 @@
                                         type="datetime"
                                         :editable="true"
                                         format="YYYY-MM-DD HH:mm:ss"
-                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm"/>
                                 </div>
                             </div>
                         </div>
@@ -79,32 +80,44 @@
                     </md-field>
                     <md-table
                         :value="allocatedLoans.list"
+                        :md-sort.sync="sortation.field"
+                        :md-sort-order.sync="sortation.order"
+                        :md-sort-fn="customSort"
                         class="table-hover"
                     >
                         <md-table-row slot="md-table-row"
                                       slot-scope="{ item }"
                                       :class="getInstallmentRowClass(item)"
                         >
+                            <md-table-cell md-label="شماره عضویت" md-sort-by="account.user.id">
+                                {{ item.account.user.id }}
+                            </md-table-cell>
+                            <md-table-cell md-label="کد پرسنلی" md-sort-by="account.user.staff_code">
+                                {{ item.account.user.staff_code }}
+                            </md-table-cell>
                             <md-table-cell md-label="نام" md-sort-by="account.user.f_name">
-                                {{item.account.user.f_name}}
+                                {{ item.account.user.f_name }}
                             </md-table-cell>
                             <md-table-cell md-label="نام خانوادگی" md-sort-by="account.user.l_name">
-                                {{item.account.user.l_name}}
-                            </md-table-cell>
-                            <md-table-cell md-label="شماره عضویت" md-sort-by="account.user.l_name">
-                                {{item.account.user.id}}
+                                {{ item.account.user.l_name }}
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
-                                {{item.loan_amount | currencyFormat}}
+                                {{ item.loan_amount | currencyFormat }}
                             </md-table-cell>
                             <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
-                                {{item.installment_rate | currencyFormat}}
+                                {{ item.installment_rate | currencyFormat }}
                             </md-table-cell>
                             <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
-                                {{item.number_of_installments}}
+                                {{ item.number_of_installments }}
+                            </md-table-cell>
+                            <md-table-cell md-label="تعداد اقساط پرداخت نشده" md-sort-by="count_of_remaining_installments">
+                                {{ item.count_of_remaining_installments }}
+                            </md-table-cell>
+                            <md-table-cell md-label="مبلغ قابل پرداخت باقیمانده" md-sort-by="remaining_payable_amount">
+                                {{ item.remaining_payable_amount | currencyFormat }} {{ currencyUnit }}
                             </md-table-cell>
                             <md-table-cell md-label="نام صندوق" md-sort-by="loan.fund.name">
-                                {{item.loan.fund.name}}
+                                {{ item.loan.fund.name }}
                             </md-table-cell>
                             <md-table-cell md-label="وضعیت">
                                 <span v-if="item.is_settled">
@@ -115,7 +128,7 @@
                                 </span>
                             </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
-                                {{item.shamsiDate('created_at').dateTime}}
+                                {{ item.shamsiDate('created_at').dateTime }}
                             </md-table-cell>
                             <md-table-cell md-label="عملیات">
                                 <md-button
@@ -135,77 +148,81 @@
 </template>
 
 <script>
-    import JsonExcel from 'vue-json-excel'
-    import {AllocatedLoanList} from '@/models/AllocatedLoan'
-    import moment from 'moment-jalaali'
-    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin, dateMixin } from '@/mixins/Mixins'
+import JsonExcel from 'vue-json-excel'
+import {AllocatedLoanList} from '@/models/AllocatedLoan'
+import moment from 'moment-jalaali'
+import {priceFilterMixin, getFilterDropdownMixin, axiosMixin, dateMixin} from '@/mixins/Mixins'
 
-    export default {
-        name: 'PaymentOfPayrollDeductions',
-        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin, dateMixin],
-        computed: {
-            json_fields () {
-                return {
-                    'نام': 'account.user.f_name',
-                    'نام خانوادگی': 'account.user.l_name',
-                    'شماره عضویت': 'account.user.id',
-                    'مبلغ وام': 'loan_amount',
-                    'مبلغ هر قسط': 'installment_rate',
-                    'تعداد اقساط': 'number_of_installments',
-                    'نام صندوق': 'loan.fund.name',
-                    'وضعیت': {
-                        field: 'is_settled',
-                        callback: (value) => {
-                            if (value) {
-                                return 'تسویه شده'
-                            } else {
-                                return 'تسویه نشده'
-                            }
-                        },
-                    },
-                    'تاریخ ایجاد': {
-                        field: 'created_at',
-                        callback: (value) => {
-                            return this.shamsiDate(value).dateTime
+export default {
+    name: 'PaymentOfPayrollDeductions',
+    mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin, dateMixin],
+    computed: {
+        json_fields() {
+            return {
+                'نام': 'account.user.f_name',
+                'نام خانوادگی': 'account.user.l_name',
+                'شماره عضویت': 'account.user.id',
+                'مبلغ وام': 'loan_amount',
+                'مبلغ هر قسط': 'installment_rate',
+                'تعداد اقساط': 'number_of_installments',
+                'نام صندوق': 'loan.fund.name',
+                'وضعیت': {
+                    field: 'is_settled',
+                    callback: (value) => {
+                        if (value) {
+                            return 'تسویه شده'
+                        } else {
+                            return 'تسویه نشده'
                         }
+                    },
+                },
+                'تاریخ ایجاد': {
+                    field: 'created_at',
+                    callback: (value) => {
+                        return this.shamsiDate(value).dateTime
                     }
                 }
             }
+        }
+    },
+    components: {
+        JsonExcel
+    },
+    data: () => ({
+        payRequestIsSent: false,
+        allocatedLoans: new AllocatedLoanList(),
+        paySinceDate: null,
+        payTillDate: null,
+        sortation: {
+            field: 'created_at',
+            order: 'asc'
         },
-        components: {
-            JsonExcel
+    }),
+    mounted() {
+        this.loadDatePicker()
+        // this.getList()
+        // this.getFunds()
+        // this.getLoans()
+        this.allocatedLoans.loading = false
+    },
+    methods: {
+        loadDatePicker() {
+            this.paySinceDate = moment().startOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
+            this.payTillDate = moment().endOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
         },
-        data: () => ({
-            payRequestIsSent: false,
-            allocatedLoans: new AllocatedLoanList(),
-            paySinceDate: null,
-            payTillDate: null
-        }),
-        mounted() {
-            this.loadDatePicker()
-            // this.getList()
-            // this.getFunds()
-            // this.getLoans()
-            this.allocatedLoans.loading = false
-        },
-        methods: {
-            loadDatePicker () {
-                this.paySinceDate = moment().startOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
-                this.payTillDate = moment().endOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
-            },
-            pay () {
-                this.allocatedLoans.loading = true
-                axios.get('/api/allocated_loans/pay_periodic_payroll_deduction', {
-                    params: {
-                        pay_since_date: this.paySinceDate,
-                        pay_till_date: this.payTillDate
-                    }
-                })
-                .then( (response) => {
+        pay() {
+            this.allocatedLoans.loading = true
+            axios.get('/api/allocated_loans/pay_periodic_payroll_deduction', {
+                params: {
+                    pay_since_date: this.paySinceDate,
+                    pay_till_date: this.payTillDate
+                }
+            })
+                .then((response) => {
                     this.allocatedLoans.loading = false
                     this.payRequestIsSent = true
                     this.allocatedLoans = new AllocatedLoanList(response.data)
-                    if(this.allocatedLoans.list.length > 0) {
+                    if (this.allocatedLoans.list.length > 0) {
                         this.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
@@ -213,132 +230,165 @@
                         });
                     }
                 })
-                .catch( (error) => {
+                .catch((error) => {
                     this.axios_handleError(error)
                     this.allocatedLoans.loading = false
                 })
-            },
-            rollback () {
-                this.allocatedLoans.loading = true
-                axios.get('/api/allocated_loans/rollback_pay_periodic_payroll_deduction', {
-                    params: {
-                        pay_since_date: this.paySinceDate,
-                        pay_till_date: this.payTillDate
-                    }
-                })
-                    .then( () => {
-                        this.allocatedLoans.loading = false
-                        this.$store.dispatch('alerts/fire', {
-                            icon: 'success',
-                            title: 'توجه',
-                            message: 'تمام تراکنش های کسر از حقوق مربوط به اقساط که در بازه زمانی انتخاب شده پرداخت شده بودند حذف شدند.'
-                        })
-                    })
-                    .catch( (error) => {
-                        this.axios_handleError(error)
-                        this.allocatedLoans.loading = false
-                    })
-            },
-            openLinkInNewTab (allocatedLoanId) {
-                window.open('/dashboard#/allocated_loan/' + allocatedLoanId, '_blank');
-            },
-            loadDatePickers () {
-                this.paySinceDate = moment().format('YYYY-MM-DD HH:mm:ss')
-                this.payTillDate = moment().format('YYYY-MM-DD HH:mm:ss')
-            },
-            clickCallback (data) {
-                this.getList(data)
-            },
-            getList (page) {
-                if (!page) {
-                    page = 1
+        },
+        rollback() {
+            this.allocatedLoans.loading = true
+            axios.get('/api/allocated_loans/rollback_pay_periodic_payroll_deduction', {
+                params: {
+                    pay_since_date: this.paySinceDate,
+                    pay_till_date: this.payTillDate
                 }
-                this.allocatedLoans.loading = true;
-                this.allocatedLoans.fetch({
-                    page,
-                    sortation_field: this.filterData.sortation.field,
-                    sortation_order: this.filterData.sortation.order,
-                    length: this.filterData.perPage,
-                    fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null : this.filterData.fund_id,
-                    loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null : this.filterData.loan_id,
-                    settled: (this.filterData.settled === false) ? null : this.filterData.settled,
-                    notSettled: (this.filterData.notSettled === false) ? null : this.filterData.notSettled,
-                    payroll_deduction: (this.filterData.payroll_deduction === false) ? null : 1,
-                    loan_amount: this.filterData.loan_amount,
-                    f_name: this.filterData.f_name,
-                    l_name: this.filterData.l_name,
-                    SSN: this.filterData.SSN,
-                    installment_rate: this.filterData.installment_rate,
-                    number_of_installments: this.filterData.number_of_installments,
-                    last_paid_at_before: this.filterData.lastPaidAtBefore,
-                    last_paid_at_after: this.filterData.lastPaidAtAfter,
-                    createdSinceDate: this.filterData.createdSinceDate,
-                    createdTillDate: this.filterData.createdTillDate
+            })
+                .then(() => {
+                    this.allocatedLoans.loading = false
+                    this.$store.dispatch('alerts/fire', {
+                        icon: 'success',
+                        title: 'توجه',
+                        message: 'تمام تراکنش های کسر از حقوق مربوط به اقساط که در بازه زمانی انتخاب شده پرداخت شده بودند حذف شدند.'
+                    })
                 })
-                    .then((response) => {
-                        this.allocatedLoans.loading = false
-                        this.allocatedLoans = new AllocatedLoanList(response.data.data, response.data)
-                    })
-                    .catch((error) => {
-                        this.axios_handleError(error)
-                        this.allocatedLoans.loading = false
-                        this.allocatedLoans = new AllocatedLoanList()
-                    })
-            },
-            confirmRemove(item) {
-                this.$confirm(
-                    {
-                        message: `از حذف وام تخصیص داده شده اطمینان دارید؟`,
-                        button: {
-                            no: 'خیر',
-                            yes: 'بله'
-                        },
-                        callback: confirm => {
-                            if (confirm) {
-                                this.remove(item)
-                            }
+                .catch((error) => {
+                    this.axios_handleError(error)
+                    this.allocatedLoans.loading = false
+                })
+        },
+        openLinkInNewTab(allocatedLoanId) {
+            window.open('/dashboard#/allocated_loan/' + allocatedLoanId, '_blank');
+        },
+        loadDatePickers() {
+            this.paySinceDate = moment().format('YYYY-MM-DD HH:mm:ss')
+            this.payTillDate = moment().format('YYYY-MM-DD HH:mm:ss')
+        },
+        clickCallback(data) {
+            this.getList(data)
+        },
+        getList(page) {
+            if (!page) {
+                page = 1
+            }
+            this.allocatedLoans.loading = true;
+            this.allocatedLoans.fetch({
+                page,
+                sortation_field: this.filterData.sortation.field,
+                sortation_order: this.filterData.sortation.order,
+                length: this.filterData.perPage,
+                fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null : this.filterData.fund_id,
+                loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null : this.filterData.loan_id,
+                settled: (this.filterData.settled === false) ? null : this.filterData.settled,
+                notSettled: (this.filterData.notSettled === false) ? null : this.filterData.notSettled,
+                payroll_deduction: (this.filterData.payroll_deduction === false) ? null : 1,
+                loan_amount: this.filterData.loan_amount,
+                f_name: this.filterData.f_name,
+                l_name: this.filterData.l_name,
+                SSN: this.filterData.SSN,
+                installment_rate: this.filterData.installment_rate,
+                number_of_installments: this.filterData.number_of_installments,
+                last_paid_at_before: this.filterData.lastPaidAtBefore,
+                last_paid_at_after: this.filterData.lastPaidAtAfter,
+                createdSinceDate: this.filterData.createdSinceDate,
+                createdTillDate: this.filterData.createdTillDate
+            })
+                .then((response) => {
+                    this.allocatedLoans.loading = false
+                    this.allocatedLoans = new AllocatedLoanList(response.data.data, response.data)
+                })
+                .catch((error) => {
+                    this.axios_handleError(error)
+                    this.allocatedLoans.loading = false
+                    this.allocatedLoans = new AllocatedLoanList()
+                })
+        },
+        confirmRemove(item) {
+            this.$confirm(
+                {
+                    message: `از حذف وام تخصیص داده شده اطمینان دارید؟`,
+                    button: {
+                        no: 'خیر',
+                        yes: 'بله'
+                    },
+                    callback: confirm => {
+                        if (confirm) {
+                            this.remove(item)
                         }
                     }
-                )
-            },
-            remove(item) {
-                item.loading = true;
-                let that = this;
-                item.delete()
-                    .then(function(response) {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'success',
-                            title: 'توجه',
-                            message: 'صندوق با موفقیت حذف شد'
-                        });
-                        that.getList()
-                    })
-                    .catch((error) => {
-                        this.axios_handleError(error)
-                        item.editMode = false
-                        item.loading = false
-                    });
-            },
-            customSort() {
-                this.getList()
-                return false;
-            },
-            getInstallmentRowClass (item) {
-                if (item.is_settled) {
-                    return 'table-success'
-                } else {
-                    return 'table-danger'
                 }
-                // {
-                //     "table-success": id === 1,
-                //     "table-info": id === 3,
-                //     "table-danger": id === 5,
-                //     "table-warning": id === 7
-                // }
-            },
-        }
+            )
+        },
+        remove(item) {
+            item.loading = true;
+            let that = this;
+            item.delete()
+                .then(function (response) {
+                    that.$store.dispatch('alerts/fire', {
+                        icon: 'success',
+                        title: 'توجه',
+                        message: 'صندوق با موفقیت حذف شد'
+                    });
+                    that.getList()
+                })
+                .catch((error) => {
+                    this.axios_handleError(error)
+                    item.editMode = false
+                    item.loading = false
+                });
+        },
+        customSort(value) {
+            return value.sort((a, b) => {
+                let sortBy = this.sortation.field
+                if (sortBy.includes('.')) {
+                    sortBy = sortBy.split('.')
+                }
 
+                function getObject (object, keys) {
+                    if (!Array.isArray(keys)) {
+                        return object[keys]
+                    }
+                    let newObject = Object.create(object);
+                    keys.forEach((item) => {
+                        newObject = newObject[item]
+                    })
+
+                    return newObject
+                }
+
+                let aSortBy = getObject(a, sortBy)
+                let bSortBy = getObject(b, sortBy)
+                if (this.sortation.order === 'desc') {
+                    if (isNaN(aSortBy.toString().trim())) {
+                        return aSortBy.toString().localeCompare(bSortBy)
+                    } else {
+                        return aSortBy - bSortBy
+                    }
+                }
+
+                if (isNaN(aSortBy.toString().trim())) {
+                    return bSortBy.toString().localeCompare(aSortBy)
+                } else {
+                    return bSortBy - aSortBy
+                }
+
+            })
+        },
+        getInstallmentRowClass(item) {
+            if (item.is_settled) {
+                return 'table-success'
+            } else {
+                return 'table-danger'
+            }
+            // {
+            //     "table-success": id === 1,
+            //     "table-info": id === 3,
+            //     "table-danger": id === 5,
+            //     "table-warning": id === 7
+            // }
+        },
     }
+
+}
 
 </script>
 

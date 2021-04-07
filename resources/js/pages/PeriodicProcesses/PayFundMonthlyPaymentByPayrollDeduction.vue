@@ -84,13 +84,22 @@
                     </md-field>
                     <md-table
                         :value="accounts.list"
+                        :md-sort.sync="sortation.field"
+                        :md-sort-order.sync="sortation.order"
+                        :md-sort-fn="customSort"
                         class="paginated-table table-striped table-hover"
                     >
                         <md-table-row slot="md-table-row" slot-scope="{ item }">
+                            <md-table-cell md-label="شماره عضویت" md-sort-by="user.id">{{item.user.id}}</md-table-cell>
+                            <md-table-cell md-label="کد پرسنلی" md-sort-by="account.user.staff_code">
+                                {{ item.user.staff_code }}
+                            </md-table-cell>
                             <md-table-cell md-label="نام" md-sort-by="user.f_name">{{item.user.f_name}}</md-table-cell>
                             <md-table-cell md-label="نام خانوادگی" md-sort-by="user.l_name">{{item.user.l_name}}</md-table-cell>
-                            <md-table-cell md-label="شماره عضویت" md-sort-by="user.id">{{item.user.id}}</md-table-cell>
                             <md-table-cell md-label="شماره حساب" md-sort-by="id">{{item.id}}</md-table-cell>
+                            <md-table-cell md-label="موجودی" md-sort-by="balance">
+                                {{ item.balance | currencyFormat }}
+                            </md-table-cell>
                             <md-table-cell md-label="نام صندوق" md-sort-by="fund.name">{{item.fund.name}}</md-table-cell>
                             <md-table-cell md-label="تاریخ عضویت" md-sort-by="created_at">
                                 {{item.shamsiDate('joined_at').date}}
@@ -207,15 +216,41 @@
             openLinkInNewTab (transactionId) {
                 window.open('/dashboard#/allocated_loan/' + transactionId, '_blank');
             },
-            customSort (value) {
+            customSort(value) {
                 return value.sort((a, b) => {
-                    const sortBy = this.sortation.field
-
-                    if (this.sortation.order === 'desc') {
-                        return a[sortBy].toString().localeCompare(b[sortBy])
+                    let sortBy = this.sortation.field
+                    if (sortBy.includes('.')) {
+                        sortBy = sortBy.split('.')
                     }
 
-                    return b[sortBy].toString().localeCompare(a[sortBy])
+                    function getObject (object, keys) {
+                        if (!Array.isArray(keys)) {
+                            return object[keys]
+                        }
+                        let newObject = Object.create(object);
+                        keys.forEach((item) => {
+                            newObject = newObject[item]
+                        })
+
+                        return newObject
+                    }
+
+                    let aSortBy = getObject(a, sortBy)
+                    let bSortBy = getObject(b, sortBy)
+                    if (this.sortation.order === 'desc') {
+                        if (isNaN(aSortBy.toString().trim())) {
+                            return aSortBy.toString().localeCompare(bSortBy)
+                        } else {
+                            return aSortBy - bSortBy
+                        }
+                    }
+
+                    if (isNaN(aSortBy.toString().trim())) {
+                        return bSortBy.toString().localeCompare(aSortBy)
+                    } else {
+                        return bSortBy - aSortBy
+                    }
+
                 })
             },
         }
