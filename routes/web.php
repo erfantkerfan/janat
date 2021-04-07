@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('{user}/get_user_pic', [UserController::class, 'getUserPic'])->name('api.panel.getUserPic');
             Route::put('{user}/set_user_pic', [UserController::class, 'setUserPic'])->name('api.panel.getUserPic');
             Route::put('{user}/reset_pass', [UserController::class, 'resetPass'])->name('api.panel.getUserPic');
+            Route::get('{user}/get_total_balance', [UserController::class, 'getTotalBalance'])->name('api.panel.getUserTotalBalance');
         });
         Route::resource('users', '\\'.UserController::class);
         Route::resource('user_statuses', '\\'. UserStatusController::class);

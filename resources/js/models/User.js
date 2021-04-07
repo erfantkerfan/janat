@@ -86,6 +86,25 @@ class User extends Model {
         return this.crud.fetch(url);
     }
 
+    getTotalBalance (id, url) {
+        if (!this.baseRoute) {
+            return new Promise(() => {
+                throw new Error('baseRoute is not set');
+            })
+        }
+
+        if (!id) {
+            id = this.id;
+        }
+
+        if (!url) {
+            url = this.baseRoute + '/' + id + '/get_total_balance';
+        }
+
+
+        return this.crud.fetch(url);
+    }
+
     setUserPic (data, id, url) {
         if (!this.baseRoute) {
             return new Promise(() => {

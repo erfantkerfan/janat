@@ -86,7 +86,7 @@
                         :value="accounts.list"
                         :md-sort.sync="sortation.field"
                         :md-sort-order.sync="sortation.order"
-                        :md-sort-fn="customSort"
+                        :md-sort-fn="customOfflineSort"
                         class="paginated-table table-striped table-hover"
                     >
                         <md-table-row slot="md-table-row" slot-scope="{ item }">
@@ -124,11 +124,11 @@
     import JsonExcel from 'vue-json-excel'
     import {AccountList} from '@/models/Account'
     import moment from 'moment-jalaali'
-    import { priceFilterMixin, axiosMixin, dateMixin } from '@/mixins/Mixins'
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin, dateMixin } from '@/mixins/Mixins'
 
     export default {
         name: 'PayFundMonthlyPaymentByPayrollDeduction',
-        mixins: [priceFilterMixin, axiosMixin, dateMixin],
+        mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin, dateMixin],
         computed: {
             json_fields () {
                 return {
@@ -215,44 +215,7 @@
             },
             openLinkInNewTab (transactionId) {
                 window.open('/dashboard#/allocated_loan/' + transactionId, '_blank');
-            },
-            customSort(value) {
-                return value.sort((a, b) => {
-                    let sortBy = this.sortation.field
-                    if (sortBy.includes('.')) {
-                        sortBy = sortBy.split('.')
-                    }
-
-                    function getObject (object, keys) {
-                        if (!Array.isArray(keys)) {
-                            return object[keys]
-                        }
-                        let newObject = Object.create(object);
-                        keys.forEach((item) => {
-                            newObject = newObject[item]
-                        })
-
-                        return newObject
-                    }
-
-                    let aSortBy = getObject(a, sortBy)
-                    let bSortBy = getObject(b, sortBy)
-                    if (this.sortation.order === 'desc') {
-                        if (isNaN(aSortBy.toString().trim())) {
-                            return aSortBy.toString().localeCompare(bSortBy)
-                        } else {
-                            return aSortBy - bSortBy
-                        }
-                    }
-
-                    if (isNaN(aSortBy.toString().trim())) {
-                        return bSortBy.toString().localeCompare(aSortBy)
-                    } else {
-                        return bSortBy - aSortBy
-                    }
-
-                })
-            },
+            }
         }
 
     }

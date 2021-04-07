@@ -181,5 +181,42 @@ export default {
                   this.transactionStatuses = new TransactionStatusList()
               })
       },
+      customOfflineSort(value) {
+          return value.sort((a, b) => {
+              let sortBy = this.sortation.field
+              if (sortBy.includes('.')) {
+                  sortBy = sortBy.split('.')
+              }
+
+              function getObject (object, keys) {
+                  if (!Array.isArray(keys)) {
+                      return object[keys]
+                  }
+                  let newObject = Object.create(object);
+                  keys.forEach((item) => {
+                      newObject = newObject[item]
+                  })
+
+                  return newObject
+              }
+
+              let aSortBy = getObject(a, sortBy)
+              let bSortBy = getObject(b, sortBy)
+              if (this.sortation.order === 'desc') {
+                  if (isNaN(aSortBy.toString().trim())) {
+                      return aSortBy.toString().localeCompare(bSortBy)
+                  } else {
+                      return aSortBy - bSortBy
+                  }
+              }
+
+              if (isNaN(aSortBy.toString().trim())) {
+                  return bSortBy.toString().localeCompare(aSortBy)
+              } else {
+                  return bSortBy - aSortBy
+              }
+
+          })
+      },
   }
 };

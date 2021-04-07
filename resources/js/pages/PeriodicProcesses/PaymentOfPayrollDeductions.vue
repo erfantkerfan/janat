@@ -82,7 +82,7 @@
                         :value="allocatedLoans.list"
                         :md-sort.sync="sortation.field"
                         :md-sort-order.sync="sortation.order"
-                        :md-sort-fn="customSort"
+                        :md-sort-fn="customOfflineSort"
                         class="table-hover"
                     >
                         <md-table-row slot="md-table-row"
@@ -200,9 +200,6 @@ export default {
     }),
     mounted() {
         this.loadDatePicker()
-        // this.getList()
-        // this.getFunds()
-        // this.getLoans()
         this.allocatedLoans.loading = false
     },
     methods: {
@@ -335,43 +332,6 @@ export default {
                     item.editMode = false
                     item.loading = false
                 });
-        },
-        customSort(value) {
-            return value.sort((a, b) => {
-                let sortBy = this.sortation.field
-                if (sortBy.includes('.')) {
-                    sortBy = sortBy.split('.')
-                }
-
-                function getObject (object, keys) {
-                    if (!Array.isArray(keys)) {
-                        return object[keys]
-                    }
-                    let newObject = Object.create(object);
-                    keys.forEach((item) => {
-                        newObject = newObject[item]
-                    })
-
-                    return newObject
-                }
-
-                let aSortBy = getObject(a, sortBy)
-                let bSortBy = getObject(b, sortBy)
-                if (this.sortation.order === 'desc') {
-                    if (isNaN(aSortBy.toString().trim())) {
-                        return aSortBy.toString().localeCompare(bSortBy)
-                    } else {
-                        return aSortBy - bSortBy
-                    }
-                }
-
-                if (isNaN(aSortBy.toString().trim())) {
-                    return bSortBy.toString().localeCompare(aSortBy)
-                } else {
-                    return bSortBy - aSortBy
-                }
-
-            })
         },
         getInstallmentRowClass(item) {
             if (item.is_settled) {
