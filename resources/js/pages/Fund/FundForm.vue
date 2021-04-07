@@ -214,6 +214,67 @@
 
             </md-card>
         </div>
+        <div v-if="!isCreateForm()" class="md-layout-item md-size-100 md-small-size-100">
+            <md-card>
+                <md-card-header class="md-card-header-icon md-card-header-blue">
+                    <div class="card-icon">
+                        <md-icon>monetization_on</md-icon>
+                    </div>
+                    <h4 class="title">
+                        هزینه های صندوق
+                    </h4>
+                </md-card-header>
+                <md-card-content>
+                    <md-empty-state
+                        v-if="!loan.loading && loans.list.length === 0"
+                        class="md-warning"
+                        md-icon="cancel_presentation"
+                        md-label="وامی یافت نشد"
+                    >
+                    </md-empty-state>
+                    <md-table
+                        v-if="expenseTransactions.list.length > 0"
+                        :value="expenseTransactions.list"
+                        class="paginated-table table-striped table-hover"
+                    >
+                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                            <md-table-cell :md-label="'مبلغ'+'('+currencyUnit+')'" md-sort-by="cost">
+                                {{item.cost | currencyFormat}}
+                            </md-table-cell>
+                            <md-table-cell md-label="وضعیت" md-sort-by="parent_transaction_id">
+                                {{item.transaction_status.display_name}}
+                            </md-table-cell>
+                            <md-table-cell md-label="توضیحات مدیر" md-sort-by="manager_comment">
+                                {{item.manager_comment}}
+                            </md-table-cell>
+                            <md-table-cell md-label="تاریخ پرداخت" md-sort-by="created_at">
+                                {{item.shamsiDate('paid_at').dateTime}}
+                            </md-table-cell>
+                            <md-table-cell md-label="مشاهده">
+                                <md-button
+                                    class="md-icon-button md-raised md-round md-info"
+                                    style="margin: .2rem;"
+                                    :to="'/transactions/'+item.id"
+                                >
+                                    <md-icon>pageview</md-icon>
+                                </md-button>
+                            </md-table-cell>
+                        </md-table-row>
+                    </md-table>
+                    <list-pagination
+                        :paginate="expenseTransactions.paginate"
+                        @changePage="getExpenseTransactions"
+                    />
+                </md-card-content>
+                <md-card-actions>
+                    <md-button
+                        class="md-dense md-raised md-primary"
+                        @click="getExpenseTransactions">
+                        مشاهده هزینه های صندوق
+                    </md-button>
+                </md-card-actions>
+            </md-card>
+        </div>
     </div>
 </template>
 
@@ -221,17 +282,20 @@
     import {Fund} from '@/models/Fund'
     import {Loan, LoanList} from '@/models/Loan'
     import PriceInput from '@/components/PriceInput'
+    import ListPagination from '@/components/ListPagination'
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
+    import {TransactionList} from "@/models/Transaction";
 
     export default {
         name: "fund-form",
-        components: {PriceInput},
+        components: {PriceInput, ListPagination},
         mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
         data: () => ({
             fund: new Fund(),
             loan: new Loan(),
             loans: new LoanList(),
             showFundIncomes: false,
+            expenseTransactions: new TransactionList(),
             sumOfIncomesAndExpenses: 0,
             editLoanState: false,
             createLoanShowDialog: false,
@@ -380,6 +444,21 @@
                         that.axios_handleError(error)
                         that.fund.loading = false;
                         that.fund = new Fund()
+                    })
+            },
+            getExpenseTransactions(page) {
+                if (!page) {
+                    page = 1
+                }
+                this.fund.loading = true
+                this.fund.getExpenseTransactions({page})
+                    .then(response => {
+                        this.expenseTransactions = new TransactionList(response.data.data, response.data)
+                        this.fund.loading = false
+                    })
+                    .catch(error => {
+                        this.axios_handleError(error)
+                        this.fund.loading = false
                     })
             },
             getIncomesAndExpenses () {

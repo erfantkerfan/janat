@@ -6,7 +6,14 @@ const mutations = {};
 
 const actions = {
     fire({commit, dispatch}, data) {
-        Swal.fire(data.title, data.message, data.icon)
+        Swal.fire({
+            title: data.title,
+            text: data.message,
+            icon: data.icon,
+            // showCancelButton: true,
+            confirmButtonText: 'متوجه شدم',
+            // cancelButtonText: 'No, keep it'
+        })
     },
 
     success({commit, dispatch}, data) {

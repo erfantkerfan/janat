@@ -65,7 +65,18 @@ class AllocatedLoan extends Model
 
     public function getTotalPaymentsAttribute()
     {
-        return $this->installments->sum('total_payments');
+        $totalPayments = 0;
+        $typeOfLoanInterestPayment = Setting::where('name', 'type_of_loan_interest_payment')->first()->value;
+
+        if ($typeOfLoanInterestPayment === 'monthly_payment') {
+            $totalPayments = $this->installments->sum('total_payments');
+        } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
+            $totalPayments = $this->installments->sum('total_payments') + $this->interest_amount;
+        } else {
+            $totalPayments = $this->installments->sum('total_payments');
+        }
+
+        return $totalPayments;
     }
 
     public function getHasUnsettledInstallmentAttribute()
@@ -105,7 +116,17 @@ class AllocatedLoan extends Model
 
     public function getPayableAmountAttribute()
     {
-        return $this->loan_amount + $this->interest_amount;
+        $payableAmount = 0;
+        $typeOfLoanInterestPayment = Setting::where('name', 'type_of_loan_interest_payment')->first()->value;
+
+        if ($typeOfLoanInterestPayment === 'monthly_payment') {
+            $payableAmount = $this->loan_amount + $this->interest_amount;
+        } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
+            $payableAmount = $this->loan_amount;
+        } else {
+            $payableAmount = $this->loan_amount + $this->interest_amount;
+        }
+        return $payableAmount;
     }
 
     public function getIsSettledAttribute()
@@ -202,6 +223,35 @@ class AllocatedLoan extends Model
         $query->whereIn('id', collect($result)->map(function($x){ return (array) $x; })->toArray());
 //        dd($query->whereIn('id', [22])->toSql());
 //        $query->whereIn('id', [123123123]);
+    }
+
+    public function scopeLastPayrollDeductionForChargeFundPaidAt($query, $operator, $date, $operator2 = null, $date2 = null) {
+        $whereClause1 = "AND `transactions`.`paid_at` $operator '$date'";
+        $whereClause2 = (isset($operator2) && isset($date2)) ? "AND `transactions`.`paid_at` $operator2 '$date2'" : '';
+        $rawQuery = "
+            SELECT `id`
+            FROM (
+                SELECT `allocated_loans`.`id`, `transactions`.`paid_at`
+                FROM `transactions`
+                INNER JOIN `transaction_recipients` ON `transactions`.`id` = `transaction_recipients`.`transaction_id`
+                INNER JOIN `allocated_loan_installments` ON `transaction_recipients`.`transaction_recipients_id` = `allocated_loan_installments`.`id`
+                AND `transaction_recipients`.`transaction_recipients_type` = 'App\\\AllocatedLoanInstallment'
+                AND `allocated_loan_installments`.`deleted_at` IS NULL
+                INNER JOIN `transaction_payers` ON `transactions`.`id` = `transaction_payers`.`transaction_id`
+                INNER JOIN `users` ON `transaction_payers`.`transaction_payers_id` = `users`.`id`
+                AND `transaction_payers`.`transaction_payers_type` = 'App\\\User'
+                AND `users`.`deleted_at` IS NULL
+                INNER JOIN `allocated_loans` ON `allocated_loan_installments`.`allocated_loan_id` = `allocated_loans`.`id`
+                AND `allocated_loans`.`deleted_at` IS NULL
+                WHERE `transactions`.`paid_as_payroll_deduction` = 1
+                AND `transactions`.`deleted_at` IS NULL
+                $whereClause1
+                $whereClause2
+                ORDER BY `transactions`.`paid_at` DESC
+            ) AS tbl";
+
+        $result = DB::select($rawQuery);
+        $query->whereIn('id', collect($result)->map(function($x){ return (array) $x; })->toArray());
     }
 
     public function scopeLastPayrollDeductionForChargeFundNotPaidAt($query, $operator, $date, $operator2 = null, $date2 = null) {

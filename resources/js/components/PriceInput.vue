@@ -41,7 +41,7 @@ export default {
     props: {
         value: {
             default: 0,
-            type: Number
+            type: [Number, String, Array]
         },
         label: {
             default: '',

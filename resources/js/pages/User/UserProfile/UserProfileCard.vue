@@ -52,10 +52,10 @@
                         class="paginated-table table-striped table-hover"
                     >
                         <md-table-row slot="md-table-row" slot-scope="{ item }">
-                            <md-table-cell md-label="نام صندوق" md-sort-by="name">{{item.fund.name}}</md-table-cell>
-                            <md-table-cell md-label="شماره حساب" md-sort-by="email">{{item.id}}</md-table-cell>
+                            <md-table-cell md-label="نام صندوق" md-sort-by="name">{{ item.fund.name }}</md-table-cell>
+                            <md-table-cell md-label="شماره حساب" md-sort-by="email">{{ item.id }}</md-table-cell>
                             <md-table-cell md-label="تاریخ عضویت" md-sort-by="created_at">
-                                {{item.shamsiDate('joined_at').date}}
+                                {{ item.shamsiDate('joined_at').date }}
                             </md-table-cell>
                             <md-table-cell md-label="عملیات">
                                 <md-button
@@ -75,6 +75,18 @@
                             </md-table-cell>
                         </md-table-row>
                     </md-table>
+                    <md-button v-if="!calcedUserTotalBalance"
+                               class="md-dense md-raised md-primary"
+                               style="margin: 0"
+                               @click="getUserTotalBalance">
+                        مشاهده کل موجودی کاربر در تمام حساب ها
+                    </md-button>
+                    <price-input v-if="calcedUserTotalBalance"
+                                 v-model="userTotalBalance"
+                                 :label="'مجموع کل موجودی کاربر در تمام حساب ها'"
+                                 :label-size="40"
+                                 disabled
+                    />
                 </md-card-content>
             </md-card>
             <md-field>
@@ -171,7 +183,8 @@
                                     :disabled="newAccount.loading"
                                 >
                                     مشاهده موجودی
-                                    <md-progress-spinner v-if="newAccount.loading" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+                                    <md-progress-spinner v-if="newAccount.loading" :md-diameter="30" :md-stroke="3"
+                                                         md-mode="indeterminate"></md-progress-spinner>
                                 </md-button>
 
 
@@ -276,217 +289,235 @@
 </template>
 
 <script>
-    import {User} from '@/models/User'
-    import {Account} from '@/models/Account'
-    import PriceInput from '@/components/PriceInput'
-    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin} from '@/mixins/Mixins'
+import {User} from '@/models/User'
+import {Account} from '@/models/Account'
+import PriceInput from '@/components/PriceInput'
+import {priceFilterMixin, getFilterDropdownMixin, axiosMixin} from '@/mixins/Mixins'
 
-    export default {
-        name: 'user-profile-card',
-        components: {PriceInput},
-        watch: {
-            'value.status.id': function () {
-                this.value.status_id = this.value.status.id
-            },
-            'value.company.id': function () {
-                this.value.company_id = this.value.company.id
-            },
-            'newAccount.fund.id': function () {
-                this.newAccount.fund_id = this.newAccount.fund.id
+export default {
+    name: 'user-profile-card',
+    components: {PriceInput},
+    watch: {
+        'value.status.id': function () {
+            this.value.status_id = this.value.status.id
+        },
+        'value.company.id': function () {
+            this.value.company_id = this.value.company.id
+        },
+        'newAccount.fund.id': function () {
+            this.newAccount.fund_id = this.newAccount.fund.id
+        }
+    },
+    mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
+    props: {
+        value: {
+            type: User,
+            default() {
+                return new User()
             }
-        },
-        mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
-        props: {
-            value: {
-                type: User,
-                default() {
-                    return new User()
-                }
-            }
-        },
-        data() {
-            return {
-                newAccount: new Account(),
-                createAccountShowDialog: false,
-                showAccountBalanceBtn: true,
-                editAccountState: false,
-                cardUserImage: '',
-                cardUserNewImage: null,
-                sortation: {
-                    field: "created_at",
-                    order: "asc"
-                },
-            };
-        },
-        created() {
-            // console.log('value.accounts', this.value.accounts.list.length)
-        },
-        mounted() {
-            this.getFunds()
-            this.getUserPic()
-            this.getCompanies()
-            this.getUserTypes()
-            this.getUserStatus()
-        },
-        methods: {
-            isCreateForm() {
-                return (this.$route.name === 'User.Create')
+        }
+    },
+    data() {
+        return {
+            userTotalBalance: 0,
+            calcedUserTotalBalance: false,
+            newAccount: new Account(),
+            createAccountShowDialog: false,
+            showAccountBalanceBtn: true,
+            editAccountState: false,
+            cardUserImage: '',
+            cardUserNewImage: null,
+            sortation: {
+                field: "created_at",
+                order: "asc"
             },
-            showAccountBalance () {
-                this.newAccount.loading = true
-                this.newAccount.getBalance()
+        };
+    },
+    created() {
+        // console.log('value.accounts', this.value.accounts.list.length)
+    },
+    mounted() {
+        this.getFunds()
+        this.getUserPic()
+        this.getCompanies()
+        this.getUserTypes()
+        this.getUserStatus()
+    },
+    methods: {
+        isCreateForm() {
+            return (this.$route.name === 'User.Create')
+        },
+        showAccountBalance() {
+            this.newAccount.loading = true
+            this.newAccount.getBalance()
                 .then((response) => {
                     this.showAccountBalanceBtn = false
                     this.newAccount.loading = false
                 })
-                .catch( (errpr) => {
+                .catch((error) => {
+                    this.axios_handleError(error)
                     this.newAccount.loading = false
                     this.showAccountBalanceBtn = true
                 })
-            },
-            bufferUserPic($event) {
-                const toBase64 = file => new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = error => reject(error);
-                });
+        },
+        bufferUserPic($event) {
+            const toBase64 = file => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
 
-                let that = this
-                toBase64($event.target.files[0])
-                    .then((result) => {
-                        that.cardUserNewImage = $event.target.files[0]
-                        that.cardUserImage = result
-                    })
-                    .catch((error) => {
-                        that.axios_handleError(error)
-                        that.clearUserPicBuffer()
-                    })
-            },
-            clearUserPicBuffer(newUserPic) {
-                this.cardUserNewImage = null
-                if (!newUserPic) {
-                    newUserPic = this.authenticatedUser.user_pic
-                }
-                this.cardUserImage = newUserPic
-            },
-            updateUserPic() {
-                this.$emit('updateUserPic', this.cardUserNewImage)
-            },
-            updateUserModel() {
-                this.value.status_id = this.value.status.id
-                this.value.company_id = this.value.company.id
-                this.$emit('input', this.value)
-            },
-            showAddAccountDialog() {
-                this.newAccount = new Account()
-                this.editAccountState = false
-                this.createAccountShowDialog = true
-                this.showAccountBalanceBtn = true
-            },
-            showEditAccountDialog(item) {
-                this.newAccount = item
-                this.editAccountState = true
-                this.createAccountShowDialog = true
-                this.showAccountBalanceBtn = true
-            },
-            closeAccountDialog() {
-                this.createAccountShowDialog = false
-            },
-            createNewAccount() {
-                let that = this
-                this.value.loading = true
-                this.updateUserModel()
-                this.newAccount.user_id = this.$route.params.id
-                if (!this.newAccount.payroll_deduction) {
-                    this.newAccount.payroll_deduction = false
-                }
-                this.newAccount.create()
-                    .then((response) => {
-                        this.value.loading = false
-                        that.$emit('update', this.value)
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'success',
-                            title: 'توجه',
-                            message: 'حساب جدید با موفقیت ثبت شد'
-                        });
-                        that.closeAccountDialog()
-                    })
-                    .catch((error) => {
-                        this.value.loading = false
-                        this.axios_handleError(error)
-                    })
-            },
-            editAccount() {
-                let that = this
-                this.value.loading = true
-                this.updateUserModel()
-                this.newAccount.user_id = this.$route.params.id
-                this.newAccount.update()
-                    .then((response) => {
-                        this.value.loading = false
-                        that.$emit('update', this.value)
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'success',
-                            title: 'توجه',
-                            message: 'حساب با موفقیت ویرایش شد'
-                        });
-                        that.closeAccountDialog()
-                    })
-                    .catch((error) => {
-                        this.value.loading = false
-                        this.axios_handleError(error)
-                    })
-            },
-            confirmRemoveAccount(item) {
-                let that = this
-                this.$confirm(
-                    {
-                        message: `از حذف حساب اطمینان دارید؟`,
-                        button: {
-                            no: 'خیر',
-                            yes: 'بله'
-                        },
-                        callback: confirm => {
-                            if (confirm) {
-                                that.removeAccount(item)
-                            }
+            let that = this
+            toBase64($event.target.files[0])
+                .then((result) => {
+                    that.cardUserNewImage = $event.target.files[0]
+                    that.cardUserImage = result
+                })
+                .catch((error) => {
+                    that.axios_handleError(error)
+                    that.clearUserPicBuffer()
+                })
+        },
+        getUserTotalBalance() {
+            this.value.loading = true
+            this.value.getTotalBalance()
+                .then(response => {
+                    this.calcedUserTotalBalance = true
+                    this.userTotalBalance = response.data
+                    this.value.loading = false
+                })
+                .catch(error => {
+                    this.axios_handleError(error)
+                    this.value.loading = false
+                    this.newAccount.loading = false
+                    this.showAccountBalanceBtn = true
+                })
+        },
+        clearUserPicBuffer(newUserPic) {
+            this.cardUserNewImage = null
+            if (!newUserPic) {
+                newUserPic = this.authenticatedUser.user_pic
+            }
+            this.cardUserImage = newUserPic
+        },
+        updateUserPic() {
+            this.$emit('updateUserPic', this.cardUserNewImage)
+        },
+        updateUserModel() {
+            this.value.status_id = this.value.status.id
+            this.value.company_id = this.value.company.id
+            this.$emit('input', this.value)
+        },
+        showAddAccountDialog() {
+            this.newAccount = new Account()
+            this.editAccountState = false
+            this.createAccountShowDialog = true
+            this.showAccountBalanceBtn = true
+        },
+        showEditAccountDialog(item) {
+            this.newAccount = item
+            this.editAccountState = true
+            this.createAccountShowDialog = true
+            this.showAccountBalanceBtn = true
+        },
+        closeAccountDialog() {
+            this.createAccountShowDialog = false
+        },
+        createNewAccount() {
+            let that = this
+            this.value.loading = true
+            this.updateUserModel()
+            this.newAccount.user_id = this.$route.params.id
+            if (!this.newAccount.payroll_deduction) {
+                this.newAccount.payroll_deduction = false
+            }
+            this.newAccount.create()
+                .then((response) => {
+                    this.value.loading = false
+                    that.$emit('update', this.value)
+                    that.$store.dispatch('alerts/fire', {
+                        icon: 'success',
+                        title: 'توجه',
+                        message: 'حساب جدید با موفقیت ثبت شد'
+                    });
+                    that.closeAccountDialog()
+                })
+                .catch((error) => {
+                    this.value.loading = false
+                    this.axios_handleError(error)
+                })
+        },
+        editAccount() {
+            let that = this
+            this.value.loading = true
+            this.updateUserModel()
+            this.newAccount.user_id = this.$route.params.id
+            this.newAccount.update()
+                .then((response) => {
+                    this.value.loading = false
+                    that.$emit('update', this.value)
+                    that.$store.dispatch('alerts/fire', {
+                        icon: 'success',
+                        title: 'توجه',
+                        message: 'حساب با موفقیت ویرایش شد'
+                    });
+                    that.closeAccountDialog()
+                })
+                .catch((error) => {
+                    this.value.loading = false
+                    this.axios_handleError(error)
+                })
+        },
+        confirmRemoveAccount(item) {
+            let that = this
+            this.$confirm(
+                {
+                    message: `از حذف حساب اطمینان دارید؟`,
+                    button: {
+                        no: 'خیر',
+                        yes: 'بله'
+                    },
+                    callback: confirm => {
+                        if (confirm) {
+                            that.removeAccount(item)
                         }
                     }
-                )
-            },
-            removeAccount(item) {
-                item.loading = true;
-                let that = this;
-                item.delete()
-                    .then(function (response) {
-                        that.$emit('update')
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'success',
-                            title: 'توجه',
-                            message: 'حساب با موفقیت حذف شد'
-                        });
-                    })
-                    .catch((error) => {
-                        that.axios_handleError(error)
-                        that.$emit('update')
-                        item.editMode = false;
-                        item.loading = false;
+                }
+            )
+        },
+        removeAccount(item) {
+            item.loading = true;
+            let that = this;
+            item.delete()
+                .then(function (response) {
+                    that.$emit('update')
+                    that.$store.dispatch('alerts/fire', {
+                        icon: 'success',
+                        title: 'توجه',
+                        message: 'حساب با موفقیت حذف شد'
                     });
-            },
-            getUserPic() {
-                this.value.getUserPic(this.$route.params.id)
-                    .then((response) => {
-                        // this.user.loading = false;
-                        // console.log('response.data', response.data)
-                        this.cardUserImage = response.data
-                    })
-                    .catch((error) => {
-                        this.axios_handleError(error)
-                        // this.user.loading = false;
-                        // this.user = new User()
-                    })
-            }
+                })
+                .catch((error) => {
+                    that.axios_handleError(error)
+                    that.$emit('update')
+                    item.editMode = false;
+                    item.loading = false;
+                });
+        },
+        getUserPic() {
+            this.value.getUserPic(this.$route.params.id)
+                .then((response) => {
+                    // this.user.loading = false;
+                    // console.log('response.data', response.data)
+                    this.cardUserImage = response.data
+                })
+                .catch((error) => {
+                    this.axios_handleError(error)
+                    // this.user.loading = false;
+                    // this.user = new User()
+                })
         }
-    };
+    }
+};
 </script>
