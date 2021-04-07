@@ -212,13 +212,17 @@ class AllocatedLoanController extends Controller
         return $this->commonDestroy($allocatedLoan);
     }
 
+    public function showPeriodicPayrollDeduction(Request $request) {
+        $lastPaidAtAfter = $request->get('pay_since_date');
+        $lastPaidAtBefore = $request->get('pay_till_date');
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Request $request
-     * @return Response
-     */
+        $targetAllocatedLoan = AllocatedLoan::with('account.user:id,f_name,l_name,staff_code', 'loan', 'loan.fund', 'installments')
+            ->where('payroll_deduction', '=', '1')
+            ->lastPayrollDeductionForChargeFundPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
+            ->get();
+        return $this->jsonResponseOk($targetAllocatedLoan);
+    }
+
     public function payPeriodicPayrollDeduction(Request $request)
     {
         $lastPaidAtAfter = $request->get('pay_since_date');

@@ -53,6 +53,7 @@
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <md-button class="md-dense md-raised md-info" @click="pay">پرداخت</md-button>
+                                <md-button class="md-dense md-raised md-success" @click="show">نمایش</md-button>
                                 <md-button class="md-dense md-raised md-danger" @click="rollback">برگشت</md-button>
                             </div>
                         </div>
@@ -64,7 +65,7 @@
                         v-if="payRequestIsSent && !allocatedLoans.loading && allocatedLoans.list.length === 0"
                         class="md-warning"
                         md-icon="cancel_presentation"
-                        md-label="در بازه انتخاب شده هیچ وام کسر از حقوقی وجود ندارد که پرداختی قسط نداشته باشد."
+                        :md-label="noContentMessage"
                     >
                     </md-empty-state>
                     <md-field>
@@ -86,9 +87,12 @@
                         class="table-hover"
                     >
                         <md-table-row slot="md-table-row"
-                                      slot-scope="{ item }"
+                                      slot-scope="{ item, index }"
                                       :class="getInstallmentRowClass(item)"
                         >
+                            <md-table-cell md-label="ردیف">
+                                {{ (index+1) }}
+                            </md-table-cell>
                             <md-table-cell md-label="شماره عضویت" md-sort-by="account.user.id">
                                 {{ item.account.user.id }}
                             </md-table-cell>
@@ -189,6 +193,7 @@ export default {
         JsonExcel
     },
     data: () => ({
+        noContentMessage: '',
         payRequestIsSent: false,
         allocatedLoans: new AllocatedLoanList(),
         paySinceDate: null,
@@ -208,6 +213,7 @@ export default {
             this.payTillDate = moment().endOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
         },
         pay() {
+            this.noContentMessage = 'در بازه انتخاب شده هیچ وام کسر از حقوقی وجود ندارد که پرداختی قسط نداشته باشد.'
             this.allocatedLoans.loading = true
             axios.get('/api/allocated_loans/pay_periodic_payroll_deduction', {
                 params: {
@@ -232,7 +238,34 @@ export default {
                     this.allocatedLoans.loading = false
                 })
         },
+        show() {
+            this.noContentMessage = 'در بازه انتخاب شده هیچ وام کسر از حقوقی وجود ندارد که پرداختی قسط داشته باشد.'
+            this.allocatedLoans.loading = true
+            axios.get('/api/allocated_loans/show_periodic_payroll_deduction', {
+                params: {
+                    pay_since_date: this.paySinceDate,
+                    pay_till_date: this.payTillDate
+                }
+            })
+                .then((response) => {
+                    this.allocatedLoans.loading = false
+                    this.payRequestIsSent = true
+                    this.allocatedLoans = new AllocatedLoanList(response.data)
+                    if (this.allocatedLoans.list.length > 0) {
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'نمایش اقساط کسر از حقوقی که در بازه زمانی انتخاب شده پرداختی داشته اند.'
+                        });
+                    }
+                })
+                .catch((error) => {
+                    this.axios_handleError(error)
+                    this.allocatedLoans.loading = false
+                })
+        },
         rollback() {
+            this.noContentMessage = 'تمام تراکنش های اقساط کسر از حقوقی که در بازه انتخاب شده وجود داشتند حذف شدند.'
             this.allocatedLoans.loading = true
             axios.get('/api/allocated_loans/rollback_pay_periodic_payroll_deduction', {
                 params: {
@@ -241,6 +274,7 @@ export default {
                 }
             })
                 .then(() => {
+                    this.allocatedLoans = new AllocatedLoanList()
                     this.allocatedLoans.loading = false
                     this.$store.dispatch('alerts/fire', {
                         icon: 'success',

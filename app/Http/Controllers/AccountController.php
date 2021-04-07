@@ -87,6 +87,23 @@ class AccountController extends Controller
         return $this->commonDestroy($account);
     }
 
+    public function showPeriodicPayrollDeductionForChargeFund(Request $request)
+    {
+        $lastPaidAtAfter = $request->get('pay_since_date');
+        $lastPaidAtBefore = $request->get('pay_till_date');
+
+        $targetAccount = Account::with(['user:id,f_name,l_name,staff_code', 'fund', 'allocatedLoans'])
+            ->hasPayrollDeduction()
+            ->lastPayrollDeductionForChargeFundPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
+            ->get();
+        $setAppends = ['balance'];
+        $targetAccount->map(function (& $item) use ($setAppends) {
+            return $item->setAppends($setAppends);
+        });
+
+        return $this->jsonResponseOk($targetAccount);
+    }
+
     /**
      * @param Request $request
      * @return Response
