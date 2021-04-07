@@ -22,7 +22,9 @@ export default {
       getLoans () {
           let that = this
           this.loans.loading = true
-          this.loans.fetch()
+          this.loans.fetch({
+              length: 99999
+          })
               .then((response) => {
                   that.loans.loading = false
                   that.loans = new LoanList(response.data.data, response.data)
@@ -42,7 +44,9 @@ export default {
       getFunds (withEmpty) {
           let that = this
           this.funds.loading = true;
-          this.funds.fetch()
+          this.funds.fetch({
+              length: 99999
+          })
               .then((response) => {
                   that.funds.loading = false;
                   that.funds = new FundList(response.data.data, response.data)
@@ -63,7 +67,9 @@ export default {
       },
       getUserTypes (withEmpty) {
           this.userTypes.loading = true;
-          this.userTypes.fetch()
+          this.userTypes.fetch({
+              length: 99999
+          })
               .then((response) => {
                   this.userTypes.loading = false;
                   this.userTypes = new UserTypeList(response.data.data, response.data)
@@ -84,7 +90,9 @@ export default {
       },
       getCompanies (withEmpty) {
           this.companies.loading = true;
-          this.companies.fetch()
+          this.companies.fetch({
+              length: 99999
+          })
               .then((response) => {
                   this.companies.loading = false;
                   this.companies = new CompanyList(response.data.data, response.data)
@@ -106,7 +114,9 @@ export default {
       getLoanTypes (withEmpty) {
           let that = this
           this.loanTypes.loading = true
-          this.loanTypes.fetch()
+          this.loanTypes.fetch({
+              length: 99999
+          })
               .then((response) => {
                   that.loanTypes.loading = false
                   that.loanTypes = new LoanTypeList(response.data.data, response.data)
@@ -127,7 +137,9 @@ export default {
       },
       getUserStatus (withEmpty) {
           this.userStatuses.loading = true;
-          this.userStatuses.fetch()
+          this.userStatuses.fetch({
+              length: 99999
+          })
               .then((response) => {
                   this.userStatuses.loading = false;
                   this.userStatuses = new UserStatusList(response.data.data, response.data)
@@ -148,7 +160,9 @@ export default {
       },
       getTransactionStatus (withEmpty) {
           this.transactionStatuses.loading = true;
-          this.transactionStatuses.fetch()
+          this.transactionStatuses.fetch({
+              length: 99999
+          })
               .then((response) => {
                   this.transactionStatuses.loading = false;
                   this.transactionStatuses = new TransactionStatusList(response.data.data, response.data)
