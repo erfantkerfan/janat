@@ -52,6 +52,7 @@
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <md-button class="md-dense md-raised md-info" @click="pay">پرداخت</md-button>
+                                <md-button class="md-dense md-raised md-success" @click="show">نمایش</md-button>
                                 <md-button class="md-dense md-raised md-danger" @click="rollback">برگشت</md-button>
                             </div>
                         </div>
@@ -63,7 +64,7 @@
                         v-if="payRequestIsSent && !accounts.loading && accounts.list.length === 0"
                         class="md-warning"
                         md-icon="cancel_presentation"
-                        md-label="در بازه انتخاب شده هیچ حسابی وجود ندارد که پرداختی ماهانه کسر از حقوق نداشته باشد."
+                        :md-label="noContentMessage"
                     >
                     </md-empty-state>
 
@@ -84,13 +85,25 @@
                     </md-field>
                     <md-table
                         :value="accounts.list"
+                        :md-sort.sync="sortation.field"
+                        :md-sort-order.sync="sortation.order"
+                        :md-sort-fn="customOfflineSort"
                         class="paginated-table table-striped table-hover"
                     >
-                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                        <md-table-row slot="md-table-row" slot-scope="{ item, index }">
+                            <md-table-cell md-label="ردیف">
+                                {{ (index+1) }}
+                            </md-table-cell>
+                            <md-table-cell md-label="شماره عضویت" md-sort-by="user.id">{{item.user.id}}</md-table-cell>
+                            <md-table-cell md-label="کد پرسنلی" md-sort-by="account.user.staff_code">
+                                {{ item.user.staff_code }}
+                            </md-table-cell>
                             <md-table-cell md-label="نام" md-sort-by="user.f_name">{{item.user.f_name}}</md-table-cell>
                             <md-table-cell md-label="نام خانوادگی" md-sort-by="user.l_name">{{item.user.l_name}}</md-table-cell>
-                            <md-table-cell md-label="شماره عضویت" md-sort-by="user.id">{{item.user.id}}</md-table-cell>
                             <md-table-cell md-label="شماره حساب" md-sort-by="id">{{item.id}}</md-table-cell>
+                            <md-table-cell md-label="موجودی" md-sort-by="balance">
+                                {{ item.balance | currencyFormat }}
+                            </md-table-cell>
                             <md-table-cell md-label="نام صندوق" md-sort-by="fund.name">{{item.fund.name}}</md-table-cell>
                             <md-table-cell md-label="تاریخ عضویت" md-sort-by="created_at">
                                 {{item.shamsiDate('joined_at').date}}
@@ -115,11 +128,11 @@
     import JsonExcel from 'vue-json-excel'
     import {AccountList} from '@/models/Account'
     import moment from 'moment-jalaali'
-    import { priceFilterMixin, axiosMixin, dateMixin } from '@/mixins/Mixins'
+    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin, dateMixin } from '@/mixins/Mixins'
 
     export default {
         name: 'PayFundMonthlyPaymentByPayrollDeduction',
-        mixins: [priceFilterMixin, axiosMixin, dateMixin],
+        mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin, dateMixin],
         computed: {
             json_fields () {
                 return {
@@ -141,6 +154,7 @@
             JsonExcel
         },
         data: () => ({
+            noContentMessage: '',
             payRequestIsSent: false,
             accounts: new AccountList(),
             paySinceDate: null,
@@ -160,6 +174,7 @@
             },
             pay () {
                 this.accounts.loading = true
+                this.noContentMessage = 'در بازه انتخاب شده هیچ حسابی وجود ندارد که پرداختی ماهانه کسر از حقوق نداشته باشد.'
                 axios.get('/api/accounts/pay_periodic_payroll_deduction', {
                     params: {
                         pay_since_date: this.paySinceDate,
@@ -183,8 +198,35 @@
                         this.accounts.loading = false
                     })
             },
+            show () {
+                this.accounts.loading = true
+                this.noContentMessage = 'در بازه انتخاب شده هیچ حسابی وجود ندارد که پرداختی ماهانه کسر از حقوق داشته باشد.'
+                axios.get('/api/accounts/show_periodic_payroll_deduction', {
+                    params: {
+                        pay_since_date: this.paySinceDate,
+                        pay_till_date: this.payTillDate
+                    }
+                })
+                    .then( (response) => {
+                        this.accounts.loading = false
+                        this.payRequestIsSent = true
+                        this.accounts = new AccountList(response.data)
+                        if(this.accounts.list.length > 0) {
+                            this.$store.dispatch('alerts/fire', {
+                                icon: 'success',
+                                title: 'توجه',
+                                message: 'لیست حساب هایی که برای آنها پرداخت کسر از حقوق ثبت شده و در بازه زمانی انتخاب شده پرداخت کسر از حقوق داشته اند'
+                            });
+                        }
+                    })
+                    .catch( (error) => {
+                        this.axios_handleError(error)
+                        this.accounts.loading = false
+                    })
+            },
             rollback () {
                 this.accounts.loading = true
+                this.noContentMessage = 'تراکنش حسابهای کسر از حقوقی که برای آنها در بازه انتخاب شده تراکنش ثبت شده، حذف شد'
                 axios.get('/api/accounts/rollback_pay_periodic_payroll_deduction', {
                     params: {
                         pay_since_date: this.paySinceDate,
@@ -192,6 +234,7 @@
                     }
                 })
                     .then( () => {
+                        this.accounts = new AccountList()
                         this.accounts.loading = false
                         this.$store.dispatch('alerts/fire', {
                             icon: 'success',
@@ -206,18 +249,7 @@
             },
             openLinkInNewTab (transactionId) {
                 window.open('/dashboard#/allocated_loan/' + transactionId, '_blank');
-            },
-            customSort (value) {
-                return value.sort((a, b) => {
-                    const sortBy = this.sortation.field
-
-                    if (this.sortation.order === 'desc') {
-                        return a[sortBy].toString().localeCompare(b[sortBy])
-                    }
-
-                    return b[sortBy].toString().localeCompare(a[sortBy])
-                })
-            },
+            }
         }
 
     }

@@ -25,8 +25,38 @@ class Fund extends Model {
         ])
     }
 
-    getIncomesAndExpenses() {
+    getIncomesAndExpenses(id) {
+        if (!this.baseRoute) {
+            return new Promise(() => {
+                throw new Error('baseRoute is not set');
+            })
+        }
+
+        if (!id) {
+            id = this.id;
+        }
+
         return this.show(this.id, this.baseRoute + '/' + this.id + '/get_incomes_and_expenses')
+    }
+
+
+    getExpenseTransactions (data, url, id) {
+        if (!this.baseRoute) {
+            return new Promise(() => {
+                throw new Error('baseRoute is not set');
+            })
+        }
+
+        if (!id) {
+            id = this.id;
+        }
+
+        if (!url) {
+            url = this.baseRoute + '/' + id + '/get_expense_transactions';
+        }
+
+
+        return this.crud.fetch(url, data);
     }
 }
 

@@ -248,4 +248,17 @@ class UserController extends Controller
 
         return $this->commonDestroy($user);
     }
+
+    public function getTotalBalance($id) {
+        $user = User::with([
+            'accounts'
+        ])
+            ->findOrFail($id);
+
+        $user->accounts->map(function (& $item) {
+            return $item->setAppends(['balance']);
+        });
+
+        return $this->jsonResponseOk($user->accounts->sum('balance'));
+    }
 }

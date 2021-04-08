@@ -6,6 +6,8 @@ use App\Fund;
 use App\Http\Requests\StoreFund;
 use App\Traits\CommonCRUD;
 use App\Traits\Filter;
+use App\Transaction;
+use App\TransactionType;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -103,9 +105,22 @@ class FundController extends Controller
         }
     }
 
-    public function getIncomesAndExpenses(Fund $fund) {
-        $fund = Fund::findorfail($fund->id)->setAppends(['incomes', 'expenses']);
+    public function getIncomesAndExpenses($id) {
+        $fund = Fund::findorfail($id)->setAppends(['incomes', 'expenses']);
 
         return $this->jsonResponseOk($fund);
+    }
+
+    public function getExpenseTransactions($id) {
+        $perPage = 10;
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_PAY_FUND_EXPENSES'))->first();
+        $transactions = Transaction::with('transactionStatus')
+        ->where('transactions.transaction_type_id', '=', $transactionType->id)
+            ->whereHas('fundPayers', function($query) use ($id) {
+                $query->where('funds.id', '=', $id);
+            })
+            ->paginate($perPage);
+
+        return $this->jsonResponseOk($transactions);
     }
 }

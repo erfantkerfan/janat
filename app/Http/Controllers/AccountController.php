@@ -87,6 +87,23 @@ class AccountController extends Controller
         return $this->commonDestroy($account);
     }
 
+    public function showPeriodicPayrollDeductionForChargeFund(Request $request)
+    {
+        $lastPaidAtAfter = $request->get('pay_since_date');
+        $lastPaidAtBefore = $request->get('pay_till_date');
+
+        $targetAccount = Account::with(['user:id,f_name,l_name,staff_code', 'fund', 'allocatedLoans'])
+            ->hasPayrollDeduction()
+            ->lastPayrollDeductionForChargeFundPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
+            ->get();
+        $setAppends = ['balance'];
+        $targetAccount->map(function (& $item) use ($setAppends) {
+            return $item->setAppends($setAppends);
+        });
+
+        return $this->jsonResponseOk($targetAccount);
+    }
+
     /**
      * @param Request $request
      * @return Response
@@ -96,7 +113,7 @@ class AccountController extends Controller
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
 
-        $targetAccount = Account::with(['user:id,f_name,l_name', 'fund', 'allocatedLoans'])
+        $targetAccount = Account::with(['user:id,f_name,l_name,staff_code', 'fund', 'allocatedLoans'])
             ->hasPayrollDeduction()
             ->lastPayrollDeductionForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
@@ -120,6 +137,10 @@ class AccountController extends Controller
         }
 
         if (!$hasProblem) {
+            $setAppends = ['balance'];
+            $targetAccount->map(function (& $item) use ($setAppends) {
+                return $item->setAppends($setAppends);
+            });
             return $this->jsonResponseOk($targetAccount);
         } else {
             return $this->jsonResponseValidateError([
@@ -159,6 +180,7 @@ class AccountController extends Controller
      */
     public function getBalance(Account $account)
     {
-        return $this->jsonResponseOk($account->totalPaidSalaries() - $account->totalPaidWithdraws());
+        $account->setAppends(['balance']);
+        return $this->jsonResponseOk($account->balance);
     }
 }

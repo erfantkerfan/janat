@@ -80,6 +80,12 @@ class Account extends Model
         return $this->allocatedLoans()->notSettled()->get();
     }
 
+    public function getBalanceAttribute()
+    {
+        return $this->totalPaidSalaries() - $this->totalPaidWithdraws();
+        return $this->balance();
+    }
+
     public function getHasNotSettledLoanAttribute()
     {
         $this->setAppends(['notSettledLoan'])->get();
