@@ -36,7 +36,7 @@
                         </div>
                         <price-input v-if="!isCreateForm()" v-model="fund.balance" :label="'موجودی صندوق'" :disabled="true" />
                         <div v-if="!isCreateForm()" class="md-layout">
-                            <label class="md-layout-item md-size-25 md-form-label">
+                            <label class="md-layout-item md-size-15 md-form-label">
                                 تاریخ تعریف صندوق
                             </label>
                             <div class="md-layout-item">
@@ -100,7 +100,7 @@
                     <md-empty-state
                         v-if="!loan.loading && loans.list.length === 0"
                         class="md-warning"
-                        md-icon="cancel_presentation"
+                        md-icon="info"
                         md-label="وامی یافت نشد"
                     >
                     </md-empty-state>
@@ -226,10 +226,10 @@
                 </md-card-header>
                 <md-card-content>
                     <md-empty-state
-                        v-if="!loan.loading && loans.list.length === 0"
+                        v-if="expenseTransactionsReceived && !expenseTransactions.loading && expenseTransactions.list.length === 0"
                         class="md-warning"
-                        md-icon="cancel_presentation"
-                        md-label="وامی یافت نشد"
+                        md-icon="info"
+                        md-label="هزینه ای یافت نشد"
                     >
                     </md-empty-state>
                     <md-table
@@ -265,6 +265,7 @@
                         :paginate="expenseTransactions.paginate"
                         @changePage="getExpenseTransactions"
                     />
+                    <loading :active.sync="expenseTransactions.loading" :is-full-page="false"></loading>
                 </md-card-content>
                 <md-card-actions>
                     <md-button
@@ -294,8 +295,9 @@
             fund: new Fund(),
             loan: new Loan(),
             loans: new LoanList(),
-            showFundIncomes: false,
             expenseTransactions: new TransactionList(),
+            showFundIncomes: false,
+            expenseTransactionsReceived: false,
             sumOfIncomesAndExpenses: 0,
             editLoanState: false,
             createLoanShowDialog: false,
@@ -450,15 +452,17 @@
                 if (!page) {
                     page = 1
                 }
-                this.fund.loading = true
+                this.expenseTransactions.loading = true
                 this.fund.getExpenseTransactions({page})
                     .then(response => {
                         this.expenseTransactions = new TransactionList(response.data.data, response.data)
-                        this.fund.loading = false
+                        this.expenseTransactions.loading = false
+                        this.expenseTransactionsReceived = true
                     })
                     .catch(error => {
                         this.axios_handleError(error)
-                        this.fund.loading = false
+                        this.expenseTransactions.loading = false
+                        this.expenseTransactionsReceived = false
                     })
             },
             getIncomesAndExpenses () {
