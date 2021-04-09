@@ -63,7 +63,7 @@
                     <md-empty-state
                         v-if="payRequestIsSent && !accounts.loading && accounts.list.length === 0"
                         class="md-warning"
-                        md-icon="cancel_presentation"
+                        md-icon="info"
                         :md-label="noContentMessage"
                     >
                     </md-empty-state>

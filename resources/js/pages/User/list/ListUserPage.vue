@@ -179,7 +179,7 @@
                     <md-empty-state
                         v-if="!users.loading && users.list.length === 0"
                         class="md-warning"
-                        md-icon="cancel_presentation"
+                        md-icon="info"
                         md-label="کاربری یافت نشد"
                     >
                     </md-empty-state>

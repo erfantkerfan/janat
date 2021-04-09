@@ -95,7 +95,7 @@
                     <md-empty-state
                         v-if="!loans.loading && loans.list.length === 0"
                         class="md-warning"
-                        md-icon="cancel_presentation"
+                        md-icon="info"
                         md-label="وامی یافت نشد"
                     >
                     </md-empty-state>

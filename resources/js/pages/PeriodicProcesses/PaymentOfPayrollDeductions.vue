@@ -64,7 +64,7 @@
                     <md-empty-state
                         v-if="payRequestIsSent && !allocatedLoans.loading && allocatedLoans.list.length === 0"
                         class="md-warning"
-                        md-icon="cancel_presentation"
+                        md-icon="info"
                         :md-label="noContentMessage"
                     >
                     </md-empty-state>

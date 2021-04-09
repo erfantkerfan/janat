@@ -193,7 +193,7 @@
                     <md-empty-state
                         v-if="!allocatedLoans.loading && allocatedLoans.list.length === 0"
                         class="md-warning"
-                        md-icon="cancel_presentation"
+                        md-icon="info"
                         md-label="وامی یافت نشد"
                     >
                     </md-empty-state>
