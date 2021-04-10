@@ -59,7 +59,7 @@
                     <md-empty-state
                         v-if="!funds.loading && funds.list.length === 0"
                         class="md-warning"
-                        md-icon="cancel_presentation"
+                        md-icon="info"
                         md-label="صندوقی یافت نشد"
                     >
                     </md-empty-state>

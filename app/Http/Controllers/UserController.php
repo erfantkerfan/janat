@@ -28,6 +28,9 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $config = [
+            'eagerLoads'=> [
+                'company'
+            ],
             'filterKeys'=> [
                 'id',
                 'f_name',
@@ -46,7 +49,7 @@ class UserController extends Controller
                 ]
             ],
             'select'=> [
-                'id', 'f_name','l_name','SSN', 'staff_code', 'phone', 'mobile', 'created_at'
+                'id', 'f_name','l_name','SSN', 'staff_code', 'phone', 'mobile', 'created_at', 'company_id'
             ],
             'scopes'=> [
                 'hasLoanPayrollDeduction',

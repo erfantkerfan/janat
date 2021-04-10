@@ -63,7 +63,7 @@
                     <md-empty-state
                         v-if="payRequestIsSent && !accounts.loading && accounts.list.length === 0"
                         class="md-warning"
-                        md-icon="cancel_presentation"
+                        md-icon="info"
                         :md-label="noContentMessage"
                     >
                     </md-empty-state>
@@ -101,8 +101,11 @@
                             <md-table-cell md-label="نام" md-sort-by="user.f_name">{{item.user.f_name}}</md-table-cell>
                             <md-table-cell md-label="نام خانوادگی" md-sort-by="user.l_name">{{item.user.l_name}}</md-table-cell>
                             <md-table-cell md-label="شماره حساب" md-sort-by="id">{{item.id}}</md-table-cell>
-                            <md-table-cell md-label="موجودی" md-sort-by="balance">
+                                <md-table-cell :md-label="'موجودی '+'('+currencyUnit+')'" md-sort-by="balance">
                                 {{ item.balance | currencyFormat }}
+                            </md-table-cell>
+                            <md-table-cell :md-label="'ماهانه '+'('+currencyUnit+')'" md-sort-by="monthly_payment">
+                                {{ item.monthly_payment | currencyFormat }}
                             </md-table-cell>
                             <md-table-cell md-label="نام صندوق" md-sort-by="fund.name">{{item.fund.name}}</md-table-cell>
                             <md-table-cell md-label="تاریخ عضویت" md-sort-by="created_at">

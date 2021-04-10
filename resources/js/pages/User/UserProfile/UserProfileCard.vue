@@ -22,7 +22,7 @@
             <md-empty-state
                 v-if="!isCreateForm() && value.accounts.list.length === 0"
                 class="md-warning"
-                md-icon="cancel_presentation"
+                md-icon="info"
                 md-label="حسابی یافت نشد"
             >
             </md-empty-state>
@@ -138,7 +138,7 @@
                         <div v-if="funds.list.length === 0">
                             <md-empty-state
                                 class="md-warning"
-                                md-icon="cancel_presentation"
+                                md-icon="info"
                                 md-label="صندوقی یافت نشد"
                                 md-description="برای ایجاد حساب ابتدا یک صندوق برای سیستم تعریف کنید"
                             >

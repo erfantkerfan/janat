@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Company;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreUserRequest;
 use App\Providers\RouteServiceProvider;
 use App\User;
 use App\UserStatus;
+use App\UserType;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -71,16 +73,22 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $pendingStatus = UserStatus::where('name', 'pending')->first();
+        $userType = UserType::where('name', 'Temporary member')->first();
 
-        $request->offsetSet('status_id', $pendingStatus->id);
+        $request->merge([
+            'status_id' => $pendingStatus->id,
+            'user_type_id' => $userType->id
+        ]);
 
         $this->validator($request->all())->validate();
 
-        event(new Registered($user = $this->create($request->all())));
+        event(new Registered($user = $this->create($request)));
+//        event(new Registered($user = $this->create($request->all())));
 
         $this->registered($request, $user);
 
-        return 'ثبت نام شما با موفقیت انحام شد';
+        $registeredMessage = 'ثبت نام شما با موفقیت انجام شد';
+        return view('auth.registeredMessage', compact('registeredMessage'));
     }
 
     /**
@@ -91,28 +99,20 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'f_name' => ['required', 'string', 'max:255'],
-            'l_name' => ['required', 'string', 'max:255'],
-            'SSN' => ['required', 'string', 'max:10', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'salary' => ['required', 'numeric'],
-            'address' => ['required', 'string'],
-            'phone' => ['required', 'string'],
-            'mobile' => ['required', 'string'],
-            'company_id' => ['required', 'exists:company,id'],
-            'status_id' => ['required', 'exists:user_status,id']
-        ]);
+        return Validator::make($data, (new StoreUserRequest())->rules());
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
-     * @return \App\User
+     * @param Request $request
+     * @return User
      */
-    protected function create(array $data)
+    protected function create(Request $request)
     {
+        return User::create($request->all());
+//        return (new User())->fill($request->all());
+
         return User::create([
             'f_name' => $data['f_name'],
             'l_name' => $data['l_name'],

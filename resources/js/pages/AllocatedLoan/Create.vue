@@ -31,7 +31,7 @@
                                     <div class="md-layout-item">
                                         <md-empty-state v-if="!selectedUser.loading && selectedUser.id !== null && selectedUser.accounts.list.length === 0"
                                             class="md-warning"
-                                            md-icon="cancel_presentation"
+                                            md-icon="info"
                                             md-label="حسابی برای کاربر انتخاب شده یافت نشد"
                                         >
                                         </md-empty-state>
