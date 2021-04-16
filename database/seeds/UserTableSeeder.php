@@ -16,7 +16,7 @@ class UserTableSeeder extends Seeder
     {
         DBAssistant::resetTable('users');
         $userStatus = UserStatus::where('name', 'active')->first();
-        User::create([
+        $user = User::create([
             'SSN' => 'admin',
             'status_id' => $userStatus->id,
             'password' => Hash::make('janat'),

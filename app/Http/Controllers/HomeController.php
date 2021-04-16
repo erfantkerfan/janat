@@ -10,6 +10,7 @@ use App\Traits\Filter;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -64,21 +65,8 @@ class HomeController extends Controller
 
     public function debug(Request $request)
     {
-        $fundId = 2;
-//        $fundId = 1;
-        $fund = Fund::findorfail($fundId)->setAppends(['incomes']);
-        return $fund;
-        $user = User::with([
-                'accounts.allocatedLoans',
-//                'paidTransactions'
-            ])
-            ->hasLoanPayrollDeduction()
-            ->hasAccountPayrollDeduction()
-//            ->dd();
-        ->get();
-
-
-        return $user;
+//        dd(Auth::user()->hasRole('Super Admin'));
+        dd(Auth::user()->can('edit users'));
     }
 
     public function dashboardData() {

@@ -505,7 +505,6 @@ let componentsMenu = {
     ]
 };
 
-
 let authPages = {
     path: "/",
     component: AuthLayout,

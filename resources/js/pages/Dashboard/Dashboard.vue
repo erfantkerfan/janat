@@ -1,6 +1,6 @@
 <template>
     <div v-if="!dashboardLoading" class="md-layout">
-        <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+        <div v-if="LoggedInUser.hasSuperAdminRole()" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
             <stats-card header-color="blue">
                 <template slot="header">
                     <div class="card-icon">
@@ -19,7 +19,7 @@
                 </template>
             </stats-card>
         </div>
-        <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+        <div v-if="LoggedInUser.hasSuperAdminRole()" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
             <stats-card header-color="rose">
                 <template slot="header">
                     <div class="card-icon">
@@ -41,7 +41,7 @@
                 </template>
             </stats-card>
         </div>
-        <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+        <div v-if="LoggedInUser.hasSuperAdminRole()" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
             <stats-card header-color="green">
                 <template slot="header">
                     <div class="card-icon">
@@ -63,7 +63,7 @@
                 </template>
             </stats-card>
         </div>
-        <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
+        <div v-if="LoggedInUser.hasSuperAdminRole()" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
             <stats-card header-color="warning">
                 <template slot="header">
                     <div class="card-icon">
@@ -86,7 +86,7 @@
             </stats-card>
         </div>
 
-        <div
+        <div v-if="LoggedInUser.hasSuperAdminRole()"
             class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
         >
             <chart-card
@@ -298,6 +298,7 @@
         ChartCard,
         NavTabsCard
     } from "@/components";
+    import {userMixin} from "@/mixins/Mixins";
 
     export default {
         components: {
@@ -305,7 +306,7 @@
             ChartCard,
             NavTabsCard
         },
-
+        mixins: [userMixin],
         data() {
             return {
                 product1: "/img/card-2.jpg",

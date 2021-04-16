@@ -23,13 +23,11 @@
                                 {{ allocatedLoan.number_of_installments }}
                             </template>
                             <template slot="footer">
-                                <div class="stats">
-                                    <md-button
-                                        class="md-dense md-raised md-success"
-                                        :to="{ name: 'AllocatedLoan.Show', params: {id: allocatedLoan.id} }">
-                                        مشاهده اطلاعات وام تخصیص داده شده
-                                    </md-button>
-                                </div>
+                                <md-button
+                                    class="md-dense md-raised md-success"
+                                    :to="{ name: 'AllocatedLoan.Show', params: {id: allocatedLoan.id} }">
+                                    مشاهده اطلاعات وام تخصیص داده شده
+                                </md-button>
                             </template>
                         </stats-card>
                         <loading :active.sync="allocatedLoan.loading" :is-full-page="false"></loading>
@@ -38,7 +36,7 @@
                         <md-card>
                             <md-card-header class="md-card-header-icon md-card-header-green">
                                 <div class="card-icon">
-                                    <md-icon>payments</md-icon>
+                                    <md-icon>credit_card</md-icon>
                                 </div>
                                 <h4 class="title">
                                     اطلاعات تراکنش

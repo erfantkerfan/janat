@@ -22,7 +22,7 @@
                         <label>تکرار عبور</label>
                         <md-input v-model="value.password_confirmation" type="password" @input="updateUserModel"/>
                     </md-field>
-                    <md-field v-if="!$auth.isSuperAdmin && !isCreateForm()" class="md-invalid">
+                    <md-field v-if="!LoggedInUser.hasSuperAdminRole() && !isCreateForm()" class="md-invalid">
                         <label>کلمه عبور فعلی</label>
                         <md-input v-model="password" type="password"/>
                     </md-field>
@@ -49,7 +49,7 @@
 <script>
     import {ValidationError} from "@/components"
     import {User} from '@/models/User'
-    import { axiosMixin } from '@/mixins/Mixins'
+    import { axiosMixin, userMixin } from '@/mixins/Mixins'
 
     export default {
         name: "edit-password-card",
@@ -63,16 +63,12 @@
             }
         },
         components: {ValidationError},
-        mixins: [axiosMixin],
-
+        mixins: [axiosMixin, userMixin],
         data: () => ({
             password: null,
             new_password: null,
             confirm_new_password: null
         }),
-        created() {
-            console.log('$auth', this.$auth().isSuperAdmin())
-        },
         methods: {
             isCreateForm () {
                 return (this.$route.name === 'User.Create')
