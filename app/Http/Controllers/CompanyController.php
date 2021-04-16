@@ -14,6 +14,14 @@ class CompanyController extends Controller
 {
     use Filter, CommonCRUD;
 
+    public function __construct()
+    {
+//        $this->middleware('can:view company', ['only' => ['index', 'show']]);
+        $this->middleware('can:create company', ['only' => ['store']]);
+        $this->middleware('can:edit company', ['only' => ['update']]);
+        $this->middleware('can:delete company', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

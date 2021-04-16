@@ -13,6 +13,14 @@ class SettingController extends Controller
 {
     use Filter, CommonCRUD;
 
+    public function __construct()
+    {
+        $this->middleware('can:view settings', ['only' => ['index', 'show']]);
+        $this->middleware('can:create settings', ['only' => ['store']]);
+        $this->middleware('can:edit settings', ['only' => ['update']]);
+        $this->middleware('can:delete settings', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

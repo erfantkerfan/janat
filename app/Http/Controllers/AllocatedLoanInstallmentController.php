@@ -10,11 +10,20 @@ use App\Traits\CommonCRUD;
 use App\Traits\Filter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AllocatedLoanInstallmentController extends Controller
 {
     use Filter, CommonCRUD;
+
+    public function __construct()
+    {
+        $this->middleware('can:view accounts', ['only' => ['showPeriodicPayrollDeductionForChargeFund']]);
+        $this->middleware('can:create accounts', ['only' => ['store']]);
+        $this->middleware('can:edit accounts', ['only' => ['update', 'payPeriodicPayrollDeductionForChargeFund', 'rollbackPayPeriodicPayrollDeduction']]);
+        $this->middleware('can:delete accounts', ['only' => ['destroy']]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -25,6 +34,12 @@ class AllocatedLoanInstallmentController extends Controller
     public function index(Request $request)
     {
         $config = [
+            'filterRelationIds'=> [
+                [
+                    'requestKey' => 'user_id',
+                    'relationName' => 'allocatedLoan.account.user'
+                ]
+            ],
             'eagerLoads'=> [
                 'allocatedLoan',
                 'allocatedLoan.account',
@@ -32,6 +47,10 @@ class AllocatedLoanInstallmentController extends Controller
                 'allocatedLoan.account.user:id,f_name,l_name',
             ]
         ];
+
+        if(!Auth::user()->can('view allocated_loan_installments')) {
+            $request->offsetSet('user_id', Auth::user()->id);
+        }
 
         return $this->commonIndex($request,
             AllocatedLoanInstallment::class,
@@ -88,6 +107,9 @@ class AllocatedLoanInstallmentController extends Controller
                 'total_payments',
                 'remaining_payable_amount'
             ]);
+
+        $this->checkOwner($allocatedLoanInstallment->allocatedLoan->account->user->id);
+
         return $this->jsonResponseOk($allocatedLoanInstallment);
     }
 

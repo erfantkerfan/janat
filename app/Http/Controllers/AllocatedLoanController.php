@@ -14,12 +14,21 @@ use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreAllocatedLoan;
 
 class AllocatedLoanController extends Controller
 {
     use Filter, CommonCRUD;
+
+    public function __construct()
+    {
+        $this->middleware('can:view allocated_loans', ['only' => ['showPeriodicPayrollDeduction']]);
+        $this->middleware('can:create allocated_loans', ['only' => ['store']]);
+        $this->middleware('can:edit allocated_loans', ['only' => ['update', 'payPeriodicPayrollDeduction', 'rollbackPayPeriodicPayrollDeduction']]);
+        $this->middleware('can:delete allocated_loans', ['only' => ['destroy']]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -87,6 +96,10 @@ class AllocatedLoanController extends Controller
                 'notSettled'
             ],
         ];
+
+        if(!Auth::user()->can('view allocated_loans')) {
+            $request->offsetSet('user_id', Auth::user()->id);
+        }
 
         $data = $this->commonIndex($request,
             AllocatedLoan::class,

@@ -16,6 +16,14 @@ class LoanController extends Controller
 {
     use Filter, CommonCRUD;
 
+    public function __construct()
+    {
+//        $this->middleware('can:view loans', ['only' => ['index', 'show']]);
+        $this->middleware('can:create loans', ['only' => ['store']]);
+        $this->middleware('can:edit loans', ['only' => ['update']]);
+        $this->middleware('can:delete loans', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

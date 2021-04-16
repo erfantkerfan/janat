@@ -16,14 +16,12 @@
                                 </h3>
                             </template>
                             <template slot="footer">
-                                <div class="stats">
-                                    <md-button
-                                        v-if="allocatedLoan.account"
-                                        class="md-dense md-raised md-success"
-                                        :to="'/user/'+allocatedLoan.account.user.id">
-                                        مشاهده اطلاعات کاربر
-                                    </md-button>
-                                </div>
+                                <md-button
+                                    v-if="allocatedLoan.account"
+                                    class="md-dense md-raised md-success"
+                                    :to="'/user/'+allocatedLoan.account.user.id">
+                                    مشاهده اطلاعات کاربر
+                                </md-button>
                             </template>
                         </stats-card>
                     </div>
@@ -40,13 +38,11 @@
                             </template>
 
                             <template slot="footer">
-                                <div class="stats">
-                                    <md-button
-                                        class="md-dense md-raised md-success"
-                                        :to="'/loan/'+allocatedLoan.loan.id">
-                                        مشاهده اطلاعات وام
-                                    </md-button>
-                                </div>
+                                <md-button
+                                    class="md-dense md-raised md-success"
+                                    :to="'/loan/'+allocatedLoan.loan.id">
+                                    مشاهده اطلاعات وام
+                                </md-button>
                             </template>
                         </stats-card>
                     </div>
@@ -63,13 +59,11 @@
                             </template>
 
                             <template slot="footer">
-                                <div class="stats">
-                                    <md-button
-                                        class="md-dense md-raised md-success"
-                                        :to="'/fund/'+allocatedLoan.loan.fund.id">
-                                        مشاهده اطلاعات صندوق
-                                    </md-button>
-                                </div>
+                                <md-button
+                                    class="md-dense md-raised md-success"
+                                    :to="'/fund/'+allocatedLoan.loan.fund.id">
+                                    مشاهده اطلاعات صندوق
+                                </md-button>
                             </template>
                         </stats-card>
                     </div>

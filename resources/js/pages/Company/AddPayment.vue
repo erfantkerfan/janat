@@ -55,13 +55,11 @@
                             </div>
                         </template>
                         <template slot="footer">
-                            <div class="stats">
-                                <md-button
-                                    class="md-dense md-raised md-success"
-                                    :to="{ name: 'Fund.Show', params: {id: fund.id} }">
-                                    مشاهده اطلاعات صندوق
-                                </md-button>
-                            </div>
+                            <md-button
+                                class="md-dense md-raised md-success"
+                                :to="{ name: 'Fund.Show', params: {id: fund.id} }">
+                                مشاهده اطلاعات صندوق
+                            </md-button>
                         </template>
                     </stats-card>
                 </div>
@@ -96,13 +94,11 @@
                             </div>
                         </template>
                         <template slot="footer">
-                            <div class="stats">
-                                <md-button
-                                    class="md-dense md-raised md-success"
-                                    :to="{ name: 'Company.Show', params: {id: company.id} }">
-                                    مشاهده اطلاعات شرکت
-                                </md-button>
-                            </div>
+                            <md-button
+                                class="md-dense md-raised md-success"
+                                :to="{ name: 'Company.Show', params: {id: company.id} }">
+                                مشاهده اطلاعات شرکت
+                            </md-button>
                         </template>
                     </stats-card>
                 </div>
@@ -113,7 +109,7 @@
                         <md-card>
                             <md-card-header class="md-card-header-icon md-card-header-green">
                                 <div class="card-icon">
-                                    <md-icon>payments</md-icon>
+                                    <md-icon>credit_card</md-icon>
                                 </div>
                                 <h4 class="title">
                                     اطلاعات تراکنش
@@ -193,14 +189,12 @@
                                 <loading :active.sync="transaction.loading || transactionStatuses.loading" :is-full-page="false"></loading>
                             </md-card-content>
                             <md-card-actions>
-                                <div class="stats">
-                                    <md-button
-                                        class="md-dense md-raised md-success"
-                                        @click="createTransaction"
-                                    >
-                                        ثبت تراکنش پرداخت
-                                    </md-button>
-                                </div>
+                                <md-button
+                                    class="md-dense md-raised md-success"
+                                    @click="createTransaction"
+                                >
+                                    ثبت تراکنش پرداخت
+                                </md-button>
                             </md-card-actions>
                         </md-card>
                     </div>

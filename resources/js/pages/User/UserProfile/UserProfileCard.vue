@@ -333,9 +333,6 @@ export default {
             },
         };
     },
-    created() {
-        // console.log('value.accounts', this.value.accounts.list.length)
-    },
     mounted() {
         this.getFunds()
         this.getUserPic()
@@ -508,8 +505,6 @@ export default {
         getUserPic() {
             this.value.getUserPic(this.$route.params.id)
                 .then((response) => {
-                    // this.user.loading = false;
-                    // console.log('response.data', response.data)
                     this.cardUserImage = response.data
                 })
                 .catch((error) => {

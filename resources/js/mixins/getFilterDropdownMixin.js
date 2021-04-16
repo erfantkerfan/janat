@@ -30,13 +30,12 @@ export default {
                   that.loans = new LoanList(response.data.data, response.data)
                   this.loans.addItem(new Loan({id: 0, name: '-'}))
               })
-              .catch((error) => {
+              .catch(() => {
                   this.$store.dispatch('alerts/fire', {
                       icon: 'error',
                       title: 'توجه',
                       message: 'مشکلی رخ داده است. مجدد تلاش کنید'
                   });
-                  console.log('error: ', error)
                   that.loans.loading = false
                   that.loans = new LoanList()
               })
@@ -54,13 +53,12 @@ export default {
                       this.funds.addItem(new Fund({id: 0, name: '-'}))
                   }
               })
-              .catch((error) => {
+              .catch(() => {
                   this.$store.dispatch('alerts/fire', {
                       icon: 'error',
                       title: 'توجه',
                       message: 'مشکلی رخ داده است. مجدد تلاش کنید'
                   });
-                  console.log('error: ', error)
                   that.funds.loading = false;
                   that.funds = new FundList()
               })
@@ -77,13 +75,12 @@ export default {
                       this.userTypes.addItem(new UserType({id: 0, display_name: '-'}))
                   }
               })
-              .catch((error) => {
+              .catch(() => {
                   this.$store.dispatch('alerts/fire', {
                       icon: 'error',
                       title: 'توجه',
                       message: 'مشکلی رخ داده است. مجدد تلاش کنید'
                   });
-                  console.log('error: ', error)
                   this.userTypes.loading = false;
                   this.userTypes = new UserTypeList()
               })
@@ -100,13 +97,12 @@ export default {
                       this.companies.addItem(new Company({id: 0, name: '-'}))
                   }
               })
-              .catch((error) => {
+              .catch(() => {
                   this.$store.dispatch('alerts/fire', {
                       icon: 'error',
                       title: 'توجه',
                       message: 'مشکلی رخ داده است. مجدد تلاش کنید'
                   });
-                  console.log('error: ', error)
                   this.companies.loading = false;
                   this.companies = new CompanyList()
               })

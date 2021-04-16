@@ -20,7 +20,7 @@
                     :link="{ name: 'پیشخوان', icon: 'dashboard', path: '/' }"
                 />
 
-                <sidebar-item :opened="false" :link="{ name: 'تعاریف اولیه', icon: 'layers' }">
+                <sidebar-item v-if="LoggedInUser.hasSuperAdminRole()" :opened="false" :link="{ name: 'تعاریف اولیه', icon: 'layers' }">
                     <sidebar-item
                         :link="{
                         name: 'صندوق ها',
@@ -43,7 +43,7 @@
                       }"
                     />
                 </sidebar-item>
-                <sidebar-item :opened="false" :link="{ name: 'فرایند های دوره ای', icon: 'autorenew' }">
+                <sidebar-item v-if="LoggedInUser.hasSuperAdminRole()" :opened="false" :link="{ name: 'فرایند های دوره ای', icon: 'autorenew' }">
                     <sidebar-item
                         :link="{
                         name: 'پرداخت اقساط کسر از حقوق',
@@ -60,6 +60,7 @@
                     />
                 </sidebar-item>
                 <sidebar-item
+                    v-if="LoggedInUser.hasSuperAdminRole()"
                     :link="{
                         name: 'مدیریت اعضا',
                         icon: 'groups',
@@ -81,6 +82,7 @@
                       }"
                 />
                 <sidebar-item
+                    v-if="LoggedInUser.hasSuperAdminRole()"
                     :link="{
                         name: 'تنظیمات',
                         icon: 'settings',
@@ -163,6 +165,7 @@
     /* eslint-disable no-new */
     import PerfectScrollbar from "perfect-scrollbar";
     import "perfect-scrollbar/css/perfect-scrollbar.css";
+    import {userMixin} from '@/mixins/Mixins'
 
     function hasElement(className) {
         return document.getElementsByClassName(className).length > 0;
@@ -209,6 +212,7 @@
             MobileMenu,
             UserMenu,
         },
+        mixins: [userMixin],
         data() {
             return {
                 sidebarBackgroundColor: "black",

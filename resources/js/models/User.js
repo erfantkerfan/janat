@@ -59,7 +59,7 @@ class User extends Model {
         if (!this.roles) {
             return false
         }
-        const adminRole = this.roles.list.find( (item) => { return  item.name === 'admin' })
+        const adminRole = this.roles.list.find( (item) => { return  item.name === 'Super Admin' })
         if (!adminRole) {
             return false
         }
@@ -145,9 +145,9 @@ class User extends Model {
 
 
         return this.crud.update(url, {
-            'old_pass': oldPass,
-            'new_pass': newPass,
-            'confirm_new_password': confirmNewPassword
+            'old_password': oldPass,
+            'new_password': newPass,
+            'new_password_confirmation': confirmNewPassword
         });
     }
 

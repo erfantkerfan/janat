@@ -66,11 +66,9 @@
                                 </div>
                             </template>
                             <template slot="footer">
-                                <div class="stats">
-                                    <md-button class="md-dense md-raised md-success" @click="showUserAccounts">
-                                        مشاهده حساب های کاربر
-                                    </md-button>
-                                </div>
+                                <md-button class="md-dense md-raised md-success" @click="showUserAccounts">
+                                    مشاهده حساب های کاربر
+                                </md-button>
                             </template>
                         </stats-card>
                     </div>
@@ -202,7 +200,7 @@
                                 <md-card>
                                     <md-card-header class="md-card-header-icon md-card-header-green">
                                         <div class="card-icon">
-                                            <md-icon>payments</md-icon>
+                                            <md-icon>credit_card</md-icon>
                                         </div>
                                         <h4 class="title">
                                             اطلاعات تراکنش
@@ -287,7 +285,6 @@
         }),
         mounted() {
             this.getData()
-            console.log('gg', this.$route.params.account_id)
         },
         methods: {
             showUserAccounts () {

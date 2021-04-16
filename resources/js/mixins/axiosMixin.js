@@ -15,14 +15,14 @@ export default {
                 } else if (statusCode === 422) {
                     for (let property in error.response.data.errors) {
                         error.response.data.errors[property].forEach( (item) => {
-                            errorMessage = item + '<br>'
+                            errorMessage += item + '\n'
                         })
                     }
                 } else if (statusCode === 404) {
                     errorMessage = 'موردی یافت نشد!'
                 } else if (statusCode >499 && statusCode < 600) {
                     errorMessage = 'یک مشکل فنی رخ داده است. لطفا متن زیر را برای پشتیبانی ارسال کنید.' +
-                        '<br>' +
+                        '\r\n' +
                         error.response.data.message
                 } else {
                     errorMessage = error.message

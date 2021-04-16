@@ -16,6 +16,14 @@ class FundController extends Controller
 {
     use Filter, CommonCRUD;
 
+    public function __construct()
+    {
+        $this->middleware('can:view funds', ['only' => ['show', 'getIncomesAndExpenses', 'getExpenseTransactions']]);
+        $this->middleware('can:create funds', ['only' => ['store']]);
+        $this->middleware('can:edit funds', ['only' => ['update']]);
+        $this->middleware('can:delete funds', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *

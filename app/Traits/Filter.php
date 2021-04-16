@@ -7,6 +7,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 trait Filter
 {
@@ -101,5 +102,11 @@ trait Filter
 
     private function jsonResponseServerError($response) {
         return response(json_encode($response), Response::HTTP_INTERNAL_SERVER_ERROR)->header('Content-Type', 'application/json');
+    }
+
+    private function checkOwner ($userOwnerId) {
+        if (!Auth::user()->hasRole('Super Admin') && Auth::user()->id !== (int)$userOwnerId) {
+            abort(403, 'Access denied');
+        }
     }
 }
