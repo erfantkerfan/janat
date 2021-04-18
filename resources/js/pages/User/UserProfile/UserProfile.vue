@@ -59,7 +59,7 @@
     import UserProfileCard from '@/pages/User/UserProfile/UserProfileCard.vue'
     import UserPasswordCard from '@/pages/User/UserProfile/EditPasswordCard.vue'
     import { User } from '@/models/User'
-    import { axiosMixin } from '@/mixins/Mixins'
+    import { axiosMixin, userMixin } from '@/mixins/Mixins'
 
     export default {
         name: 'user-profile-example',
@@ -70,7 +70,7 @@
             'user-edit-card': UserEditCard,
             'user-password-card': UserPasswordCard
         },
-        mixins: [axiosMixin],
+        mixins: [axiosMixin, userMixin],
         data: () => ({
             datacollection: null,
             user: new User(),

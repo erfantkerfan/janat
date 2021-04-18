@@ -11,6 +11,7 @@ use Exception;
 use App\Traits\Filter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -18,6 +19,14 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 class UserController extends Controller
 {
     use Filter, CommonCRUD;
+
+    public function __construct()
+    {
+        $this->middleware('can:view users', ['only' => ['index']]);
+        $this->middleware('can:create users', ['only' => ['store']]);
+        $this->middleware('can:edit users', ['only' => ['update', 'setUserPic']]);
+        $this->middleware('can:delete users', ['only' => ['destroy']]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -28,6 +37,9 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $config = [
+            'eagerLoads'=> [
+                'company'
+            ],
             'filterKeys'=> [
                 'id',
                 'f_name',
@@ -46,7 +58,7 @@ class UserController extends Controller
                 ]
             ],
             'select'=> [
-                'id', 'f_name','l_name','SSN', 'staff_code', 'phone', 'mobile', 'created_at'
+                'id', 'f_name','l_name','SSN', 'staff_code', 'phone', 'mobile', 'created_at', 'company_id'
             ],
             'scopes'=> [
                 'hasLoanPayrollDeduction',
@@ -76,6 +88,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        $this->checkOwner($id);
+
         $user = User::with([
                 'accounts.fund',
                 'accounts.allocatedLoans',
@@ -92,7 +106,6 @@ class UserController extends Controller
                 'count_of_settled_allocated_loans'
             ]);
 //            ->makeHidden('user_pic');
-
 
         $user->accounts->map(function (& $account) {
             return $account->allocatedLoans->map(function (& $allocatedLoan) {
@@ -117,6 +130,8 @@ class UserController extends Controller
      */
     public function getUserPic($id)
     {
+        $this->checkOwner($id);
+
         $user = User::select('user_pic')->find($id);
 
         if (isset($user)) {
@@ -187,13 +202,15 @@ class UserController extends Controller
      */
     public function resetPass(ResetUserPasswordRequest $request, User $user)
     {
-        $oldPass = $request->get('oldPass');
-        $newPass = Hash::make($request->get('newPass'));
+        $this->checkOwner($user->id);
+
+        $oldPassword = $request->get('old_password');
+        $newPassword = Hash::make($request->get('new_password'));
         $user = User::findOrFail($user->id)->makeHidden('user_pic')->makeVisible('password');
         $oldUserPass = $user->password;
 
-        if (!$request->user()->hasRole('admin') && !Hash::check($oldPass, $oldUserPass)) {
-            return $this->jsonResponseServerError([
+        if (!$request->user()->hasRole('Super Admin') && !Hash::check($oldPassword, $oldUserPass)) {
+            return $this->jsonResponseValidateError([
                 'errors' => [
                     'user_resetPass' => [
                         'نام کاربری قبلی صحیح نمی باشد'
@@ -202,7 +219,7 @@ class UserController extends Controller
             ]);
         }
 
-        $user->password = $newPass;
+        $user->password = $newPassword;
 
         if ($user->save()) {
             $user = User::with(['accounts', 'company', 'status'])->findOrFail($user->id)->makeHidden('user_pic');

@@ -17,12 +17,21 @@ use App\TransactionType;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
     use Filter, CommonCRUD;
+
+    public function __construct()
+    {
+//        $this->middleware('can:view transactions', ['only' => ['index']]);
+        $this->middleware('can:create transactions', ['only' => ['store']]);
+        $this->middleware('can:edit transactions', ['only' => ['update', 'payPeriodicPayrollDeductionForChargeFund', 'rollbackPayPeriodicPayrollDeduction']]);
+        $this->middleware('can:delete transactions', ['only' => ['destroy']]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -49,7 +58,11 @@ class TransactionController extends Controller
             'filterRelationIds'=> [
                 [
                     'requestKey' => 'user_id',
-                    'relationName' => 'userPayers'
+                    'orWhereHas' => true,
+                    'relationNames' => [
+                        'userPayers',
+                        'userRecipients'
+                    ]
                 ],
                 [
                     'requestKey' => 'loan_id',
@@ -69,6 +82,10 @@ class TransactionController extends Controller
                 ]
             ],
         ];
+
+        if(!Auth::user()->can('view transactions')) {
+            $request->offsetSet('user_id', Auth::user()->id);
+        }
 
         return $this->commonIndex($request, Transaction::class, $config);
     }
@@ -323,14 +340,14 @@ class TransactionController extends Controller
      */
     public function show($id)
     {
-        $data = Transaction::with([
+        $transaction = Transaction::with([
             'transactionStatus',
             'userPayers:id,f_name,l_name',
             'relatedPayers.transactionPayers',
             'relatedRecipients.transactionRecipients'
         ])->find($id);
 
-        return $this->jsonResponseOk($data);
+        return $this->jsonResponseOk($transaction);
     }
 
     /**

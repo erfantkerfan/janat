@@ -5,7 +5,7 @@
                 <md-card>
                     <md-card-header class="md-card-header-icon md-card-header-green">
                         <div class="card-icon">
-                            <md-icon>payments</md-icon>
+                            <md-icon>credit_card</md-icon>
                         </div>
                         <h4 class="title">
                             اطلاعات تراکنش

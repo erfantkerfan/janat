@@ -64,7 +64,7 @@
                     <md-empty-state
                         v-if="payRequestIsSent && !allocatedLoans.loading && allocatedLoans.list.length === 0"
                         class="md-warning"
-                        md-icon="cancel_presentation"
+                        md-icon="info"
                         :md-label="noContentMessage"
                     >
                     </md-empty-state>
@@ -105,10 +105,10 @@
                             <md-table-cell md-label="نام خانوادگی" md-sort-by="account.user.l_name">
                                 {{ item.account.user.l_name }}
                             </md-table-cell>
-                            <md-table-cell md-label="مبلغ وام" md-sort-by="loan_amount">
+                            <md-table-cell :md-label="'مبلغ وام '+'('+currencyUnit+')'" md-sort-by="loan_amount">
                                 {{ item.loan_amount | currencyFormat }}
                             </md-table-cell>
-                            <md-table-cell md-label="مبلغ هر قسط" md-sort-by="installment_rate">
+                            <md-table-cell :md-label="'مبلغ هر قسط '+'('+currencyUnit+')'" md-sort-by="installment_rate">
                                 {{ item.installment_rate | currencyFormat }}
                             </md-table-cell>
                             <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
@@ -117,7 +117,7 @@
                             <md-table-cell md-label="تعداد اقساط پرداخت نشده" md-sort-by="count_of_remaining_installments">
                                 {{ item.count_of_remaining_installments }}
                             </md-table-cell>
-                            <md-table-cell md-label="مبلغ قابل پرداخت باقیمانده" md-sort-by="remaining_payable_amount">
+                            <md-table-cell :md-label="'مبلغ قابل پرداخت باقیمانده '+'('+currencyUnit+')'" md-sort-by="remaining_payable_amount">
                                 {{ item.remaining_payable_amount | currencyFormat }} {{ currencyUnit }}
                             </md-table-cell>
                             <md-table-cell md-label="نام صندوق" md-sort-by="loan.fund.name">

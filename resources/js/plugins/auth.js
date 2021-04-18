@@ -1,3 +1,5 @@
+// import store from '@/store/index';
+
 const Auth = {
     install(Vue) {
 

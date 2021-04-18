@@ -14,10 +14,19 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
     use Filter, CommonCRUD;
+
+    public function __construct()
+    {
+        $this->middleware('can:view accounts', ['only' => ['showPeriodicPayrollDeductionForChargeFund']]);
+        $this->middleware('can:create accounts', ['only' => ['store']]);
+        $this->middleware('can:edit accounts', ['only' => ['update', 'payPeriodicPayrollDeductionForChargeFund', 'rollbackPayPeriodicPayrollDeduction']]);
+        $this->middleware('can:delete accounts', ['only' => ['destroy']]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -32,10 +41,20 @@ class AccountController extends Controller
                 'payroll_deduction',
                 'monthly_payment'
             ],
+            'filterRelationIds'=> [
+                [
+                    'requestKey' => 'user_id',
+                    'relationName' => 'user'
+                ]
+            ],
             'eagerLoads'=> [
                 'user:id,f_name,l_name', 'fund', 'allocatedLoans'
             ]
         ];
+
+        if(!Auth::user()->can('view accounts')) {
+            $request->offsetSet('user_id', Auth::user()->id);
+        }
 
         return $this->commonIndex($request, Account::class, $config);
     }
@@ -60,6 +79,7 @@ class AccountController extends Controller
     public function show($id)
     {
         $account = Account::find($id);
+        $this->checkOwner($account->user()->$id);
         return $this->jsonResponseOk($account);
     }
 
