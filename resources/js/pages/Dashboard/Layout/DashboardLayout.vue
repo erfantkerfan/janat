@@ -13,13 +13,12 @@
             :data-background-color="sidebarBackgroundColor"
         >
             <user-menu></user-menu>
-            <mobile-menu></mobile-menu>
+            <mobile-menu v-if="false"></mobile-menu>
 
             <template slot="links">
                 <sidebar-item
                     :link="{ name: 'پیشخوان', icon: 'dashboard', path: '/' }"
                 />
-
                 <sidebar-item v-if="LoggedInUser.hasSuperAdminRole()" :opened="false" :link="{ name: 'تعاریف اولیه', icon: 'layers' }">
                     <sidebar-item
                         :link="{
@@ -138,19 +137,8 @@
 
             </template>
         </side-bar>
-
         <div class="main-panel">
             <top-navbar></top-navbar>
-
-            <fixed-plugin
-                :color.sync="sidebarBackground"
-                :colorBg.sync="sidebarBackgroundColor"
-                :sidebarMini.sync="sidebarMini"
-                :sidebarImg.sync="sidebarImg"
-                :image.sync="sidebarBackgroundImage"
-            >
-            </fixed-plugin>
-
             <div :class="{ content: !$route.meta.hideContent }">
                 <zoom-center-transition :duration="200" mode="out-in">
                     <!-- your content here -->
@@ -213,15 +201,50 @@
             UserMenu,
         },
         mixins: [userMixin],
-        data() {
-            return {
-                sidebarBackgroundColor: "black",
-                sidebarBackground: "green",
-                sidebarBackgroundImage: "/img/sidebar-2.jpg",
-                sidebarMini: true,
-                sidebarImg: true,
-                image: "/img/laravel-vue.svg",
-            };
+        computed: {
+            sidebarBackgroundColor () {
+                const localStorage = window.localStorage.getItem('sidebarBackgroundColor')
+                if (!localStorage) {
+                    return 'black'
+                }
+
+                return localStorage
+            },
+            sidebarBackground () {
+                const localStorage = window.localStorage.getItem('sidebarBackground')
+                if (!localStorage) {
+                    return 'green'
+                }
+
+                return localStorage
+            },
+            sidebarBackgroundImage () {
+                if (!this.sidebarImg) {
+                    return ''
+                }
+                const localStorage = window.localStorage.getItem('sidebarBackgroundImage')
+                if (!localStorage) {
+                    return '/img/sidebar-2.jpg'
+                }
+
+                return localStorage
+            },
+            sidebarMini () {
+                const localStorage = window.localStorage.getItem('sidebarMini')
+                if (!localStorage) {
+                    return true
+                }
+
+                return (localStorage === 'true')
+            },
+            sidebarImg () {
+                const localStorage = window.localStorage.getItem('sidebarImg')
+                if (!localStorage) {
+                    return true
+                }
+
+                return (localStorage === 'true')
+            }
         },
         methods: {
             toggleSidebar() {
