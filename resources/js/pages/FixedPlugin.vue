@@ -1,26 +1,30 @@
 <template>
-  <div v-if="false" class="fixed-plugin">
-      <md-menu md-size="medium" :md-offset-x="127" :md-offset-y="-36">
-          <md-button md-menu-trigger>
-              <md-icon>settings</md-icon>
-          </md-button>
+    <md-card class="fixed-plugin">
+        <md-card-header class="md-card-header-icon md-card-header-green">
+            <div class="card-icon">
+                <md-icon>settings</md-icon>
+            </div>
+            <h4 class="title">
+                تنظیمات
+            </h4>
+        </md-card-header>
 
-          <md-menu-content>
-              <ul>
-                  <li class="header-title">Sidebar Filters</li>
-                  <li class="adjustments-line text-center">
-                      <span
-                          v-for="item in sidebarColors"
-                          :key="item.color"
-                          class="badge filter"
-                          :class="[`badge-${item.color}`, { active: item.active }]"
-                          :data-color="item.color"
-                          @click="changeSidebarBackground(item)"
-                      >
+        <md-card-content>
+            <ul>
+                <li class="header-title">Sidebar Filters</li>
+                <li class="adjustments-line text-center">
+                    <span
+                        v-for="item in sidebarColors"
+                        :key="item.color"
+                        class="badge filter"
+                        :class="[`badge-${item.color}`, { active: item.active }]"
+                        :data-color="item.color"
+                        @click="changeSidebarBackground(item)"
+                    >
                       </span>
-                  </li>
-                  <li class="header-title">Sidebar Background</li>
-                  <li class="adjustments-line text-center">
+                </li>
+                <li class="header-title">Sidebar Background</li>
+                <li class="adjustments-line text-center">
                       <span
                           v-for="item in sidebarBg"
                           :key="item.colorBg"
@@ -30,37 +34,37 @@
                           @click="changeSidebarBg(item)"
                       >
                       </span>
-                  </li>
-                  <li class="adjustments-line sidebar-mini">
-                      Sidebar Mini
-                      <md-switch
-                          :value="!sidebarMini"
-                          @change="val => updateValue('sidebarMini', val)"
-                      ></md-switch>
-                  </li>
-                  <li class="adjustments-line sidebar-img">
-                      Sidebar Image
-                      <md-switch
-                          :value="!sidebarImg"
-                          @change="val => updateValueImg('sidebarImg', val)"
-                      ></md-switch>
-                  </li>
+                </li>
+                <li class="adjustments-line sidebar-mini">
+                    Sidebar Mini
+                    <md-switch
+                        :value="!sidebarMini"
+                        @change="val => updateValue('sidebarMini', val)"
+                    ></md-switch>
+                </li>
+                <li class="adjustments-line sidebar-img">
+                    Sidebar Image
+                    <md-switch
+                        :value="!sidebarImg"
+                        @change="val => updateValueImg('sidebarImg', val)"
+                    ></md-switch>
+                </li>
 
-                  <li class="header-title">Images</li>
-                  <li
-                      v-for="item in sidebarImages"
-                      :key="item.image"
-                      :class="{ active: item.active }"
-                      @click="changeSidebarImage(item)"
-                  >
-                      <a class="img-holder switch-trigger">
-                          <img :src="item.image" alt=""/>
-                      </a>
-                  </li>
-              </ul>
-          </md-menu-content>
-      </md-menu>
-  </div>
+                <li class="header-title">Images</li>
+                <li
+                    v-for="item in sidebarImages"
+                    :key="item.image"
+                    :class="{ active: item.active }"
+                    @click="changeSidebarImage(item)"
+                >
+                    <a class="img-holder switch-trigger">
+                        <img :src="item.image" alt=""/>
+                    </a>
+                </li>
+            </ul>
+        </md-card-content>
+
+    </md-card>
 </template>
 <script>
   import Vue from "vue";
@@ -84,6 +88,7 @@
         upgradeUrl: "https://www.creative-tim.com/product/vue-material-dashboard-laravel-pro",
         isOpen: false,
         backgroundImage: '/img/sidebar-2.jpg',
+          selectedSidebarColor: 'green',
         sidebarColors: [
           {color: "purple", active: false},
           {color: "azure", active: false},

@@ -35,7 +35,16 @@ Vue.use(Auth)
 import router from "./router";
 import store from "./store";
 
-
+import {
+    CollapseTransition,
+    SlideYDownTransition,
+    FadeTransition,
+    ZoomCenterTransition
+} from 'vue2-transitions';
+Vue.component("CollapseTransition", CollapseTransition);
+Vue.component("SlideYDownTransition", SlideYDownTransition);
+Vue.component("FadeTransition", FadeTransition);
+Vue.component("ZoomCenterTransition", ZoomCenterTransition);
 
 
 import Chartist from "chartist";

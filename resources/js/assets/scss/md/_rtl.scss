@@ -38,7 +38,15 @@
     .pagination {
         direction: ltr;
     }
-
+    .md-radio .md-radio-label {
+        padding-right: 16px;
+        padding-left: 0;
+    }
+    .md-list-item-content>.md-checkbox:first-child,
+    .md-list-item-content>.md-radio:first-child {
+        margin-left: 36px;
+        margin-right: 0;
+    }
     // by krasus
 
 
