@@ -1,6 +1,6 @@
 <template>
     <div class="md-layout md-gutter">
-        <div class="md-layout-item md-small-size-100">
+        <div class="md-layout-item md-size-100">
             <div class="md-layout-item md-size-100">
                 <md-card>
                     <md-card-header class="md-card-header-icon md-card-header-green">
@@ -68,23 +68,57 @@
                 </md-card>
             </div>
         </div>
+        <div class="md-layout-item md-size-100">
+            <fixed-plugin
+                :color.sync="sidebarBackground"
+                :colorBg.sync="sidebarBackgroundColor"
+                :sidebarMini.sync="sidebarMini"
+                :sidebarImg.sync="sidebarImg"
+                :image.sync="sidebarBackgroundImage"
+            >
+            </fixed-plugin>
+        </div>
     </div>
 </template>
 
 <script>
-    import Vue from 'vue'
+    import FixedPlugin from '@/pages/FixedPlugin';
     import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
     import {Setting, SettingList} from "@/models/Setting";
 
     export default {
         name: 'Settings',
         watch: {
+            sidebarBackground () {
+                window.localStorage.setItem('sidebarBackground', this.sidebarBackground)
+            },
+            sidebarBackgroundColor () {
+                window.localStorage.setItem('sidebarBackgroundColor', this.sidebarBackgroundColor)
+            },
+            sidebarMini () {
+                window.localStorage.setItem('sidebarMini', this.sidebarMini)
+            },
+            sidebarImg () {
+                window.localStorage.setItem('sidebarImg', this.sidebarImg)
+            },
+            sidebarBackgroundImage () {
+                window.localStorage.setItem('sidebarBackgroundImage', this.sidebarBackgroundImage)
+            },
             'loan.fund.id': function () {
                 this.loan.fund_id = this.loan.fund.id
             }
         },
+        components: {
+            FixedPlugin
+        },
         mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
         data: () => ({
+            sidebarBackground: "green",
+            sidebarBackgroundColor: "black",
+            sidebarMini: true,
+            sidebarImg: true,
+            sidebarBackgroundImage: "/img/sidebar-2.jpg",
+
             setting: new Setting(),
             settings: new SettingList(),
         }),

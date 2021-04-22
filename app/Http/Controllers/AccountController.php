@@ -79,7 +79,7 @@ class AccountController extends Controller
     public function show($id)
     {
         $account = Account::find($id);
-        $this->checkOwner($account->user()->$id);
+        $this->checkOwner($account->user->id);
         return $this->jsonResponseOk($account);
     }
 
