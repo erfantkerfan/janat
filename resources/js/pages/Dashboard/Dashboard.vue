@@ -87,7 +87,7 @@
         </div>
 
         <div v-if="LoggedInUser.hasSuperAdminRole()"
-            class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
+            class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
         >
             <chart-card
                 :chart-data="fundsChart.data"
