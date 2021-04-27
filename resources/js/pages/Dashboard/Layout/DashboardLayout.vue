@@ -62,7 +62,7 @@
                     v-if="LoggedInUser.hasSuperAdminRole()"
                     :link="{
                         name: 'مدیریت اعضا',
-                        icon: 'groups',
+                        icon: 'people',
                         path: '/user/list',
                       }"
                 />
@@ -76,7 +76,7 @@
                 <sidebar-item
                     :link="{
                         name: 'تراکنش ها',
-                        icon: 'payments',
+                        icon: 'credit_card',
                         path: '/transactions/list',
                       }"
                 />
