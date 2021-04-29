@@ -62,7 +62,7 @@
                     v-if="LoggedInUser.hasSuperAdminRole()"
                     :link="{
                         name: 'مدیریت اعضا',
-                        icon: 'groups',
+                        icon: 'people',
                         path: '/user/list',
                       }"
                 />
@@ -76,7 +76,7 @@
                 <sidebar-item
                     :link="{
                         name: 'تراکنش ها',
-                        icon: 'payments',
+                        icon: 'credit_card',
                         path: '/transactions/list',
                       }"
                 />
@@ -203,44 +203,49 @@
         mixins: [userMixin],
         computed: {
             sidebarBackgroundColor () {
+                console.log('setting-sidebarBackgroundColor', this.$store.getters['settings/sidebarBackgroundColor'])
                 const localStorage = window.localStorage.getItem('sidebarBackgroundColor')
                 if (!localStorage) {
-                    return 'black'
+                    return this.$store.getters['settings/sidebarBackgroundColor']
                 }
 
                 return localStorage
             },
             sidebarBackground () {
+                console.log('setting-sidebarBackground', this.$store.getters['settings/sidebarBackground'])
                 const localStorage = window.localStorage.getItem('sidebarBackground')
                 if (!localStorage) {
-                    return 'green'
+                    return this.$store.getters['settings/sidebarBackground']
                 }
 
                 return localStorage
             },
             sidebarBackgroundImage () {
+                console.log('setting-sidebarBackgroundImage', this.$store.getters['settings/sidebarBackgroundImage'])
                 if (!this.sidebarImg) {
                     return ''
                 }
                 const localStorage = window.localStorage.getItem('sidebarBackgroundImage')
                 if (!localStorage) {
-                    return '/img/sidebar-2.jpg'
+                    return this.$store.getters['settings/sidebarBackgroundImage']
                 }
 
                 return localStorage
             },
             sidebarMini () {
+                console.log('setting-sidebarMini', this.$store.getters['settings/sidebarMini'])
                 const localStorage = window.localStorage.getItem('sidebarMini')
                 if (!localStorage) {
-                    return true
+                    return this.$store.getters['settings/sidebarMini']
                 }
 
                 return (localStorage === 'true')
             },
             sidebarImg () {
+                console.log('setting-sidebarImg', this.$store.getters['settings/sidebarImg'])
                 const localStorage = window.localStorage.getItem('sidebarImg')
                 if (!localStorage) {
-                    return true
+                    return this.$store.getters['settings/sidebarImg']
                 }
 
                 return (localStorage === 'true')
@@ -263,6 +268,9 @@
         },
         mounted() {
             reinitScrollbar();
+            if(this.sidebarMini && !this.$sidebar.isMinimized) {
+                this.minimizeSidebar();
+            }
         },
         watch: {
             sidebarMini() {

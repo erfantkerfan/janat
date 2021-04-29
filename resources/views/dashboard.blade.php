@@ -16,7 +16,7 @@
 -->
 
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="en" dir="rtl" translate="no">
 <head>
     <meta charset="utf-8">
     <link rel="icon" type="image/png" href="img/logo.png">
