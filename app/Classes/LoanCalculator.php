@@ -38,7 +38,7 @@ class LoanCalculator
         if ($typeOfLoanInterestPayment === 'monthly_payment') {
             $payableAmount = $loanAmount + $interestAmount;
         } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
-            $payableAmount = $loanAmount - $interestAmount;
+            $payableAmount = $loanAmount;
         } else {
             $payableAmount = $loanAmount + $interestAmount;
         }

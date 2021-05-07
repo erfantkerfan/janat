@@ -8,6 +8,7 @@ use App\AllocatedLoanInstallment;
 use App\Company;
 use App\Fund;
 use App\Http\Requests\StoreTransaction;
+use App\Picture;
 use App\Setting;
 use App\Traits\CommonCRUD;
 use App\Traits\Filter;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
@@ -371,5 +373,20 @@ class TransactionController extends Controller
     public function destroy(Transaction $transaction): Response
     {
         return $this->commonDestroy($transaction);
+    }
+
+    public function addPicture(Request $request) {
+        $transaction = Transaction::find($request->get('transaction_id'));
+        $createdPic = Picture::create(['picture' => File::get($request->file('picture'))]);
+        $transaction->pictures()->attach($createdPic);
+    }
+
+    public function getPictures($id) {
+        $transaction = Transaction::find($id);
+        $pictures = $transaction->pictures()->get()->map(function ($picture) {
+            return 'data:image/jpeg;base64,'.base64_encode( $picture->picture );
+        });
+
+        return $pictures;
     }
 }

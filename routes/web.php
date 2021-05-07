@@ -72,6 +72,10 @@ Route::group(['middleware' => 'auth'], function () {
                 ->name('api.panel.accounts.rollback_pay_periodic_payroll_deduction');
         });
         Route::resource('accounts', '\\'. AccountController::class);
+        Route::group(['prefix' => 'transactions'], function () {
+            Route::put('{transaction}/add_pic', [TransactionController::class, 'addPicture'])->name('api.panel.transaction.addPicture');
+            Route::get('{transaction}/get_pics', [TransactionController::class, 'getPictures'])->name('api.panel.transaction.getPictures');
+        });
         Route::resource('transactions', '\\'. TransactionController::class);
         Route::resource('transaction_statuses', '\\'. TransactionStatusController::class);
         Route::resource('settings', '\\'. SettingController::class);
