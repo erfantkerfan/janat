@@ -151,6 +151,42 @@
                     </md-card-content>
                 </md-card>
 
+                <md-card>
+                    <md-card-header class="md-card-header-text md-card-header-blue">
+                        <div class="card-text">
+                            <h4 class="title">ضمیمه ها</h4>
+                        </div>
+                    </md-card-header>
+                    <md-card-content>
+                        <md-button class="md-info" @click="$refs.userProfilePic.click()">
+                            افزودن تصویر
+                        </md-button>
+                        <img class="img" :src="cardUserImage"/>
+                        <div v-if="cardUserNewImage !== null">
+                            <md-button @click="clearUserPicBuffer" class="md-icon-button md-warning">
+                                <md-icon>clear</md-icon>
+                            </md-button>
+                            <md-button @click="updateUserPic" class="md-icon-button md-success">
+                                <md-icon>check</md-icon>
+                            </md-button>
+                        </div>
+                        <input v-show="false"
+                               type="file"
+                               ref="userProfilePic"
+                               @change="bufferUserPic($event)"/>
+
+                        <md-button class="md-info" @click="getPics">
+                            گرفتن تصاویر
+                        </md-button>
+                        <div v-for="pic in transactionPictures">
+                            <img class="attached_picture" :src="pic">
+                            <hr>
+                            <hr>
+                            <hr>
+                        </div>
+                    </md-card-content>
+                </md-card>
+
                 <vue-confirm-dialog></vue-confirm-dialog>
             </div>
         </div>
@@ -171,6 +207,10 @@
         components: {PriceInput},
         mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         data: () => ({
+            cardUserImage: '',
+            cardUserNewImage: null,
+            transactionPictures: [],
+
             transaction: new Transaction(),
             sortation: {
                 field: "created_at",
@@ -279,6 +319,75 @@
                         that.transaction.editMode = false
                         that.transaction.loading = false
                     });
+            },
+
+
+            getPics () {
+                this.transaction.loading = true;
+                this.transaction.getPictures()
+                    .then((response) => {
+                        console.log('response', response)
+
+                        this.transactionPictures = response.data
+
+                        this.transaction.loading = false;
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'تصاویر تراکنش با موفقیت دریافت شد'
+                        });
+                        // this.refreshAuthenticatedUserDataIfNeed()
+                        // this.$refs.userProfileCard.clearUserPicBuffer(response.data)
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        this.transaction.loading = false
+                    })
+            },
+            updateUserPic() {
+                this.transaction.loading = true;
+                this.transaction.addPicture(this.cardUserNewImage)
+                    .then((response) => {
+                        console.log('response', response)
+                        this.transaction.loading = false;
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'تصویر با موفقیت به تراکنش ضمیمه شد.'
+                        });
+                        // this.refreshAuthenticatedUserDataIfNeed()
+                        // this.$refs.userProfileCard.clearUserPicBuffer(response.data)
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        this.transaction.loading = false
+                    })
+            },
+            clearUserPicBuffer(newUserPic) {
+                this.cardUserNewImage = null
+                if (!newUserPic) {
+                    newUserPic = this.authenticatedUser.user_pic
+                }
+                this.cardUserImage = newUserPic
+            },
+            bufferUserPic($event) {
+                const toBase64 = file => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                });
+
+                let that = this
+                toBase64($event.target.files[0])
+                    .then((result) => {
+                        that.cardUserNewImage = $event.target.files[0]
+                        that.cardUserImage = result
+                    })
+                    .catch((error) => {
+                        that.axios_handleError(error)
+                        // that.clearUserPicBuffer()
+                    })
             },
         }
     }
