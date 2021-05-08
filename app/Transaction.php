@@ -106,4 +106,9 @@ class Transaction extends Model
     public function children() {
         return $this->hasMany(static::class, 'id')->orderBy('created_at');
     }
+
+    public function pictures()
+    {
+        return $this->morphToMany(Picture::class, 'attachable_case');
+    }
 }

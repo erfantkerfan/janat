@@ -76,6 +76,48 @@ class Transaction extends Model {
         ])
     }
 
+    addPicture (data, id, url) {
+        if (!this.baseRoute) {
+            return new Promise(() => {
+                throw new Error('baseRoute is not set');
+            })
+        }
+
+        if (!id) {
+            id = this.id;
+        }
+
+        let formData = new FormData();
+        formData.append('picture', data);
+        formData.append('transaction_id', id);
+
+        if (!url) {
+            url = this.baseRoute + '/' + id + '/add_pic';
+        }
+
+
+        return this.crud.update(url, formData);
+    }
+
+    getPictures (id, url) {
+        if (!this.baseRoute) {
+            return new Promise(() => {
+                throw new Error('baseRoute is not set');
+            })
+        }
+
+        if (!id) {
+            id = this.id;
+        }
+
+        if (!url) {
+            url = this.baseRoute + '/' + id + '/get_pics';
+        }
+
+
+        return this.crud.fetch(url);
+    }
+
     getRelatedModelType(modelType) {
         if (modelType === 'App\\Company') {
             return 'شرکت'

@@ -151,6 +151,60 @@
                     </md-card-content>
                 </md-card>
 
+                <md-card>
+                    <md-card-header class="md-card-header-text md-card-header-blue">
+                        <div class="card-text">
+                            <h4 class="title">ضمیمه ها</h4>
+                        </div>
+                    </md-card-header>
+                    <md-card-content>
+
+                        <div class="md-layout">
+                            <div class="md-layout-item md-size-25">
+                                <md-button class="md-info" @click="$refs.userProfilePic.click()">
+                                    افزودن تصویر
+                                </md-button>
+                                <img class="img" :src="cardUserImage"/>
+                                <div v-if="cardUserNewImage !== null">
+                                    <md-button @click="clearUserPicBuffer" class="md-icon-button md-warning">
+                                        <md-icon>clear</md-icon>
+                                    </md-button>
+                                    <md-button @click="updateUserPic" class="md-icon-button md-success">
+                                        <md-icon>check</md-icon>
+                                    </md-button>
+                                </div>
+                                <input v-show="false"
+                                       type="file"
+                                       ref="userProfilePic"
+                                       @change="bufferUserPic($event)"/>
+                            </div>
+                        </div>
+
+
+                        <md-button class="md-info" @click="getPics">
+                            گرفتن تصاویر
+                        </md-button>
+
+                        <div class="md-layout">
+                            <div v-for="(pic, picindex) in transactionPictures" :key="picindex" class="md-layout-item md-size-25">
+                                <img class="attached_picture" :src="pic" @click="showAttachedPictureInDialog(pic)">
+                            </div>
+                        </div>
+
+                    </md-card-content>
+                </md-card>
+
+
+                <md-dialog class="picture_dialog" :md-active.sync="attachedPictureInDialog">
+                    <md-dialog-title>تصویر ضمیمه شده</md-dialog-title>
+                    <md-dialog-content>
+                        <img class="attached_picture_in_dialog" :src="showAttachedPictureInDialog_src">
+                    </md-dialog-content>
+                    <md-dialog-actions>
+                        <md-button class="md-default" @click="attachedPictureInDialog = false">بستن</md-button>
+                    </md-dialog-actions>
+                </md-dialog>
+
                 <vue-confirm-dialog></vue-confirm-dialog>
             </div>
         </div>
@@ -171,6 +225,12 @@
         components: {PriceInput},
         mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
         data: () => ({
+            attachedPictureInDialog: false,
+            showAttachedPictureInDialog_src: '',
+            cardUserImage: '',
+            cardUserNewImage: null,
+            transactionPictures: [],
+
             transaction: new Transaction(),
             sortation: {
                 field: "created_at",
@@ -280,6 +340,87 @@
                         that.transaction.loading = false
                     });
             },
+
+            showAttachedPictureInDialog(src) {
+                this.showAttachedPictureInDialog_src = src
+                this.attachedPictureInDialog = true
+            },
+            getPics () {
+                this.transaction.loading = true;
+                this.transaction.getPictures()
+                    .then((response) => {
+                        this.transactionPictures = response.data
+
+                        this.transaction.loading = false;
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'تصاویر تراکنش با موفقیت دریافت شد'
+                        });
+                        // this.refreshAuthenticatedUserDataIfNeed()
+                        // this.$refs.userProfileCard.clearUserPicBuffer(response.data)
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        this.transaction.loading = false
+                    })
+            },
+            updateUserPic() {
+                this.transaction.loading = true;
+                this.transaction.addPicture(this.cardUserNewImage)
+                    .then((response) => {
+                        console.log('response', response)
+                        this.transaction.loading = false;
+                        this.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'تصویر با موفقیت به تراکنش ضمیمه شد.'
+                        });
+                        this.clearUserPicBuffer()
+                        this.getPics()
+                        // this.$refs.userProfileCard.clearUserPicBuffer(response.data)
+                    })
+                    .catch((error) => {
+                        this.axios_handleError(error)
+                        this.transaction.loading = false
+                    })
+            },
+            clearUserPicBuffer() {
+                this.cardUserNewImage = null
+                this.cardUserImage = ''
+            },
+            bufferUserPic($event) {
+                const toBase64 = file => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                });
+
+                let that = this
+                toBase64($event.target.files[0])
+                    .then((result) => {
+                        that.cardUserNewImage = $event.target.files[0]
+                        that.cardUserImage = result
+                    })
+                    .catch((error) => {
+                        that.axios_handleError(error)
+                        // that.clearUserPicBuffer()
+                    })
+            },
         }
     }
 </script>
+
+<style>
+.picture_dialog .md-dialog-container {
+    width: 95%;
+}
+.picture_dialog .attached_picture_in_dialog {
+    width: 100%;
+}
+
+img.attached_picture {
+    border: solid 2px gray;
+}
+ </style>
