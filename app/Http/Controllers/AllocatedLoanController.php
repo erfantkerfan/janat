@@ -12,11 +12,13 @@ use App\Traits\Filter;
 use App\Traits\CommonCRUD;
 use App\Transaction;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreAllocatedLoan;
+use App\Http\Requests\PeriodicPayrollDeductionRequest;
 
 class AllocatedLoanController extends Controller
 {
@@ -225,25 +227,33 @@ class AllocatedLoanController extends Controller
         return $this->commonDestroy($allocatedLoan);
     }
 
-    public function showPeriodicPayrollDeduction(Request $request) {
+    public function showPeriodicPayrollDeduction(PeriodicPayrollDeductionRequest $request) {
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
+        $companyId = $request->get('company_id');
 
         $targetAllocatedLoan = AllocatedLoan::with('account.user:id,f_name,l_name,staff_code', 'loan', 'loan.fund', 'installments')
             ->where('payroll_deduction', '=', '1')
+            ->whereHas('account.company', function (Builder $query) use ($companyId) {
+                $query->whereIn('companies.id', [$companyId]);
+            })
             ->lastPayrollDeductionForChargeFundPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
         return $this->jsonResponseOk($targetAllocatedLoan);
     }
 
-    public function payPeriodicPayrollDeduction(Request $request)
+    public function payPeriodicPayrollDeduction(PeriodicPayrollDeductionRequest $request)
     {
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
+        $companyId = $request->get('company_id');
 
         $targetAllocatedLoan = AllocatedLoan::with('account.user:id,f_name,l_name,staff_code', 'loan', 'loan.fund', 'installments')
             ->notSettled()
             ->where('payroll_deduction', '=', '1')
+            ->whereHas('account.company', function (Builder $query) use ($companyId) {
+                $query->whereIn('companies.id', [$companyId]);
+            })
             ->lastPayrollDeductionForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
 
@@ -294,14 +304,11 @@ class AllocatedLoanController extends Controller
         }
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
-    public function rollbackPayPeriodicPayrollDeduction(Request $request)
+    public function rollbackPayPeriodicPayrollDeduction(PeriodicPayrollDeductionRequest $request)
     {
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
+        $companyId = $request->get('company_id');
 
         Transaction::whereHas('transactionType', function ($query) use ($lastPaidAtAfter, $lastPaidAtBefore) {
             $query->where('transaction_types.name', '=', config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT'));
@@ -310,6 +317,9 @@ class AllocatedLoanController extends Controller
             ->where('paid_as_payroll_deduction', '=', 1)
             ->where('paid_at', '>=', $lastPaidAtAfter)
             ->where('paid_at', '<=', $lastPaidAtBefore)
+            ->whereHas('account.company', function (Builder $query) use ($companyId) {
+                $query->whereIn('companies.id', [$companyId]);
+            })
             ->delete();
 
         return $this->jsonResponseOk(null);

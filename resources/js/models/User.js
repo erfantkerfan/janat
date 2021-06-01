@@ -1,6 +1,5 @@
 import { Model, Collection } from 'js-abstract-model'
 import { RoleList } from '@/models/Role'
-import { Company } from '@/models/Company'
 import { AccountList } from '@/models/Account'
 import { UserStatus } from '@/models/UserStatus'
 import {UserType} from "@/models/UserType";
@@ -40,10 +39,6 @@ class User extends Model {
             {
                 key: 'user_type',
                 relatedModel: UserType
-            },
-            {
-                key: 'company',
-                relatedModel: Company
             },
             {
                 key: 'accounts',

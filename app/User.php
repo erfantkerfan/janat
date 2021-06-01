@@ -31,7 +31,6 @@ class User extends Authenticatable
         'email',
         'description',
         'user_pic',
-        'company_id',
         'user_type_id',
         'status_id'
     ];
@@ -59,11 +58,6 @@ class User extends Authenticatable
     public function accounts()
     {
         return $this->hasMany(Account::class, 'user_id', 'id');
-    }
-
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
     }
 
     public function status()

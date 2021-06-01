@@ -48,6 +48,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="md-layout-item">
+                            <md-field>
+                                <label>شرکت:</label>
+                                <md-select v-model="company_id" name="pages">
+                                    <md-option
+                                        v-for="item in companies.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
                     </div>
                     <div class="md-layout">
                         <div class="md-layout-item">
@@ -198,6 +213,7 @@ export default {
         allocatedLoans: new AllocatedLoanList(),
         paySinceDate: null,
         payTillDate: null,
+        company_id: null,
         sortation: {
             field: 'created_at',
             order: 'asc'
@@ -205,6 +221,7 @@ export default {
     }),
     mounted() {
         this.loadDatePicker()
+        this.getCompanies()
         this.allocatedLoans.loading = false
     },
     methods: {
@@ -217,6 +234,7 @@ export default {
             this.allocatedLoans.loading = true
             axios.get('/api/allocated_loans/pay_periodic_payroll_deduction', {
                 params: {
+                    company_id: this.company_id,
                     pay_since_date: this.paySinceDate,
                     pay_till_date: this.payTillDate
                 }
@@ -243,6 +261,7 @@ export default {
             this.allocatedLoans.loading = true
             axios.get('/api/allocated_loans/show_periodic_payroll_deduction', {
                 params: {
+                    company_id: this.company_id,
                     pay_since_date: this.paySinceDate,
                     pay_till_date: this.payTillDate
                 }
@@ -269,6 +288,7 @@ export default {
             this.allocatedLoans.loading = true
             axios.get('/api/allocated_loans/rollback_pay_periodic_payroll_deduction', {
                 params: {
+                    company_id: this.company_id,
                     pay_since_date: this.paySinceDate,
                     pay_till_date: this.payTillDate
                 }

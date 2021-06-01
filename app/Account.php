@@ -19,6 +19,7 @@ class Account extends Model
     protected $fillable = [
         'user_id',
         'fund_id',
+        'company_id',
         'monthly_payment',
         'payroll_deduction',
         'joined_at'
@@ -32,6 +33,11 @@ class Account extends Model
     public function fund()
     {
         return $this->belongsTo(Fund::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
     public function allocatedLoans()
@@ -94,6 +100,10 @@ class Account extends Model
 
     public function scopeHasPayrollDeduction($query) {
         $query->where('payroll_deduction', 1);
+    }
+
+    public function scopeHasCompany($query, $companyId) {
+        $query->where('company_id', $companyId);
     }
 
     public function scopeLastPayrollDeductionForChargeFundNotPaidAt($query, $operator, $date, $operator2 = null, $date2 = null) {
