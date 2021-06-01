@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             FundTableSeeder::class,
             CompanyTableSeeder::class,
             SettingTableSeeder::class,
-            FakeDataSeeder::class
+//            FakeDataSeeder::class
         ]);
     }
 }

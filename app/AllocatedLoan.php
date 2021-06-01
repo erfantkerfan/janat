@@ -122,7 +122,7 @@ class AllocatedLoan extends Model
         if ($typeOfLoanInterestPayment === 'monthly_payment') {
             $payableAmount = $this->loan_amount + $this->interest_amount;
         } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
-            $payableAmount = $this->loan_amount;
+            $payableAmount = $this->loan_amount + $this->interest_amount;
         } else {
             $payableAmount = $this->loan_amount + $this->interest_amount;
         }

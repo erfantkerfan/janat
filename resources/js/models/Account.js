@@ -2,6 +2,7 @@ import { Model, Collection } from 'js-abstract-model'
 import {Fund} from "./Fund";
 // import {User} from "./User";
 import {AllocatedLoanList} from "./AllocatedLoan";
+import {Company} from "@/models/Company";
 
 class Account extends Model {
     constructor (user) {
@@ -13,7 +14,7 @@ class Account extends Model {
             { key: 'id' },
             { key: 'user_id' },
             { key: 'user' },
-            { key: 'monthly_payment' },
+            { key: 'monthly_payment', value: 0 },
             { key: 'balance' },
             {
                 key: 'payroll_deduction',
@@ -30,6 +31,10 @@ class Account extends Model {
             {
                 key: 'fund',
                 relatedModel: Fund
+            },
+            {
+                key: 'company',
+                relatedModel: Company
             },
             {
                 key: 'allocated_loans',

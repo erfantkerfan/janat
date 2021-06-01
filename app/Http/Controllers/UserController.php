@@ -37,9 +37,6 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $config = [
-            'eagerLoads'=> [
-                'company'
-            ],
             'filterKeys'=> [
                 'id',
                 'f_name',
@@ -48,7 +45,6 @@ class UserController extends Controller
                 'SSN',
                 'phone',
                 'mobile',
-                'company_id',
                 'status_id'
             ],
             'filterRelationIds'=> [
@@ -58,7 +54,7 @@ class UserController extends Controller
                 ]
             ],
             'select'=> [
-                'id', 'f_name','l_name','SSN', 'staff_code', 'phone', 'mobile', 'created_at', 'company_id'
+                'id', 'f_name','l_name','SSN', 'staff_code', 'phone', 'mobile', 'created_at'
             ],
             'scopes'=> [
                 'hasLoanPayrollDeduction',
@@ -92,10 +88,10 @@ class UserController extends Controller
 
         $user = User::with([
                 'accounts.fund',
+                'accounts.company',
                 'accounts.allocatedLoans',
                 'accounts.allocatedLoans.loan',
                 'accounts.allocatedLoans.installments',
-                'company',
                 'status',
                 'userType',
                 'roles'

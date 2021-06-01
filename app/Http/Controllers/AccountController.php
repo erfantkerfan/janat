@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Account;
 use App\AllocatedLoan;
+use App\Http\Requests\PeriodicPayrollDeductionRequest;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Requests\StoreTransaction;
 use App\Traits\CommonCRUD;
@@ -12,6 +13,7 @@ use App\Transaction;
 use App\TransactionType;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -107,13 +109,15 @@ class AccountController extends Controller
         return $this->commonDestroy($account);
     }
 
-    public function showPeriodicPayrollDeductionForChargeFund(Request $request)
+    public function showPeriodicPayrollDeductionForChargeFund(PeriodicPayrollDeductionRequest $request)
     {
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
+        $companyId = $request->get('company_id');
 
         $targetAccount = Account::with(['user:id,f_name,l_name,staff_code', 'fund', 'allocatedLoans'])
             ->hasPayrollDeduction()
+            ->hasCompany($companyId)
             ->lastPayrollDeductionForChargeFundPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
         $setAppends = ['balance'];
@@ -128,13 +132,15 @@ class AccountController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function payPeriodicPayrollDeductionForChargeFund(Request $request)
+    public function payPeriodicPayrollDeductionForChargeFund(PeriodicPayrollDeductionRequest $request)
     {
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
+        $companyId = $request->get('company_id');
 
         $targetAccount = Account::with(['user:id,f_name,l_name,staff_code', 'fund', 'allocatedLoans'])
             ->hasPayrollDeduction()
+            ->hasCompany($companyId)
             ->lastPayrollDeductionForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
 
@@ -177,10 +183,11 @@ class AccountController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function rollbackPayPeriodicPayrollDeduction(Request $request)
+    public function rollbackPayPeriodicPayrollDeduction(PeriodicPayrollDeductionRequest $request)
     {
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
+        $companyId = $request->get('company_id');
 
         Transaction::whereHas('transactionType', function ($query) use ($lastPaidAtAfter, $lastPaidAtBefore) {
             $query->where('transaction_types.name', '=', config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND'));

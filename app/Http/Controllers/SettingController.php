@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Setting;
-use App\Traits\CommonCRUD;
-use App\Traits\Filter;
 use Exception;
+use App\Loan;
+use App\Setting;
+use App\Traits\Filter;
+use App\Traits\CommonCRUD;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Classes\LoanCalculator;
 
 class SettingController extends Controller
 {
@@ -78,6 +80,7 @@ class SettingController extends Controller
         $setting->fill($request->all());
 
         if ($setting->save()) {
+            $this->updateAllLoan();
             return $this->show($setting->id);
         } else {
             return $this->jsonResponseServerError([
@@ -88,6 +91,23 @@ class SettingController extends Controller
                 ]
             ]);
         }
+    }
+
+    private function updateAllLoan () {
+        $loans = Loan::all();
+        $loans->each(function ($loanItem) {
+            // LoanCalculator
+            $loanCalculator = new LoanCalculator();
+            [
+                $installmentRate,
+                $interestAmount,
+                $interestRate
+            ] = $loanCalculator->prepareLoanData($loanItem->loan_amount, $loanItem->number_of_installments);
+            $loanItem->interest_rate = $interestRate;
+            $loanItem->interest_amount = $interestAmount;
+            $loanItem->installment_rate = $installmentRate;
+            $loanItem->save();
+        });
     }
 
     /**
