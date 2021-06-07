@@ -113,6 +113,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="md-layout-item">
+                            <md-field>
+                                <label>شرکت:</label>
+                                <md-select v-model="filterData.company_id" name="pages">
+                                    <md-option
+                                        v-for="item in companies.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
                     </div>
                     <div class="md-layout">
                         <div class="md-layout-item">
@@ -221,7 +236,7 @@
                                 {{item.l_name}}
                             </md-table-cell>
                             <md-table-cell md-label="نام شرکت" md-sort-by="company.name">
-                                {{item.company.name}}
+                                {{item.accounts.getCompaniesName().join(', ') }}
                             </md-table-cell>
                             <md-table-cell md-label="کد ملی" md-sort-by="SSN">{{item.SSN}}</md-table-cell>
                             <md-table-cell md-label="شماره همراه" md-sort-by="mobile">{{item.mobile}}</md-table-cell>
@@ -348,6 +363,7 @@
                     SSN: this.filterData.SSN,
                     fund_id: (this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     status_id: (this.filterData.status_id === 0) ? null: this.filterData.status_id,
+                    company_id: (this.filterData.company_id === 0) ? null : this.filterData.company_id,
                     createdSinceDate: this.filterData.createdSinceDate,
                     createdTillDate: this.filterData.createdTillDate
                 })

@@ -51,6 +51,10 @@ class UserController extends Controller
                 [
                     'requestKey' => 'fund_id',
                     'relationName' => 'accounts.fund'
+                ],
+                [
+                    'requestKey' => 'company_id',
+                    'relationName' => 'accounts.company'
                 ]
             ],
             'select'=> [
@@ -59,6 +63,9 @@ class UserController extends Controller
             'scopes'=> [
                 'hasLoanPayrollDeduction',
                 'hasAccountPayrollDeduction'
+            ],
+            'eagerLoads'=> [
+                'accounts.company'
             ]
         ];
 
