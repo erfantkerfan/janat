@@ -416,7 +416,7 @@ export default {
         },
         updateUserModel() {
             this.value.status_id = this.value.status.id
-            this.value.company_id = this.value.company.id
+            // this.value.company_id = this.value.company.id
             this.$emit('input', this.value)
         },
         showAddAccountDialog() {
