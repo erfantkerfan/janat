@@ -14,7 +14,7 @@ class Account extends Model {
             { key: 'id' },
             { key: 'user_id' },
             { key: 'user' },
-            { key: 'monthly_payment', value: 0 },
+            { key: 'monthly_payment', default: 0 },
             { key: 'balance' },
             {
                 key: 'payroll_deduction',
@@ -65,6 +65,11 @@ class Account extends Model {
 class AccountList extends Collection {
     model () {
         return Account
+    }
+
+    getCompaniesName () {
+        let gg = this.list.map( item => item.company.name)
+        return gg
     }
 }
 
