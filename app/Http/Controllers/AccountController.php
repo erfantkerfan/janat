@@ -189,8 +189,11 @@ class AccountController extends Controller
         $lastPaidAtBefore = $request->get('pay_till_date');
         $companyId = $request->get('company_id');
 
-        Transaction::whereHas('transactionType', function ($query) use ($lastPaidAtAfter, $lastPaidAtBefore) {
+        $gg = Transaction::whereHas('transactionType', function ($query) use ($lastPaidAtAfter, $lastPaidAtBefore) {
             $query->where('transaction_types.name', '=', config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND'));
+        })
+        ->whereHas('accountPayers', function (Builder $query) use ($companyId) {
+            $query->where('accounts.company_id', $companyId);
         })
         ->where('transaction_status_id', '=', 1)
         ->where('paid_as_payroll_deduction', '=', 1)
@@ -198,7 +201,7 @@ class AccountController extends Controller
         ->where('paid_at', '<=', $lastPaidAtBefore)
         ->delete();
 
-        return $this->jsonResponseOk(null);
+        return $this->jsonResponseOk($gg);
     }
 
     /**
