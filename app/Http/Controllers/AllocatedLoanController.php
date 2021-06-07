@@ -310,19 +310,20 @@ class AllocatedLoanController extends Controller
         $lastPaidAtBefore = $request->get('pay_till_date');
         $companyId = $request->get('company_id');
 
-        Transaction::whereHas('transactionType', function ($query) use ($lastPaidAtAfter, $lastPaidAtBefore) {
+        $gg = Transaction::whereHas('transactionType', function ($query) use ($lastPaidAtAfter, $lastPaidAtBefore) {
             $query->where('transaction_types.name', '=', config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT'));
         })
+            ->with('allocatedLoanInstallmentRecipients.allocatedLoan.account.company')
             ->where('transaction_status_id', '=', 1)
             ->where('paid_as_payroll_deduction', '=', 1)
             ->where('paid_at', '>=', $lastPaidAtAfter)
             ->where('paid_at', '<=', $lastPaidAtBefore)
-            ->whereHas('account.company', function (Builder $query) use ($companyId) {
-                $query->whereIn('companies.id', [$companyId]);
+            ->whereHas('allocatedLoanInstallmentRecipients.allocatedLoan.account', function (Builder $query) use ($companyId) {
+                $query->where('accounts.company_id', $companyId);
             })
             ->delete();
 
-        return $this->jsonResponseOk(null);
+        return $this->jsonResponseOk($gg);
     }
 
     private function getNotSettledInstallment($allocatedLoanItem) {
