@@ -221,7 +221,7 @@ export default {
     }),
     mounted() {
         this.loadDatePicker()
-        this.getCompanies()
+        this.getCompanies(false)
         this.allocatedLoans.loading = false
     },
     methods: {

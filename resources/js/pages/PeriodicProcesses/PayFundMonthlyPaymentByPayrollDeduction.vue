@@ -185,7 +185,7 @@
         }),
         mounted() {
             this.loadDatePicker()
-            this.getCompanies()
+            this.getCompanies(false)
         },
         methods: {
             loadDatePicker () {
