@@ -54,6 +54,12 @@
                                         </md-option>
                                     </md-select>
                                 </md-field>
+                                <price-input
+                                    v-else-if="item.name === 'loan_interest_per_month'"
+                                    v-model="item.value"
+                                    :disabled="!item.editMode"
+                                    :label="'کارمزد وام برای هر ماه قسط'"
+                                />
                                 <md-field v-else class="md-invalid">
                                     <md-input v-model="item.value" :disabled="!item.editMode"/>
                                 </md-field>
@@ -79,6 +85,7 @@
 
 <script>
 import FixedPlugin from '@/pages/FixedPlugin';
+import PriceInput from '@/components/PriceInput'
 import {priceFilterMixin, getFilterDropdownMixin, axiosMixin} from '@/mixins/Mixins'
 import {Setting, SettingList} from "@/models/Setting";
 
@@ -110,7 +117,8 @@ export default {
         }
     },
     components: {
-        FixedPlugin
+        FixedPlugin,
+        PriceInput
     },
     mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
     computed: {

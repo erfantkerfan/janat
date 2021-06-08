@@ -72,16 +72,11 @@
                     </md-field>
                 </div>
             </div>
-            <div class="md-layout">
-                <label class="md-layout-item md-size-15 md-form-label">
-                    حقوق ماهیانه
-                </label>
-                <div class="md-layout-item">
-                    <md-field class="md-invalid">
-                        <md-input v-model="value.salary" type="number" @input="updateUserModel"/>
-                    </md-field>
-                </div>
-            </div>
+            <price-input
+                v-model="value.salary"
+                :label="'حقوق ماهیانه'"
+                @input="updateUserModel"
+            />
             <div class="md-layout">
                 <label class="md-layout-item md-size-15 md-form-label">
                     تلفن ثابت
@@ -159,6 +154,7 @@
     import {ValidationError} from "@/components";
     import formMixin from "@/mixins/form-mixin";
     import {User} from '@/models/User';
+    import PriceInput from "@/components/PriceInput";
 
     export default {
         name: "edit-profile-card",
@@ -172,7 +168,7 @@
             }
         },
 
-        components: {ValidationError},
+        components: {PriceInput, ValidationError},
 
         mixins: [formMixin],
 

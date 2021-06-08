@@ -236,7 +236,7 @@
                                 {{item.l_name}}
                             </md-table-cell>
                             <md-table-cell md-label="نام شرکت" md-sort-by="company.name">
-                                {{item.company.name}}
+                                {{item.accounts.getCompaniesName().join(', ') }}
                             </md-table-cell>
                             <md-table-cell md-label="کد ملی" md-sort-by="SSN">{{item.SSN}}</md-table-cell>
                             <md-table-cell md-label="شماره همراه" md-sort-by="mobile">{{item.mobile}}</md-table-cell>

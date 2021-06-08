@@ -47,6 +47,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="md-layout-item">
+                            <md-field>
+                                <label>شرکت:</label>
+                                <md-select v-model="company_id" name="pages">
+                                    <md-option
+                                        v-for="item in companies.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
                     </div>
                     <div class="md-layout">
                         <div class="md-layout-item">
@@ -162,6 +177,7 @@
             accounts: new AccountList(),
             paySinceDate: null,
             payTillDate: null,
+            company_id: null,
             sortation: {
                 field: 'created_at',
                 order: 'asc'
@@ -169,6 +185,7 @@
         }),
         mounted() {
             this.loadDatePicker()
+            this.getCompanies(false)
         },
         methods: {
             loadDatePicker () {
@@ -180,6 +197,7 @@
                 this.noContentMessage = 'در بازه انتخاب شده هیچ حسابی وجود ندارد که پرداختی ماهانه کسر از حقوق نداشته باشد.'
                 axios.get('/api/accounts/pay_periodic_payroll_deduction', {
                     params: {
+                        company_id: this.company_id,
                         pay_since_date: this.paySinceDate,
                         pay_till_date: this.payTillDate
                     }
@@ -206,6 +224,7 @@
                 this.noContentMessage = 'در بازه انتخاب شده هیچ حسابی وجود ندارد که پرداختی ماهانه کسر از حقوق داشته باشد.'
                 axios.get('/api/accounts/show_periodic_payroll_deduction', {
                     params: {
+                        company_id: this.company_id,
                         pay_since_date: this.paySinceDate,
                         pay_till_date: this.payTillDate
                     }
@@ -232,6 +251,7 @@
                 this.noContentMessage = 'تراکنش حسابهای کسر از حقوقی که برای آنها در بازه انتخاب شده تراکنش ثبت شده، حذف شد'
                 axios.get('/api/accounts/rollback_pay_periodic_payroll_deduction', {
                     params: {
+                        company_id: this.company_id,
                         pay_since_date: this.paySinceDate,
                         pay_till_date: this.payTillDate
                     }

@@ -101,7 +101,6 @@ class FakeUser extends Seeder {
         ];
         $faker = Factory::create('fa_IR');
         for ($i = 1; $i <= self::$countOfObject; $i++) {
-            $company = FakeCompany::getRandomObject();
             $userStatus = UserStatusSeeder::getRandomObject();
             $userType = UserTypeSeeder::getRandomObject();
             User::create([
@@ -116,7 +115,6 @@ class FakeUser extends Seeder {
                 'password' => Hash::make('1234'),
                 'user_pic' => File::get(public_path('img/faces/'.$faces[Factory::create()->numberBetween(0, 9)])),
                 'description' => $faker->paragraph,
-                'company_id' => $company->id,
                 'status_id' => $userStatus->id,
                 'user_type_id' => $userType->id,
                 'created_at' => $faker->dateTime
@@ -139,9 +137,11 @@ class FakeAccount extends Seeder {
         for ($i = 1; $i <= self::$countOfObject; $i++) {
             $user = FakeUser::getRandomObject();
             $fund = FakeFund::getRandomObject();
+            $company = FakeCompany::getRandomObject();
             Account::create([
                 'fund_id' => $fund->id,
                 'user_id' => $user->id,
+                'company_id' => $company->id,
                 'monthly_payment' => $faker->numberBetween(15000, 20000),
                 'payroll_deduction' => rand(0, 1),
                 'joined_at' => $faker->dateTime(),

@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Company;
 use App\Fund;
 use App\Loan;
-use App\Setting;
-use App\Traits\Filter;
 use App\User;
+use App\Setting;
+use App\Company;
+use App\Traits\Filter;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Support\Renderable;
 
 class HomeController extends Controller
 {
@@ -56,7 +56,7 @@ class HomeController extends Controller
      */
     public function dashboard(Request $request)
     {
-        $user = User::with(['accounts.fund', 'company', 'status', 'roles'])
+        $user = User::with(['accounts.fund', 'status', 'roles'])
             ->find($request->user()->id)
             ->makeHidden('user_pic');
         $settings = Setting::get();
@@ -65,8 +65,10 @@ class HomeController extends Controller
 
     public function debug(Request $request)
     {
+
 //        dd(Auth::user()->hasRole('Super Admin'));
         dd(Auth::user()->can('edit users'));
+//        dd(Loan::all()[0]->number_of_installments);
     }
 
     public function dashboardData() {

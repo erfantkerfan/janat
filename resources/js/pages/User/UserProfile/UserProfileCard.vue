@@ -15,7 +15,7 @@
             <input v-if="!isCreateForm() && cardUserNewImage === null" v-show="false" type="file" ref="userProfilePic"
                    @change="bufferUserPic($event)"/>
             <h6 class="category text-gray">{{ value.f_name }} {{ value.l_name }}</h6>
-            <h4 class="card-title">{{ value.company.name }}</h4>
+<!--            <h4 class="card-title">{{ value.company.name }}</h4>-->
             <p class="card-description">
                 {{ value.description }}
             </p>
@@ -115,19 +115,19 @@
                     </md-option>
                 </md-select>
             </md-field>
-            <md-field>
-                <label>شرکت کاربر:</label>
-                <md-select v-model="value.company.id" name="pages">
-                    <md-option
-                        v-for="item in companies.list"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                    >
-                        {{ item.name }}
-                    </md-option>
-                </md-select>
-            </md-field>
+<!--            <md-field>-->
+<!--                <label>شرکت کاربر:</label>-->
+<!--                <md-select v-model="value.company.id" name="pages">-->
+<!--                    <md-option-->
+<!--                        v-for="item in companies.list"-->
+<!--                        :key="item.id"-->
+<!--                        :label="item.name"-->
+<!--                        :value="item.id"-->
+<!--                    >-->
+<!--                        {{ item.name }}-->
+<!--                    </md-option>-->
+<!--                </md-select>-->
+<!--            </md-field>-->
 
             <md-dialog :md-active.sync="createAccountShowDialog">
                 <md-dialog-title v-if="editAccountState">ویرایش حساب</md-dialog-title>
@@ -160,6 +160,19 @@
                                 <md-select v-model="newAccount.fund.id">
                                     <md-option
                                         v-for="item in funds.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                            <md-field>
+                                <label>انتخاب شرکت:</label>
+                                <md-select v-model="newAccount.company.id">
+                                    <md-option
+                                        v-for="item in companies.list"
                                         :key="item.id"
                                         :label="item.name"
                                         :value="item.id"
@@ -403,7 +416,7 @@ export default {
         },
         updateUserModel() {
             this.value.status_id = this.value.status.id
-            this.value.company_id = this.value.company.id
+            // this.value.company_id = this.value.company.id
             this.$emit('input', this.value)
         },
         showAddAccountDialog() {
