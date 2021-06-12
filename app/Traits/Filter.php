@@ -76,16 +76,18 @@ trait Filter
         $createdSinceDate  = $request->get('createdSinceDate');
         $createdTillDate   = $request->get('createdTillDate');
         if (strlen($createdSinceDate) > 0 && strlen($createdTillDate) > 0) {
-            $createdSinceDate = Carbon::parse($createdSinceDate)->format('Y-m-d') . ' 00:00:00';
-            $createdTillDate  = Carbon::parse($createdTillDate)->format('Y-m-d') . ' 23:59:59';
+            $createdSinceDate = Carbon::parse($createdSinceDate)->format('Y-m-d H:m:s');
+            $createdTillDate  = Carbon::parse($createdTillDate)->format('Y-m-d H:m:s');
             $modelQuery       = $modelQuery->whereBetween('created_at', [$createdSinceDate, $createdTillDate]);
         } else if (strlen($createdSinceDate) > 0) {
-            $createdSinceDate = Carbon::parse($createdSinceDate)->format('Y-m-d') . ' 00:00:00';
-            $modelQuery       = $modelQuery->whereDate('created_at', '>=', $createdSinceDate);
+            $createdSinceDate = Carbon::parse($createdSinceDate)->format('Y-m-d H:m:s');
+            $modelQuery       = $modelQuery->where('created_at', '>=', $createdSinceDate);
         } else if (strlen($createdTillDate) > 0) {
-            $createdTillDate  = Carbon::parse($createdTillDate)->format('Y-m-d') . ' 23:59:59';
-            $modelQuery       = $modelQuery->whereDate('created_at', '<=', $createdTillDate);
+            $createdTillDate  = Carbon::parse($createdTillDate)->format('Y-m-d H:m:s');
+            $modelQuery       = $modelQuery->where('created_at', '<=', $createdTillDate);
         }
+
+        dd($modelQuery->toSql());
     }
 
     /**
