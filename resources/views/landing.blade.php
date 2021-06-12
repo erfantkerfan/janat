@@ -36,7 +36,7 @@
                         <img src="/img/logo.png" alt="صندوق قرض الحسه جنت">
                     </div>
                     <div class="brand">
-                        قرض الحسه جنت
+                        قرض الحسنه جنت
                     </div>
                 </div>
             </a>
