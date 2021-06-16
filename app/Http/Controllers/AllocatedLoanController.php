@@ -231,6 +231,42 @@ class AllocatedLoanController extends Controller
      */
     public function destroy(AllocatedLoan $allocatedLoan)
     {
+        $allocatedLoanId = $allocatedLoan->id;
+        $allocatedLoan = AllocatedLoan::with([
+            'loan.fund.paidTransactions' => function ($query1) use ($allocatedLoanId) {
+                $query1->whereHas('allocatedLoanRecipients', function ($query2) use ($allocatedLoanId) {
+                    $query2->where('allocated_loans.id', '=', $allocatedLoanId);
+                });
+            },
+            'loan.fund.paidTransactions.allocatedLoanRecipients',
+            'installments',
+            'installments.receivedTransactions',
+            'installments.receivedTransactions.transactionStatus',
+            'account.user:id,f_name,l_name',
+            'loan',
+            'loan.fund'
+        ])
+            ->findOrFail($allocatedLoanId)
+            ->setAppends(['total_payments']);
+
+
+        $errors = [];
+        if ($allocatedLoan->total_payments - $allocatedLoan->interest_amount > 0) {
+            $errors['has_paid_transaction'] = [
+                'وام تخصیص داده شده مورد نظر دارای تراکنش پرداخت شده می باشد.'
+            ];
+        }
+        if (count($errors) > 0) {
+            return $this->jsonResponseValidateError([
+                'errors' => $errors
+            ]);
+        }
+
+        $allocatedLoan->loan->fund->paidTransactions->each( function ($transaction) {
+            $transactionController = new TransactionController();
+            $transactionController->destroy($transaction);
+        });
+
         return $this->commonDestroy($allocatedLoan);
     }
 
