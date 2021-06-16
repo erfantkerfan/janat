@@ -361,6 +361,8 @@ class TransactionController extends Controller
      */
     public function update(Request $request, Transaction $transaction): Response
     {
+        $request->request->remove('cost');
+        $request->request->remove('paid_at');
         return $this->commonUpdate($request, $transaction);
     }
 
