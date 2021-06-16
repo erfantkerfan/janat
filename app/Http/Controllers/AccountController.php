@@ -136,6 +136,7 @@ class AccountController extends Controller
     {
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
+        $paidAt = $request->get('paid_at');
         $companyId = $request->get('company_id');
 
         $targetAccount = Account::with(['user:id,f_name,l_name,staff_code', 'fund', 'allocatedLoans'])
@@ -151,7 +152,7 @@ class AccountController extends Controller
                 'transaction_status_id' => 1,
                 'paid_as_payroll_deduction' => 1,
                 'cost' => $accountItem->monthly_payment,
-                'paid_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'paid_at' => $paidAt,
                 'transaction_type' => 'user_charge_fund',
                 'account_id' => $accountItem->id
             ]);

@@ -6,7 +6,7 @@
                     <div class="card-icon">
                         <md-icon>assignment</md-icon>
                     </div>
-                    <h4 class="title">لیست وام های تخصیص داده شده</h4>
+                    <h4 class="title">لیست تراکنش ها</h4>
                 </md-card-header>
                 <md-card-content>
                     <div class="md-layout">
@@ -184,6 +184,9 @@
                                 </span>
                                 <span v-else>-</span>
                             </md-table-cell>
+                            <md-table-cell md-label="تاریخ پرداخت" md-sort-by="created_at">
+                                {{item.shamsiDate('paid_at').dateTime}}
+                            </md-table-cell>
                             <md-table-cell md-label="تاریخ ایجاد" md-sort-by="created_at">
                                 {{item.shamsiDate('created_at').dateTime}}
                             </md-table-cell>
@@ -291,7 +294,7 @@
             confirmRemove(item) {
                 this.$confirm(
                     {
-                        message: `از حذف وام تخصیص داده شده اطمینان دارید؟`,
+                        message: `از حذف تراکنش اطمینان دارید؟`,
                         button: {
                             no: 'خیر',
                             yes: 'بله'
@@ -312,7 +315,7 @@
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
-                            message: 'وام تخصیص داده شده با موفقیت حذف شد'
+                            message: 'تراکنش با موفقیت حذف شد'
                         });
                         that.getList()
                     })

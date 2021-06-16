@@ -49,6 +49,23 @@
                             </div>
                         </div>
                         <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-35 md-form-label">
+                                    تاریخ پرداخت
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="paidAt"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
                             <md-field>
                                 <label>شرکت:</label>
                                 <md-select v-model="company_id" name="pages">
@@ -213,6 +230,7 @@ export default {
         allocatedLoans: new AllocatedLoanList(),
         paySinceDate: null,
         payTillDate: null,
+        paidAt: null,
         company_id: null,
         sortation: {
             field: 'created_at',
@@ -228,6 +246,7 @@ export default {
         loadDatePicker() {
             this.paySinceDate = moment().startOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
             this.payTillDate = moment().endOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
+            this.paidAt = moment().endOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
         },
         pay() {
             this.noContentMessage = 'در بازه انتخاب شده هیچ وام کسر از حقوقی وجود ندارد که پرداختی قسط نداشته باشد.'
@@ -236,7 +255,8 @@ export default {
                 params: {
                     company_id: this.company_id,
                     pay_since_date: this.paySinceDate,
-                    pay_till_date: this.payTillDate
+                    pay_till_date: this.payTillDate,
+                    paid_at: this.paidAt
                 }
             })
                 .then((response) => {
@@ -263,7 +283,8 @@ export default {
                 params: {
                     company_id: this.company_id,
                     pay_since_date: this.paySinceDate,
-                    pay_till_date: this.payTillDate
+                    pay_till_date: this.payTillDate,
+                    paid_at: this.paidAt
                 }
             })
                 .then((response) => {
@@ -290,7 +311,8 @@ export default {
                 params: {
                     company_id: this.company_id,
                     pay_since_date: this.paySinceDate,
-                    pay_till_date: this.payTillDate
+                    pay_till_date: this.payTillDate,
+                    paid_at: this.paidAt
                 }
             })
                 .then(() => {
@@ -313,6 +335,7 @@ export default {
         loadDatePickers() {
             this.paySinceDate = moment().format('YYYY-MM-DD HH:mm:ss')
             this.payTillDate = moment().format('YYYY-MM-DD HH:mm:ss')
+            this.paidAt = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
         },
         clickCallback(data) {
             this.getList(data)

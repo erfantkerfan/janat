@@ -185,14 +185,20 @@ class AllocatedLoanController extends Controller
      */
     public function show($id)
     {
-        $allocatedLoan = AllocatedLoan::with(
+        $allocatedLoan = AllocatedLoan::with([
+                'loan.fund.paidTransactions' => function ($query1) use ($id) {
+                    $query1->whereHas('allocatedLoanRecipients', function ($query2) use ($id) {
+                        $query2->where('allocated_loans.id', '=', $id);
+                    });
+                },
+                'loan.fund.paidTransactions.allocatedLoanRecipients',
                 'installments',
                 'installments.receivedTransactions',
                 'installments.receivedTransactions.transactionStatus',
                 'account.user:id,f_name,l_name',
                 'loan',
                 'loan.fund'
-            )
+            ])
             ->findOrFail($id)
             ->setAppends([
                 'is_settled',
@@ -201,6 +207,7 @@ class AllocatedLoanController extends Controller
                 'count_of_paid_installments',
                 'count_of_remaining_installments'
             ]);
+
         return $this->jsonResponseOk($allocatedLoan);
     }
 
@@ -246,9 +253,22 @@ class AllocatedLoanController extends Controller
     {
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
+        $paidAt = $request->get('paid_at');
         $companyId = $request->get('company_id');
 
-        $targetAllocatedLoan = AllocatedLoan::with('account.user:id,f_name,l_name,staff_code', 'loan', 'loan.fund', 'installments')
+        $targetAllocatedLoan = AllocatedLoan::with([
+            'account.user:id,f_name,l_name,staff_code',
+            'loan',
+            'loan.fund',
+            'installments'
+        ])
+            ->whereHas('loan', function ($query1) use ($lastPaidAtBefore) {
+                $query1->whereHas('fund', function ($query2) use ($lastPaidAtBefore) {
+                    $query2->whereHas('paidTransactions', function ($query3) use ($lastPaidAtBefore) {
+                        $query3->where('paid_at', '<=', $lastPaidAtBefore);
+                    });
+                });
+            })
             ->notSettled()
             ->where('payroll_deduction', '=', '1')
             ->whereHas('account.company', function (Builder $query) use ($companyId) {
@@ -267,7 +287,7 @@ class AllocatedLoanController extends Controller
                     'transaction_status_id' => 1,
                     'paid_as_payroll_deduction' => 1,
                     'cost' => $notSettledInstallment->rate,
-                    'paid_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'paid_at' => $paidAt,
                     'transaction_type' => 'user_pay_installment',
                     'allocated_loan_installment_id' => $notSettledInstallment->id
                 ]);
