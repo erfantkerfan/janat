@@ -138,6 +138,22 @@ class AllocatedLoanInstallmentController extends Controller
         ], [
             'allocatedLoanInstallment_id' => 'required|exists:allocated_loan_installments,id'
         ])->validate();
+
+        $allocatedLoanInstallment = AllocatedLoanInstallment::find($id)->setAppends(['totalPayments']);
+
+        $errors = [];
+        if ($allocatedLoanInstallment->totalPayments > 0) {
+            $errors['has_paid_transaction'] = [
+                'قسط مورد نظر دارای تراکنش پرداخت شده است.'
+            ];
+        }
+
+        if (count($errors) > 0) {
+            return $this->jsonResponseValidateError([
+                'errors' => $errors
+            ]);
+        }
+
         if (AllocatedLoanInstallment::find($id)->delete()) {
             return $this->jsonResponseOk([ 'message'=> 'حذف با موفقیت انجام شد.' ]);
         } else {
