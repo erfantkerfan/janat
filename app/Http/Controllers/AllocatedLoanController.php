@@ -130,6 +130,39 @@ class AllocatedLoanController extends Controller
         DB::beginTransaction();
         $account = Account::findOrFail($request->get('account_id'));
         $loan = Loan::findOrFail($request->get('loan_id'));
+        $fund = $account->fund()->first();
+
+        $errors = [];
+        if ($fund->balance < ($loan->loan_amount - $loan->interest_amount)) {
+            $currencyUnit = Setting::where('name', 'currency_unit')->first()->value;
+            $errors['fund_deficit'] = [
+                'مبلغ مورد نظر برای پرداخت وام عبارت است از '.
+                number_format($loan->loan_amount).$currencyUnit.
+                ' و مبلغ کارمزد وام عبارت است از '.
+                number_format($loan->interest_amount).$currencyUnit.
+                ' و پرداختی صندوق به کاربر برابر است با '.
+                number_format($loan->loan_amount - $loan->interest_amount).$currencyUnit.
+                ' در حالی که موجودی صندوق عبارت است از '.
+                number_format($fund->balance).$currencyUnit.
+                ' که بیش تر از مبلغ قابل پرداخت صندوق به کاربر است.'
+            ];
+        }
+
+        if ($loan->fund->id !== $account->fund->id) {
+            $errors['account_fund_mismatch'] = [
+                ' نام صندوق مربوط به حساب کاربر عبارت است از '.
+                $account->fund->name.
+                ' در حالی که نام صندوق وام انتخاب شده عبارت از '.
+                $loan->fund->name.'. '.
+                ' لطفا وام را متناسب با صندوق حساب کاربر انتخاب نمایید.'
+            ];
+        }
+        if (count($errors) > 0) {
+            return $this->jsonResponseValidateError([
+                'errors' => $errors
+            ]);
+        }
+
 
         // create allocated loan
         $createdAllocatedLoan = AllocatedLoan::create([
@@ -185,14 +218,20 @@ class AllocatedLoanController extends Controller
      */
     public function show($id)
     {
-        $allocatedLoan = AllocatedLoan::with(
+        $allocatedLoan = AllocatedLoan::with([
+                'loan.fund.paidTransactions' => function ($query1) use ($id) {
+                    $query1->whereHas('allocatedLoanRecipients', function ($query2) use ($id) {
+                        $query2->where('allocated_loans.id', '=', $id);
+                    });
+                },
+                'loan.fund.paidTransactions.allocatedLoanRecipients',
                 'installments',
                 'installments.receivedTransactions',
                 'installments.receivedTransactions.transactionStatus',
                 'account.user:id,f_name,l_name',
                 'loan',
                 'loan.fund'
-            )
+            ])
             ->findOrFail($id)
             ->setAppends([
                 'is_settled',
@@ -201,6 +240,7 @@ class AllocatedLoanController extends Controller
                 'count_of_paid_installments',
                 'count_of_remaining_installments'
             ]);
+
         return $this->jsonResponseOk($allocatedLoan);
     }
 
@@ -224,6 +264,42 @@ class AllocatedLoanController extends Controller
      */
     public function destroy(AllocatedLoan $allocatedLoan)
     {
+        $allocatedLoanId = $allocatedLoan->id;
+        $allocatedLoan = AllocatedLoan::with([
+            'loan.fund.paidTransactions' => function ($query1) use ($allocatedLoanId) {
+                $query1->whereHas('allocatedLoanRecipients', function ($query2) use ($allocatedLoanId) {
+                    $query2->where('allocated_loans.id', '=', $allocatedLoanId);
+                });
+            },
+            'loan.fund.paidTransactions.allocatedLoanRecipients',
+            'installments',
+            'installments.receivedTransactions',
+            'installments.receivedTransactions.transactionStatus',
+            'account.user:id,f_name,l_name',
+            'loan',
+            'loan.fund'
+        ])
+            ->findOrFail($allocatedLoanId)
+            ->setAppends(['total_payments']);
+
+
+        $errors = [];
+        if ($allocatedLoan->total_payments - $allocatedLoan->interest_amount > 0) {
+            $errors['has_paid_transaction'] = [
+                'وام تخصیص داده شده مورد نظر دارای تراکنش پرداخت شده می باشد.'
+            ];
+        }
+        if (count($errors) > 0) {
+            return $this->jsonResponseValidateError([
+                'errors' => $errors
+            ]);
+        }
+
+        $allocatedLoan->loan->fund->paidTransactions->each( function ($transaction) {
+            $transactionController = new TransactionController();
+            $transactionController->destroy($transaction);
+        });
+
         return $this->commonDestroy($allocatedLoan);
     }
 
@@ -246,9 +322,22 @@ class AllocatedLoanController extends Controller
     {
         $lastPaidAtAfter = $request->get('pay_since_date');
         $lastPaidAtBefore = $request->get('pay_till_date');
+        $paidAt = $request->get('paid_at');
         $companyId = $request->get('company_id');
 
-        $targetAllocatedLoan = AllocatedLoan::with('account.user:id,f_name,l_name,staff_code', 'loan', 'loan.fund', 'installments')
+        $targetAllocatedLoan = AllocatedLoan::with([
+            'account.user:id,f_name,l_name,staff_code',
+            'loan',
+            'loan.fund',
+            'installments'
+        ])
+            ->whereHas('loan', function ($query1) use ($lastPaidAtBefore) {
+                $query1->whereHas('fund', function ($query2) use ($lastPaidAtBefore) {
+                    $query2->whereHas('paidTransactions', function ($query3) use ($lastPaidAtBefore) {
+                        $query3->where('paid_at', '<=', $lastPaidAtBefore);
+                    });
+                });
+            })
             ->notSettled()
             ->where('payroll_deduction', '=', '1')
             ->whereHas('account.company', function (Builder $query) use ($companyId) {
@@ -267,7 +356,7 @@ class AllocatedLoanController extends Controller
                     'transaction_status_id' => 1,
                     'paid_as_payroll_deduction' => 1,
                     'cost' => $notSettledInstallment->rate,
-                    'paid_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'paid_at' => $paidAt,
                     'transaction_type' => 'user_pay_installment',
                     'allocated_loan_installment_id' => $notSettledInstallment->id
                 ]);

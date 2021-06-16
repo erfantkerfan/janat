@@ -347,7 +347,7 @@ class TransactionController extends Controller
             'userPayers:id,f_name,l_name',
             'relatedPayers.transactionPayers',
             'relatedRecipients.transactionRecipients'
-        ])->find($id);
+        ])->findOrFail($id);
 
         return $this->jsonResponseOk($transaction);
     }
@@ -361,6 +361,8 @@ class TransactionController extends Controller
      */
     public function update(Request $request, Transaction $transaction): Response
     {
+        $request->request->remove('cost');
+        $request->request->remove('paid_at');
         return $this->commonUpdate($request, $transaction);
     }
 
@@ -370,9 +372,50 @@ class TransactionController extends Controller
      * @param Transaction $transaction
      * @return Response
      */
-    public function destroy(Transaction $transaction): Response
+    public function destroy($id): Response
     {
+        $transaction = Transaction::with([
+            'transactionStatus',
+            'userPayers:id,f_name,l_name',
+            'relatedPayers.transactionPayers',
+            'relatedRecipients.transactionRecipients'
+        ])->findOrFail($id);
+
+        $transaction->relatedPayers->each( function ($payer) {
+            if ($payer->transaction_payers_type === 'App\\Fund') {
+                $fund = $payer->transactionPayers;
+                $fund->deposit($payer->cost);
+            }
+        });
+        $transaction->relatedRecipients->each( function ($recipient) {
+            if ($recipient->transaction_recipients_type === 'App\\Fund') {
+                $fund = $recipient->transactionRecipients;
+                $fund->withdrawal($recipient->cost);
+            }
+        });
+
         return $this->commonDestroy($transaction);
+    }
+
+    private function withdrawalAndRecalculateFundAnsUserBalance(Transaction $transaction) {
+        $transaction_type = $transaction->transactionType->display_name;
+        $dBTransactionValidator = true;
+
+//        if ($transaction_type === config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND')) {
+//            $dBTransactionValidator = $this->userChargeFund($request, $transaction);
+//        } else if ($transaction_type === 'user_withdraw_from_account') {
+//            $dBTransactionValidator = $this->userWithdrawAccount($request, $transaction);
+//        } else if ($transaction_type === 'company_charge_fund') {
+//            $dBTransactionValidator = $this->companyChargeFund($request, $transaction);
+//        } else if ($transaction_type === 'fund_pay_loan') {
+//            $dBTransactionValidator = $this->fundPayLoan($request, $transaction);
+//        } else if ($transaction_type === 'pay_fund_expenses') {
+//            $dBTransactionValidator = $this->payFundExpenses($request, $transaction);
+//        } else if ($transaction_type === 'user_pay_installment') {
+//            $dBTransactionValidator = $this->userPayInstallment($request, $transaction);
+//        }
+//
+//        return $dBTransactionValidator;
     }
 
     public function addPicture(Request $request) {

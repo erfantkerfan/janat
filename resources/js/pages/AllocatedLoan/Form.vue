@@ -75,6 +75,14 @@
                                 تاریخ ایجاد:
                                 {{ allocatedLoan.shamsiDate('created_at').date }}
                                 <br>
+                                تاریخ پرداخت وام:
+                                {{ paidTransactionFromFund.shamsiDate('paid_at').date }}
+                                <md-button
+                                    class="md-dense md-raised md-success"
+                                    :to="'/transactions/'+paidTransactionFromFund.id">
+                                    مشاهده اطلاعات تراکنش پرداخت وام
+                                </md-button>
+                                <br>
                                 تعداد اقساط:
                                 {{ allocatedLoan.number_of_installments }}
                                 <hr>
@@ -158,7 +166,7 @@
                                         تسویه نشده
                                     </span>
                                 </md-table-cell>
-                                <md-table-cell md-label="تاریخ" md-sort-by="created_at">{{ item.shamsiDate('created_at').date }}</md-table-cell>
+                                <md-table-cell md-label="تاریخ تعریف قسط" md-sort-by="created_at">{{ item.shamsiDate('created_at').date }}</md-table-cell>
                                 <md-table-cell md-label="مشاهده">
                                     <md-button
                                         v-if="item.received_transactions.list.length > 0"
@@ -270,6 +278,7 @@
     import PriceInput from '@/components/PriceInput'
     import { Account } from "@/models/Account";
     import { User } from "@/models/User";
+    import {Transaction} from "@/models/Transaction";
 
     export default {
         watch: {
@@ -284,6 +293,7 @@
             confirmDialogMessage: '',
             allocatedLoan: new AllocatedLoan(),
             newAllocatedLoan: new AllocatedLoan(),
+            paidTransactionFromFund: new Transaction(),
             allocatedLoanInstallment: new AllocatedLoanInstallment(),
             sortation: {
                 field: 'created_at',
@@ -314,11 +324,13 @@
                     .then((response) => {
                         this.allocatedLoan.loading = false;
                         this.allocatedLoan = new AllocatedLoan(response.data)
+                        this.paidTransactionFromFund = new Transaction(response.data.loan.fund.paid_transactions[0])
                     })
                     .catch((error) => {
                         this.axios_handleError(error)
                         this.allocatedLoan.loading = false;
                         this.allocatedLoan = new AllocatedLoan()
+                        this.paidTransactionFromFund = new Transaction()
                     })
             },
             updateAllocatedLoan () {

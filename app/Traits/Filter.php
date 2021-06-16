@@ -86,8 +86,6 @@ trait Filter
             $createdTillDate  = Carbon::parse($createdTillDate)->format('Y-m-d H:m:s');
             $modelQuery       = $modelQuery->where('created_at', '<=', $createdTillDate);
         }
-
-        dd($modelQuery->toSql());
     }
 
     /**
