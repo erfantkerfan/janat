@@ -147,6 +147,16 @@ class AllocatedLoanController extends Controller
                 ' که بیش تر از مبلغ قابل پرداخت صندوق به کاربر است.'
             ];
         }
+
+        if ($loan->fund->id !== $account->fund->id) {
+            $errors['account_fund_mismatch'] = [
+                ' نام صندوق مربوط به حساب کاربر عبارت است از '.
+                $account->fund->name.
+                ' در حالی که نام صندوق وام انتخاب شده عبارت از '.
+                $loan->fund->name.'. '.
+                ' لطفا وام را متناسب با صندوق حساب کاربر انتخاب نمایید.'
+            ];
+        }
         if (count($errors) > 0) {
             return $this->jsonResponseValidateError([
                 'errors' => $errors
