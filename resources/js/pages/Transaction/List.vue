@@ -47,7 +47,7 @@
                                 </md-select>
                             </md-field>
                         </div>
-                        <div class="md-layout-item">
+                        <div v-if="false" class="md-layout-item">
                             <md-field>
                                 <label>شرکت:</label>
                                 <md-select v-model="filterData.company_id" name="pages">
@@ -81,7 +81,7 @@
                         </div>
                         <div class="md-layout-item">
                             <div class="md-layout">
-                                <label class="md-layout-item md-size-15 md-form-label">
+                                <label class="md-layout-item md-size-35 md-form-label">
                                     کد عضویت:
                                 </label>
                                 <div class="md-layout-item">
@@ -91,12 +91,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-35 md-form-label">
+                                    شماره حساب:
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.account_id" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
-                                    از تاریخ
+                                    تاریخ ایجاد از:
                                 </label>
                                 <div class="md-layout-item">
                                     <date-picker
@@ -111,11 +123,43 @@
                         <div class="md-layout-item">
                             <div class="md-layout">
                                 <label class="md-layout-item md-size-15 md-form-label">
-                                    تا تاریخ
+                                    تاریخ ایجاد تا:
                                 </label>
                                 <div class="md-layout-item">
                                     <date-picker
                                         v-model="filterData.createdTillDate"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    تاریخ پرداخت از:
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="filterData.paidSinceDate"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    تاریخ پرداخت تا:
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="filterData.paidTillDate"
                                         type="datetime"
                                         :editable="true"
                                         format="YYYY-MM-DD HH:mm:ss"
@@ -177,6 +221,9 @@
                             </md-table-cell>
                             <md-table-cell md-label="وضعیت" md-sort-by="parent_transaction_id">
                                 {{item.transaction_status.display_name}}
+                                <span v-if="item.paid_as_payroll_deduction">
+                                    (کسر از حقوق)
+                                </span>
                             </md-table-cell>
                             <md-table-cell md-label="مهلت پرداخت" md-sort-by="deadline_at">
                                 <span v-if="item.deadline_at">
@@ -245,9 +292,12 @@
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
                 fund_id: null,
                 user_id: null,
+                account_id: null,
                 loan_id: null,
                 company_id: null,
                 transaction_status_id: null,
+                paidSinceDate: null,
+                paidTillDate: null,
                 createdSinceDate: null,
                 createdTillDate: null
             }
@@ -274,10 +324,13 @@
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     user_id: (this.filterData.user_id === null || this.filterData.user_id.trim().length === 0) ? null: this.filterData.user_id,
+                    account_id: (this.filterData.account_id === null || this.filterData.account_id.trim().length === 0) ? null: this.filterData.account_id,
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null: this.filterData.loan_id,
                     company_id: (this.filterData.company_id === null || this.filterData.company_id === 0) ? null: this.filterData.company_id,
                     transaction_status_id: (this.filterData.transaction_status_id === null || this.filterData.transaction_status_id === 0) ? null: this.filterData.transaction_status_id,
+                    paid_at_since_date: this.filterData.paidSinceDate,
+                    paid_at_till_date: this.filterData.paidTillDate,
                     createdSinceDate: this.filterData.createdSinceDate,
                     createdTillDate: this.filterData.createdTillDate
                 })
@@ -311,7 +364,7 @@
                 item.loading = true;
                 let that = this;
                 item.delete()
-                    .then(function(response) {
+                    .then(function() {
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
