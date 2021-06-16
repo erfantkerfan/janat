@@ -130,6 +130,29 @@ class AllocatedLoanController extends Controller
         DB::beginTransaction();
         $account = Account::findOrFail($request->get('account_id'));
         $loan = Loan::findOrFail($request->get('loan_id'));
+        $fund = $account->fund()->first();
+
+        $errors = [];
+        if ($fund->balance < ($loan->loan_amount - $loan->interest_amount)) {
+            $currencyUnit = Setting::where('name', 'currency_unit')->first()->value;
+            $errors['fund_deficit'] = [
+                'مبلغ مورد نظر برای پرداخت وام عبارت است از '.
+                number_format($loan->loan_amount).$currencyUnit.
+                ' و مبلغ کارمزد وام عبارت است از '.
+                number_format($loan->interest_amount).$currencyUnit.
+                ' و پرداختی صندوق به کاربر برابر است با '.
+                number_format($loan->loan_amount - $loan->interest_amount).$currencyUnit.
+                ' در حالی که موجودی صندوق عبارت است از '.
+                number_format($fund->balance).$currencyUnit.
+                ' که بیش تر از مبلغ قابل پرداخت صندوق به کاربر است.'
+            ];
+        }
+        if (count($errors) > 0) {
+            return $this->jsonResponseValidateError([
+                'errors' => $errors
+            ]);
+        }
+
 
         // create allocated loan
         $createdAllocatedLoan = AllocatedLoan::create([
