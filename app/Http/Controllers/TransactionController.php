@@ -49,6 +49,9 @@ class TransactionController extends Controller
                 'relatedPayers.transactionPayers',
                 'relatedRecipients.transactionRecipients'
             ],
+            'filterDate'=> [
+                'paid_at'
+            ],
             'filterKeys'=> [
                 'cost',
                 'deadline_at',
@@ -64,6 +67,14 @@ class TransactionController extends Controller
                     'relationNames' => [
                         'userPayers',
                         'userRecipients'
+                    ]
+                ],
+                [
+                    'requestKey' => 'account_id',
+                    'orWhereHas' => true,
+                    'relationNames' => [
+                        'accountPayers',
+                        'accountRecipients'
                     ]
                 ],
                 [

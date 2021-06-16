@@ -50,7 +50,7 @@ trait CommonCRUD
         $this->sorting($request,$modelQuery);
         $this->select($configArray['select'],$modelQuery, $modelClass);
         $this->loadScopes($request, $modelQuery, $configArray['scopes']);
-        $this->filterByDate($request, $modelQuery);
+        $this->filterByDate($request, $modelQuery, $configArray['filterDate']);
         $this->filterByKeys($request, $modelQuery, $configArray['filterKeys']);
         $this->filterByRelationKeys($request, $modelQuery, $configArray['filterRelationKeys']);
         $this->filterByRelationIds($request, $modelQuery, $configArray['filterRelationIds']);
@@ -62,6 +62,7 @@ trait CommonCRUD
             'select' => $this->getDefault($config, 'select', []),
             'scopes' => $this->getDefault($config, 'scopes', []),
             'eagerLoads' => $this->getDefault($config, 'eagerLoads', []),
+            'filterDate' => $this->getDefault($config, 'filterDate', []),
             'filterKeys' => $this->getDefault($config, 'filterKeys', []),
             'setAppends' => $this->getDefault($config, 'setAppends', []),
             'returnModelQuery' => $this->getDefault($config, 'returnModelQuery', []),

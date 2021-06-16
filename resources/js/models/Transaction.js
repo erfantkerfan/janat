@@ -27,6 +27,7 @@ class Transaction extends Model {
             { key: 'cost' },
             { key: 'manager_comment' },
             { key: 'user_comment' },
+            { key: 'paid_as_payroll_deduction' },
             { key: 'parent_transaction_id' },
             {
                 key: 'transaction_status',
