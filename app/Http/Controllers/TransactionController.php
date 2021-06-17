@@ -403,6 +403,11 @@ class TransactionController extends Controller
                 $fund = $recipient->transactionRecipients;
                 $fund->withdrawal($recipient->cost);
             }
+            if ($recipient->transaction_recipients_type === 'App\\AllocatedLoanInstallment') {
+                $allocatedLoanInstallment = $recipient->transactionRecipients;
+                $fund = $allocatedLoanInstallment->allocatedLoan->loan->fund;
+                $fund->withdrawal($recipient->cost);
+            }
         });
 
         return $this->commonDestroy($transaction);
