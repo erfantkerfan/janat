@@ -48,6 +48,23 @@
                             </div>
                         </div>
                         <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-35 md-form-label">
+                                    تاریخ پرداخت
+                                </label>
+                                <div class="md-layout-item">
+                                    <date-picker
+                                        v-model="paidAt"
+                                        type="datetime"
+                                        :editable="true"
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        display-format="dddd jDD jMMMM jYYYY ساعت HH:mm" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
                             <md-field>
                                 <label>شرکت:</label>
                                 <md-select v-model="company_id" name="pages">
@@ -177,6 +194,7 @@
             accounts: new AccountList(),
             paySinceDate: null,
             payTillDate: null,
+            paidAt: null,
             company_id: null,
             sortation: {
                 field: 'created_at',
@@ -191,6 +209,7 @@
             loadDatePicker () {
                 this.paySinceDate = moment().startOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
                 this.payTillDate = moment().endOf('jMonth').format('YYYY-MM-DD HH:mm:ss')
+                this.paidAt = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
             },
             pay () {
                 this.accounts.loading = true
@@ -199,7 +218,8 @@
                     params: {
                         company_id: this.company_id,
                         pay_since_date: this.paySinceDate,
-                        pay_till_date: this.payTillDate
+                        pay_till_date: this.payTillDate,
+                        paid_at: this.paidAt
                     }
                 })
                     .then( (response) => {
@@ -226,7 +246,8 @@
                     params: {
                         company_id: this.company_id,
                         pay_since_date: this.paySinceDate,
-                        pay_till_date: this.payTillDate
+                        pay_till_date: this.payTillDate,
+                        paid_at: this.paidAt
                     }
                 })
                     .then( (response) => {
@@ -253,7 +274,8 @@
                     params: {
                         company_id: this.company_id,
                         pay_since_date: this.paySinceDate,
-                        pay_till_date: this.payTillDate
+                        pay_till_date: this.payTillDate,
+                        paid_at: this.paidAt
                     }
                 })
                     .then( () => {
