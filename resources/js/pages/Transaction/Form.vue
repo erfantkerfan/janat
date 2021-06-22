@@ -91,7 +91,7 @@
                         <md-button class="md-info" @click="updateTransaction">
                             ذخیره اطلاعات
                         </md-button>
-                        <md-button class="md-danger" @click="confirmRemove">
+                        <md-button v-if="!isCreateForm()" class="md-danger" @click="confirmRemove">
                             حذف
                         </md-button>
                     </md-card-actions>

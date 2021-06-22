@@ -142,7 +142,7 @@ class AccountController extends Controller
         $targetAccount = Account::with(['user:id,f_name,l_name,staff_code', 'fund', 'allocatedLoans'])
             ->hasPayrollDeduction()
             ->hasCompany($companyId)
-            ->lastPayrollDeductionForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
+            ->lastPaymentForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
 
         $hasProblem = false;
