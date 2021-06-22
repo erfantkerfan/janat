@@ -160,6 +160,8 @@ class TransactionController extends Controller
         $constantType = '';
         if ($transaction_type === 'user_charge_fund') {
             $constantType = config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND');
+        } else if ($transaction_type === 'user_pay_the_fund_tuition') {
+            $constantType = config('constants.TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION');
         } else if ($transaction_type === 'user_withdraw_from_account') {
             $constantType = config('constants.TRANSACTION_TYPE_USER_WITHDRAW_FROM_ACCOUNT');
         } else if ($transaction_type === 'company_charge_fund') {
@@ -186,7 +188,7 @@ class TransactionController extends Controller
         $transaction_type = $request->get('transaction_type');
         $dBTransactionValidator = true;
 
-        if ($transaction_type === 'user_charge_fund') {
+        if ($transaction_type === 'user_charge_fund' || $transaction_type === 'user_pay_the_fund_tuition') {
             $dBTransactionValidator = $this->userChargeFund($request, $transaction);
         } else if ($transaction_type === 'user_withdraw_from_account') {
             $dBTransactionValidator = $this->userWithdrawAccount($request, $transaction);

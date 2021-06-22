@@ -185,7 +185,7 @@
                         <md-table-toolbar>
                             <md-field>
                                 <md-button class="md-dense md-raised md-info" @click="getList">جستجو</md-button>
-                                <md-button class="md-dense md-raised md-primary" to="/loan/create">افزودن</md-button>
+                                <md-button v-if="false" class="md-dense md-raised md-primary" to="/transactions/create">افزودن</md-button>
                             </md-field>
                             <md-field>
                                 <label>تعداد در هر صفحه:</label>

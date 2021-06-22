@@ -250,6 +250,22 @@
                                                     user_id: value.id,
                                                     account_id: newAccount.id,
                                                     fund_id: newAccount.fund.id,
+                                                    payment_type: 'user_pay_the_fund_tuition'
+                                                }
+                                            }"
+                                >
+                                    پرداخت ماهانه کاربر به صندوق
+                                </md-button>
+                            </div>
+                            <div class="md-layout">
+                                <md-button v-if="funds.list.length > 0 && editAccountState"
+                                           class="md-layout-item md-size-100 md-success"
+                                           :to="{
+                                                name: 'User.AddPayment',
+                                                params: {
+                                                    user_id: value.id,
+                                                    account_id: newAccount.id,
+                                                    fund_id: newAccount.fund.id,
                                                     payment_type: 'user_withdraw_from_account'
                                                 }
                                             }"
