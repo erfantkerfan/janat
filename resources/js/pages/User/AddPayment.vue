@@ -169,6 +169,7 @@
                                 <price-input
                                     v-model="transaction.cost"
                                     :label="'مبلغ'"
+                                    :disabled="isPayFundTuition()"
                                 />
                                 <div class="md-layout">
                                     <label class="md-layout-item md-size-15 md-form-label">
@@ -279,12 +280,18 @@
                 this.getUser()
                 this.loadTransactionDefaultData()
             },
+            isPayFundTuition () {
+                return this.$route.params.payment_type === 'user_pay_the_fund_tuition'
+            },
             getAccount () {
                 this.account.loading = true;
                 this.account.show(this.$route.params.account_id)
                     .then((response) => {
                         this.account.loading = false;
                         this.account = new Account(response.data)
+                        if (this.isPayFundTuition()) {
+                            this.transaction.cost = this.account.monthly_payment
+                        }
                     })
                     .catch((error) => {
                         this.axios_handleError(error)

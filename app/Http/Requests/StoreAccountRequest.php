@@ -28,6 +28,7 @@ class StoreAccountRequest extends FormRequest
             'monthly_payment' => ['required', 'integer'],
             'payroll_deduction' => ['sometimes', 'nullable', 'boolean'],
             'fund_id' => ['required', 'integer', 'exists:funds,id'],
+            'company_id' => ['required', 'integer', 'exists:companies,id'],
             'user_id' => ['required', 'integer', 'exists:users,id']
         ];
     }

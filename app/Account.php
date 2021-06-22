@@ -131,7 +131,7 @@ class Account extends Model
         $query->whereNotIn('id', collect($result)->map(function($x){ return (array) $x; })->toArray());
     }
 
-    public function scopeLastPaymentForChargeFundNotPaidAt($query, $operator, $date, $operator2 = null, $date2 = null, $paidAsPayrollDeduction='') {
+    public function scopeLastPaymentForPayFundTuitionNotPaidAt($query, $operator, $date, $operator2 = null, $date2 = null, $paidAsPayrollDeduction='') {
         if ($paidAsPayrollDeduction) {
             $paidAsPayrollDeduction = 'AND `transactions`.`paid_as_payroll_deduction` = 1';
         } else {
@@ -139,6 +139,9 @@ class Account extends Model
         }
         $whereClause1 = "AND `transactions`.`paid_at` $operator '$date'";
         $whereClause2 = (isset($operator2) && isset($date2)) ? " AND `transactions`.`paid_at` $operator2 '$date2'" : '';
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION'))->first();
+        $transactionTypeId = $transactionType->id;
+
         $rawQuery = "
             SELECT `id`
             FROM (
@@ -151,6 +154,7 @@ class Account extends Model
                 AND `transaction_payers`.`transaction_payers_type` = 'App\\\Account'
                 AND `accounts`.`deleted_at` IS NULL
                 WHERE `transactions`.`deleted_at` IS NULL
+                AND `transactions`.`transaction_type_id` = $transactionTypeId
                 $paidAsPayrollDeduction
                 $whereClause1
                 $whereClause2
@@ -161,9 +165,12 @@ class Account extends Model
         $query->whereNotIn('id', collect($result)->map(function($x){ return (array) $x; })->toArray());
     }
 
-    public function scopeLastPayrollDeductionForChargeFundPaidAt($query, $operator, $date, $operator2 = null, $date2 = null) {
+    public function scopeLastPayrollDeductionForPayFundTuitionPaidAt($query, $operator, $date, $operator2 = null, $date2 = null) {
         $whereClause1 = "AND `transactions`.`paid_at` $operator '$date'";
         $whereClause2 = (isset($operator2) && isset($date2)) ? " AND `transactions`.`paid_at` $operator2 '$date2'" : '';
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION'))->first();
+        $transactionTypeId = $transactionType->id;
+
         $rawQuery = "
             SELECT `id`
             FROM (
@@ -176,6 +183,7 @@ class Account extends Model
                 AND `transaction_payers`.`transaction_payers_type` = 'App\\\Account'
                 AND `accounts`.`deleted_at` IS NULL
                 WHERE `transactions`.`paid_as_payroll_deduction` = 1
+                AND `transactions`.`transaction_type_id` = $transactionTypeId
                 AND `transactions`.`deleted_at` IS NULL
                 $whereClause1
                 $whereClause2
