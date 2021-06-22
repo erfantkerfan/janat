@@ -33,5 +33,6 @@ return [
     'TRANSACTION_TYPE_COMPANY_CHARGE_FUND'        => 'company charge fund',
     'TRANSACTION_TYPE_USER_PAY_INSTALLMENT'       => 'user pay installment',
     'TRANSACTION_TYPE_INCLUDE_SUB_TRANSACTIONS'   => 'include sub-transactions',
-    'TRANSACTION_TYPE_USER_WITHDRAW_FROM_ACCOUNT' => 'user withdraw from account',
+    'TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION'  => 'user pay the fund tuition',
+    'TRANSACTION_TYPE_USER_WITHDRAW_FROM_ACCOUNT' => 'user withdraw from account'
 ];

@@ -26,6 +26,11 @@ class TransactionTypeSeeder extends Seeder
                 'description' => 'کاربر خیر به صندوق کمک مالی می کند'
             ],
             [
+                'name' => 'user pay the fund tuition',
+                'display_name' => 'پرداخت ماهانه صندوق',
+                'description' => 'گاربر ماهانه(شهریه) صندوق را پرداخت می کند.'
+            ],
+            [
                 'name' => 'user withdraw from account',
                 'display_name' => 'برداشت وجه کاربر از صندوق',
                 'description' => 'کاربر از موجودی حساب خود در صندوق برداشت می کند'
