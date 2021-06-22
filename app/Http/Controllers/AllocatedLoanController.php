@@ -343,7 +343,7 @@ class AllocatedLoanController extends Controller
             ->whereHas('account.company', function (Builder $query) use ($companyId) {
                 $query->whereIn('companies.id', [$companyId]);
             })
-            ->lastPayrollDeductionForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
+            ->lastPaymentForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
 
         $hasProblem = false;
