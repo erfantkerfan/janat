@@ -157,7 +157,11 @@ class Transaction extends Model {
                 paymentStatus = 'تسویه شده'
             }
 
-            return paymentStatus + '<br>' + '(' + modelValue.allocated_loan.account.user.f_name + ' ' + modelValue.allocated_loan.account.user.l_name + ')'
+            return paymentStatus +
+                '<br>' +
+                '(' + modelValue.allocated_loan.account.user.f_name + ' ' + modelValue.allocated_loan.account.user.l_name +
+                '-' +
+                modelValue.allocated_loan.account.fund.name + ')'
         }
     }
 
