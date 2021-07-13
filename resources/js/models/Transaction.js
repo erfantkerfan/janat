@@ -125,7 +125,7 @@ class Transaction extends Model {
         } else if (modelType === 'App\\User') {
             return 'شخص'
         } else if (modelType === 'App\\Account') {
-            return 'شماره حساب'
+            return 'حساب'
         } else if (modelType === 'App\\Fund') {
             return 'صندوق'
         } else if (modelType === 'App\\AllocatedLoan') {
