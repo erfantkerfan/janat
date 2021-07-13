@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\AllocatedLoan;
+use App\AllocatedLoanInstallment;
 use App\Fund;
 use App\Loan;
 use App\User;
 use App\Setting;
 use App\Company;
 use App\Traits\Filter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Support\Renderable;
@@ -66,8 +69,27 @@ class HomeController extends Controller
     public function debug(Request $request)
     {
 
+
+        $targetAllocatedLoan = AllocatedLoan::with([
+            'account.user:id,f_name,l_name,staff_code',
+            'loan',
+            'loan.fund',
+            'installments'
+        ])
+//            ->whereHas('loan', function ($query1) use ($lastPaidAtBefore) {
+//                $query1->whereHas('fund', function ($query2) use ($lastPaidAtBefore) {
+//                    $query2->whereHas('paidTransactions', function ($query3) use ($lastPaidAtBefore) {
+//                        $query3->where('paid_at', '<=', $lastPaidAtBefore);
+//                    });
+//                });
+//            })
+            ->notSettled()
+            ->where('payroll_deduction', '=', '1')
+            ->get();
+        return $targetAllocatedLoan;
+
 //        dd(Auth::user()->hasRole('Super Admin'));
-        dd(Auth::user()->can('edit users'));
+//        dd(Auth::user()->can('edit users'));
 //        dd(Loan::all()[0]->number_of_installments);
     }
 

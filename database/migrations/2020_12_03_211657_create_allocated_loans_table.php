@@ -23,6 +23,7 @@ class CreateAllocatedLoansTable extends Migration
             $table->integer('installment_rate')->default(0)->comment('مبلغ هر قسط');
             $table->integer('number_of_installments')->default(0)->comment('تعداد اقساط');
             $table->boolean('payroll_deduction')->default(false)->comment('پرداخت اقساط به صورت کسر از حقوق');
+            $table->integer('payroll_deduction_amount')->default(0)->comment('مبلغ کسر از حقوق');
             $table->timestamps();
             $table->softDeletes();
 
