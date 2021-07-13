@@ -140,6 +140,7 @@ class AccountController extends Controller
         $companyId = $request->get('company_id');
 
         $targetAccount = Account::with(['user:id,f_name,l_name,staff_code', 'fund', 'allocatedLoans'])
+            ->where('monthly_payment', '>', 0)
             ->hasPayrollDeduction()
             ->hasCompany($companyId)
             ->lastPaymentForPayFundTuitionNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
