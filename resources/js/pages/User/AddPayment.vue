@@ -206,7 +206,7 @@
                                 </md-field>
                                 <div class="md-layout">
                                     <label class="md-layout-item md-size-15 md-form-label">
-                                        مهلت پرداخت
+                                        مهلت {{ paymentTitle }}
                                     </label>
                                     <div class="md-layout-item">
                                         <date-picker
@@ -219,7 +219,7 @@
                                 </div>
                                 <div class="md-layout">
                                     <label class="md-layout-item md-size-15 md-form-label">
-                                        تاریخ پرداخت
+                                        تاریخ {{ paymentTitle }}
                                     </label>
                                     <div class="md-layout-item">
                                         <date-picker
@@ -237,7 +237,8 @@
                                     class="md-dense md-raised md-success"
                                     @click="createTransaction"
                                 >
-                                    ثبت تراکنش پرداخت
+                                    ثبت تراکنش
+                                    {{ paymentTitle }}
                                 </md-button>
                             </md-card-actions>
                         </md-card>
@@ -264,11 +265,15 @@
         components: { StatsCard, ListPagination, PriceInput },
         mixins: [priceFilterMixin, axiosMixin, getFilterDropdownMixin],
         data: () => ({
+            paymentTitle: 'پرداخت',
             fund: new Fund(),
             account: new Account(),
             user: new User(),
             transaction: new Transaction()
         }),
+        created() {
+            this.setPaymentTitle()
+        },
         mounted() {
             this.getData()
             this.getTransactionStatus(false)
@@ -279,6 +284,11 @@
                 this.getAccount()
                 this.getUser()
                 this.loadTransactionDefaultData()
+            },
+            setPaymentTitle () {
+                if (this.$route.params.payment_type === 'user_withdraw_from_account') {
+                    this.paymentTitle = 'برداشت'
+                }
             },
             isPayFundTuition () {
                 return this.$route.params.payment_type === 'user_pay_the_fund_tuition'

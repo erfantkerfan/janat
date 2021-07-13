@@ -22,7 +22,7 @@ class TransactionStatusSeeder extends Seeder
         return [
             [
                 'name' => 'paid',
-                'display_name' => 'پرداخت شده',
+                'display_name' => 'برداشت شده',
                 'description' => ''
             ],
             [

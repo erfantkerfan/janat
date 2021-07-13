@@ -9,6 +9,7 @@ class AllocatedLoanInstallment extends Model {
                 default: 'api/allocated_loan_Installments'
             },
             { key: 'id' },
+            { key: 'allocated_loan' },
             { key: 'allocated_loan_id' },
             { key: 'rate' },
             { key: 'is_settled' },
