@@ -133,20 +133,20 @@ class AllocatedLoanController extends Controller
         $fund = $account->fund()->first();
 
         $errors = [];
-        if ($fund->balance < ($loan->loan_amount - $loan->interest_amount)) {
-            $currencyUnit = Setting::where('name', 'currency_unit')->first()->value;
-            $errors['fund_deficit'] = [
-                'مبلغ مورد نظر برای پرداخت وام عبارت است از '.
-                number_format($loan->loan_amount).$currencyUnit.
-                ' و مبلغ کارمزد وام عبارت است از '.
-                number_format($loan->interest_amount).$currencyUnit.
-                ' و پرداختی صندوق به کاربر برابر است با '.
-                number_format($loan->loan_amount - $loan->interest_amount).$currencyUnit.
-                ' در حالی که موجودی صندوق عبارت است از '.
-                number_format($fund->balance).$currencyUnit.
-                ' که بیش تر از مبلغ قابل پرداخت صندوق به کاربر است.'
-            ];
-        }
+//        if ($fund->balance < ($loan->loan_amount - $loan->interest_amount)) {
+//            $currencyUnit = Setting::where('name', 'currency_unit')->first()->value;
+//            $errors['fund_deficit'] = [
+//                'مبلغ مورد نظر برای پرداخت وام عبارت است از '.
+//                number_format($loan->loan_amount).$currencyUnit.
+//                ' و مبلغ کارمزد وام عبارت است از '.
+//                number_format($loan->interest_amount).$currencyUnit.
+//                ' و پرداختی صندوق به کاربر برابر است با '.
+//                number_format($loan->loan_amount - $loan->interest_amount).$currencyUnit.
+//                ' در حالی که موجودی صندوق عبارت است از '.
+//                number_format($fund->balance).$currencyUnit.
+//                ' که بیش تر از مبلغ قابل پرداخت صندوق به کاربر است.'
+//            ];
+//        }
 
         if ($loan->fund->id !== $account->fund->id) {
             $errors['account_fund_mismatch'] = [

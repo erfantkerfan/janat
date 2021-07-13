@@ -11,6 +11,8 @@ class Account extends Model
 {
     use SoftDeletes, PowerJoins;
 
+    protected $with = ['user'];
+
     /**
      * The attributes that are mass assignable.
      *
