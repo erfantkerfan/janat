@@ -150,14 +150,14 @@ class Transaction extends Model {
                 paymentStatus = 'تسویه شده'
             }
 
-            return paymentStatus + '(' + modelValue.account.user.f_name + ' ' + modelValue.account.user.l_name + ')'
+            return paymentStatus + '<br>' + '(' + modelValue.account.user.f_name + ' ' + modelValue.account.user.l_name + ')'
         } else if (modelType === 'App\\AllocatedLoanInstallment') {
             let paymentStatus = 'تسویه نشده'
             if(modelValue.is_settled) {
                 paymentStatus = 'تسویه شده'
             }
 
-            return paymentStatus + '(' + modelValue.allocated_loan.account.user.f_name + ' ' + modelValue.allocated_loan.account.user.l_name + ')'
+            return paymentStatus + '<br>' + '(' + modelValue.allocated_loan.account.user.f_name + ' ' + modelValue.allocated_loan.account.user.l_name + ')'
         }
     }
 

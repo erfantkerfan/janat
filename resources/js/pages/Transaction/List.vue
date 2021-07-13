@@ -204,17 +204,21 @@
                         <md-table-row v-if="!transctions.loading && transctions.list.length > 0" slot="md-table-row" slot-scope="{ item }">
                             <md-table-cell md-label="پرداخت کنندگان">
                                 <div v-for="related_payer in item.related_payers"
-                                    :key="'related_payer-'+related_payer.id">
-                                    {{item.getRelatedModelType(related_payer.transaction_payers_type)}}:
-                                    {{item.getRelatedModelLabel(related_payer.transaction_payers_type, related_payer.transaction_payers)}}
-                                </div>
+                                    :key="'related_payer-'+related_payer.id"
+                                     v-html="
+                                    item.getRelatedModelType(related_payer.transaction_payers_type) +
+                                    ': ' +
+                                    item.getRelatedModelLabel(related_payer.transaction_payers_type, related_payer.transaction_payers)"
+                                />
                             </md-table-cell>
                             <md-table-cell md-label="دریافت کنندگان">
                                 <div v-for="related_recipient in item.related_recipients"
-                                     :key="'related_recipient-'+related_recipient.id">
-                                    {{item.getRelatedModelType(related_recipient.transaction_recipients_type)}}:
-                                    {{item.getRelatedModelLabel(related_recipient.transaction_recipients_type, related_recipient.transaction_recipients)}}
-                                </div>
+                                     :key="'related_recipient-'+related_recipient.id"
+                                     v-html="
+                                    item.getRelatedModelType(related_recipient.transaction_recipients_type) +
+                                    ': ' +
+                                    item.getRelatedModelLabel(related_recipient.transaction_recipients_type, related_recipient.transaction_recipients)"
+                                />
                             </md-table-cell>
                             <md-table-cell :md-label="'مبلغ'+'('+currencyUnit+')'" md-sort-by="cost">
                                 {{item.cost | currencyFormat}}
