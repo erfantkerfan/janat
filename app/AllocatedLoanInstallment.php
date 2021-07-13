@@ -10,6 +10,8 @@ class AllocatedLoanInstallment extends Model
 {
     use SoftDeletes, PowerJoins;
 
+    protected $with = ['allocatedLoan'];
+
     /**
      * The attributes that are mass assignable.
      *

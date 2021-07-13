@@ -145,17 +145,19 @@ class Transaction extends Model {
         } else if (modelType === 'App\\Fund') {
             return modelValue.name
         } else if (modelType === 'App\\AllocatedLoan') {
+            let paymentStatus = 'تسویه نشده'
             if(modelValue.is_settled) {
-                return 'تسویه شده'
-            } else {
-                return 'تسویه نشده'
+                paymentStatus = 'تسویه شده'
             }
+
+            return paymentStatus + '(' + modelValue.account.user.f_name + ' ' + modelValue.account.user.l_name + ')'
         } else if (modelType === 'App\\AllocatedLoanInstallment') {
+            let paymentStatus = 'تسویه نشده'
             if(modelValue.is_settled) {
-                return 'تسویه شده'
-            } else {
-                return 'تسویه نشده'
+                paymentStatus = 'تسویه شده'
             }
+
+            return paymentStatus + '(' + modelValue.allocated_loan.account.user.f_name + ' ' + modelValue.allocated_loan.account.user.l_name + ')'
         }
     }
 
