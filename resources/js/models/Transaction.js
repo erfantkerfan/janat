@@ -139,7 +139,7 @@ class Transaction extends Model {
         if (modelType === 'App\\Company') {
             return modelValue.name
         } else if (modelType === 'App\\Account') {
-            return modelValue.id
+            return modelValue.id + '(' + modelValue.user.f_name + ' ' + modelValue.user.l_name + ')'
         } else if (modelType === 'App\\User') {
             return modelValue.f_name + ' ' + modelValue.l_name
         } else if (modelType === 'App\\Fund') {
