@@ -108,6 +108,18 @@
                                 />
                                 <hr>
                                 <md-chip v-if="allocatedLoan.payroll_deduction" class="md-accent">کسر از حقوق</md-chip>
+                                <price-input
+                                    v-if="allocatedLoan.payroll_deduction"
+                                    v-model="allocatedLoan.payroll_deduction_amount"
+                                    :label="'مبلغ کسر از حقوق'"
+                                    :label-size="100"
+                                />
+
+                                <md-button
+                                    class="md-dense md-raised md-success"
+                                    @click="editPayrollDeductionAmount">
+                                    ویرایش مبلغ کسر از حقوق
+                                </md-button>
                             </template>
                         </stats-card>
                     </div>
@@ -338,6 +350,25 @@
                     this.createAllocatedLoan()
                     return
                 }
+                let that = this
+                this.allocatedLoan.loading = true;
+                this.allocatedLoan.update()
+                    .then((response) => {
+                        that.allocatedLoan.loading = false;
+                        that.allocatedLoan = new AllocatedLoan(response.data)
+                        that.$store.dispatch('alerts/fire', {
+                            icon: 'success',
+                            title: 'توجه',
+                            message: 'اطلاعات با موفقیت ویرایش شد'
+                        });
+                    })
+                    .catch((error) => {
+                        that.axios_handleError(error)
+                        that.allocatedLoan.loading = false;
+                        that.allocatedLoan = new AllocatedLoan()
+                    })
+            },
+            editPayrollDeductionAmount () {
                 let that = this
                 this.allocatedLoan.loading = true;
                 this.allocatedLoan.update()

@@ -68,8 +68,11 @@ class AccountList extends Collection {
     }
 
     getCompaniesName () {
-        let gg = this.list.map( item => item.company.name)
-        return gg
+        return this.list.map( item => item.company.name)
+    }
+
+    getCompaniesNameWithAccountNumber () {
+        return this.list.map( item => item.company.name + '<br>' + '( حساب: ' + item.id +')')
     }
 }
 

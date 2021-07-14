@@ -11,7 +11,7 @@ class Account extends Model
 {
     use SoftDeletes, PowerJoins;
 
-    protected $with = ['user'];
+    protected $with = ['user', 'fund'];
 
     /**
      * The attributes that are mass assignable.
@@ -49,7 +49,7 @@ class Account extends Model
 
     public function salaries()
     {
-        $transactionTypes = TransactionType::select('id')->where('name', config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND'))
+        $transactionTypes = TransactionType::select('id')->where('name', config('constants.TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION'))
             ->get()->pluck('id');
         return $this->morphToMany(Transaction::class, 'transaction_payers')
             ->whereIn('transactions.transaction_type_id', $transactionTypes);

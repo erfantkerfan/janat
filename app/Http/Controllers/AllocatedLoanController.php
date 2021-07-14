@@ -130,7 +130,6 @@ class AllocatedLoanController extends Controller
         DB::beginTransaction();
         $account = Account::findOrFail($request->get('account_id'));
         $loan = Loan::findOrFail($request->get('loan_id'));
-        $fund = $account->fund()->first();
 
         $errors = [];
 //        if ($fund->balance < ($loan->loan_amount - $loan->interest_amount)) {
@@ -163,7 +162,6 @@ class AllocatedLoanController extends Controller
             ]);
         }
 
-
         // create allocated loan
         $createdAllocatedLoan = AllocatedLoan::create([
             'account_id' => $account->id,
@@ -173,7 +171,8 @@ class AllocatedLoanController extends Controller
             'interest_amount' => $loan->interest_amount,
             'installment_rate' => $loan->installment_rate,
             'number_of_installments' => $loan->number_of_installments,
-            'payroll_deduction' => $request->get('payroll_deduction')
+            'payroll_deduction' => $request->get('payroll_deduction'),
+            'payroll_deduction_amount' => $loan->installment_rate
         ]);
         $typeOfLoanInterestPayment = Setting::where('name', 'type_of_loan_interest_payment')->first()->value;
 
@@ -253,7 +252,18 @@ class AllocatedLoanController extends Controller
      */
     public function update(Request $request, AllocatedLoan $allocatedLoan)
     {
-        return $this->commonUpdate($request, $allocatedLoan);
+        $allocatedLoan->payroll_deduction_amount = $request->get('payroll_deduction_amount');
+        if ($allocatedLoan->save()) {
+            return $this->show($allocatedLoan->id);
+        } else {
+            return $this->jsonResponseServerError([
+                'errors' => [
+                    'commonUpdate' => [
+                        'مشکلی در ویرایش اطلاعات رخ داده است.'
+                    ]
+                ]
+            ]);
+        }
     }
 
     /**
@@ -315,6 +325,17 @@ class AllocatedLoanController extends Controller
             })
             ->lastPayrollDeductionForChargeFundPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
+
+        $setAppends = [
+            'is_settled',
+            'total_payments',
+            'remaining_payable_amount',
+            'count_of_paid_installments',
+            'count_of_remaining_installments'
+        ];
+        $targetAllocatedLoan->map(function (& $item) use ($setAppends) {
+            return $item->setAppends($setAppends);
+        });
         return $this->jsonResponseOk($targetAllocatedLoan);
     }
 
@@ -350,12 +371,16 @@ class AllocatedLoanController extends Controller
         foreach ($targetAllocatedLoan as $allocatedLoanItem) {
             $notSettledInstallment = $this->getNotSettledInstallment($allocatedLoanItem);
 
+            $remainingPayableAmount = $notSettledInstallment->remainingPayableAmount;
+            $payrollDeductionAmount = $allocatedLoanItem->payroll_deduction_amount;
+            $cost = $remainingPayableAmount < $payrollDeductionAmount ? $remainingPayableAmount : $payrollDeductionAmount;
+
             if (isset($notSettledInstallment)) {
                 $request = new StoreTransaction();
                 $request->replace([
                     'transaction_status_id' => 1,
                     'paid_as_payroll_deduction' => 1,
-                    'cost' => $notSettledInstallment->rate,
+                    'cost' => $cost,
                     'paid_at' => $paidAt,
                     'transaction_type' => 'user_pay_installment',
                     'allocated_loan_installment_id' => $notSettledInstallment->id

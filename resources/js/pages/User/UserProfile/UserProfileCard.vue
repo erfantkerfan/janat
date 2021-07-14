@@ -545,3 +545,9 @@ export default {
     }
 };
 </script>
+
+<style>
+.md-dialog-container {
+    max-height: fit-content;
+}
+</style>

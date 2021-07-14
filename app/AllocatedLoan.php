@@ -26,7 +26,8 @@ class AllocatedLoan extends Model
         'interest_amount',
         'installment_rate',
         'number_of_installments',
-        'payroll_deduction'
+        'payroll_deduction',
+        'payroll_deduction_amount'
     ];
 
     /**
@@ -181,6 +182,9 @@ class AllocatedLoan extends Model
 
     public function scopeNotSettled($query) {
         $settledIds = $this->getSettledIds();
+        if (count($settledIds) === 0) {
+            return $query;
+        }
         $query->whereNotIn('id', $settledIds);
 //        return $query->whereHas('installments', function($q) {
 //            $q->whereHas(
