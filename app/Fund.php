@@ -83,6 +83,12 @@ class Fund extends Model
         $transactionType_userChargeFund = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND'))->first();
         $transactionType_companyChargeFund = TransactionType::where('name', config('constants.TRANSACTION_TYPE_COMPANY_CHARGE_FUND'))->first();
         $transactionType_userPayInstallment = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT'))->first();
+        $transactionType_userPayTheFundTuition = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION'))->first();
+
+        $sumOfUsersPayTheFundTuition = $this->receivedTransactions()->whereIn('transaction_type_id', [
+            $transactionType_userPayTheFundTuition->id
+        ])->sum('transactions.cost');
+        $sumOfUsersPayTheFundTuition = floatval ($sumOfUsersPayTheFundTuition);
 
         $sumOfChargeFund = $this->receivedTransactions()->whereIn('transaction_type_id', [
             $transactionType_userChargeFund->id,
@@ -129,10 +135,11 @@ class Fund extends Model
             });
         }
 
-        $sumOfall = $sumOfChargeFund + $sumOfInstallmentsInterest;
+        $sumOfall = $sumOfChargeFund + $sumOfUsersPayTheFundTuition + $sumOfInstallmentsInterest;
 
         return [
             'sum_of_charge_fund' => $sumOfChargeFund,
+            'sum_of_users_pay_the_fund_tuition' => $sumOfUsersPayTheFundTuition,
             'sum_of_installments_interest' => $sumOfInstallmentsInterest,
             'sum_of_all' => $sumOfall
         ];
