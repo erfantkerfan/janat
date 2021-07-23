@@ -29,7 +29,6 @@ class UpdateUserRequest extends FormRequest
             'father_name' => ['sometimes', 'required', 'string'],
             'SSN' => ['required', 'melli_code'],
             'staff_code' => ['sometimes', 'nullable', 'string'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
             'salary' => ['sometimes', 'nullable', 'integer'],
             'address' => ['sometimes', 'nullable', 'string'],
             'phone' => ['sometimes', 'nullable', 'integer'],
