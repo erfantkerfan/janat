@@ -253,6 +253,7 @@ class AllocatedLoanController extends Controller
     public function update(Request $request, AllocatedLoan $allocatedLoan)
     {
         $allocatedLoan->payroll_deduction_amount = $request->get('payroll_deduction_amount');
+        $allocatedLoan->payroll_deduction = $request->get('payroll_deduction');
         if ($allocatedLoan->save()) {
             return $this->show($allocatedLoan->id);
         } else {
