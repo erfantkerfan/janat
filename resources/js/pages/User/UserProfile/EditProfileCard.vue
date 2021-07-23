@@ -142,12 +142,6 @@
 
         </md-card-content>
 
-        <md-card-actions>
-            <md-button type="submit" @click="fireUpdateEvent">
-                ذخیره اطلاعات
-            </md-button>
-        </md-card-actions>
-
     </md-card>
 </template>
 <script>

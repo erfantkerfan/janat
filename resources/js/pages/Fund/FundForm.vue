@@ -51,7 +51,8 @@
                             نمایش هزینه ها و دریافتی های صندوق
                         </md-button>
 
-                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_charge_fund" :label="'مجموع ماهانه ها و واریزی های خیرین'" :disabled="true" />
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_users_pay_the_fund_tuition" :label="'مجموع ماهانه ها'" :disabled="true" />
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_charge_fund" :label="'مجموع واریزی های خیرین'" :disabled="true" />
                         <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_installments_interest" :label="'مجموع کارمزد اقساط'" :disabled="true" />
                         <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_all" :label="'مجموع تمام دریافتی های صندوق'" :disabled="true" />
                         <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.expenses" :label="'مجموع هزینه های صندوق'" :disabled="true" />

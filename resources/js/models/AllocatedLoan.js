@@ -44,6 +44,8 @@ class AllocatedLoan extends Model {
             { key: 'created_at' },
             { key: 'updated_at' }
         ])
+
+        this.payroll_deduction = !!this.payroll_deduction
     }
 
 }

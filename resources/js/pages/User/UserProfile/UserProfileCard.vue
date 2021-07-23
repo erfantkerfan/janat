@@ -292,7 +292,7 @@
                 </md-dialog-content>
 
                 <md-dialog-actions>
-                    <md-button class="md-default" @click="createAccountShowDialog = false">انتصراف</md-button>
+                    <md-button class="md-default" @click="createAccountShowDialog = false">انصراف</md-button>
                     <md-button v-if="funds.list.length > 0 && !editAccountState"
                                class="md-success"
                                @click="createNewAccount"
