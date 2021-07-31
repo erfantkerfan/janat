@@ -204,6 +204,9 @@
                                 صندوق:
                                 {{ selectedFund.name }}
                                 <br>
+                                شرکت:
+                                {{ selectedAccount.company.name }}
+                                <br>
                                 وام:
                                 {{ selectedLoan.name }}
                                 <br>
