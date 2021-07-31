@@ -47,7 +47,7 @@
                         </div>
 
 
-                        <md-button v-if="!showFundIncomes && !fund.loading" type="submit" @click="getIncomesAndExpenses">
+                        <md-button v-if="!isCreateForm() && !showFundIncomes && !fund.loading" type="submit" @click="getIncomesAndExpenses">
                             نمایش هزینه ها و دریافتی های صندوق
                         </md-button>
 

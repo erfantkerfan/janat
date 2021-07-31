@@ -140,6 +140,9 @@
                             <md-table-cell :md-label="'مبلغ وام '+'('+currencyUnit+')'" md-sort-by="loan_amount">
                                 {{ item.loan_amount | currencyFormat }}
                             </md-table-cell>
+                            <md-table-cell :md-label="'مبلغ کسر از حقوق '+'('+currencyUnit+')'" md-sort-by="payroll_deduction_amount">
+                                {{ item.payroll_deduction_amount | currencyFormat }}
+                            </md-table-cell>
                             <md-table-cell :md-label="'مبلغ هر قسط '+'('+currencyUnit+')'" md-sort-by="installment_rate">
                                 {{ item.installment_rate | currencyFormat }}
                             </md-table-cell>
@@ -225,6 +228,7 @@ export default {
         JsonExcel
     },
     data: () => ({
+        totalPayments: 0,
         noContentMessage: '',
         payRequestIsSent: false,
         allocatedLoans: new AllocatedLoanList(),
@@ -277,6 +281,7 @@ export default {
                 })
         },
         show() {
+            this.totalPayments = 0
             this.noContentMessage = 'در بازه انتخاب شده هیچ وام کسر از حقوقی وجود ندارد که پرداختی قسط داشته باشد.'
             this.allocatedLoans.loading = true
             axios.get('/api/allocated_loans/show_periodic_payroll_deduction', {
@@ -292,6 +297,7 @@ export default {
                     this.payRequestIsSent = true
                     this.allocatedLoans = new AllocatedLoanList(response.data)
                     if (this.allocatedLoans.list.length > 0) {
+                        this.totalPayments = this.allocatedLoans.list.reduce((accumulator, currentValue) => accumulator + currentValue)
                         this.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',
@@ -331,84 +337,6 @@ export default {
         },
         openLinkInNewTab(allocatedLoanId) {
             window.open('/dashboard#/allocated_loan/' + allocatedLoanId, '_blank');
-        },
-        loadDatePickers() {
-            this.paySinceDate = moment().format('YYYY-MM-DD HH:mm:ss')
-            this.payTillDate = moment().format('YYYY-MM-DD HH:mm:ss')
-            this.paidAt = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
-        },
-        clickCallback(data) {
-            this.getList(data)
-        },
-        getList(page) {
-            if (!page) {
-                page = 1
-            }
-            this.allocatedLoans.loading = true;
-            this.allocatedLoans.fetch({
-                page,
-                sortation_field: this.filterData.sortation.field,
-                sortation_order: this.filterData.sortation.order,
-                length: this.filterData.perPage,
-                fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null : this.filterData.fund_id,
-                loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null : this.filterData.loan_id,
-                settled: (this.filterData.settled === false) ? null : this.filterData.settled,
-                notSettled: (this.filterData.notSettled === false) ? null : this.filterData.notSettled,
-                payroll_deduction: (this.filterData.payroll_deduction === false) ? null : 1,
-                loan_amount: this.filterData.loan_amount,
-                f_name: this.filterData.f_name,
-                l_name: this.filterData.l_name,
-                SSN: this.filterData.SSN,
-                installment_rate: this.filterData.installment_rate,
-                number_of_installments: this.filterData.number_of_installments,
-                last_paid_at_before: this.filterData.lastPaidAtBefore,
-                last_paid_at_after: this.filterData.lastPaidAtAfter,
-                createdSinceDate: this.filterData.createdSinceDate,
-                createdTillDate: this.filterData.createdTillDate
-            })
-                .then((response) => {
-                    this.allocatedLoans.loading = false
-                    this.allocatedLoans = new AllocatedLoanList(response.data.data, response.data)
-                })
-                .catch((error) => {
-                    this.axios_handleError(error)
-                    this.allocatedLoans.loading = false
-                    this.allocatedLoans = new AllocatedLoanList()
-                })
-        },
-        confirmRemove(item) {
-            this.$confirm(
-                {
-                    message: `از حذف وام تخصیص داده شده اطمینان دارید؟`,
-                    button: {
-                        no: 'خیر',
-                        yes: 'بله'
-                    },
-                    callback: confirm => {
-                        if (confirm) {
-                            this.remove(item)
-                        }
-                    }
-                }
-            )
-        },
-        remove(item) {
-            item.loading = true;
-            let that = this;
-            item.delete()
-                .then(function (response) {
-                    that.$store.dispatch('alerts/fire', {
-                        icon: 'success',
-                        title: 'توجه',
-                        message: 'صندوق با موفقیت حذف شد'
-                    });
-                    that.getList()
-                })
-                .catch((error) => {
-                    this.axios_handleError(error)
-                    item.editMode = false
-                    item.loading = false
-                });
         },
         getInstallmentRowClass(item) {
             if (item.is_settled) {

@@ -60,6 +60,10 @@ class AllocatedLoanController extends Controller
                     'relationName' => 'account.user'
                 ],
                 [
+                    'requestKey' => 'company_id',
+                    'relationName' => 'account.company'
+                ],
+                [
                     'requestKey' => 'loan_id',
                     'relationName' => 'loan'
                 ],
