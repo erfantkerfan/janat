@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
                             </template>
-                            <template slot="footer">
+                            <template v-if="false" slot="footer">
                                 <md-button class="md-dense md-raised md-success" @click="showUserAccounts">
                                     مشاهده حساب های کاربر
                                 </md-button>
@@ -176,6 +176,11 @@
                                         <loading :active.sync="loans.loading" :is-full-page="false"></loading>
                                     </div>
                                 </div>
+                            </template>
+                            <template v-if="selectedFund.id" slot="footer">
+                                <md-button class="md-dense md-raised md-success" :to="{name: 'Loan.Create.By.Selected.Fund', params: { fund_id: selectedFund.id }}">
+                                    تعریف وام جدید
+                                </md-button>
                             </template>
                         </stats-card>
                     </div>
@@ -342,7 +347,7 @@
                 }
                 let that = this
                 this.funds.loading = true;
-                this.funds.fetch({page})
+                this.funds.fetch({page, length: 99999})
                     .then((response) => {
                         that.funds.loading = false;
                         that.funds = new FundList(response.data.data, response.data)
