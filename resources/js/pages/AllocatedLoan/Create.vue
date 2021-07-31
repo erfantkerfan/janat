@@ -83,7 +83,7 @@
                                     {{ selectedFund.name }}
                                 </h3>
                                 <br>
-                                <div class="md-layout">
+                                <div v-if="false" class="md-layout">
                                     <div class="md-layout-item">
                                         <md-table v-if="!funds.loading"
                                                   v-model="funds.list"
@@ -129,6 +129,13 @@
                                 <br>
                                 <div class="md-layout">
                                     <div class="md-layout-item">
+                                        <md-empty-state
+                                            v-if="!loans.loading && loans.list.length === 0"
+                                            class="md-warning"
+                                            md-icon="info"
+                                            md-label="وامی یافت نشد"
+                                        >
+                                        </md-empty-state>
                                         <md-table v-if="!loans.loading"
                                                   v-model="loans.list"
                                                   @md-selected="onSelectLoan">
@@ -213,7 +220,7 @@
                                             </label>
                                             <div class="md-layout-item">
                                                 <md-field class="md-invalid">
-                                                    <md-textarea v-model="managerComment" />
+                                                    <md-textarea v-model="managerComment" style="border: solid 1px gray;" />
                                                 </md-field>
                                             </div>
                                         </div>
@@ -339,6 +346,7 @@
                     .then((response) => {
                         that.funds.loading = false;
                         that.funds = new FundList(response.data.data, response.data)
+                        that.selectDefaultFund()
                     })
                     .catch((error) => {
                         that.axios_handleError(error)
@@ -354,9 +362,7 @@
                     loan_id: this.selectedLoan.id,
                     paid_at: this.paidAt,
                     manager_comment: this.managerComment,
-                    payroll_deduction: this.allocatedLoan.payroll_deduction,
-                    payroll_deduction: this.allocatedLoan.payroll_deduction,
-                    payroll_deduction: this.allocatedLoan.payroll_deduction,
+                    payroll_deduction: this.allocatedLoan.payroll_deduction
                 })
                     .then((response) => {
                         that.allocatedLoan.loading = false;
@@ -383,9 +389,19 @@
                 const defaultAccount = this.selectedUser.accounts.list.find( item => parseInt(item.id) === parseInt(this.$route.params.account_id))
                 if (defaultAccount) {
                     this.onSelectAccount(defaultAccount)
+                    this.selectDefaultFund(defaultAccount)
                     this.hasDefaultAccount = true
                 } else {
                     this.hasDefaultAccount = false
+                }
+            },
+            selectDefaultFund (defaultAccount) {
+                // const defaultAccount = this.selectedUser.accounts.list.find( item => parseInt(item.id) === parseInt(this.$route.params.account_id))
+                if (defaultAccount) {
+                    this.onSelectFund(defaultAccount.fund)
+                    // this.hasDefaultFund = true
+                } else {
+                    // this.hasDefaultFund = false
                 }
             },
             updateAllocatedLoan () {

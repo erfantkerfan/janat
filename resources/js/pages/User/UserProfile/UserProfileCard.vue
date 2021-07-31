@@ -363,9 +363,9 @@ export default {
         };
     },
     mounted() {
-        this.getFunds()
+        this.getFunds(false)
         this.getUserPic()
-        this.getCompanies()
+        this.getCompanies(false)
         this.getUserTypes()
         this.getUserStatus()
     },

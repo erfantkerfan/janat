@@ -285,7 +285,7 @@ let allocatedLoansMenu = {
             }
         },
         {
-            path: "/create/:user_id/:account_id",
+            path: "create/:user_id/:account_id",
             name: "AllocatedLoan.Create",
             components: {default: AllocatedLoanCreateForm},
             meta: {
