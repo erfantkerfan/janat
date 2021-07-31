@@ -49,6 +49,25 @@
                     </div>
                     <div class="md-layout">
                         <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-15 md-form-label">
+                                    شماره عضویت
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.user_id" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <md-checkbox v-model="filterData.settled">تسویه شده</md-checkbox>
+                            <md-checkbox v-model="filterData.notSettled">تسویه نشده</md-checkbox>
+                            <md-checkbox v-model="filterData.payroll_deduction">کسر از حقوق</md-checkbox>
+                        </div>
+                    </div>
+                    <div class="md-layout">
+                        <div class="md-layout-item">
                             <md-field>
                                 <label>وام:</label>
                                 <md-select v-model="filterData.loan_id" name="pages">
@@ -83,9 +102,19 @@
                             </md-field>
                         </div>
                         <div class="md-layout-item">
-                            <md-checkbox v-model="filterData.settled">تسویه شده</md-checkbox>
-                            <md-checkbox v-model="filterData.notSettled">تسویه نشده</md-checkbox>
-                            <md-checkbox v-model="filterData.payroll_deduction">کسر از حقوق</md-checkbox>
+                            <md-field>
+                                <label>شرکت:</label>
+                                <md-select v-model="filterData.company_id" name="pages">
+                                    <md-option
+                                        v-for="item in companies.list"
+                                        :key="item.id"
+                                        :label="item.id"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
                         </div>
                     </div>
                     <div class="md-layout">
@@ -353,6 +382,7 @@
                 installment_rate: null,
                 number_of_installments: null,
                 fund_id: null,
+                company_id: null,
                 loan_id: null,
                 settled: false,
                 payroll_deduction: false,
@@ -360,6 +390,7 @@
                 f_name: null,
                 l_name: null,
                 SSN: null,
+                user_id: null,
                 lastPaidAtBefore: null,
                 lastPaidAtAfter: null,
                 createdSinceDate: null,
@@ -369,6 +400,7 @@
         mounted() {
             this.getList()
             this.getFunds()
+            this.getCompanies()
             this.getLoans()
         },
         methods: {
@@ -386,6 +418,7 @@
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null : this.filterData.fund_id,
+                    company_id: (this.filterData.company_id === null || this.filterData.company_id === 0) ? null : this.filterData.company_id,
                     loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null : this.filterData.loan_id,
                     settled: (this.filterData.settled === false) ? null : this.filterData.settled,
                     notSettled: (this.filterData.notSettled === false) ? null : this.filterData.notSettled,
@@ -394,6 +427,7 @@
                     f_name: this.filterData.f_name,
                     l_name: this.filterData.l_name,
                     SSN: this.filterData.SSN,
+                    user_id: this.filterData.user_id,
                     installment_rate: this.filterData.installment_rate,
                     number_of_installments: this.filterData.number_of_installments,
                     last_paid_at_before: this.filterData.lastPaidAtBefore,
