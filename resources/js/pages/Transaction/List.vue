@@ -15,6 +15,48 @@
                             <md-radio v-model="filterData.transaction_type" value="payer" name="transaction_type">پرداخت کننده</md-radio>
                             <md-radio v-model="filterData.transaction_type" value="recipient" name="transaction_type">دریافت کننده</md-radio>
                         </div>
+                        <div class="md-layout-item">
+                            <md-checkbox v-model="filterData.paid_as_payroll_deduction">کسر از حقوق باشد</md-checkbox>
+                        </div>
+                    </div>
+
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-35 md-form-label">
+                                    کد عضویت:
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.user_id" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-25 md-form-label">
+                                    نام
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.f_name" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-layout-item">
+                            <div class="md-layout">
+                                <label class="md-layout-item md-size-25 md-form-label">
+                                    نام خانوادگی
+                                </label>
+                                <div class="md-layout-item">
+                                    <md-field class="md-invalid">
+                                        <md-input v-model="filterData.l_name" />
+                                    </md-field>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="md-layout">
@@ -101,18 +143,6 @@
                                     </md-option>
                                 </md-select>
                             </md-field>
-                        </div>
-                        <div class="md-layout-item">
-                            <div class="md-layout">
-                                <label class="md-layout-item md-size-35 md-form-label">
-                                    کد عضویت:
-                                </label>
-                                <div class="md-layout-item">
-                                    <md-field class="md-invalid">
-                                        <md-input v-model="filterData.user_id" />
-                                    </md-field>
-                                </div>
-                            </div>
                         </div>
                         <div class="md-layout-item">
                             <div class="md-layout">
@@ -320,10 +350,13 @@
                 transaction_type: 'payer',
                 fund_id: null,
                 user_id: null,
+                f_name: null,
+                l_name: null,
                 account_id: null,
                 loan_id: null,
                 company_id: null,
                 transaction_status_id: null,
+                paid_as_payroll_deduction: false,
                 paidSinceDate: null,
                 paidTillDate: null,
                 createdSinceDate: null,
@@ -351,12 +384,15 @@
                     sortation_field: this.filterData.sortation.field,
                     sortation_order: this.filterData.sortation.order,
                     length: this.filterData.perPage,
+                    f_name: this.filterData.f_name,
+                    l_name: this.filterData.l_name,
                     user_id: (this.filterData.user_id === null || this.filterData.user_id.trim().length === 0) ? null: this.filterData.user_id,
                     account_id: (this.filterData.account_id === null || this.filterData.account_id.trim().length === 0) ? null: this.filterData.account_id,
                     fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
                     loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null: this.filterData.loan_id,
                     company_id: (this.filterData.company_id === null || this.filterData.company_id === 0) ? null: this.filterData.company_id,
                     transaction_status_id: (this.filterData.transaction_status_id === null || this.filterData.transaction_status_id === 0) ? null: this.filterData.transaction_status_id,
+                    paid_as_payroll_deduction: (this.filterData.paid_as_payroll_deduction === false) ? null : 1,
                     transaction_type: this.filterData.transaction_type,
                     paid_at_since_date: this.filterData.paidSinceDate,
                     paid_at_till_date: this.filterData.paidTillDate,

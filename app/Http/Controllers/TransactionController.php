@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class TransactionController extends Controller
 {
@@ -61,7 +62,8 @@ class TransactionController extends Controller
                 'manager_comment',
                 'user_comment',
                 'transaction_status_id',
-                'parent_transaction_id'
+                'parent_transaction_id',
+                'paid_as_payroll_deduction'
             ],
             'filterRelationIds'=> [
 //                [
@@ -124,13 +126,17 @@ class TransactionController extends Controller
         }
 
         $userId = ($request->has('user_id')) ? $request->get('user_id') : null;
-        if (isset($userId)) {
+        $fName = ($request->has('f_name')) ? $request->get('f_name') : null;
+        $lName = ($request->has('l_name')) ? $request->get('l_name') : null;
+        if (isset($userId) || isset($fName) || isset($lName)) {
             if ($transactionType === 'payer') {
-                $transactionModelQuery->hasUserAsPayer($userId);
+                $transactionModelQuery->hasUserAsPayer($userId, $fName, $lName);
             } else if ($transactionType === 'recipient') {
-                $transactionModelQuery->hasUserAsRecipient($userId);
+                $transactionModelQuery->hasUserAsRecipient($userId, $fName, $lName);
             }
         }
+
+//        die(Str::replaceArray('?', $transactionModelQuery->getBindings(), $transactionModelQuery->toSql()));
 
         $accountId = ($request->has('account_id')) ? $request->get('account_id') : null;
         if (isset($accountId)) {

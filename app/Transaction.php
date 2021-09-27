@@ -153,19 +153,34 @@ class Transaction extends Model
         });
     }
 
-    public function scopeHasUserAsPayer($query, $userId) {
-        $query->where(function (Builder $hasUserIdAsPayerOrRecipientQuery) use ($userId) {
-
-            $hasUserIdAsPayerOrRecipientQuery->whereHas('accountPayers.user', function (Builder $accountPayerQuery) use ($userId) {
+    public function scopeHasUserAsPayer($query, $userId = null, $fName = null, $lName = null) {
+        $query->where(function (Builder $hasUserIdAsPayerOrRecipientQuery) use ($userId, $fName, $lName) {
+            $hasUserIdAsPayerOrRecipientQuery->whereHas('accountPayers.user', function (Builder $accountPayerQuery) use ($userId, $fName, $lName) {
                 $tableName = with($accountPayerQuery)->getModel()->getTable();
-                $accountPayerQuery->where($tableName.'.id', $userId);
+                if (isset($userId)) {
+                    $accountPayerQuery->where($tableName.'.id', $userId);
+                } else {
+                    if (isset($fName)) {
+                        $accountPayerQuery->where($tableName.'.f_name', 'LIKE', '%'.$fName.'%');
+                    }
+                    if (isset($lName)) {
+                        $accountPayerQuery->where($tableName.'.l_name', 'LIKE', '%'.$lName.'%');
+                    }
+                }
             });
-
-            $hasUserIdAsPayerOrRecipientQuery->orWhereHas('userPayers', function (Builder $userPayerQuery) use ($userId) {
+            $hasUserIdAsPayerOrRecipientQuery->orWhereHas('userPayers', function (Builder $userPayerQuery) use ($userId, $fName, $lName) {
                 $tableName = with($userPayerQuery)->getModel()->getTable();
-                $userPayerQuery->where($tableName.'.id', $userId);
+                if (isset($userId)) {
+                    $userPayerQuery->where($tableName.'.id', $userId);
+                } else {
+                    if (isset($fName)) {
+                        $userPayerQuery->where($tableName.'.f_name', 'LIKE', '%'.$fName.'%');
+                    }
+                    if (isset($lName)) {
+                        $userPayerQuery->where($tableName.'.l_name', 'LIKE', '%'.$lName.'%');
+                    }
+                }
             });
-
         });
     }
 
