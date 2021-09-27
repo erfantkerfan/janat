@@ -40,6 +40,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::put('{user}/set_user_pic', [UserController::class, 'setUserPic'])->name('api.panel.user.setPic');
             Route::put('{user}/reset_pass', [UserController::class, 'resetPass'])->name('api.panel.user.resetPass');
             Route::get('{user}/get_total_balance', [UserController::class, 'getTotalBalance'])->name('api.panel.getUserTotalBalance');
+            Route::get('export', [UserController::class, 'export'])->name('api.panel.user.export');
+            Route::post('import', [UserController::class, 'import'])->name('api.panel.user.import');
         });
         Route::resource('users', '\\'.UserController::class);
         Route::resource('user_statuses', '\\'. UserStatusController::class);
