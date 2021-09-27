@@ -33,17 +33,34 @@ export default {
         }
     },
     methods: {
-        digitsToWords (digits) {
+        normilizedDigits (digits) {
+            let number = digits
+            if (typeof number === 'string') {
+                if (number.includes('‎')) {
+                    number = number.substr(1)
+                    number = number.replace('‎', '')
+                }
+                number = number.replace('−', '-')
+                number = number.trim()
+            }
+            return parseInt(number)
+        },
+        digitsToWords (input) {
+            //deep copy of string
+            let digits = this.normilizedDigits((' ' + input).slice(1));
+
             if (!digits) {
                 return ''
             }
 
-            return NumberToPersianWord.convert(digits)
+            let converted = NumberToPersianWord.convert(digits)
+
+            return converted
         },
         convertToCurrencyFormat (value) {
             if (!value) return '0'
             value = this.toEnDigit(value.toString())
-            return parseInt(value).toLocaleString('fa')
+            return this.normilizedDigits(value).toLocaleString('fa')
         },
         currencyFormatInput (event) {
             this.transaction.cost = this.toEnDigit(event)

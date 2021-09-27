@@ -20,9 +20,15 @@ class Fund extends Model {
             { key: 'undertaker' },
             { key: 'balance' },
             { key: 'expenses' },
+            { key: 'capital' },
+            { key: 'demands' },
             { key: 'created_at' },
             { key: 'updated_at' }
         ])
+    }
+
+    calcCapital () {
+        this.capital = this.demands + this.incomes.sum_of_all + this.expenses
     }
 
     getIncomesAndExpenses(id) {
@@ -63,6 +69,31 @@ class Fund extends Model {
 class FundList extends Collection {
     model () {
         return Fund
+    }
+
+    calcCapitals () {
+        this.list.forEach( fund => {
+            fund.calcCapital()
+        })
+    }
+
+    sumOfAll () {
+        const all = {
+            incomes: 0,
+            capital: 0,
+            expenses: 0,
+            balance: 0,
+            demands: 0,
+        }
+        this.list.forEach( fund => {
+            all.incomes += fund.incomes.sum_of_all
+            all.capital += fund.capital
+            all.expenses += fund.expenses
+            all.balance += fund.balance
+            all.demands += fund.demands
+        })
+
+        return all
     }
 }
 

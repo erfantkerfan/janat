@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AllocatedLoanInstallment;
 use App\Http\Requests\StoreAllocatedLoanInstallment;
 use App\Http\Requests\StoreTransaction;
 use App\Loan;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreAllocatedLoan;
 use App\Http\Requests\PeriodicPayrollDeductionRequest;
+use Illuminate\Support\Str;
 
 class AllocatedLoanController extends Controller
 {
@@ -239,6 +241,7 @@ class AllocatedLoanController extends Controller
             ->setAppends([
                 'is_settled',
                 'total_payments',
+                'allocated_loan_paid_at',
                 'remaining_payable_amount',
                 'count_of_paid_installments',
                 'count_of_remaining_installments'
@@ -323,7 +326,11 @@ class AllocatedLoanController extends Controller
         $lastPaidAtBefore = $request->get('pay_till_date');
         $companyId = $request->get('company_id');
 
-        $targetAllocatedLoan = AllocatedLoan::with('account.user:id,f_name,l_name,staff_code', 'loan', 'loan.fund', 'installments')
+        $targetAllocatedLoan = AllocatedLoan::with(
+                'account.user:id,f_name,l_name,staff_code',
+                'loan.fund.paidTransactions.allocatedLoanRecipients',
+                'installments'
+            )
             ->where('payroll_deduction', '=', '1')
             ->whereHas('account.company', function (Builder $query) use ($companyId) {
                 $query->whereIn('companies.id', [$companyId]);
@@ -334,13 +341,52 @@ class AllocatedLoanController extends Controller
         $setAppends = [
             'is_settled',
             'total_payments',
+            'allocated_loan_paid_at',
             'remaining_payable_amount',
             'count_of_paid_installments',
             'count_of_remaining_installments'
         ];
-        $targetAllocatedLoan->map(function (& $item) use ($setAppends) {
+        $targetAllocatedLoan->map(function (& $item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+            $installmentInDateRange = $item->installments->filter(function ($installment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
+                return (
+                    ($installment['last_payment']['paid_at'] >= $lastPaidAtAfter) &&
+                    ($installment['last_payment']['paid_at'] <= $lastPaidAtBefore) &&
+                    $installment['last_payment']['paid_as_payroll_deduction'] === 1
+                );
+            });
+
+            $installmentInDateRange->map(function (& $item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+                return $item2['sum_of_paid_payments_as_payroll_deduction'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
+                    return (
+                        ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
+                        ($paidPayment['paid_at'] <= $lastPaidAtBefore) &&
+                        $paidPayment['paid_as_payroll_deduction'] === 1
+                    );
+                })->sum('cost');
+            });
+            $item['installments_in_date_range'] = $installmentInDateRange;
+            $item['count_of_paid_payments_as_payroll_deduction_in_date_range'] = $installmentInDateRange->count();
+            $item['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $installmentInDateRange->sum('sum_of_paid_payments_as_payroll_deduction');
+
+//            $item->installments->map(function (& $item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+//                return $item2['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
+//                    return (
+//                        ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
+//                        ($paidPayment['paid_at'] <= $lastPaidAtBefore) &&
+//                        $paidPayment['paid_as_payroll_deduction'] === 1
+//                    );
+//                })->sum('cost');
+//            });
             return $item->setAppends($setAppends);
         });
+
+
+        foreach ($targetAllocatedLoan as $key => $value) {
+            if (isset($value->allocated_loan_paid_at) && $value->allocated_loan_paid_at > $lastPaidAtBefore) {
+                $targetAllocatedLoan->forget($key);
+            }
+        }
+
         return $this->jsonResponseOk($targetAllocatedLoan);
     }
 
@@ -353,65 +399,81 @@ class AllocatedLoanController extends Controller
 
         $targetAllocatedLoan = AllocatedLoan::with([
             'account.user:id,f_name,l_name,staff_code',
-            'loan',
-            'loan.fund',
+            'loan.fund.paidTransactions.allocatedLoanRecipients',
             'installments'
         ])
-            ->whereHas('loan', function ($query1) use ($lastPaidAtBefore) {
-                $query1->whereHas('fund', function ($query2) use ($lastPaidAtBefore) {
-                    $query2->whereHas('paidTransactions', function ($query3) use ($lastPaidAtBefore) {
-                        $query3->where('paid_at', '<=', $lastPaidAtBefore);
-                    });
-                });
-            })
             ->notSettled()
             ->where('payroll_deduction', '=', '1')
             ->whereHas('account.company', function (Builder $query) use ($companyId) {
-                $query->whereIn('companies.id', [$companyId]);
+                $query->where('companies.id', $companyId);
             })
             ->lastPaymentForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
+//            ;
             ->get();
+//        die(Str::replaceArray('?', $targetAllocatedLoan->getBindings(), $targetAllocatedLoan->toSql()));
+//        die($targetAllocatedLoan);
+
+        $targetAllocatedLoan->map(function (& $item) {
+            return $item->setAppends(['allocated_loan_paid_at']);
+        });
+        foreach ($targetAllocatedLoan as $key => $value) {
+            if (isset($value->allocated_loan_paid_at) && $value->allocated_loan_paid_at > $lastPaidAtBefore) {
+                $targetAllocatedLoan->forget($key);
+            }
+        }
 
         $hasProblem = false;
         foreach ($targetAllocatedLoan as $allocatedLoanItem) {
             $notSettledInstallment = $this->getNotSettledInstallment($allocatedLoanItem);
 
+            if (!isset($notSettledInstallment)) {
+                $hasProblem = true;
+                break;
+            }
+
             $remainingPayableAmount = $notSettledInstallment->remainingPayableAmount;
             $payrollDeductionAmount = $allocatedLoanItem->payroll_deduction_amount;
             $cost = $remainingPayableAmount < $payrollDeductionAmount ? $remainingPayableAmount : $payrollDeductionAmount;
 
-            if (isset($notSettledInstallment)) {
-                $request = new StoreTransaction();
-                $request->replace([
-                    'transaction_status_id' => 1,
-                    'paid_as_payroll_deduction' => 1,
-                    'cost' => $cost,
-                    'paid_at' => $paidAt,
-                    'transaction_type' => 'user_pay_installment',
-                    'allocated_loan_installment_id' => $notSettledInstallment->id
-                ]);
-                $transactionController = new TransactionController();
-                $storeTransactionResult = $transactionController->store($request);
-                if ($storeTransactionResult->getStatusCode() !== 200) {
-                    $hasProblem = true;
-                }
-            } else {
+            $request = new StoreTransaction();
+            $request->replace([
+                'transaction_status_id' => 1,
+                'paid_as_payroll_deduction' => 1,
+                'cost' => $cost,
+                'paid_at' => $paidAt,
+                'transaction_type' => 'account_pay_installment',
+                'allocated_loan_installment_id' => $notSettledInstallment->id
+            ]);
+            $transactionController = new TransactionController();
+            $storeTransactionResult = $transactionController->store($request);
+            if ($storeTransactionResult->getStatusCode() !== 200) {
                 $hasProblem = true;
             }
         }
 
         if (!$hasProblem) {
-            $setAppends = [
-                'is_settled',
-                'total_payments',
-                'remaining_payable_amount',
-                'count_of_paid_installments',
-                'count_of_remaining_installments'
-            ];
-            $targetAllocatedLoan->map(function (& $item) use ($setAppends) {
-                return $item->setAppends($setAppends);
-            });
-            return $this->jsonResponseOk($targetAllocatedLoan);
+//            $setAppends = [
+//                'is_settled',
+//                'total_payments',
+//                'remaining_payable_amount',
+//                'count_of_paid_installments',
+//                'count_of_remaining_installments'
+//            ];
+//            $targetAllocatedLoan->map(function (& $item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+//                $item->installments->map(function (& $item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+//                    return $item2['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
+//                        return (
+//                            ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
+//                            ($paidPayment['paid_at'] <= $lastPaidAtBefore) &&
+//                            $paidPayment['paid_as_payroll_deduction'] === 1
+//                        );
+//                    })->sum('cost');
+//                });
+//                return $item->setAppends($setAppends);
+//            });
+//            return $this->jsonResponseOk($targetAllocatedLoan);
+
+            return $this->showPeriodicPayrollDeduction($request);
         } else {
             return $this->jsonResponseValidateError([
                 'errors' => [
@@ -430,7 +492,7 @@ class AllocatedLoanController extends Controller
         $companyId = $request->get('company_id');
 
         $transactions = Transaction::whereHas('transactionType', function ($query) use ($lastPaidAtAfter, $lastPaidAtBefore) {
-            $query->where('transaction_types.name', '=', config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT'));
+            $query->where('transaction_types.name', '=', config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_INSTALLMENT'));
         })
             ->with('allocatedLoanInstallmentRecipients.allocatedLoan.account.company')
             ->where('transaction_status_id', '=', 1)
@@ -466,6 +528,7 @@ class AllocatedLoanController extends Controller
             $storeAllocatedLoanResult = $allocatedLoanInstallmentController->store($request);
             if ($storeAllocatedLoanResult->getStatusCode() === 200) {
                 $notSettledInstallment = json_decode($storeAllocatedLoanResult->getContent());
+                $notSettledInstallment = AllocatedLoanInstallment::find($notSettledInstallment->id);
             }
         }
 

@@ -289,7 +289,7 @@ class FakeTransaction extends Seeder {
     private function userChargeFund($faker, $transactionStatus) {
         $account = FakeAccount::getRandomObject();
         $fund = FakeFund::getRandomObject();
-        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND'))->first();
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_ACCOUNT_CHARGE_FUND'))->first();
         $cost = $account->monthly_payment;
         $transaction = Transaction::create([
             'cost' => $cost,
@@ -344,7 +344,7 @@ class FakeTransaction extends Seeder {
     }
 
     private function userPayInstallment($faker, $transactionStatus) {
-        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT'))->first();
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_INSTALLMENT'))->first();
         $allocatedLoanInstallment = FakeAllocatedLoanInstallment::getRandomObject();
         $user = $allocatedLoanInstallment->allocatedLoan->account->user()->first();
 

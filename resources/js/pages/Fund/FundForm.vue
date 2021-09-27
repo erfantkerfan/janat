@@ -35,6 +35,7 @@
                             </div>
                         </div>
                         <price-input v-if="!isCreateForm()" v-model="fund.balance" :label="'موجودی صندوق'" :disabled="true" />
+
                         <div v-if="!isCreateForm()" class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 تاریخ تعریف صندوق
@@ -56,8 +57,10 @@
                         <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_installments_interest" :label="'مجموع کارمزد اقساط'" :disabled="true" />
                         <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.incomes.sum_of_all" :label="'مجموع تمام دریافتی های صندوق'" :disabled="true" />
                         <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.expenses" :label="'مجموع هزینه های صندوق'" :disabled="true" />
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.demands" :label="'مجموع طلب های صندوق'" :disabled="true" />
 
                         <price-input v-if="showFundIncomes && !fund.loading" v-model="sumOfIncomesAndExpenses" :label="'مجموع هزینه ها و درآمد های صندوق'" :disabled="true" />
+                        <price-input v-if="showFundIncomes && !fund.loading" v-model="fund.capital" :label="'سرمایه صندوق (با احتساب طلب ها)'" :disabled="true" />
 
                         <div class="md-layout">
                             <md-button v-if="!isCreateForm() && !fund.loading"
@@ -403,6 +406,7 @@
                     .then((response) => {
                         this.fund.loading = false;
                         this.fund = new Fund(response.data)
+                        // this.fund.balance = response.data.balance * -1
                     })
                     .catch((error) => {
                         this.axios_handleError(error)
@@ -476,7 +480,9 @@
                         that.showFundIncomes = true;
                         that.fund.incomes = response.data.incomes
                         that.fund.expenses = response.data.expenses
+                        that.fund.demands = response.data.demands
                         that.sumOfIncomesAndExpenses = (that.fund.incomes.sum_of_all-that.fund.expenses)
+                        that.fund.calcCapital()
                         that.$store.dispatch('alerts/fire', {
                             icon: 'success',
                             title: 'توجه',

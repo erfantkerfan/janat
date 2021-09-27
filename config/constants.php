@@ -28,11 +28,11 @@ return [
 
     // Transaction Type
     'TRANSACTION_TYPE_FUND_PAY_LOAN'              => 'fund pay loan',
-    'TRANSACTION_TYPE_USER_CHARGE_FUND'           => 'user charge fund',
+    'TRANSACTION_TYPE_ACCOUNT_CHARGE_FUND'           => 'account charge fund',
     'TRANSACTION_TYPE_PAY_FUND_EXPENSES'          => 'pay fund expenses',
     'TRANSACTION_TYPE_COMPANY_CHARGE_FUND'        => 'company charge fund',
-    'TRANSACTION_TYPE_USER_PAY_INSTALLMENT'       => 'user pay installment',
+    'TRANSACTION_TYPE_ACCOUNT_PAY_INSTALLMENT'    => 'account pay installment',
     'TRANSACTION_TYPE_INCLUDE_SUB_TRANSACTIONS'   => 'include sub-transactions',
-    'TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION'  => 'user pay the fund tuition',
+    'TRANSACTION_TYPE_ACCOUNT_PAY_THE_FUND_TUITION'  => 'account pay the fund tuition',
     'TRANSACTION_TYPE_USER_WITHDRAW_FROM_ACCOUNT' => 'user withdraw from account'
 ];

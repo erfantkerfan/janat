@@ -9,6 +9,14 @@
                     <h4 class="title">لیست تراکنش ها</h4>
                 </md-card-header>
                 <md-card-content>
+
+                    <div class="md-layout">
+                        <div class="md-layout-item">
+                            <md-radio v-model="filterData.transaction_type" value="payer" name="transaction_type">پرداخت کننده</md-radio>
+                            <md-radio v-model="filterData.transaction_type" value="recipient" name="transaction_type">دریافت کننده</md-radio>
+                        </div>
+                    </div>
+
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <md-field>
@@ -36,6 +44,21 @@
                             <md-field>
                                 <label>صندوق:</label>
                                 <md-select v-model="filterData.fund_id" name="pages">
+                                    <md-option
+                                        v-for="item in companies.list"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item">
+                            <md-field>
+                                <label>شرکت:</label>
+                                <md-select v-model="filterData.company_id" name="pages">
                                     <md-option
                                         v-for="item in funds.list"
                                         :key="item.id"
@@ -294,6 +317,7 @@
                 },
                 perPage: 10,
                 perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
+                transaction_type: 'payer',
                 fund_id: null,
                 user_id: null,
                 account_id: null,
@@ -333,6 +357,7 @@
                     loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null: this.filterData.loan_id,
                     company_id: (this.filterData.company_id === null || this.filterData.company_id === 0) ? null: this.filterData.company_id,
                     transaction_status_id: (this.filterData.transaction_status_id === null || this.filterData.transaction_status_id === 0) ? null: this.filterData.transaction_status_id,
+                    transaction_type: this.filterData.transaction_type,
                     paid_at_since_date: this.filterData.paidSinceDate,
                     paid_at_till_date: this.filterData.paidTillDate,
                     createdSinceDate: this.filterData.createdSinceDate,

@@ -41,6 +41,9 @@ class AllocatedLoan extends Model {
             { key: 'number_of_installments' },
             { key: 'payroll_deduction', default: false },
             { key: 'payroll_deduction_amount' },
+            { key: 'allocated_loan_paid_at' },
+            { key: 'count_of_paid_payments_as_payroll_deduction_in_date_range' },
+            { key: 'sum_of_paid_payments_as_payroll_deduction_in_date_range' },
             { key: 'created_at' },
             { key: 'updated_at' }
         ])
