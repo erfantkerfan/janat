@@ -18,7 +18,7 @@
         "@mdi/font": "^5.9.55",
         "@tweenjs/tween.js": "18.5.0",
         "acorn-dynamic-import": "^4.0.0",
-        "axios": "^0.21.1",
+        "axios": "^0.21.2",
         "bootstrap": "^4.6.0",
         "chartist": "0.11.4",
         "cross-env": "^7.0.3",
