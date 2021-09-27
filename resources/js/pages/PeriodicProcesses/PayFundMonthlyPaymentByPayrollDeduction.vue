@@ -153,6 +153,11 @@
                             </md-table-cell>
                         </md-table-row>
                     </md-table>
+                    <div v-if="sumOfPaidPaymentsInDateRange > 0">
+                        جمع کل پرداختی ها:
+                        {{ sumOfPaidPaymentsInDateRange | currencyFormat }}
+                        {{ currencyUnit }}
+                    </div>
                 </md-card-content>
             </md-card>
         </div>
@@ -169,6 +174,14 @@
         name: 'PayFundMonthlyPaymentByPayrollDeduction',
         mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin, dateMixin],
         computed: {
+            sumOfPaidPaymentsInDateRange () {
+                let sum = 0
+                this.accounts.list.forEach( item => {
+                    sum += item.monthly_payment
+                })
+
+                return sum
+            },
             json_fields () {
                 return {
                     'نام': 'user.f_name',

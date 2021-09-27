@@ -154,7 +154,7 @@ class AccountController extends Controller
                 'paid_as_payroll_deduction' => 1,
                 'cost' => $accountItem->monthly_payment,
                 'paid_at' => $paidAt,
-                'transaction_type' => 'user_pay_the_fund_tuition',
+                'transaction_type' => 'account_pay_the_fund_tuition',
                 'account_id' => $accountItem->id
             ]);
             $transactionController = new TransactionController();
@@ -192,7 +192,7 @@ class AccountController extends Controller
         $companyId = $request->get('company_id');
 
         $transactions = Transaction::whereHas('transactionType', function ($query) use ($lastPaidAtAfter, $lastPaidAtBefore) {
-            $query->where('transaction_types.name', '=', config('constants.TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION'));
+            $query->where('transaction_types.name', '=', config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_THE_FUND_TUITION'));
         })
         ->whereHas('accountPayers', function (Builder $query) use ($companyId) {
             $query->where('accounts.company_id', $companyId);

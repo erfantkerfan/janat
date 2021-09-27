@@ -21,12 +21,12 @@ class TransactionTypeSeeder extends Seeder
     public function getValues () {
         return [
             [
-                'name' => 'user charge fund',
+                'name' => 'account charge fund',
                 'display_name' => 'کمک مالی کاربر به صندوق',
                 'description' => 'کاربر خیر به صندوق کمک مالی می کند'
             ],
             [
-                'name' => 'user pay the fund tuition',
+                'name' => 'account pay the fund tuition',
                 'display_name' => 'پرداخت ماهانه صندوق',
                 'description' => 'کاربر ماهانه(شهریه) صندوق را پرداخت می کند.'
             ],
@@ -41,7 +41,7 @@ class TransactionTypeSeeder extends Seeder
                 'description' => 'شرکت خیر به صندوق کمک مالی می کند'
             ],
             [
-                'name' => 'user pay installment',
+                'name' => 'account pay installment',
                 'display_name' => 'پرداخت قسط کاربر',
                 'description' => 'کاربر قسط وام خود را به حساب صندوق واریز می کند.'
             ],

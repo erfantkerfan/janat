@@ -234,7 +234,7 @@
                                                     user_id: value.id,
                                                     account_id: newAccount.id,
                                                     fund_id: newAccount.fund.id,
-                                                    payment_type: 'user_charge_fund'
+                                                    payment_type: 'account_charge_fund'
                                                 }
                                             }"
                                 >
@@ -250,7 +250,7 @@
                                                     user_id: value.id,
                                                     account_id: newAccount.id,
                                                     fund_id: newAccount.fund.id,
-                                                    payment_type: 'user_pay_the_fund_tuition'
+                                                    payment_type: 'account_pay_the_fund_tuition'
                                                 }
                                             }"
                                 >

@@ -146,6 +146,12 @@
                             <md-table-cell :md-label="'مبلغ هر قسط '+'('+currencyUnit+')'" md-sort-by="installment_rate">
                                 {{ item.installment_rate | currencyFormat }}
                             </md-table-cell>
+                            <md-table-cell :md-label="'مبلغ پرداخت شده '+'('+currencyUnit+')'" md-sort-by="installment_rate">
+                                {{ item.sum_of_paid_payments_as_payroll_deduction_in_date_range | currencyFormat }}
+                            </md-table-cell>
+                            <md-table-cell :md-label="'تعداد پرداخت ها'" md-sort-by="installment_rate">
+                                {{ item.count_of_paid_payments_as_payroll_deduction_in_date_range }}
+                            </md-table-cell>
                             <md-table-cell md-label="تعداد اقساط" md-sort-by="number_of_installments">
                                 {{ item.number_of_installments }}
                             </md-table-cell>
@@ -180,6 +186,11 @@
                             </md-table-cell>
                         </md-table-row>
                     </md-table>
+                    <div v-if="sumOfPaidPaymentsInDateRange > 0">
+                        جمع کل پرداختی ها:
+                        {{ sumOfPaidPaymentsInDateRange | currencyFormat }}
+                        {{ currencyUnit }}
+                    </div>
                 </md-card-content>
             </md-card>
         </div>
@@ -196,6 +207,14 @@ export default {
     name: 'PaymentOfPayrollDeductions',
     mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin, dateMixin],
     computed: {
+        sumOfPaidPaymentsInDateRange () {
+            let sum = 0
+            this.allocatedLoans.list.forEach( item => {
+                sum += item.sum_of_paid_payments_as_payroll_deduction_in_date_range
+            })
+
+            return sum
+        },
         json_fields() {
             return {
                 'نام': 'account.user.f_name',

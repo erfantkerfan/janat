@@ -291,7 +291,7 @@
                 }
             },
             isPayFundTuition () {
-                return this.$route.params.payment_type === 'user_pay_the_fund_tuition'
+                return this.$route.params.payment_type === 'account_pay_the_fund_tuition'
             },
             getAccount () {
                 this.account.loading = true;
