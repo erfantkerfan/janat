@@ -95,6 +95,9 @@ class HomeController extends Controller
 
     public function dashboardData() {
         $funds = Fund::all();
+        $funds->map(function ($fund) {
+            $fund->setAppends(['incomes', 'expenses', 'demands']);
+        });
         $counts = [
             'users' => User::count(),
             'funds' => Fund::count(),

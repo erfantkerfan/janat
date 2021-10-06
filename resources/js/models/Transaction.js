@@ -150,7 +150,12 @@ class Transaction extends Model {
                 paymentStatus = 'تسویه شده'
             }
 
-            return paymentStatus + '<br>' + '(' + modelValue.account.user.f_name + ' ' + modelValue.account.user.l_name + ')'
+            return paymentStatus + '<br>' +
+                '(' + modelValue.account.user.f_name + ' ' +
+                modelValue.account.user.l_name + '<br>' +
+                ' شماره حساب: ' + modelValue.account.id + '<br>' +
+                ' شرکت: ' + modelValue.account.company.name +
+                ')'
         } else if (modelType === 'App\\AllocatedLoanInstallment') {
             let paymentStatus = 'تسویه نشده'
             if(modelValue.is_settled) {
@@ -159,9 +164,12 @@ class Transaction extends Model {
 
             return paymentStatus +
                 '<br>' +
-                '(' + modelValue.allocated_loan.account.user.f_name + ' ' + modelValue.allocated_loan.account.user.l_name +
+                '(' + modelValue.allocated_loan.account.user.f_name + ' '
+                + modelValue.allocated_loan.account.user.l_name +
                 '-' +
-                modelValue.allocated_loan.account.fund.name + ')'
+                ' صندوق: ' + modelValue.allocated_loan.account.fund.name + '<br>' +
+                ' شرکت: ' + modelValue.allocated_loan.account.company.name + '<br>' +
+                ')'
         }
     }
 

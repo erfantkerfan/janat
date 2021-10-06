@@ -9,6 +9,7 @@
 /public/js/app.js
 /public/mix-manifest.json
 /storage/*.key
+/storage/framework/laravel-excel/*.tmp
 /vendor
 .env
 .env.backup

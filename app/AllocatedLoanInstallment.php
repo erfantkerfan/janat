@@ -44,6 +44,14 @@ class AllocatedLoanInstallment extends Model
         return $this->morphToMany(Transaction::class, 'transaction_recipients');
     }
 
+    public function getPaidPaymentsAttribute($operator = null, $date = null, $operator2 = null, $date2 = null)
+    {
+        return $this->receivedTransactions->filter(function ($value) {
+            return $value['transaction_status_id'] === 1;
+        });
+//        return $this->receivedTransactions()->paid()->sum('cost');
+    }
+
     public function getTotalPaymentsAttribute()
     {
         return $this->receivedTransactions->filter(function ($value) {

@@ -86,7 +86,33 @@
             </stats-card>
         </div>
 
-        <div v-if="LoggedInUser.hasSuperAdminRole()"
+        <div v-if="LoggedInUser.hasSuperAdminRole()" class="md-layout-item md-size-100">
+            <md-card>
+                <md-card-header class="md-card-header-icon md-card-header-rose">
+                    <div class="card-icon">
+                        <md-icon>account_balance</md-icon>
+                    </div>
+                    <h4 class="title">
+                        گزارش کلی صندوق ها
+                    </h4>
+                </md-card-header>
+                <md-card-content>
+                    <md-table v-model="funds.list" table-header-color="green">
+                        <md-table-row slot="md-table-row" slot-scope="{ item }">
+                            <md-table-cell md-label="#">{{ item.id }}</md-table-cell>
+                            <md-table-cell md-label="نام">{{ item.name }}</md-table-cell>
+                            <md-table-cell :md-label="'موجودی'+'('+currencyUnit+')'">{{ item.balance | currencyFormat }}</md-table-cell>
+                            <md-table-cell :md-label="'درآمد کل'+'('+currencyUnit+')'">{{ item.incomes.sum_of_all | currencyFormat }}</md-table-cell>
+                            <md-table-cell :md-label="'هزینه ها'+'('+currencyUnit+')'">{{ item.expenses | currencyFormat }}</md-table-cell>
+                            <md-table-cell :md-label="'طلب ها'+'('+currencyUnit+')'">{{ item.demands | currencyFormat }}</md-table-cell>
+                            <md-table-cell :md-label="'سرمایه کل'+'('+currencyUnit+')'">{{ item.capital | currencyFormat }}</md-table-cell>
+                        </md-table-row>
+                    </md-table>
+                </md-card-content>
+            </md-card>
+        </div>
+
+        <div v-if="false"
             class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
         >
             <chart-card
@@ -298,7 +324,8 @@
         ChartCard,
         NavTabsCard
     } from "@/components";
-    import {userMixin} from "@/mixins/Mixins";
+    import {userMixin, priceFilterMixin} from "@/mixins/Mixins";
+    import {FundList} from "@/models/Fund";
 
     export default {
         components: {
@@ -306,9 +333,49 @@
             ChartCard,
             NavTabsCard
         },
-        mixins: [userMixin],
+        mixins: [userMixin, priceFilterMixin],
         data() {
             return {
+
+                funds: new FundList(),
+                tableData: [
+                    {
+                        id: 1,
+                        name: "Dakota Rice",
+                        salary: "$36.738",
+                        country: "Niger",
+                        city: "Oud-Turnhout"
+                    },
+                    {
+                        id: 2,
+                        name: "Minerva Hooper",
+                        salary: "$23,789",
+                        country: "Curaçao",
+                        city: "Sinaai-Waas"
+                    },
+                    {
+                        id: 3,
+                        name: "Sage Rodriguez",
+                        salary: "$56,142",
+                        country: "Netherlands",
+                        city: "Baileux"
+                    },
+                    {
+                        id: 4,
+                        name: "Philip Chaney",
+                        salary: "$38,735",
+                        country: "Korea, South",
+                        city: "Overland Park"
+                    },
+                    {
+                        id: 5,
+                        name: "Doris Greene",
+                        salary: "$63,542",
+                        country: "Malawi",
+                        city: "Feldkirchen in Kärnten"
+                    }
+                ],
+
                 product1: "/img/card-2.jpg",
                 product2: "/img/card-3.jpg",
                 product3: "/img/card-1.jpg",
@@ -461,6 +528,7 @@
                 axios.get('/api/dashboard')
                     .then((response) => {
                         this.loadnFundsChart(response.data.funds)
+                        this.loadFundsData(response.data.funds)
                         this.loadCounts(response.data.counts)
                         this.dashboardLoading = false
                     })
@@ -473,6 +541,22 @@
                 Vue.set(this.counts, 'funds', counts.funds)
                 Vue.set(this.counts, 'companies', counts.companies)
                 Vue.set(this.counts, 'loans', counts.loans)
+            },
+            loadFundsData (fundsData) {
+                this.funds = new FundList(fundsData)
+                this.funds.calcCapitals()
+                const sumOfAll = this.funds.sumOfAll()
+                this.funds.add({
+                    id: '',
+                    name: 'مجموع',
+                    incomes: {
+                        sum_of_all: sumOfAll.incomes
+                    },
+                    capital: sumOfAll.capital,
+                    expenses: sumOfAll.expenses,
+                    balance: sumOfAll.balance,
+                    demands: sumOfAll.demands
+                })
             },
             loadnFundsChart(funds) {
                 let labels = []

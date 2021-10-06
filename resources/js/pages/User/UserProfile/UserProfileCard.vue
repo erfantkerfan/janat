@@ -234,7 +234,7 @@
                                                     user_id: value.id,
                                                     account_id: newAccount.id,
                                                     fund_id: newAccount.fund.id,
-                                                    payment_type: 'user_charge_fund'
+                                                    payment_type: 'account_charge_fund'
                                                 }
                                             }"
                                 >
@@ -250,7 +250,7 @@
                                                     user_id: value.id,
                                                     account_id: newAccount.id,
                                                     fund_id: newAccount.fund.id,
-                                                    payment_type: 'user_pay_the_fund_tuition'
+                                                    payment_type: 'account_pay_the_fund_tuition'
                                                 }
                                             }"
                                 >
@@ -292,7 +292,7 @@
                 </md-dialog-content>
 
                 <md-dialog-actions>
-                    <md-button class="md-default" @click="createAccountShowDialog = false">انتصراف</md-button>
+                    <md-button class="md-default" @click="createAccountShowDialog = false">انصراف</md-button>
                     <md-button v-if="funds.list.length > 0 && !editAccountState"
                                class="md-success"
                                @click="createNewAccount"
@@ -363,9 +363,9 @@ export default {
         };
     },
     mounted() {
-        this.getFunds()
+        this.getFunds(false)
         this.getUserPic()
-        this.getCompanies()
+        this.getCompanies(false)
         this.getUserTypes()
         this.getUserStatus()
     },

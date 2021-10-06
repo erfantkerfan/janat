@@ -48,6 +48,11 @@
             <div class="md-layout-item md-size-100">
                 <user-password-card v-model="user" @update="getProfile"/>
             </div>
+            <div class="md-layout-item md-size-100">
+                <md-button class="md-raised md-info" @click="updateUserProfile">
+                    ذخیره اطلاعات
+                </md-button>
+            </div>
         </div>
     </div>
 </template>
@@ -151,7 +156,6 @@
                     .catch((error) => {
                         this.axios_handleError(error)
                         this.user.loading = false;
-                        this.user = new User()
                     })
             },
             refreshAuthenticatedUserDataIfNeed() {
@@ -183,7 +187,6 @@
                     .catch((error) => {
                         that.axios_handleError(error)
                         that.user.loading = false;
-                        that.user = new User()
                     })
             },
             createUserProfile() {

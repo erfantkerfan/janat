@@ -192,6 +192,10 @@
                     >
                         <md-table-toolbar>
                             <md-field>
+                                <md-button class="md-dense md-raised md-info">
+                                    <input type="file" @change="importFromExcel($event)">
+                                    ورود اطلاعات از اکسل
+                                </md-button>
                                 <md-button class="md-dense md-icon-button md-raised md-primary" @click="getList">
                                     <md-icon>search</md-icon>
                                 </md-button>
@@ -340,6 +344,21 @@
         methods: {
             clickCallback (data) {
                 this.getList(data)
+            },
+            importFromExcel (event) {
+                let formData = new FormData();
+                formData.append('users', event.target.files[0]);
+                axios.post('api/users/import', formData,{
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                .then( () => {
+                    this.getList()
+                })
+                .catch( () => {
+                    this.getList()
+                })
             },
             getList (page) {
                 if (!page) {

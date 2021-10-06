@@ -114,7 +114,7 @@ class FundController extends Controller
     }
 
     public function getIncomesAndExpenses($id) {
-        $fund = Fund::findorfail($id)->setAppends(['incomes', 'expenses']);
+        $fund = Fund::findorfail($id)->setAppends(['incomes', 'expenses', 'demands']);
 
         return $this->jsonResponseOk($fund);
     }

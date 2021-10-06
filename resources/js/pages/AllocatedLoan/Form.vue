@@ -107,7 +107,11 @@
                                     :disabled="true"
                                 />
                                 <hr>
-                                <md-chip v-if="allocatedLoan.payroll_deduction" class="md-accent">کسر از حقوق</md-chip>
+                                <div class="md-layout">
+                                    <md-checkbox v-model="allocatedLoan.payroll_deduction">کسر از حقوق</md-checkbox>
+                                </div>
+<!--                                <md-chip v-if="allocatedLoan.payroll_deduction" class="md-accent">کسر از حقوق</md-chip>-->
+
                                 <price-input
                                     v-if="allocatedLoan.payroll_deduction"
                                     v-model="allocatedLoan.payroll_deduction_amount"

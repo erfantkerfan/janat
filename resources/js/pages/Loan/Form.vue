@@ -7,7 +7,10 @@
                         <div class="card-icon">
                             <md-icon>monetization_on</md-icon>
                         </div>
-                        <h4 class="title">
+                        <h4 v-if="isCreateForm()" class="title">
+                            تعریف وام جدید
+                        </h4>
+                        <h4 v-if="!isCreateForm()" class="title">
                             ویرایش اطلاعات وام
                         </h4>
                     </md-card-header>
@@ -121,10 +124,14 @@
             this.getData()
             this.getFunds(false)
             this.getLoanTypes(false)
+
+            if (this.$route.name === 'Loan.Create.By.Selected.Fund' && this.$route.params.fund_id) {
+                this.loan.fund.id = this.$route.params.fund_id
+            }
         },
         methods: {
             isCreateForm () {
-                return (this.$route.name === 'Loan.Create')
+                return (this.$route.name === 'Loan.Create' || this.$route.name === 'Loan.Create.By.Selected.Fund')
             },
             getData () {
                 if (this.isCreateForm()) {

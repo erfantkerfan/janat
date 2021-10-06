@@ -257,6 +257,16 @@ let loansMenu = {
             }
         },
         {
+            path: "create/:fund_id",
+            name: "Loan.Create.By.Selected.Fund",
+            components: {default: LoanForm},
+            meta: {
+                rtlActive: true,
+                displayName: "ساخت وام جدید",
+                middleware: auth
+            }
+        },
+        {
             path: ":id",
             name: "Loan.Show",
             components: {default: LoanForm},
@@ -285,7 +295,7 @@ let allocatedLoansMenu = {
             }
         },
         {
-            path: "/create/:user_id/:account_id",
+            path: "create/:user_id/:account_id",
             name: "AllocatedLoan.Create",
             components: {default: AllocatedLoanCreateForm},
             meta: {

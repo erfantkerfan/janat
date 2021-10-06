@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
                             </template>
-                            <template slot="footer">
+                            <template v-if="false" slot="footer">
                                 <md-button class="md-dense md-raised md-success" @click="showUserAccounts">
                                     مشاهده حساب های کاربر
                                 </md-button>
@@ -83,7 +83,7 @@
                                     {{ selectedFund.name }}
                                 </h3>
                                 <br>
-                                <div class="md-layout">
+                                <div v-if="false" class="md-layout">
                                     <div class="md-layout-item">
                                         <md-table v-if="!funds.loading"
                                                   v-model="funds.list"
@@ -129,6 +129,13 @@
                                 <br>
                                 <div class="md-layout">
                                     <div class="md-layout-item">
+                                        <md-empty-state
+                                            v-if="!loans.loading && loans.list.length === 0"
+                                            class="md-warning"
+                                            md-icon="info"
+                                            md-label="وامی یافت نشد"
+                                        >
+                                        </md-empty-state>
                                         <md-table v-if="!loans.loading"
                                                   v-model="loans.list"
                                                   @md-selected="onSelectLoan">
@@ -170,6 +177,11 @@
                                     </div>
                                 </div>
                             </template>
+                            <template v-if="selectedFund.id" slot="footer">
+                                <md-button class="md-dense md-raised md-success" :to="{name: 'Loan.Create.By.Selected.Fund', params: { fund_id: selectedFund.id }}">
+                                    تعریف وام جدید
+                                </md-button>
+                            </template>
                         </stats-card>
                     </div>
                     <div v-if="selectedUser !== null && selectedAccount !== null && selectedLoan !== null" class="md-layout-item md-size-100">
@@ -192,6 +204,9 @@
                                 صندوق:
                                 {{ selectedFund.name }}
                                 <br>
+                                شرکت:
+                                {{ selectedAccount.company.name }}
+                                <br>
                                 وام:
                                 {{ selectedLoan.name }}
                                 <br>
@@ -213,7 +228,7 @@
                                             </label>
                                             <div class="md-layout-item">
                                                 <md-field class="md-invalid">
-                                                    <md-textarea v-model="managerComment" />
+                                                    <md-textarea v-model="managerComment" style="border: solid 1px gray;" />
                                                 </md-field>
                                             </div>
                                         </div>
@@ -335,10 +350,11 @@
                 }
                 let that = this
                 this.funds.loading = true;
-                this.funds.fetch({page})
+                this.funds.fetch({page, length: 99999})
                     .then((response) => {
                         that.funds.loading = false;
                         that.funds = new FundList(response.data.data, response.data)
+                        that.selectDefaultFund()
                     })
                     .catch((error) => {
                         that.axios_handleError(error)
@@ -354,9 +370,7 @@
                     loan_id: this.selectedLoan.id,
                     paid_at: this.paidAt,
                     manager_comment: this.managerComment,
-                    payroll_deduction: this.allocatedLoan.payroll_deduction,
-                    payroll_deduction: this.allocatedLoan.payroll_deduction,
-                    payroll_deduction: this.allocatedLoan.payroll_deduction,
+                    payroll_deduction: this.allocatedLoan.payroll_deduction
                 })
                     .then((response) => {
                         that.allocatedLoan.loading = false;
@@ -383,9 +397,19 @@
                 const defaultAccount = this.selectedUser.accounts.list.find( item => parseInt(item.id) === parseInt(this.$route.params.account_id))
                 if (defaultAccount) {
                     this.onSelectAccount(defaultAccount)
+                    this.selectDefaultFund(defaultAccount)
                     this.hasDefaultAccount = true
                 } else {
                     this.hasDefaultAccount = false
+                }
+            },
+            selectDefaultFund (defaultAccount) {
+                // const defaultAccount = this.selectedUser.accounts.list.find( item => parseInt(item.id) === parseInt(this.$route.params.account_id))
+                if (defaultAccount) {
+                    this.onSelectFund(defaultAccount.fund)
+                    // this.hasDefaultFund = true
+                } else {
+                    // this.hasDefaultFund = false
                 }
             },
             updateAllocatedLoan () {

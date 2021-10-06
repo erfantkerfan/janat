@@ -80,9 +80,15 @@ class Fund extends Model
 
     public function getIncomesAttribute()
     {
-        $transactionType_userChargeFund = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND'))->first();
+        $transactionType_userChargeFund = TransactionType::where('name', config('constants.TRANSACTION_TYPE_ACCOUNT_CHARGE_FUND'))->first();
         $transactionType_companyChargeFund = TransactionType::where('name', config('constants.TRANSACTION_TYPE_COMPANY_CHARGE_FUND'))->first();
-        $transactionType_userPayInstallment = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT'))->first();
+        $transactionType_accountPayInstallment = TransactionType::where('name', config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_INSTALLMENT'))->first();
+        $transactionType_userPayTheFundTuition = TransactionType::where('name', config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_THE_FUND_TUITION'))->first();
+
+        $sumOfUsersPayTheFundTuition = $this->receivedTransactions()->whereIn('transaction_type_id', [
+            $transactionType_userPayTheFundTuition->id
+        ])->sum('transactions.cost');
+        $sumOfUsersPayTheFundTuition = floatval ($sumOfUsersPayTheFundTuition);
 
         $sumOfChargeFund = $this->receivedTransactions()->whereIn('transaction_type_id', [
             $transactionType_userChargeFund->id,
@@ -92,8 +98,8 @@ class Fund extends Model
 
         $userChargeFundTransaction = $this->loans()
             ->with([
-                'allocatedLoans.installments.receivedTransactions' => function ($query) use ($transactionType_userPayInstallment) {
-                    $query->where('transaction_type_id', '=', $transactionType_userPayInstallment->id);
+                'allocatedLoans.installments.receivedTransactions' => function ($query) use ($transactionType_accountPayInstallment) {
+                    $query->where('transaction_type_id', '=', $transactionType_accountPayInstallment->id);
                 }
             ])->get();
 
@@ -129,10 +135,11 @@ class Fund extends Model
             });
         }
 
-        $sumOfall = $sumOfChargeFund + $sumOfInstallmentsInterest;
+        $sumOfall = $sumOfChargeFund + $sumOfUsersPayTheFundTuition + $sumOfInstallmentsInterest;
 
         return [
             'sum_of_charge_fund' => $sumOfChargeFund,
+            'sum_of_users_pay_the_fund_tuition' => $sumOfUsersPayTheFundTuition,
             'sum_of_installments_interest' => $sumOfInstallmentsInterest,
             'sum_of_all' => $sumOfall
         ];
@@ -152,6 +159,50 @@ class Fund extends Model
 
 
         return $sumOfExpenses;
+    }
+
+    public function getDemandsAttribute()
+    {
+        // set is_settled for allocated loans of accounts
+        $accounts = $this->accounts->map( function (&$account) {
+            $account['allocated_loans'] = $account->allocatedLoans->map( function (&$allocatedLoan) {
+                return $allocatedLoan->setAppends(['is_settled']);
+            });
+            return $account;
+        });
+
+        // remove settled loans
+        // 1- remove accounts has not unsettled loans
+        foreach ($accounts as $key => $account) {
+            $countOfNotSettledLoans = $account['allocated_loans']->filter( function($allocatedLoan) {
+                return !$allocatedLoan['is_settled'];
+            })->count();
+            if ($countOfNotSettledLoans === 0) {
+                $accounts->forget($key);
+            } else {
+                // 2- remove settled loans of account
+                foreach ($account['allocated_loans'] as $key2 => $allocatedLoanOfAccount) {
+                    if ($allocatedLoanOfAccount['is_settled']) {
+                        $account['allocated_loans']->forget($key2);
+                    }
+                }
+            }
+        }
+
+        // set remaining_payable_amount for allocated loans of accounts
+        $accounts = $this->accounts->map( function (&$account) {
+            $account['allocated_loans'] = $account->allocatedLoans->map( function (&$allocatedLoan) {
+                return $allocatedLoan->setAppends(['remaining_payable_amount']);
+            });
+            return $account;
+        });
+
+        $demands = 0;
+        $accounts->each( function ($account) use (&$demands) {
+            $demands += $account['allocated_loans']->sum('remaining_payable_amount');
+        });
+
+        return $demands;
     }
 
 }

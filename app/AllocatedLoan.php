@@ -164,6 +164,22 @@ class AllocatedLoan extends Model
         return collect($result)->map(function($x){ return (array) $x; })->toArray();
     }
 
+    public function getAllocatedLoanPaidAtAttribute() {
+        $fundTransactionToAllocatedLoan = $this->loan->fund->paidTransactions
+            ->filter(function ($value) {
+                return ($value->allocatedLoanRecipients
+                        ->filter(function ($value1) {
+                            return $value1->id === $this->id;
+                        })->count() > 0);
+            });
+
+        if ($fundTransactionToAllocatedLoan->count() > 0) {
+            return $fundTransactionToAllocatedLoan->first()->paid_at;
+        } else {
+            return null;
+        }
+    }
+
     public function scopeSettled($query) {
         $settledIds = $this->getSettledIds();
         $query->whereIn('id', $settledIds);
@@ -215,7 +231,7 @@ class AllocatedLoan extends Model
                 AND `allocated_loan_installments`.`deleted_at` IS NULL
                 INNER JOIN `transaction_payers` ON `transactions`.`id` = `transaction_payers`.`transaction_id`
                 INNER JOIN `users` ON `transaction_payers`.`transaction_payers_id` = `users`.`id`
-                AND `transaction_payers`.`transaction_payers_type` = 'App\\\User'
+                AND `transaction_payers`.`transaction_payers_type` = 'App\\\Account'
                 AND `users`.`deleted_at` IS NULL
                 INNER JOIN `allocated_loans` ON `allocated_loan_installments`.`allocated_loan_id` = `allocated_loans`.`id`
                 AND `allocated_loans`.`deleted_at` IS NULL
@@ -245,7 +261,7 @@ class AllocatedLoan extends Model
                 AND `allocated_loan_installments`.`deleted_at` IS NULL
                 INNER JOIN `transaction_payers` ON `transactions`.`id` = `transaction_payers`.`transaction_id`
                 INNER JOIN `users` ON `transaction_payers`.`transaction_payers_id` = `users`.`id`
-                AND `transaction_payers`.`transaction_payers_type` = 'App\\\User'
+                AND `transaction_payers`.`transaction_payers_type` = 'App\\\Account'
                 AND `users`.`deleted_at` IS NULL
                 INNER JOIN `allocated_loans` ON `allocated_loan_installments`.`allocated_loan_id` = `allocated_loans`.`id`
                 AND `allocated_loans`.`deleted_at` IS NULL
@@ -274,7 +290,7 @@ class AllocatedLoan extends Model
                 AND `allocated_loan_installments`.`deleted_at` IS NULL
                 INNER JOIN `transaction_payers` ON `transactions`.`id` = `transaction_payers`.`transaction_id`
                 INNER JOIN `users` ON `transaction_payers`.`transaction_payers_id` = `users`.`id`
-                AND `transaction_payers`.`transaction_payers_type` = 'App\\\User'
+                AND `transaction_payers`.`transaction_payers_type` = 'App\\\Account'
                 AND `users`.`deleted_at` IS NULL
                 INNER JOIN `allocated_loans` ON `allocated_loan_installments`.`allocated_loan_id` = `allocated_loans`.`id`
                 AND `allocated_loans`.`deleted_at` IS NULL
@@ -310,7 +326,7 @@ class AllocatedLoan extends Model
                 AND `allocated_loan_installments`.`deleted_at` IS NULL
                 INNER JOIN `transaction_payers` ON `transactions`.`id` = `transaction_payers`.`transaction_id`
                 INNER JOIN `users` ON `transaction_payers`.`transaction_payers_id` = `users`.`id`
-                AND `transaction_payers`.`transaction_payers_type` = 'App\\\User'
+                AND `transaction_payers`.`transaction_payers_type` = 'App\\\Account'
                 AND `users`.`deleted_at` IS NULL
                 INNER JOIN `allocated_loans` ON `allocated_loan_installments`.`allocated_loan_id` = `allocated_loans`.`id`
                 AND `allocated_loans`.`deleted_at` IS NULL

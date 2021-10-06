@@ -229,7 +229,7 @@
             },
             createTransaction () {
                 this.transaction.loading = true;
-                this.transaction.transaction_type = 'user_pay_installment'
+                this.transaction.transaction_type = 'account_pay_installment'
                 this.transaction.allocated_loan_installment_id = this.$route.params.allocated_loan_installment_id
                 let that = this
                 this.transaction.create()

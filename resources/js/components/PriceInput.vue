@@ -8,7 +8,7 @@
             <md-field class="md-invalid">
                 <md-input @input="reformatInput($event)" :value="currencyFormatedValue" :disabled="disabled" />
             </md-field>
-            <span v-if="value > 0">
+            <span v-if="value !== 0">
                 {{ digitsToWords(inputValue) }} {{ currencyUnit }}
             </span>
         </div>

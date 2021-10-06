@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class TransactionController extends Controller
 {
@@ -43,7 +44,10 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
+        $transactionType = ($request->has('transaction_type')) ? $request->get('transaction_type') : null; // payer - recipient
+
         $config = [
+            'returnModelQuery' => true,
             'eagerLoads'=> [
                 'transactionStatus',
                 'relatedPayers.transactionPayers',
@@ -58,41 +62,46 @@ class TransactionController extends Controller
                 'manager_comment',
                 'user_comment',
                 'transaction_status_id',
-                'parent_transaction_id'
+                'parent_transaction_id',
+                'paid_as_payroll_deduction'
             ],
             'filterRelationIds'=> [
-                [
-                    'requestKey' => 'user_id',
-                    'orWhereHas' => true,
-                    'relationNames' => [
-                        'userPayers',
-                        'userRecipients'
-                    ]
-                ],
-                [
-                    'requestKey' => 'account_id',
-                    'orWhereHas' => true,
-                    'relationNames' => [
-                        'accountPayers',
-                        'accountRecipients'
-                    ]
-                ],
+//                [
+//                    'requestKey' => 'user_id',
+//                    'orWhereHas' => true,
+//                    'relationNames' => [
+//                        'userPayers',
+//                        'userRecipients'
+//                    ]
+//                ],
+//                [
+//                    'requestKey' => 'account_id',
+//                    'orWhereHas' => true,
+//                    'relationNames' => [
+//                        'accountPayers',
+//                        'accountRecipients'
+//                    ]
+//                ],
                 [
                     'requestKey' => 'loan_id',
                     'relationName' => 'allocatedLoanRecipients.loan'
                 ],
-                [
-                    'requestKey' => 'company_id',
-                    'relationName' => 'companyPayers'
-                ],
-                [
-                    'requestKey' => 'fund_id',
-                    'orWhereHas' => true,
-                    'relationNames' => [
-                        'fundPayers',
-                        'fundRecipients'
-                    ]
-                ]
+//                [
+//                    'requestKey' => 'company_id',
+//                    'orWhereHas' => true,
+//                    'relationNames' => [
+//                        'accountPayers.company',
+//                        'accountRecipients.company'
+//                    ]
+//                ],
+//                [
+//                    'requestKey' => 'fund_id',
+//                    'orWhereHas' => true,
+//                    'relationNames' => [
+//                        'fundPayers',
+//                        'fundRecipients'
+//                    ]
+//                ]
             ],
         ];
 
@@ -100,7 +109,47 @@ class TransactionController extends Controller
             $request->offsetSet('user_id', Auth::user()->id);
         }
 
-        return $this->commonIndex($request, Transaction::class, $config);
+        $data = $this->commonIndex($request,
+            Transaction::class,
+            $config
+        );
+        $transactionModelQuery = $data['modelQuery'];
+        $responseWithAttachedCollection = $data['responseWithAttachedCollection'];
+
+        $companyId = ($request->has('company_id')) ? $request->get('company_id') : null;
+        if (isset($companyId)) {
+            if ($transactionType === 'payer') {
+                $transactionModelQuery->hasCompanyAsPayer($companyId);
+            } else if ($transactionType === 'recipient') {
+                $transactionModelQuery->hasCompanyAsRecipient($companyId);
+            }
+        }
+
+        $userId = ($request->has('user_id')) ? $request->get('user_id') : null;
+        $fName = ($request->has('f_name')) ? $request->get('f_name') : null;
+        $lName = ($request->has('l_name')) ? $request->get('l_name') : null;
+        if (isset($userId) || isset($fName) || isset($lName)) {
+            if ($transactionType === 'payer') {
+                $transactionModelQuery->hasUserAsPayer($userId, $fName, $lName);
+            } else if ($transactionType === 'recipient') {
+                $transactionModelQuery->hasUserAsRecipient($userId, $fName, $lName);
+            }
+        }
+
+//        die(Str::replaceArray('?', $transactionModelQuery->getBindings(), $transactionModelQuery->toSql()));
+
+        $accountId = ($request->has('account_id')) ? $request->get('account_id') : null;
+        if (isset($accountId)) {
+            if ($transactionType === 'payer') {
+                $transactionModelQuery->hasAccountAsPayer($accountId);
+            } else if ($transactionType === 'recipient') {
+                $transactionModelQuery->hasAccountAsRecipient($accountId);
+            }
+        }
+
+        return $responseWithAttachedCollection($transactionModelQuery);
+
+//        return $this->commonIndex($request, Transaction::class, $config);
     }
 
     /**
@@ -158,10 +207,10 @@ class TransactionController extends Controller
     private function getTransactionType(Request $request) {
         $transaction_type = $request->get('transaction_type');
         $constantType = '';
-        if ($transaction_type === 'user_charge_fund') {
-            $constantType = config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND');
-        } else if ($transaction_type === 'user_pay_the_fund_tuition') {
-            $constantType = config('constants.TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION');
+        if ($transaction_type === 'account_charge_fund') {
+            $constantType = config('constants.TRANSACTION_TYPE_ACCOUNT_CHARGE_FUND');
+        } else if ($transaction_type === 'account_pay_the_fund_tuition') {
+            $constantType = config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_THE_FUND_TUITION');
         } else if ($transaction_type === 'user_withdraw_from_account') {
             $constantType = config('constants.TRANSACTION_TYPE_USER_WITHDRAW_FROM_ACCOUNT');
         } else if ($transaction_type === 'company_charge_fund') {
@@ -170,8 +219,8 @@ class TransactionController extends Controller
             $constantType = config('constants.TRANSACTION_TYPE_FUND_PAY_LOAN');
         } else if ($transaction_type === 'pay_fund_expenses') {
             $constantType = config('constants.TRANSACTION_TYPE_PAY_FUND_EXPENSES');
-        } else if ($transaction_type === 'user_pay_installment') {
-            $constantType = config('constants.TRANSACTION_TYPE_USER_PAY_INSTALLMENT');
+        } else if ($transaction_type === 'account_pay_installment') {
+            $constantType = config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_INSTALLMENT');
         } else {
             return false;
         }
@@ -188,8 +237,8 @@ class TransactionController extends Controller
         $transaction_type = $request->get('transaction_type');
         $dBTransactionValidator = true;
 
-        if ($transaction_type === 'user_charge_fund' || $transaction_type === 'user_pay_the_fund_tuition') {
-            $dBTransactionValidator = $this->userChargeFund($request, $transaction);
+        if ($transaction_type === 'account_charge_fund' || $transaction_type === 'account_pay_the_fund_tuition') {
+            $dBTransactionValidator = $this->accountChargeFund($request, $transaction);
         } else if ($transaction_type === 'user_withdraw_from_account') {
             $dBTransactionValidator = $this->userWithdrawAccount($request, $transaction);
         } else if ($transaction_type === 'company_charge_fund') {
@@ -198,14 +247,14 @@ class TransactionController extends Controller
             $dBTransactionValidator = $this->fundPayLoan($request, $transaction);
         } else if ($transaction_type === 'pay_fund_expenses') {
             $dBTransactionValidator = $this->payFundExpenses($request, $transaction);
-        } else if ($transaction_type === 'user_pay_installment') {
-            $dBTransactionValidator = $this->userPayInstallment($request, $transaction);
+        } else if ($transaction_type === 'account_pay_installment') {
+            $dBTransactionValidator = $this->accountPayInstallment($request, $transaction);
         }
 
         return $dBTransactionValidator;
     }
 
-    private function userChargeFund(Request $request, Transaction $transaction) {
+    private function accountChargeFund(Request $request, Transaction $transaction) {
         $validator = Validator::make($request->all(), [
             'account_id' => 'required|exists:accounts,id',
         ]);
@@ -316,7 +365,7 @@ class TransactionController extends Controller
         return $validator;
     }
 
-    private function userPayInstallment(Request $request, Transaction $transaction) {
+    private function accountPayInstallment(Request $request, Transaction $transaction) {
         $validator = Validator::make($request->all(), [
             'allocated_loan_installment_id' => 'required|exists:allocated_loan_installments,id'
         ]);
@@ -338,8 +387,8 @@ class TransactionController extends Controller
             return $validator;
         }
 
-        $user = $allocatedLoanInstallment->allocatedLoan->account->user()->first();
-        $transaction->userPayers()->attach($user, ['cost'=> $cost]);
+        $account = $allocatedLoanInstallment->allocatedLoan->account;
+        $transaction->accountPayers()->attach($account, ['cost'=> $cost]);
         $transaction->allocatedLoanInstallmentRecipients()->attach($allocatedLoanInstallment, ['cost'=> $cost]);
         $fund = $allocatedLoanInstallment->allocatedLoan->loan->fund;
         $fund->deposit($cost);
@@ -419,7 +468,7 @@ class TransactionController extends Controller
         $transaction_type = $transaction->transactionType->display_name;
         $dBTransactionValidator = true;
 
-//        if ($transaction_type === config('constants.TRANSACTION_TYPE_USER_CHARGE_FUND')) {
+//        if ($transaction_type === config('constants.TRANSACTION_TYPE_ACCOUNT_CHARGE_FUND')) {
 //            $dBTransactionValidator = $this->userChargeFund($request, $transaction);
 //        } else if ($transaction_type === 'user_withdraw_from_account') {
 //            $dBTransactionValidator = $this->userWithdrawAccount($request, $transaction);
@@ -429,8 +478,8 @@ class TransactionController extends Controller
 //            $dBTransactionValidator = $this->fundPayLoan($request, $transaction);
 //        } else if ($transaction_type === 'pay_fund_expenses') {
 //            $dBTransactionValidator = $this->payFundExpenses($request, $transaction);
-//        } else if ($transaction_type === 'user_pay_installment') {
-//            $dBTransactionValidator = $this->userPayInstallment($request, $transaction);
+//        } else if ($transaction_type === 'account_pay_installment') {
+//            $dBTransactionValidator = $this->accountPayInstallment($request, $transaction);
 //        }
 //
 //        return $dBTransactionValidator;

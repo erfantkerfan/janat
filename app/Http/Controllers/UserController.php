@@ -11,10 +11,12 @@ use Exception;
 use App\Traits\Filter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use App\Exports\UsersExport;
+use App\Imports\UsersImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -80,6 +82,8 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
+        $request->offsetSet('password', Hash::make($request->get('password')));
+
         return $this->commonStore($request, User::class);
     }
 
@@ -225,7 +229,7 @@ class UserController extends Controller
         $user->password = $newPassword;
 
         if ($user->save()) {
-            $user = User::with(['accounts', 'company', 'status'])->findOrFail($user->id)->makeHidden('user_pic');
+            $user = User::with(['accounts', 'status'])->findOrFail($user->id)->makeHidden('user_pic');
             return $this->jsonResponseOk($user);
         } else {
             return $this->jsonResponseServerError([
@@ -280,5 +284,19 @@ class UserController extends Controller
         });
 
         return $this->jsonResponseOk($user->accounts->sum('balance'));
+    }
+
+    public function export()
+    {
+        return Excel::download(new UsersExport, 'users.xlsx');
+    }
+
+    public function import()
+    {
+        Excel::import(new UsersImport, request()->file('users'));
+
+        return $this->jsonResponseOk([
+            'message'=> 'ورود اطلاعات موفقیت آمیز بود.'
+        ]);
     }
 }

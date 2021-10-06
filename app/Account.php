@@ -11,7 +11,7 @@ class Account extends Model
 {
     use SoftDeletes, PowerJoins;
 
-    protected $with = ['user', 'fund'];
+    protected $with = ['user', 'fund', 'company'];
 
     /**
      * The attributes that are mass assignable.
@@ -49,7 +49,7 @@ class Account extends Model
 
     public function salaries()
     {
-        $transactionTypes = TransactionType::select('id')->where('name', config('constants.TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION'))
+        $transactionTypes = TransactionType::select('id')->where('name', config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_THE_FUND_TUITION'))
             ->get()->pluck('id');
         return $this->morphToMany(Transaction::class, 'transaction_payers')
             ->whereIn('transactions.transaction_type_id', $transactionTypes);
@@ -141,7 +141,7 @@ class Account extends Model
         }
         $whereClause1 = "AND `transactions`.`paid_at` $operator '$date'";
         $whereClause2 = (isset($operator2) && isset($date2)) ? " AND `transactions`.`paid_at` $operator2 '$date2'" : '';
-        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION'))->first();
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_THE_FUND_TUITION'))->first();
         $transactionTypeId = $transactionType->id;
 
         $rawQuery = "
@@ -170,7 +170,7 @@ class Account extends Model
     public function scopeLastPayrollDeductionForPayFundTuitionPaidAt($query, $operator, $date, $operator2 = null, $date2 = null) {
         $whereClause1 = "AND `transactions`.`paid_at` $operator '$date'";
         $whereClause2 = (isset($operator2) && isset($date2)) ? " AND `transactions`.`paid_at` $operator2 '$date2'" : '';
-        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_USER_PAY_THE_FUND_TUITION'))->first();
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_THE_FUND_TUITION'))->first();
         $transactionTypeId = $transactionType->id;
 
         $rawQuery = "
