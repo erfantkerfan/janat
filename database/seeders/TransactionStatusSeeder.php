@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Faker\Factory;
 use App\TransactionStatus;
 use Illuminate\Database\Seeder;

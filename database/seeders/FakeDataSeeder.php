@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Account;
 use App\AllocatedLoan;
 use App\AllocatedLoanInstallment;
