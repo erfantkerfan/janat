@@ -183,6 +183,19 @@
                         md-label="کاربری یافت نشد"
                     >
                     </md-empty-state>
+
+                    <div>
+                        <button type="button" class="md-button md-dense md-raised md-info md-theme-default" style="width: 145px;">
+                            <div class="md-ripple">
+                                <div class="md-button-content" style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;">
+                                    <label for="importExcelInputFile" style="position: absolute;top: 0;left: 0;width: 100%;height: 100%; display: flex;justify-content: center;align-items: center;">
+                                        ورود اطلاعات از اکسل
+                                        <input type="file" @change="importFromExcel($event)" id="importExcelInputFile" style="display: none">
+                                    </label>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
                     <md-table
                         :value="users.list"
                         :md-sort.sync="filterData.sortation.field"
@@ -192,10 +205,6 @@
                     >
                         <md-table-toolbar>
                             <md-field>
-                                <md-button class="md-dense md-raised md-info">
-                                    <input type="file" @change="importFromExcel($event)">
-                                    ورود اطلاعات از اکسل
-                                </md-button>
                                 <md-button class="md-dense md-icon-button md-raised md-primary" @click="getList">
                                     <md-icon>search</md-icon>
                                 </md-button>
