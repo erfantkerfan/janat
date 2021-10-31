@@ -41,6 +41,13 @@ jobs:
           mysql user: 'sail' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
           mysql password: 'root' # Required if "mysql user" exists. The password for the "mysql user"
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, cli, dev, pgsql, sqlite3, gd, memcached, imap, mysql, xml, bcmath, soap, intl, readline, pcov, msgpack, igbinary, ldap, redis, swoole
+          coverage: none
+
       - name: Install composer dependencies
         run: |
           composer install --optimize-autoloader --no-dev --prefer-dist --no-interaction
