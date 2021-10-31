@@ -5,8 +5,8 @@ name: CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events
-  #push:
-  #  branches: [ main ]
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main, production ]
 
@@ -22,7 +22,7 @@ jobs:
     # a custum image
     container:
       image: kirschbaumdevelopment/laravel-test-runner:8.0
-      
+
     services:
       mysql:
         image: mysql:8.0
@@ -43,16 +43,24 @@ jobs:
 
       - name: Install composer dependencies
         run: |
-          composer install --optimize-autoloader --no-dev --prefer-dist --no-interaction 
+          composer install --optimize-autoloader --no-dev --prefer-dist --no-interaction
 
       - name: Prepare Laravel Application
         run: |
           cp .env.example .env
           php artisan key:generate
 
-      - name: Run Testsuite
-        run: vendor/bin/phpunit tests/
-      
+      - name: Run Migrations
+        run: php artisan migrate:fresh --seed --no-interaction --force
+
+      - name: Run Optimizations
+        run: |
+          php artisan view:cache
+          php artisan optimize
+
+#      - name: Run Testsuite
+#        run: vendor/bin/phpunit tests/
+
       - name: Install front-end dependencies
         run: |
           npm ci --production
