@@ -45,7 +45,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.0
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, cli, dev, pgsql, sqlite3, gd, memcached, imap, mysql, xml, bcmath, soap, intl, readline, pcov, msgpack, igbinary, ldap, redis, swoole
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, cli, gd, memcached, imap, mysql, xml, bcmath, intl, readline, pcov, msgpack, igbinary, redis, swoole
           coverage: none
 
       - name: Install composer dependencies
