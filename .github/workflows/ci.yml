@@ -47,15 +47,16 @@ jobs:
         run: |
           composer install --optimize-autoloader --no-dev --prefer-dist --no-interaction
 
-      - name: Prepare Laravel Application
-        run: |
-          cp .env.example .env
-          php artisan key:generate
+      - name: Prepare Laravel Env
+        run: cp .env.example .env
 
-      - name: Run Migrations
+      - name: Prepare Laravel key
+        run:  php artisan key:generate
+
+      - name: Run migrations
         run: php artisan migrate:fresh --seed --no-interaction --force
 
-      - name: Run Optimizations
+      - name: Run optimizations
         run: |
           php artisan view:cache
           php artisan optimize
@@ -64,6 +65,7 @@ jobs:
 #        run: vendor/bin/phpunit tests/
 
       - name: Install front-end dependencies
-        run: |
-          npm ci --production
-          npm run production
+        run: npm ci --production
+
+      - name: Build front-end dependencies
+        run: npm run production
