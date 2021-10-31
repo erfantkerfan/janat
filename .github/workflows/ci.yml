@@ -5,8 +5,8 @@ name: CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events
-  push:
-    branches: [ main ]
+  #push:
+  #  branches: [ main ]
   pull_request:
     branches: [ main, production ]
 
@@ -43,7 +43,7 @@ jobs:
 
       - name: Install composer dependencies
         run: |
-          composer install --optimize-autoloader --no-dev --no-scripts
+          composer install --optimize-autoloader --no-dev --prefer-dist --no-interaction 
 
       - name: Prepare Laravel Application
         run: |
