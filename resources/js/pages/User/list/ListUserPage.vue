@@ -189,7 +189,12 @@
                             <div class="md-ripple">
                                 <div class="md-button-content" style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;">
                                     <label for="importExcelInputFile" style="position: absolute;top: 0;left: 0;width: 100%;height: 100%; display: flex;justify-content: center;align-items: center;">
-                                        ورود اطلاعات از اکسل
+                                        <span v-if="!importFromExcelLoading">
+                                            ورود اطلاعات از اکسل
+                                        </span>
+                                        <span v-else>
+                                            کمی صبر کنید...
+                                        </span>
                                         <input type="file" @change="importFromExcel($event)" id="importExcelInputFile" style="display: none">
                                     </label>
                                 </div>
@@ -321,6 +326,7 @@
             JsonExcel
         },
         data: () => ({
+            importFromExcelLoading: false,
             users: new UserList(),
             filterData: {
                 sortation: {
@@ -355,17 +361,20 @@
                 this.getList(data)
             },
             importFromExcel (event) {
-                let formData = new FormData();
-                formData.append('users', event.target.files[0]);
+                let formData = new FormData()
+                formData.append('users', event.target.files[0])
+                this.importFromExcelLoading = true
                 axios.post('api/users/import', formData,{
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
                     })
                 .then( () => {
+                    this.importFromExcelLoading = false
                     this.getList()
                 })
                 .catch( () => {
+                    this.importFromExcelLoading = false
                     this.getList()
                 })
             },

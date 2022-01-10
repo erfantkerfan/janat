@@ -293,10 +293,29 @@ class UserController extends Controller
 
     public function import()
     {
-        Excel::import(new UsersImport, request()->file('users'));
+        try {
+            Excel::import(new UsersImport, request()->file('users'));
+            return $this->jsonResponseOk([
+                'message'=> 'ورود اطلاعات موفقیت آمیز بود.'
+            ]);
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errors = [];
 
-        return $this->jsonResponseOk([
-            'message'=> 'ورود اطلاعات موفقیت آمیز بود.'
-        ]);
+            foreach ($failures as $failure) {
+                $errors [] = [
+                    'row' => 'برای ردیف شماره ' . ($failure->row() - 1) . ' ' . implode(' - ',$failure->errors()),
+                    'values' => $failure->values()
+                ];
+//                $failure->row(); // row that went wrong
+//                $failure->attribute(); // either heading key (if using heading row concern) or column index
+//                $failure->errors(); // Actual error messages from Laravel validator
+//                $failure->values(); // The values of the row that has failed.
+            }
+
+            return $this->jsonResponseValidateError([
+                'errors' => $errors
+            ]);
+        }
     }
 }
