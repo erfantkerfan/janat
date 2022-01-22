@@ -373,7 +373,28 @@
                     this.importFromExcelLoading = false
                     this.getList()
                 })
-                .catch( () => {
+                .catch( (error) => {
+                    this.$store.dispatch('alerts/error', {
+                        icon: 'error',
+                        title: 'توجه',
+                        message: 'مشکلی در وارد کردن اطلاعات رخ داده است.',
+                        timeout: 5000
+                    });
+                    let errorMessage = ''
+                    for (let property in error.response.data.errors) {
+                        errorMessage += error.response.data.errors[property].row + '<br>\r\n'
+                        for (let key in error.response.data.errors[property].values) {
+                            errorMessage += key + ': ' + error.response.data.errors[property].values[key] + '-'
+                        }
+                        this.$store.dispatch('alerts/error', {
+                            icon: 'error',
+                            title: 'توجه',
+                            message: errorMessage,
+                            timeout: 10000
+                        });
+                    }
+
+
                     this.importFromExcelLoading = false
                     this.getList()
                 })
