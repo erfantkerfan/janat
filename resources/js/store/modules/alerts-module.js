@@ -27,9 +27,19 @@ const actions = {
         });
     },
 
-    error({commit, dispatch}, message) {
+    error({commit, dispatch}, data) {
+        let message = ''
+        let timeout = 2500
+        if (typeof data === 'string') {
+            message = data
+        } else {
+            message = data.message
+        }
+        if (typeof data.timeout === 'number') {
+            timeout = data.timeout
+        }
         this.$app.$notify({
-            timeout: 2500,
+            timeout: timeout,
             message: message,
             horizontalAlign: "right",
             verticalAlign: "top",
