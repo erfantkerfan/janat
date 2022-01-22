@@ -27,12 +27,12 @@ class UpdateUserRequest extends FormRequest
             'f_name' => ['required', 'string'],
             'l_name' => ['required', 'string'],
             'father_name' => ['sometimes', 'required', 'string'],
-            'SSN' => ['required', 'melli_code', "unique:users,SSN,{$this->user->id}"],
+            'SSN' => ['required', "unique:users,SSN,{$this->user->id}"], // , 'melli_code'
             'staff_code' => ['sometimes', 'nullable', 'string', "unique:users,staff_code,{$this->user->id}"],
             'salary' => ['sometimes', 'nullable', 'integer'],
             'address' => ['sometimes', 'nullable', 'string'],
             'phone' => ['sometimes', 'nullable', 'integer'],
-            'mobile' => ['sometimes', 'required', 'iran_mobile'],
+            'mobile' => ['sometimes', 'required'], // , 'iran_mobile'
             'email' => ['sometimes', 'nullable', 'email'],
             'description' => ['sometimes', 'nullable', 'string'],
             'company_id' => ['sometimes', 'required', 'integer', 'exists:companies,id'],
