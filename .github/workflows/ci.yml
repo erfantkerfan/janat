@@ -6,7 +6,7 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events
   push:
-    branches: [ main ]
+    branches: [ main, production ]
   pull_request:
     branches: [ main, production ]
 
@@ -26,13 +26,16 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Setup GIT
+        uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - uses: actions/setup-node@v2
+      - name: Setup NODEJS
+        uses: actions/setup-node@v2
         with:
           node-version: '16.x'
-      - uses: mirromutth/mysql-action@v1.1
+      - name: Setup MYSQL
+        uses: mirromutth/mysql-action@v1.1
         with:
           character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
           collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
