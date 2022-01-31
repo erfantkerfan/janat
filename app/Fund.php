@@ -164,8 +164,8 @@ class Fund extends Model
     public function getDemandsAttribute()
     {
         // set is_settled for allocated loans of accounts
-        $accounts = $this->accounts->map( function (&$account) {
-            $account['allocated_loans'] = $account->allocatedLoans->map( function (&$allocatedLoan) {
+        $accounts = $this->accounts->map( function ($account) {
+            $account['allocated_loans'] = $account->allocatedLoans->map( function ($allocatedLoan) {
                 return $allocatedLoan->setAppends(['is_settled']);
             });
             return $account;
@@ -190,8 +190,8 @@ class Fund extends Model
         }
 
         // set remaining_payable_amount for allocated loans of accounts
-        $accounts = $this->accounts->map( function (&$account) {
-            $account['allocated_loans'] = $account->allocatedLoans->map( function (&$allocatedLoan) {
+        $accounts = $this->accounts->map( function ($account) {
+            $account['allocated_loans'] = $account->allocatedLoans->map( function ($allocatedLoan) {
                 return $allocatedLoan->setAppends(['remaining_payable_amount']);
             });
             return $account;

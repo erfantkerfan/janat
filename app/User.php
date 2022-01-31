@@ -78,7 +78,7 @@ class User extends Authenticatable
     public function getHasNotSettledLoanAttribute()
     {
         $hasNotSettledLoan = false;
-        $userWithAccounts = $this->accounts()->get()->map(function (& $item) {
+        $userWithAccounts = $this->accounts()->get()->map(function ($item) {
             return $item->setAppends(['hasNotSettledLoan']);
         });
 
@@ -94,7 +94,7 @@ class User extends Authenticatable
     public function getTotalCreditAttribute()
     {
         $totalCredit = 0;
-        $userWithAccounts = $this->accounts()->get()->map(function (& $item) {
+        $userWithAccounts = $this->accounts()->get()->map(function ($item) {
             return $item->setAppends(['hasNotSettledLoan']);
         });
 
