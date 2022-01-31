@@ -114,8 +114,8 @@ class UserController extends Controller
             ]);
 //            ->makeHidden('user_pic');
 
-        $user->accounts->map(function (& $account) {
-            return $account->allocatedLoans->map(function (& $allocatedLoan) {
+        $user->accounts->map(function ($account) {
+            return $account->allocatedLoans->map(function ($allocatedLoan) {
                 return $allocatedLoan->setAppends([
                     'is_settled',
                     'total_payments',
@@ -279,7 +279,7 @@ class UserController extends Controller
         ])
             ->findOrFail($id);
 
-        $user->accounts->map(function (& $item) {
+        $user->accounts->map(function ($item) {
             return $item->setAppends(['balance']);
         });
 

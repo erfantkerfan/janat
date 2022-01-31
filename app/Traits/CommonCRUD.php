@@ -34,7 +34,7 @@ trait CommonCRUD
         } elseif (count($configArray['setAppends']) > 0) {
             $attachedCollection = $this->getAttachedCollection($modelQuery, $setAppends, $perPage);
 //                $modelQuery->paginate($perPage)
-//                    ->getCollection()->map(function (& $item) use ($setAppends) {
+//                    ->getCollection()->map(function ($item) use ($setAppends) {
 //                    return $item->setAppends($setAppends);
 //                });
         }
@@ -73,9 +73,9 @@ trait CommonCRUD
         return $configArray;
     }
 
-    private function getAttachedCollection(& $updatedModelQuery, $setAppends, $perPage) {
+    private function getAttachedCollection($updatedModelQuery, $setAppends, $perPage) {
         return $updatedModelQuery->paginate($perPage)
-            ->getCollection()->map(function (& $item) use ($setAppends) {
+            ->getCollection()->map(function ($item) use ($setAppends) {
                 return $item->setAppends($setAppends);
             });
     }
