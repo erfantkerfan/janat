@@ -200,6 +200,11 @@
                                 </div>
                             </div>
                         </button>
+                        <a href="/assets/sample-import/import.xlsx" target="_blank">
+                            <button type="button" class="md-button md-dense md-raised md-info md-theme-default" style="width: 145px;">
+                                دانلود نمونه فایل اکسل
+                            </button>
+                        </a>
                     </div>
                     <md-table
                         :value="users.list"

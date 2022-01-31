@@ -346,7 +346,7 @@ class AllocatedLoanController extends Controller
             'count_of_paid_installments',
             'count_of_remaining_installments'
         ];
-        $targetAllocatedLoan->map(function (& $item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+        $targetAllocatedLoan->map(function ($item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
             $installmentInDateRange = $item->installments->filter(function ($installment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
                 return (
                     ($installment['last_payment']['paid_at'] >= $lastPaidAtAfter) &&
@@ -355,7 +355,7 @@ class AllocatedLoanController extends Controller
                 );
             });
 
-            $installmentInDateRange->map(function (& $item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+            $installmentInDateRange->map(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
                 return $item2['sum_of_paid_payments_as_payroll_deduction'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
                     return (
                         ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
@@ -368,7 +368,7 @@ class AllocatedLoanController extends Controller
             $item['count_of_paid_payments_as_payroll_deduction_in_date_range'] = $installmentInDateRange->count();
             $item['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $installmentInDateRange->sum('sum_of_paid_payments_as_payroll_deduction');
 
-//            $item->installments->map(function (& $item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+//            $item->installments->map(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
 //                return $item2['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
 //                    return (
 //                        ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
@@ -413,7 +413,7 @@ class AllocatedLoanController extends Controller
 //        die(Str::replaceArray('?', $targetAllocatedLoan->getBindings(), $targetAllocatedLoan->toSql()));
 //        die($targetAllocatedLoan);
 
-        $targetAllocatedLoan->map(function (& $item) {
+        $targetAllocatedLoan->map(function ($item) {
             return $item->setAppends(['allocated_loan_paid_at']);
         });
         foreach ($targetAllocatedLoan as $key => $value) {
@@ -435,8 +435,8 @@ class AllocatedLoanController extends Controller
             $payrollDeductionAmount = $allocatedLoanItem->payroll_deduction_amount;
             $cost = $remainingPayableAmount < $payrollDeductionAmount ? $remainingPayableAmount : $payrollDeductionAmount;
 
-            $request = new StoreTransaction();
-            $request->replace([
+            $storeTransactionRequest = new StoreTransaction();
+            $storeTransactionRequest->replace([
                 'transaction_status_id' => 1,
                 'paid_as_payroll_deduction' => 1,
                 'cost' => $cost,
@@ -445,7 +445,7 @@ class AllocatedLoanController extends Controller
                 'allocated_loan_installment_id' => $notSettledInstallment->id
             ]);
             $transactionController = new TransactionController();
-            $storeTransactionResult = $transactionController->store($request);
+            $storeTransactionResult = $transactionController->store($storeTransactionRequest);
             if ($storeTransactionResult->getStatusCode() !== 200) {
                 $hasProblem = true;
             }
@@ -459,8 +459,8 @@ class AllocatedLoanController extends Controller
 //                'count_of_paid_installments',
 //                'count_of_remaining_installments'
 //            ];
-//            $targetAllocatedLoan->map(function (& $item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
-//                $item->installments->map(function (& $item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+//            $targetAllocatedLoan->map(function ($item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+//                $item->installments->map(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
 //                    return $item2['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
 //                        return (
 //                            ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&

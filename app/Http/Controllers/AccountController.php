@@ -121,7 +121,7 @@ class AccountController extends Controller
             ->lastPayrollDeductionForPayFundTuitionPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
         $setAppends = ['balance'];
-        $targetAccount->map(function (& $item) use ($setAppends) {
+        $targetAccount->map(function ($item) use ($setAppends) {
             return $item->setAppends($setAppends);
         });
 
@@ -166,7 +166,7 @@ class AccountController extends Controller
 
         if (!$hasProblem) {
             $setAppends = ['balance'];
-            $targetAccount->map(function (& $item) use ($setAppends) {
+            $targetAccount->map(function ($item) use ($setAppends) {
                 return $item->setAppends($setAppends);
             });
             return $this->jsonResponseOk($targetAccount);
