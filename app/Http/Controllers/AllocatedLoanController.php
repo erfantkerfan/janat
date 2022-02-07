@@ -346,7 +346,7 @@ class AllocatedLoanController extends Controller
             'count_of_paid_installments',
             'count_of_remaining_installments'
         ];
-        $targetAllocatedLoan->map(function ($item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+        $targetAllocatedLoan->each(function ($item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
             $installmentInDateRange = $item->installments->filter(function ($installment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
                 return (
                     ($installment['last_payment']['paid_at'] >= $lastPaidAtAfter) &&
@@ -355,7 +355,7 @@ class AllocatedLoanController extends Controller
                 );
             });
 
-            $installmentInDateRange->map(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+            $installmentInDateRange->each(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
                 return $item2['sum_of_paid_payments_as_payroll_deduction'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
                     return (
                         ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
@@ -368,7 +368,7 @@ class AllocatedLoanController extends Controller
             $item['count_of_paid_payments_as_payroll_deduction_in_date_range'] = $installmentInDateRange->count();
             $item['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $installmentInDateRange->sum('sum_of_paid_payments_as_payroll_deduction');
 
-//            $item->installments->map(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+//            $item->installments->each(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
 //                return $item2['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
 //                    return (
 //                        ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
