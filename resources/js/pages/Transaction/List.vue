@@ -87,7 +87,7 @@
                                 <label>صندوق:</label>
                                 <md-select v-model="filterData.fund_id" name="pages">
                                     <md-option
-                                        v-for="item in companies.list"
+                                        v-for="item in funds.list"
                                         :key="item.id"
                                         :label="item.name"
                                         :value="item.id"
@@ -102,7 +102,7 @@
                                 <label>شرکت:</label>
                                 <md-select v-model="filterData.company_id" name="pages">
                                     <md-option
-                                        v-for="item in funds.list"
+                                        v-for="item in companies.list"
                                         :key="item.id"
                                         :label="item.name"
                                         :value="item.id"

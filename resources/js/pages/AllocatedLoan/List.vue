@@ -235,16 +235,12 @@
                     >
                         <md-table-toolbar>
                             <md-field>
-                                <md-button class="md-dense md-icon-button md-raised md-primary" @click="getList">
-                                    <md-icon>search</md-icon>
-                                </md-button>
+                                <md-button class="md-dense md-raised md-info" @click="getList">جستجو</md-button>
                                 <Json-excel
                                     :data="allocatedLoans.list"
                                     :fields="json_fields"
                                 >
-                                    <md-button class="md-dense md-icon-button md-raised md-info">
-                                        <md-icon>file_download</md-icon>
-                                    </md-button>
+                                    <md-button class="md-dense md-raised md-primary" @click="getList">دانلود اکسل این صفحه</md-button>
                                 </Json-excel>
                             </md-field>
                             <md-field>
