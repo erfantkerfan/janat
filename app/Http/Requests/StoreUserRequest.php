@@ -34,7 +34,7 @@ class StoreUserRequest extends FormRequest
             'salary' => ['sometimes', 'nullable', 'integer'],
             'address' => ['sometimes', 'nullable', 'string'],
             'phone' => ['sometimes', 'nullable'],
-            'mobile' => ['sometimes', 'required', 'unique:users,mobile'],
+            'mobile' => ['sometimes', 'nullable'],
 //            'phone' => ['sometimes', 'nullable', 'iran_phone'],
 //            'mobile' => ['sometimes', 'required', 'iran_mobile', 'unique:users,mobile'],
             'email' => ['sometimes', 'nullable', 'email', 'unique:users,email'],

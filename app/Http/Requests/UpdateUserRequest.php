@@ -32,7 +32,7 @@ class UpdateUserRequest extends FormRequest
             'salary' => ['sometimes', 'nullable', 'integer'],
             'address' => ['sometimes', 'nullable', 'string'],
             'phone' => ['sometimes', 'nullable', 'integer'],
-            'mobile' => ['sometimes', 'required'], // , 'iran_mobile'
+            'mobile' => ['sometimes', 'nullable'], // , 'iran_mobile'
             'email' => ['sometimes', 'nullable', 'email'],
             'description' => ['sometimes', 'nullable', 'string'],
             'company_id' => ['sometimes', 'required', 'integer', 'exists:companies,id'],

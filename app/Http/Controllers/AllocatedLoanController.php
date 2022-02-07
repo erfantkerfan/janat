@@ -326,19 +326,14 @@ class AllocatedLoanController extends Controller
         $lastPaidAtBefore = $request->get('pay_till_date');
         $companyId = $request->get('company_id');
 
-        $targetAllocatedLoan = AllocatedLoan::with(
-                'account.user:id,f_name,l_name,staff_code',
-                'loan.fund.paidTransactions.allocatedLoanRecipients',
-                'installments'
-            )
-            ->where('payroll_deduction', '=', '1')
+        $targetAllocatedLoan = AllocatedLoan::where('payroll_deduction', '=', '1')
             ->whereHas('account.company', function (Builder $query) use ($companyId) {
                 $query->whereIn('companies.id', [$companyId]);
             })
             ->lastPayrollDeductionForChargeFundPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
 
-        $targetAllocatedLoan = $this->getTargetAllocatedLoanForShow($targetAllocatedLoan, $lastPaidAtAfter, $lastPaidAtBefore);
+        $targetAllocatedLoan = $this->getTargetAllocatedLoanForShow($targetAllocatedLoan->pluck('id'), $lastPaidAtAfter, $lastPaidAtBefore);
         return $this->jsonResponseOk($targetAllocatedLoan);
     }
 
@@ -403,7 +398,7 @@ class AllocatedLoanController extends Controller
         }
 
         if (!$hasProblem) {
-            $targetAllocatedLoan = $this->getTargetAllocatedLoanForShow($targetAllocatedLoan, $lastPaidAtAfter, $lastPaidAtBefore);
+            $targetAllocatedLoan = $this->getTargetAllocatedLoanForShow($targetAllocatedLoan->pluck('id'), $lastPaidAtAfter, $lastPaidAtBefore);
             return $this->jsonResponseOk($targetAllocatedLoan);
         } else {
             return $this->jsonResponseValidateError([
@@ -416,7 +411,15 @@ class AllocatedLoanController extends Controller
         }
     }
 
-    private function getTargetAllocatedLoanForShow ($targetAllocatedLoan, $lastPaidAtAfter, $lastPaidAtBefore) {
+    private function getTargetAllocatedLoanForShow ($targetAllocatedLoanIds, $lastPaidAtAfter, $lastPaidAtBefore) {
+
+        $targetAllocatedLoan = AllocatedLoan::with([
+            'account.user:id,f_name,l_name,staff_code',
+            'loan.fund.paidTransactions.allocatedLoanRecipients',
+            'installments'
+        ])
+            ->whereIn('id', $targetAllocatedLoanIds)
+            ->get();
 
         $setAppends = [
             'is_settled',
