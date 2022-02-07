@@ -51,7 +51,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
 //            'salary' => ['sometimes', 'nullable', 'integer'],
 //            'address' => ['sometimes', 'nullable', 'string'],
             'phone' => ['sometimes', 'nullable'],
-            'mobile' => ['sometimes', 'required', 'unique:users,mobile'],
+            'mobile' => ['sometimes', 'nullable'],
 //            'email' => ['sometimes', 'nullable', 'email', 'unique:users,email'],
 //            'description' => ['sometimes', 'nullable', 'string'],
 
