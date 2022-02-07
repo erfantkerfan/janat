@@ -34,7 +34,7 @@ class LoanCalculator
     }
 
     public function getRoundedInstallmentsRate($loanAmount, $interestAmount, $numberOfInstallments, $typeOfLoanInterestPayment) {
-        $padding = 100;
+        $padding = 1000;
         if ($typeOfLoanInterestPayment === 'monthly_payment') {
             $payableAmount = $loanAmount + $interestAmount;
         } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
