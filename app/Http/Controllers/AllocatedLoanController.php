@@ -338,55 +338,7 @@ class AllocatedLoanController extends Controller
             ->lastPayrollDeductionForChargeFundPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
             ->get();
 
-        $setAppends = [
-            'is_settled',
-            'total_payments',
-            'allocated_loan_paid_at',
-            'remaining_payable_amount',
-            'count_of_paid_installments',
-            'count_of_remaining_installments'
-        ];
-        $targetAllocatedLoan->each(function ($item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
-            $installmentInDateRange = $item->installments->filter(function ($installment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
-                return (
-                    ($installment['last_payment']['paid_at'] >= $lastPaidAtAfter) &&
-                    ($installment['last_payment']['paid_at'] <= $lastPaidAtBefore) &&
-                    $installment['last_payment']['paid_as_payroll_deduction'] === 1
-                );
-            });
-
-            $installmentInDateRange->each(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
-                return $item2['sum_of_paid_payments_as_payroll_deduction'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
-                    return (
-                        ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
-                        ($paidPayment['paid_at'] <= $lastPaidAtBefore) &&
-                        $paidPayment['paid_as_payroll_deduction'] === 1
-                    );
-                })->sum('cost');
-            });
-            $item['installments_in_date_range'] = $installmentInDateRange;
-            $item['count_of_paid_payments_as_payroll_deduction_in_date_range'] = $installmentInDateRange->count();
-            $item['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $installmentInDateRange->sum('sum_of_paid_payments_as_payroll_deduction');
-
-//            $item->installments->each(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
-//                return $item2['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
-//                    return (
-//                        ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
-//                        ($paidPayment['paid_at'] <= $lastPaidAtBefore) &&
-//                        $paidPayment['paid_as_payroll_deduction'] === 1
-//                    );
-//                })->sum('cost');
-//            });
-            return $item->setAppends($setAppends);
-        });
-
-
-        foreach ($targetAllocatedLoan as $key => $value) {
-            if (isset($value->allocated_loan_paid_at) && $value->allocated_loan_paid_at > $lastPaidAtBefore) {
-                $targetAllocatedLoan->forget($key);
-            }
-        }
-
+        $targetAllocatedLoan = $this->getTargetAllocatedLoanForShow($targetAllocatedLoan, $lastPaidAtAfter, $lastPaidAtBefore);
         return $this->jsonResponseOk($targetAllocatedLoan);
     }
 
@@ -408,12 +360,11 @@ class AllocatedLoanController extends Controller
                 $query->where('companies.id', $companyId);
             })
             ->lastPaymentForChargeFundNotPaidAt('>=', $lastPaidAtAfter, '<=', $lastPaidAtBefore)
-//            ;
             ->get();
 //        die(Str::replaceArray('?', $targetAllocatedLoan->getBindings(), $targetAllocatedLoan->toSql()));
 //        die($targetAllocatedLoan);
 
-        $targetAllocatedLoan->map(function ($item) {
+        $targetAllocatedLoan->each(function ($item) {
             return $item->setAppends(['allocated_loan_paid_at']);
         });
         foreach ($targetAllocatedLoan as $key => $value) {
@@ -452,28 +403,8 @@ class AllocatedLoanController extends Controller
         }
 
         if (!$hasProblem) {
-//            $setAppends = [
-//                'is_settled',
-//                'total_payments',
-//                'remaining_payable_amount',
-//                'count_of_paid_installments',
-//                'count_of_remaining_installments'
-//            ];
-//            $targetAllocatedLoan->map(function ($item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
-//                $item->installments->map(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
-//                    return $item2['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
-//                        return (
-//                            ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
-//                            ($paidPayment['paid_at'] <= $lastPaidAtBefore) &&
-//                            $paidPayment['paid_as_payroll_deduction'] === 1
-//                        );
-//                    })->sum('cost');
-//                });
-//                return $item->setAppends($setAppends);
-//            });
-//            return $this->jsonResponseOk($targetAllocatedLoan);
-
-            return $this->showPeriodicPayrollDeduction($request);
+            $targetAllocatedLoan = $this->getTargetAllocatedLoanForShow($targetAllocatedLoan, $lastPaidAtAfter, $lastPaidAtBefore);
+            return $this->jsonResponseOk($targetAllocatedLoan);
         } else {
             return $this->jsonResponseValidateError([
                 'errors' => [
@@ -483,6 +414,52 @@ class AllocatedLoanController extends Controller
                 ]
             ]);
         }
+    }
+
+    private function getTargetAllocatedLoanForShow ($targetAllocatedLoan, $lastPaidAtAfter, $lastPaidAtBefore) {
+
+        $setAppends = [
+            'is_settled',
+            'total_payments',
+            'allocated_loan_paid_at',
+            'remaining_payable_amount',
+            'count_of_paid_installments',
+            'count_of_remaining_installments'
+        ];
+
+        $targetAllocatedLoan->each(function ($item) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+            $installmentInDateRange = $item->installments->filter(function ($installment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
+                return (
+                    $installment['last_payment'] !== null &&
+                    ($installment['last_payment']['paid_at'] >= $lastPaidAtAfter) &&
+                    ($installment['last_payment']['paid_at'] <= $lastPaidAtBefore) &&
+                    $installment['last_payment']['paid_as_payroll_deduction'] === 1
+                );
+            });
+
+            $installmentInDateRange->each(function ($item2) use ($setAppends, $lastPaidAtAfter, $lastPaidAtBefore) {
+                return $item2['sum_of_paid_payments_as_payroll_deduction'] = $item2->paidPayments->filter(function ($paidPayment) use ($lastPaidAtAfter, $lastPaidAtBefore) {
+                    return (
+                        ($paidPayment['paid_at'] >= $lastPaidAtAfter) &&
+                        ($paidPayment['paid_at'] <= $lastPaidAtBefore) &&
+                        $paidPayment['paid_as_payroll_deduction'] === 1
+                    );
+                })->sum('cost');
+            });
+            $item['installments_in_date_range'] = $installmentInDateRange;
+            $item['count_of_paid_payments_as_payroll_deduction_in_date_range'] = $installmentInDateRange->count();
+            $item['sum_of_paid_payments_as_payroll_deduction_in_date_range'] = $installmentInDateRange->sum('sum_of_paid_payments_as_payroll_deduction');
+            return $item->setAppends($setAppends);
+        });
+
+
+        foreach ($targetAllocatedLoan as $key => $value) {
+            if (isset($value->allocated_loan_paid_at) && $value->allocated_loan_paid_at > $lastPaidAtBefore) {
+                $targetAllocatedLoan->forget($key);
+            }
+        }
+
+        return $targetAllocatedLoan;
     }
 
     public function rollbackPayPeriodicPayrollDeduction(PeriodicPayrollDeductionRequest $request)
