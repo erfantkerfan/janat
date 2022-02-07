@@ -218,7 +218,7 @@ class AllocatedLoan extends Model
     }
 
     public function scopeLastPaymentPaidAt($query, $operator, $date, $operator2 = null, $date2 = null) {
-        $paidAsPayrollDeduction = 'AND `transactions`.`paid_as_payroll_deduction` = 1';
+        $paidAsPayrollDeduction = '';
         $paidAtFromWhereClause = "AND `transactions`.`paid_at` $operator '$date'";
         $paidAtToWhereClause = (isset($operator2) && isset($date2)) ? "AND `transactions`.`paid_at` $operator2 '$date2'" : '';
         $this->lastPaymentPaidAtTimespanQuery($query, $paidAsPayrollDeduction, $paidAtFromWhereClause, $paidAtToWhereClause);
