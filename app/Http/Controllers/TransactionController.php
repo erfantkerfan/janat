@@ -125,6 +125,15 @@ class TransactionController extends Controller
             }
         }
 
+        $fundId = ($request->has('fund_id')) ? $request->get('fund_id') : null;
+        if (isset($fundId)) {
+            if ($transactionType === 'payer') {
+                $transactionModelQuery->hasFundAsPayer($fundId);
+            } else if ($transactionType === 'recipient') {
+                $transactionModelQuery->hasFundAsRecipient($fundId);
+            }
+        }
+
         $userId = ($request->has('user_id')) ? $request->get('user_id') : null;
         $fName = ($request->has('f_name')) ? $request->get('f_name') : null;
         $lName = ($request->has('l_name')) ? $request->get('l_name') : null;
