@@ -157,7 +157,7 @@ class AllocatedLoan extends Model
                 WHERE `transactions`.`deleted_at` IS NULL
                 AND `transactions`.`transaction_status_id`=1
                 GROUP BY `allocated_loans`.`id`
-                HAVING total_paid >= payable_amount
+                HAVING total_paid >= payable_amount - `allocated_loans`.`interest_amount`
             ) AS allocated_loans";
 
         $result = DB::select($rawQuery);
