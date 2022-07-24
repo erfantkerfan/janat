@@ -232,4 +232,6 @@ return [
 
     ],
 
+    'rounded_installment_padding' => 1000
+
 ];
