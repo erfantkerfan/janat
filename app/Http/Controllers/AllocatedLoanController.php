@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreAllocatedLoan;
 use App\Http\Requests\PeriodicPayrollDeductionRequest;
@@ -105,8 +106,9 @@ class AllocatedLoanController extends Controller
             ],
         ];
 
-        if(!Auth::user()->can('view allocated_loans')) {
-            $request->offsetSet('user_id', Auth::user()->id);
+        $user = Auth::user();
+        if(!$user->can('view allocated_loans')) {
+            $request->offsetSet('user_id', $user->id);
         }
 
         $data = $this->commonIndex($request,
@@ -370,29 +372,20 @@ class AllocatedLoanController extends Controller
 
         $hasProblem = false;
         foreach ($targetAllocatedLoan as $allocatedLoanItem) {
-            $notSettledInstallment = $this->getNotSettledInstallment($allocatedLoanItem);
+            $notSettledInstallment = $this->getOrCreateNotSettledInstallment($allocatedLoanItem);
 
             if (!isset($notSettledInstallment)) {
                 $hasProblem = true;
                 break;
             }
+            $cost = $this->getCostForPayPeriodicPayrollDeduction($allocatedLoanItem, $notSettledInstallment);
+            $createTransactionResult = $this->createTransactionForPayPeriodicPayrollDeduction($cost, $paidAt, $notSettledInstallment->id);
+            if ($createTransactionResult === false) {
+                $hasProblem = true;
+            }
 
-            $remainingPayableAmount = $notSettledInstallment->remainingPayableAmount;
-            $payrollDeductionAmount = $allocatedLoanItem->payroll_deduction_amount;
-            $cost = $remainingPayableAmount < $payrollDeductionAmount ? $remainingPayableAmount : $payrollDeductionAmount;
-
-            $storeTransactionRequest = new StoreTransaction();
-            $storeTransactionRequest->replace([
-                'transaction_status_id' => 1,
-                'paid_as_payroll_deduction' => 1,
-                'cost' => $cost,
-                'paid_at' => $paidAt,
-                'transaction_type' => 'account_pay_installment',
-                'allocated_loan_installment_id' => $notSettledInstallment->id
-            ]);
-            $transactionController = new TransactionController();
-            $storeTransactionResult = $transactionController->store($storeTransactionRequest);
-            if ($storeTransactionResult->getStatusCode() !== 200) {
+            $createTransactionResult = $this->payRemainingPayrollDeductionAmount($paidAt, $allocatedLoanItem, $notSettledInstallment->remainingPayableAmount);
+            if ($createTransactionResult === false) {
                 $hasProblem = true;
             }
         }
@@ -409,6 +402,67 @@ class AllocatedLoanController extends Controller
                 ]
             ]);
         }
+    }
+
+    private function getCostForPayPeriodicPayrollDeduction ($allocatedLoan, $notSettledInstallment) {
+        $roundedInstallmentPadding = Config::get('app.rounded_installment_padding');
+        $remainingPayableAmount = $notSettledInstallment->remainingPayableAmount;
+        $payrollDeductionAmount = $allocatedLoan->payroll_deduction_amount;
+        if ($remainingPayableAmount < $payrollDeductionAmount || ($remainingPayableAmount - $payrollDeductionAmount) <= $roundedInstallmentPadding) {
+            $cost = $remainingPayableAmount;
+        } else {
+            $cost = $payrollDeductionAmount;
+        }
+
+        return $cost;
+    }
+
+    private function payRemainingPayrollDeductionAmount ($paidAt, $allocatedLoan, $lastPaidInstallmentRemainingPayableAmount): bool
+    {
+        $payrollDeductionAmount = $allocatedLoan->payroll_deduction_amount;
+        if ($payrollDeductionAmount <= $lastPaidInstallmentRemainingPayableAmount) {
+            // all of $payrollDeductionAmount is paid
+            return true;
+        }
+
+        if (!$this->hasNextNotSettledInstallment($allocatedLoan)) {
+            // installment is settled
+            return true;
+        }
+
+        $notSettledInstallment = $this->getOrCreateNotSettledInstallment($allocatedLoan);
+        $cost = $payrollDeductionAmount - ($notSettledInstallment->remainingPayableAmount % $payrollDeductionAmount);
+        $createTransactionResult = $this->createTransactionForPayPeriodicPayrollDeduction($cost, $paidAt, $notSettledInstallment->id);
+
+        return $createTransactionResult;
+    }
+
+    private function hasNextNotSettledInstallment ($allocatedLoan): bool
+    {
+        $notSettledInstallments = $this->getNotSettledInstallment($allocatedLoan);
+
+        return $notSettledInstallments->count() > 0;
+    }
+
+    private function createTransactionForPayPeriodicPayrollDeduction ($cost, $paidAt, $notSettledInstallmentId): bool
+    {
+        $storeTransactionRequest = new StoreTransaction();
+        $storeTransactionRequest->replace([
+            'transaction_status_id' => 1,
+            'paid_as_payroll_deduction' => 1,
+            'cost' => $cost,
+            'paid_at' => $paidAt,
+            'transaction_type' => 'account_pay_installment',
+            'allocated_loan_installment_id' => $notSettledInstallmentId
+        ]);
+        $transactionController = new TransactionController();
+        $storeTransactionResult = $transactionController->store($storeTransactionRequest);
+        $createTransactionResult = $storeTransactionResult->getStatusCode() === 200;
+
+//        if ($createTransactionResult === false) {
+//            dd($storeTransactionResult);
+//        }
+        return $createTransactionResult;
     }
 
     private function getTargetAllocatedLoanForShow ($targetAllocatedLoanIds, $lastPaidAtAfter, $lastPaidAtBefore) {
@@ -492,13 +546,16 @@ class AllocatedLoanController extends Controller
         return $this->jsonResponseOk($transactions);
     }
 
-    private function getNotSettledInstallment($allocatedLoanItem) {
-        $notSettledInstallment = null;
-        $notSettledInstallments = $allocatedLoanItem->installments
+    private function getNotSettledInstallment ($allocatedLoanItem) {
+        return $allocatedLoanItem->installments()->get()
             ->filter(function ($value) {
                 return ($value->is_settled === false);
             })
             ->sortByDesc('created_at');
+    }
+    private function getOrCreateNotSettledInstallment($allocatedLoanItem) {
+        $notSettledInstallment = null;
+        $notSettledInstallments = $this->getNotSettledInstallment($allocatedLoanItem);
         if ($notSettledInstallments->count() > 0) {
             $notSettledInstallment = $notSettledInstallments->first();
         } else {

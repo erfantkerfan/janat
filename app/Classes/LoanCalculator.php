@@ -6,6 +6,7 @@ namespace App\Classes;
 
 use App\AllocatedLoan;
 use App\Setting;
+use Illuminate\Support\Facades\Config;
 
 class LoanCalculator
 {
@@ -34,7 +35,7 @@ class LoanCalculator
     }
 
     public function getRoundedInstallmentsRate($loanAmount, $interestAmount, $numberOfInstallments, $typeOfLoanInterestPayment) {
-        $padding = 1000;
+        $roundedInstallmentPadding = Config::get('app.rounded_installment_padding');
         if ($typeOfLoanInterestPayment === 'monthly_payment') {
             $payableAmount = $loanAmount + $interestAmount;
         } else if ($typeOfLoanInterestPayment === 'paid_at_first') {
@@ -44,7 +45,7 @@ class LoanCalculator
         }
         $installmentsRateWithoutRound = $payableAmount / $numberOfInstallments;
 
-        return floor($installmentsRateWithoutRound / $padding) * $padding;
+        return floor($installmentsRateWithoutRound / $roundedInstallmentPadding) * $roundedInstallmentPadding;
     }
 
     public function isTimeToPayLastInstallment(AllocatedLoan $allocatedLoan) {
