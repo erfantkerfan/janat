@@ -373,6 +373,10 @@ class AllocatedLoanController extends Controller
         $hasProblem = false;
         foreach ($targetAllocatedLoan as $allocatedLoanItem) {
             $notSettledInstallment = $this->getOrCreateNotSettledInstallment($allocatedLoanItem);
+            if ($notSettledInstallment === null) {
+                continue;
+            }
+            $lastPaidInstallmentRemainingPayableAmount = $notSettledInstallment->remainingPayableAmount;
 
             if (!isset($notSettledInstallment)) {
                 $hasProblem = true;
@@ -384,7 +388,7 @@ class AllocatedLoanController extends Controller
                 $hasProblem = true;
             }
 
-            $createTransactionResult = $this->payRemainingPayrollDeductionAmount($paidAt, $allocatedLoanItem, $notSettledInstallment->remainingPayableAmount);
+            $createTransactionResult = $this->payRemainingPayrollDeductionAmount($paidAt, $allocatedLoanItem, $lastPaidInstallmentRemainingPayableAmount);
             if ($createTransactionResult === false) {
                 $hasProblem = true;
             }
@@ -425,23 +429,14 @@ class AllocatedLoanController extends Controller
             return true;
         }
 
-        if (!$this->hasNextNotSettledInstallment($allocatedLoan)) {
-            // installment is settled
-            return true;
+        $createTransactionResult = true;
+        $notSettledInstallment = $this->getOrCreateNotSettledInstallment($allocatedLoan);
+        if ($notSettledInstallment !== null) {
+            $cost = $payrollDeductionAmount - ($notSettledInstallment->remainingPayableAmount % $payrollDeductionAmount);
+            $createTransactionResult = $this->createTransactionForPayPeriodicPayrollDeduction($cost, $paidAt, $notSettledInstallment->id);
         }
 
-        $notSettledInstallment = $this->getOrCreateNotSettledInstallment($allocatedLoan);
-        $cost = $payrollDeductionAmount - ($notSettledInstallment->remainingPayableAmount % $payrollDeductionAmount);
-        $createTransactionResult = $this->createTransactionForPayPeriodicPayrollDeduction($cost, $paidAt, $notSettledInstallment->id);
-
         return $createTransactionResult;
-    }
-
-    private function hasNextNotSettledInstallment ($allocatedLoan): bool
-    {
-        $notSettledInstallments = $this->getNotSettledInstallment($allocatedLoan);
-
-        return $notSettledInstallments->count() > 0;
     }
 
     private function createTransactionForPayPeriodicPayrollDeduction ($cost, $paidAt, $notSettledInstallmentId): bool
@@ -559,13 +554,18 @@ class AllocatedLoanController extends Controller
         if ($notSettledInstallments->count() > 0) {
             $notSettledInstallment = $notSettledInstallments->first();
         } else {
-            $request = new StoreAllocatedLoanInstallment();
-            $request->replace(['allocated_loan_id' => $allocatedLoanItem->id]);
-            $allocatedLoanInstallmentController = new AllocatedLoanInstallmentController();
-            $storeAllocatedLoanResult = $allocatedLoanInstallmentController->store($request);
-            if ($storeAllocatedLoanResult->getStatusCode() === 200) {
-                $notSettledInstallment = json_decode($storeAllocatedLoanResult->getContent());
-                $notSettledInstallment = AllocatedLoanInstallment::find($notSettledInstallment->id);
+            $allocatedLoanItem->setAppends(['count_of_remaining_installments']);
+            if ($allocatedLoanItem->count_of_remaining_installments > 0) {
+                $request = new StoreAllocatedLoanInstallment();
+                $request->replace(['allocated_loan_id' => $allocatedLoanItem->id]);
+                $allocatedLoanInstallmentController = new AllocatedLoanInstallmentController();
+                $storeAllocatedLoanResult = $allocatedLoanInstallmentController->store($request);
+                if ($storeAllocatedLoanResult->getStatusCode() === 200) {
+                    $notSettledInstallment = json_decode($storeAllocatedLoanResult->getContent());
+                    $notSettledInstallment = AllocatedLoanInstallment::find($notSettledInstallment->id);
+                }
+            } else {
+                $notSettledInstallment = null;
             }
         }
 
