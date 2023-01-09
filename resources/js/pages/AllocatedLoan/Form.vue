@@ -169,8 +169,9 @@
                                   :md-sort-fn="customSort"
                                   class="table-hover">
                             <md-table-row slot="md-table-row"
-                                          slot-scope="{ item }"
+                                          slot-scope="{ item, index }"
                                           :class="getInstallmentRowClass(item)">
+                                <md-table-cell md-label="ردیف" md-sort-by="rate">{{ index + 1 }}</md-table-cell>
                                 <md-table-cell md-label="مبلغ قسط" md-sort-by="rate">{{ item.rate | currencyFormat }} {{ currencyUnit }}</md-table-cell>
                                 <md-table-cell md-label="کل پرداختی" md-sort-by="total_payments">{{ item.total_payments | currencyFormat }} {{ currencyUnit }}</md-table-cell>
                                 <md-table-cell md-label="مبلغ قابل پرداخت باقیمانده" md-sort-by="remaining_payable_amount">{{ item.remaining_payable_amount | currencyFormat }} {{ currencyUnit }}</md-table-cell>
