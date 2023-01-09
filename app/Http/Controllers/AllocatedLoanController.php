@@ -376,7 +376,6 @@ class AllocatedLoanController extends Controller
             if ($notSettledInstallment === null) {
                 continue;
             }
-            $lastPaidInstallmentRemainingPayableAmount = $notSettledInstallment->remainingPayableAmount;
 
             if (!isset($notSettledInstallment)) {
                 $hasProblem = true;
@@ -388,7 +387,11 @@ class AllocatedLoanController extends Controller
                 $hasProblem = true;
             }
 
-            $createTransactionResult = $this->payRemainingPayrollDeductionAmount($paidAt, $allocatedLoanItem, $lastPaidInstallmentRemainingPayableAmount);
+            if ($cost >= $allocatedLoanItem->payroll_deduction_amount) {
+                continue;
+            }
+            $remainOfPayrollDeduction = $allocatedLoanItem->payroll_deduction_amount - $cost;
+            $createTransactionResult = $this->payRemainingPayrollDeductionAmount($paidAt, $allocatedLoanItem, $remainOfPayrollDeduction);
             if ($createTransactionResult === false) {
                 $hasProblem = true;
             }
@@ -421,7 +424,29 @@ class AllocatedLoanController extends Controller
         return $cost;
     }
 
-    private function payRemainingPayrollDeductionAmount ($paidAt, $allocatedLoan, $lastPaidInstallmentRemainingPayableAmount): bool
+    private function payRemainingPayrollDeductionAmount ($paidAt, $allocatedLoan, $remainOfPayrollDeduction): bool
+    {
+        if ($remainOfPayrollDeduction === 0) {
+            // all the payroll deduction is paid
+            return true;
+        }
+        $notSettledInstallment = $this->getOrCreateNotSettledInstallment($allocatedLoan);
+        if ($notSettledInstallment === null) {
+            // there is nothing to pay for this allocatedLoan
+            return true;
+        }
+        $remainingPayableAmount = $notSettledInstallment->remainingPayableAmount;
+        $cost = min($remainingPayableAmount, $remainOfPayrollDeduction);
+        $createTransactionResult = $this->createTransactionForPayPeriodicPayrollDeduction($cost, $paidAt, $notSettledInstallment->id);
+        $newRemainOfPayrollDeduction = $remainOfPayrollDeduction - $cost;
+        if ($newRemainOfPayrollDeduction > 0) {
+            return $this->payRemainingPayrollDeductionAmount($paidAt, $allocatedLoan, $newRemainOfPayrollDeduction);
+        }
+
+        return $createTransactionResult;
+    }
+
+    private function payRemainingPayrollDeductionAmountOld ($paidAt, $allocatedLoan, $lastPaidInstallmentRemainingPayableAmount, $lastPaidCost, $remainOfPayrollDeduction): bool
     {
         $payrollDeductionAmount = $allocatedLoan->payroll_deduction_amount;
         if ($payrollDeductionAmount <= $lastPaidInstallmentRemainingPayableAmount) {
@@ -429,11 +454,30 @@ class AllocatedLoanController extends Controller
             return true;
         }
 
+        $recursionFlag = false;
+        $recursionCost = 0;
         $createTransactionResult = true;
         $notSettledInstallment = $this->getOrCreateNotSettledInstallment($allocatedLoan);
+        $recLastPaidInstallmentRemainingPayableAmount = $notSettledInstallment->remainingPayableAmount;
+        $cost = 0;
         if ($notSettledInstallment !== null) {
-            $cost = $payrollDeductionAmount - ($notSettledInstallment->remainingPayableAmount % $payrollDeductionAmount);
+            if ($payrollDeductionAmount < $notSettledInstallment->remainingPayableAmount) {
+                $cost = $payrollDeductionAmount - ($notSettledInstallment->remainingPayableAmount % $payrollDeductionAmount);
+            } else {
+                $remainToPaid = $payrollDeductionAmount - $lastPaidCost;
+                if ($remainToPaid <= $notSettledInstallment->remainingPayableAmount) {
+                    $cost = $payrollDeductionAmount - $notSettledInstallment->remainingPayableAmount;
+                } else {
+                    $cost = $payrollDeductionAmount - $notSettledInstallment->remainingPayableAmount;
+                    $recursionFlag = true;
+                }
+            }
+
             $createTransactionResult = $this->createTransactionForPayPeriodicPayrollDeduction($cost, $paidAt, $notSettledInstallment->id);
+        }
+
+        if ($recursionFlag && $cost > 0) {
+            $createTransactionResult = $this->payRemainingPayrollDeductionAmount($paidAt, $allocatedLoan, $recLastPaidInstallmentRemainingPayableAmount, $cost);
         }
 
         return $createTransactionResult;
