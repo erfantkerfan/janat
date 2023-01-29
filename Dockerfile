@@ -43,8 +43,6 @@ RUN apk update \
     supercronic \
     mysql-client
 
-    # php81-fpm \
-
 RUN php81 -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
  && echo "$(curl 'https://composer.github.io/installer.sig')  composer-setup.php" | sha384sum -c - \
  && php81 composer-setup.php \
@@ -57,7 +55,6 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisord.conf 
 COPY docker/logrotate/. /etc/logrotate.d/
 COPY docker/start.sh /start.sh
-COPY docker/www.conf /etc/php81/php-fpm.d/www.conf
 
 RUN cp /usr/share/zoneinfo/Asia/Tehran /etc/localtime \
     && chmod 555 /start.sh \
@@ -79,6 +76,6 @@ RUN npm ci --omit=dev
 RUN npm run production
 
 RUN chown nobody:nobody /var/www/html \
-    && chown -R nobody:nobody /var/www/html/bootstrap /var/www/html/storage /var/lib /run /nobody /etc/php81/php-fpm.d
+    && chown -R nobody:nobody /var/www/html/bootstrap /var/www/html/storage /var/lib /run /nobody
 
 CMD /start.sh
