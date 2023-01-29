@@ -31,7 +31,6 @@ RUN apk update \
     php81-pecl-redis \
     php81-pecl-imagick \
     php81-pecl-swoole \
-    php81-fpm \
     coreutils \
     nginx \
     npm \
@@ -43,6 +42,8 @@ RUN apk update \
     supervisor \
     supercronic \
     mysql-client
+
+    # php81-fpm \
 
 RUN php81 -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
  && echo "$(curl 'https://composer.github.io/installer.sig')  composer-setup.php" | sha384sum -c - \

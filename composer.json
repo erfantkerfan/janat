@@ -13,6 +13,7 @@
         "hekmatinasser/verta": "^1.11",
         "kirschbaum-development/eloquent-power-joins": "^2.3",
         "laravel/framework": "^9.19",
+        "laravel/octane": "^1.4",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.0",
