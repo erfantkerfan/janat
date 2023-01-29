@@ -78,6 +78,6 @@ RUN npm ci --omit=dev
 RUN npm run production
 
 RUN chown nobody:nobody /var/www/html \
-    && chown -R nobody:nobody /var/www/html/bootstrap /var/www/html/storage /var/lib /run /nobody
+    && chown -R nobody:nobody /var/www/html/bootstrap /var/www/html/storage /var/lib /run /nobody /etc/php81/php-fpm.d
 
 CMD /start.sh
