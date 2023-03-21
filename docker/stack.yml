@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  janat_website:
+    image: erfantkerfan/janat:latest
+    ports:
+      - "82:80"
+    user: nobody
+    extra_hosts:
+      - host.machine:host-gateway
+    volumes:
+      - type: bind
+        source: /var/log/janat/.env
+        target: /var/www/html/.env
+      - type: bind
+        source: /var/log/janat/nginx
+        target: /var/log/nginx
+      - type: bind
+        source: /var/log/janat/php
+        target: /var/log/php81
+      - type: bind
+        source: /var/log/janat/supervisor
+        target: /var/log/supervisor
+      - type: bind
+        source: /var/log/janat/laravel_storage
+        target: /var/www/html/storage
+    tmpfs:
+      - /var/nginx/cache:size=10m
+    deploy:
+      replicas: 1
