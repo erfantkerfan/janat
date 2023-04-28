@@ -196,6 +196,45 @@ class AllocatedLoan extends Model
 //        });
     }
 
+    public function scopeWithoutPayrollDeduction($query, $from, $to) {
+        $query->whereDoesntHave('installments', function($installmentsQuery) use ($from, $to) {
+            $installmentsQuery->whereHas('receivedTransactions', function ($receivedTransactionsQuery) use ($from, $to) {
+                $receivedTransactionsQuery->whereHas('payrollDeduction', function ($payrollDeductionQuery) use ($from, $to) {
+                    $payrollDeductionQuery
+                        ->where('from', '>=', $from)
+                        ->where('to', '<=', $to);
+                });
+            });
+        });
+
+//
+//        $query
+//            ->where(function ($query) use ($from, $to) {
+//                $query
+//                    ->whereHas('installments', function($installmentsQuery) use ($from, $to) {
+//                        $installmentsQuery->doesntHave('receivedTransactions');
+//                    })
+//                    ->whereDoesntHave('installments', function($installmentsQuery) use ($from, $to) {
+//                        $installmentsQuery->whereDoesntHave('receivedTransactions', function ($receivedTransactionsQuery) use ($from, $to) {
+//                            $receivedTransactionsQuery->whereDoesntHave('payrollDeduction', function ($payrollDeductionQuery) use ($from, $to) {
+//                                $payrollDeductionQuery->where('from', '>=', $from);
+//                                $payrollDeductionQuery->where('to', '<=', $to);
+//                            });
+//                        });
+//                    });
+//            })
+//            ->orWhere(function ($query) use ($from, $to) {
+//                $query->whereDoesntHave('installments', function($installmentsQuery) use ($from, $to) {
+//                    $installmentsQuery->whereDoesntHave('receivedTransactions', function ($receivedTransactionsQuery) use ($from, $to) {
+//                        $receivedTransactionsQuery->whereDoesntHave('payrollDeduction', function ($payrollDeductionQuery) use ($from, $to) {
+//                            $payrollDeductionQuery->where('from', '>=', $from);
+//                            $payrollDeductionQuery->where('to', '<=', $to);
+//                        });
+//                    });
+//                });
+//            });
+    }
+
     public function scopeNotSettled($query) {
         $settledIds = $this->getSettledIds();
         if (count($settledIds) === 0) {

@@ -28,14 +28,12 @@ const Auth = {
                             $store.getters['users/user'].loading = false
                             $store.dispatch('users/setUser', response.data)
                         })
-                        .catch((error) => {
+                        .catch(() => {
                             this.$store.dispatch('alerts/fire', {
                                 icon: 'error',
                                 title: 'توجه',
                                 message: 'مشکلی رخ داده است. مجدد تلاش کنید'
                             });
-                            console.log('error: ', error)
-
                             $store.getters['users/user'].loading = false;
                         })
                 },

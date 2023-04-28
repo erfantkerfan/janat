@@ -199,8 +199,8 @@
 
 <script>
 import JsonExcel from 'vue-json-excel'
-import {AllocatedLoanList} from '@/models/AllocatedLoan'
 import moment from 'moment-jalaali'
+import {AllocatedLoanList} from '@/models/AllocatedLoan'
 import {priceFilterMixin, getFilterDropdownMixin, axiosMixin, dateMixin} from '@/mixins/Mixins'
 
 export default {
@@ -260,7 +260,7 @@ export default {
             order: 'asc'
         },
     }),
-    mounted() {
+    mounted () {
         this.loadDatePicker()
         this.getCompanies(false)
         this.allocatedLoans.loading = false

@@ -35,7 +35,7 @@ class Transaction extends Model {
             },
             {
                 key: 'related_payers',
-                default: (itemValue, inputData) => {
+                default: (itemValue) => {
                     if(!itemValue) {
                         return null
                     }
@@ -53,7 +53,7 @@ class Transaction extends Model {
             },
             {
                 key: 'related_recipients',
-                default: (itemValue, inputData) => {
+                default: (itemValue) => {
                     if(!itemValue) {
                         return null
                     }
@@ -168,7 +168,7 @@ class Transaction extends Model {
                 + modelValue.allocated_loan.account.user.l_name +
                 '-' +
                 ' صندوق: ' + modelValue.allocated_loan.account.fund.name + '<br>' +
-                ' شرکت: ' + modelValue.allocated_loan.account.company.name + '<br>' +
+                ' شرکت: ' + modelValue.allocated_loan.account.company.name +
                 ')'
         }
     }

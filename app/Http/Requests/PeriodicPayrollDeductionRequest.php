@@ -26,8 +26,10 @@ class PeriodicPayrollDeductionRequest extends FormRequest
         return [
             'company_id' => ['required', 'integer', 'exists:companies,id'],
             'paid_at' => ['required', 'date_format:Y-m-d H:i:s'],
-            'pay_since_date' => ['required', 'date_format:Y-m-d H:i:s'],
-            'pay_till_date' => ['required', 'date_format:Y-m-d H:i:s', 'after_or_equal:pay_since_date'],
+//            'pay_since_date' => ['required', 'date_format:Y-m-d H:i:s'],
+//            'pay_till_date' => ['required', 'date_format:Y-m-d H:i:s', 'after_or_equal:pay_since_date'],
+            'from' => ['required', 'date_format:Y-m-d H:i:s'],
+            'to' => ['required', 'date_format:Y-m-d H:i:s', 'after_or_equal:from'],
         ];
     }
 }

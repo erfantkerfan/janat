@@ -113,7 +113,6 @@ export default {
     },
     computed: {
         currentSidebarBackgroundColor () {
-            console.log('setting-sidebarBackgroundColor', this.$store.getters['settings/sidebarBackgroundColor'])
             const localStorage = window.localStorage.getItem('sidebarBackgroundColor')
             if (!localStorage) {
                 return this.$store.getters['settings/sidebarBackgroundColor']
@@ -122,7 +121,6 @@ export default {
             return localStorage
         },
         currentSidebarBackground () {
-            console.log('setting-sidebarBackground', this.$store.getters['settings/sidebarBackground'])
             const localStorage = window.localStorage.getItem('sidebarBackground')
             if (!localStorage) {
                 return this.$store.getters['settings/sidebarBackground']
@@ -131,7 +129,6 @@ export default {
             return localStorage
         },
         currentSidebarBackgroundImage () {
-            console.log('setting-sidebarBackgroundImage', this.$store.getters['settings/sidebarBackgroundImage'])
             if (!this.sidebarImg) {
                 return ''
             }

@@ -23,6 +23,7 @@ use App\Http\Controllers\UserTypeController;
 use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\AllocatedLoanController;
+use App\Http\Controllers\PayrollDeductionController;
 use App\Http\Controllers\TransactionStatusController;
 use App\Http\Controllers\AllocatedLoanInstallmentController;
 
@@ -79,6 +80,19 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('{transaction}/get_pics', [TransactionController::class, 'getPictures'])->name('api.panel.transaction.getPictures');
         });
         Route::resource('transactions', '\\'. TransactionController::class);
+        Route::group(['prefix' => 'payroll_deduction'], function () {
+            Route::group(['prefix' => 'pay'], function () {
+                Route::post('loan', [PayrollDeductionController::class, 'payPeriodicForLoan'])->name('api.panel.payrollDeduction.payPeriodicForLoan');
+                Route::post('monthly_payment', [PayrollDeductionController::class, 'payPeriodicForMonthlyPayment'])->name('api.panel.payrollDeduction.payPeriodicForMonthlyPayment');
+            });
+            Route::group(['prefix' => '{payroll_deduction}'], function () {
+                Route::get('transactions', [PayrollDeductionController::class, 'getTransactions'])->name('api.panel.payrollDeduction.transactions');
+                Route::group(['prefix' => 'report'], function () {
+                    Route::get('sum_of_transactions', [PayrollDeductionController::class, 'sumOfTransactions'])->name('api.panel.payrollDeduction.sumOfTransactions');
+                });
+            });
+        });
+        Route::resource('payroll_deduction', '\\'. PayrollDeductionController::class);
         Route::resource('transaction_statuses', '\\'. TransactionStatusController::class);
         Route::resource('settings', '\\'. SettingController::class);
     });

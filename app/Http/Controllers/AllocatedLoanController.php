@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\AllocatedLoanInstallment;
-use App\Http\Requests\StoreAllocatedLoanInstallment;
-use App\Http\Requests\StoreTransaction;
 use App\Loan;
 use App\Account;
-use App\AllocatedLoan;
 use App\Setting;
+use Carbon\Carbon;
+use App\Transaction;
+use App\AllocatedLoan;
 use App\Traits\Filter;
 use App\Traits\CommonCRUD;
-use App\Transaction;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\AllocatedLoanInstallment;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreTransaction;
+use Illuminate\Database\Eloquent\Builder;
 use App\Http\Requests\StoreAllocatedLoan;
+use App\Http\Requests\StoreAllocatedLoanInstallment;
 use App\Http\Requests\PeriodicPayrollDeductionRequest;
-use Illuminate\Support\Str;
 
 class AllocatedLoanController extends Controller
 {

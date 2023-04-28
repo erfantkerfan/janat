@@ -192,6 +192,7 @@ class TransactionController extends Controller
         $transaction = Transaction::create([
             'cost' => $cost,
             'manager_comment' => $request->get('manager_comment'),
+            'payroll_deduction_id' => $request->get('payroll_deduction_id'),
             'paid_as_payroll_deduction' => $paid_as_payroll_deduction,
             'user_comment' => $request->get('user_comment'),
             'transaction_status_id' => $transactionStatus->id,

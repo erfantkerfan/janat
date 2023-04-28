@@ -72,6 +72,20 @@ trait Filter
         }
     }
 
+    private function filterByKeyExact($request, $key, & $modelQuery) {
+        $keyValue = trim($request->get($key));
+        if (isset($keyValue) && strlen($keyValue) > 0) {
+            $modelQuery = $modelQuery->where($key, '=', $keyValue);
+        }
+    }
+
+    private function filterByKeyIn($request, $key, & $modelQuery) {
+        $keyValue = trim($request->get($key . '_in'));
+        if (isset($keyValue) && is_array($keyValue)) {
+            $modelQuery = $modelQuery->whereIn($key, $keyValue);
+        }
+    }
+
     private function filterByDate($request, & $modelQuery, &$filterDate) {
 
         $filterDate []= 'created_at';
