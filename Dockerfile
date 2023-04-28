@@ -78,4 +78,7 @@ RUN npm run production
 RUN chown nobody:nobody /var/www/html \
     && chown -R nobody:nobody /var/www/html/bootstrap /var/www/html/storage /var/lib /run /nobody
 
+ARG RELEASE_VERSION
+ENV RELEASE_VERSION=$RELEASE_VERSION
+
 CMD /start.sh
