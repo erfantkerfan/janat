@@ -59,7 +59,7 @@
                                 </md-table>
                             </template>
                             <template slot="footer">
-                                <md-button
+                                <md-button v-if="allocatedLoan.id !== null"
                                     class="md-dense md-raised md-success"
                                     :to="{ name: 'AllocatedLoan.Show', params: {id: allocatedLoan.id} }">
                                     مشاهده اطلاعات وام تخصیص داده شده

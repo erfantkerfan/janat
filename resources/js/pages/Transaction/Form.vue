@@ -136,7 +136,7 @@
                                   class="table-hover">
                             <md-table-row slot="md-table-row" slot-scope="{ item }">
                                 <md-table-cell md-label="نوع دریافت کننده">{{ transaction.getRelatedModelType(item.transaction_recipients_type) }}</md-table-cell>
-                                <md-table-cell md-label="اطلاعات دریافت کننده">{{ transaction.getRelatedModelLabel(item.transaction_recipients_type, item.transaction_recipients) }}</md-table-cell>
+                                <md-table-cell md-label="اطلاعات دریافت کننده" v-html="transaction.getRelatedModelLabel(item.transaction_recipients_type, item.transaction_recipients)"></md-table-cell>
                                 <md-table-cell md-label="مشاهده">
                                     <md-button
                                         :to="transaction.getRelatedModelRoute(item.transaction_recipients_type, item.transaction_recipients)"
@@ -369,7 +369,6 @@
                 this.transaction.loading = true;
                 this.transaction.addPicture(this.cardUserNewImage)
                     .then((response) => {
-                        console.log('response', response)
                         this.transaction.loading = false;
                         this.$store.dispatch('alerts/fire', {
                             icon: 'success',

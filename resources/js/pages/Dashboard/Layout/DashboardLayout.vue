@@ -45,18 +45,27 @@
                 <sidebar-item v-if="LoggedInUser.hasSuperAdminRole()" :opened="false" :link="{ name: 'فرایند های دوره ای', icon: 'autorenew' }">
                     <sidebar-item
                         :link="{
-                        name: 'پرداخت اقساط کسر از حقوق',
-                        icon: 'account_balance',
-                        path: '/periodic_processes/payment_of_payroll_deductions',
+                        name: 'لیست پرداخت های دوره ای',
+                        icon: 'list',
+                        path: '/payroll_deduction/list',
                       }"
                     />
                     <sidebar-item
                         :link="{
-                        name: 'پرداخت ماهانه کسر از حقوق',
-                        icon: 'class',
-                        path: '/periodic_processes/pay_fund_monthly_payment_by_payroll_deduction',
+                        name: 'پرداخت اقساط کسر از حقوق',
+                        icon: 'account_balance',
+                        path: '/payroll_deduction/create/loan',
                       }"
                     />
+<!--                    path: '/periodic_processes/payment_of_payroll_deductions',-->
+                    <sidebar-item
+                        :link="{
+                        name: 'پرداخت ماهانه کسر از حقوق',
+                        icon: 'class',
+                        path: '/payroll_deduction/create/monthly_payment',
+                      }"
+                    />
+<!--                    path: '/periodic_processes/pay_fund_monthly_payment_by_payroll_deduction',-->
                 </sidebar-item>
                 <sidebar-item
                     v-if="LoggedInUser.hasSuperAdminRole()"
@@ -203,7 +212,6 @@
         mixins: [userMixin],
         computed: {
             sidebarBackgroundColor () {
-                console.log('setting-sidebarBackgroundColor', this.$store.getters['settings/sidebarBackgroundColor'])
                 const localStorage = window.localStorage.getItem('sidebarBackgroundColor')
                 if (!localStorage) {
                     return this.$store.getters['settings/sidebarBackgroundColor']
@@ -212,7 +220,6 @@
                 return localStorage
             },
             sidebarBackground () {
-                console.log('setting-sidebarBackground', this.$store.getters['settings/sidebarBackground'])
                 const localStorage = window.localStorage.getItem('sidebarBackground')
                 if (!localStorage) {
                     return this.$store.getters['settings/sidebarBackground']
@@ -221,7 +228,6 @@
                 return localStorage
             },
             sidebarBackgroundImage () {
-                console.log('setting-sidebarBackgroundImage', this.$store.getters['settings/sidebarBackgroundImage'])
                 if (!this.sidebarImg) {
                     return ''
                 }
@@ -233,7 +239,6 @@
                 return localStorage
             },
             sidebarMini () {
-                console.log('setting-sidebarMini', this.$store.getters['settings/sidebarMini'])
                 const localStorage = window.localStorage.getItem('sidebarMini')
                 if (!localStorage) {
                     return this.$store.getters['settings/sidebarMini']
@@ -242,7 +247,6 @@
                 return (localStorage === 'true')
             },
             sidebarImg () {
-                console.log('setting-sidebarImg', this.$store.getters['settings/sidebarImg'])
                 const localStorage = window.localStorage.getItem('sidebarImg')
                 if (!localStorage) {
                     return this.$store.getters['settings/sidebarImg']

@@ -215,7 +215,7 @@
                     >
                         <md-table-toolbar>
                             <md-field>
-                                <md-button class="md-dense md-raised md-info" @click="getList">جستجو</md-button>
+                                <md-button class="md-dense md-raised md-info" @click="getList()">جستجو</md-button>
                                 <md-button class="md-dense md-raised md-primary" to="/user/create">افزودن</md-button>
                                 <Json-excel
                                     v-if="!users.loading && users.list.length > 0"

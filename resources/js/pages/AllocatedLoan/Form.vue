@@ -72,6 +72,9 @@
                                     <md-icon>monetization_on</md-icon>
                                 </div>
                                 <p class="category">اطلاعات وام تخصیص داده شده</p>
+                                شناسه وام تخصیص داده شده:
+                                {{ allocatedLoan.id }}
+                                <br>
                                 تاریخ ایجاد:
                                 {{ allocatedLoan.shamsiDate('created_at').date }}
                                 <br>

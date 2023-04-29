@@ -64,6 +64,10 @@ import PaymentOfPayrollDeductions from "@/pages/PeriodicProcesses/PaymentOfPayro
 // PeriodicProcesses PayFundMonthlyPaymentByPayrollDeduction
 import PayFundMonthlyPaymentByPayrollDeduction from "@/pages/PeriodicProcesses/PayFundMonthlyPaymentByPayrollDeduction";
 
+import PayrollDeductionList from "@/pages/PayrollDeduction/List";
+import PayrollDeductionForm from "@/pages/PayrollDeduction/From";
+import PayrollDeductionCreate from "@/pages/PayrollDeduction/Create";
+
 // Settings
 import Settings from "@/pages/Settings/Settings";
 
@@ -372,6 +376,74 @@ let periodicProcessesMenu = {
     children: [
         {
             path: "payment_of_payroll_deductions",
+            name: "PaymentOfPayrollDeductionsOld",
+            components: {default: PaymentOfPayrollDeductions},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداخت اقساط کسر از حقوق",
+                middleware: auth
+            }
+        },
+        {
+            path: "pay_fund_monthly_payment_by_payroll_deduction",
+            name: "PayFundMonthlyPaymentByPayrollDeductionOld",
+            components: {default: PayFundMonthlyPaymentByPayrollDeduction},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداخت ماهانه صندوق به صورت کسر از حقوق",
+                middleware: auth
+            }
+        }
+    ]
+};
+
+let payrollDeductionMenu = {
+    path: "/payroll_deduction",
+    name: "PayrollDeduction",
+    component: DashboardLayout,
+    children: [
+        {
+            path: "list",
+            name: "PayrollDeduction.List",
+            components: {default: PayrollDeductionList},
+            meta: {
+                rtlActive: true,
+                displayName: "لیست پرداخت های دوره ای",
+                middleware: auth
+            }
+        },
+        {
+            path: ":id",
+            name: "PayrollDeduction.Show",
+            components: {default: PayrollDeductionForm},
+            meta: {
+                rtlActive: true,
+                displayName: "اطلاعات پرداخت دوره ای",
+                middleware: auth
+            }
+        },
+        {
+            path: "create/loan",
+            name: "PayrollDeduction.Create.Loan",
+            components: {default: PayrollDeductionCreate},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداخت دوره ای اقساط",
+                middleware: auth
+            }
+        },
+        {
+            path: "create/monthly_payment",
+            name: "PayrollDeduction.Create.MonthlyPayment",
+            components: {default: PayrollDeductionCreate},
+            meta: {
+                rtlActive: true,
+                displayName: "پرداخت دوره ای ماهانه",
+                middleware: auth
+            }
+        },
+        {
+            path: "payment_of_payroll_deductions",
             name: "PaymentOfPayrollDeductions",
             components: {default: PaymentOfPayrollDeductions},
             meta: {
@@ -433,16 +505,15 @@ let transactionMenu = {
 
 let settingMenu = {
     path: "/setting",
-    name: "Setting",
     component: DashboardLayout,
     children: [
         {
-            path: "/setting",
+            path: "/",
             name: "Setting",
             components: {default: Settings},
             meta: {
                 rtlActive: true,
-                displayName: "لیست تراکنش ها",
+                displayName: "تنظیمات",
                 middleware: auth
             }
         }
@@ -543,7 +614,6 @@ const routes = [
     // },
     {
         path: "/",
-        name: 'DashboardLayout',
         component: DashboardLayout,
         meta: {
             rtlActive: true,
@@ -569,6 +639,7 @@ const routes = [
     allocatedLoansMenu,
     allocatedLoanInstallmentsMenu,
     transactionMenu,
+    payrollDeductionMenu,
     periodicProcessesMenu,
     componentsMenu,
     authPages,

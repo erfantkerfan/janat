@@ -2,11 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
 use Kirschbaum\PowerJoins\PowerJoins;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
@@ -25,6 +24,7 @@ class Transaction extends Model
         'user_comment',
         'transaction_type_id',
         'transaction_status_id',
+        'payroll_deduction_id',
         'paid_as_payroll_deduction',
         'parent_transaction_id'
     ];
@@ -42,6 +42,11 @@ class Transaction extends Model
     public function transactionType()
     {
         return $this->belongsTo(TransactionType::class);
+    }
+
+    public function payrollDeduction()
+    {
+        return $this->belongsTo(PayrollDeduction::class);
     }
 
     public function userPayers()

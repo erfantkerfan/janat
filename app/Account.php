@@ -83,6 +83,12 @@ class Account extends Model
         return $this->paidWithdraws()->get()->sum('cost');
     }
 
+    public function paidTransactions()
+    {
+        return $this->morphToMany(Transaction::class, 'transaction_payers')
+            ->where('transactions.transaction_status_id', 1);
+    }
+
     public function getNotSettledLoanAttribute()
     {
         return $this->allocatedLoans()->notSettled()->get();
@@ -194,5 +200,15 @@ class Account extends Model
 
         $result = DB::select($rawQuery);
         $query->whereIn('id', collect($result)->map(function($x){ return (array) $x; })->toArray());
+    }
+
+    public function scopeWithoutPayrollDeduction($query, $from, $to) {
+        $query->whereDoesntHave('paidTransactions', function($paidTransactionsQuery) use ($from, $to) {
+            $paidTransactionsQuery->whereHas('payrollDeduction', function ($payrollDeductionQuery) use ($from, $to) {
+                $payrollDeductionQuery
+                    ->where('from', '>=', $from)
+                    ->where('to', '<=', $to);
+            });
+        });
     }
 }

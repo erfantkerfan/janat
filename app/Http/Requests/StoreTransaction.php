@@ -25,6 +25,7 @@ class StoreTransaction extends FormRequest
     {
         return [
             'transaction_status_id' => ['required', 'integer', 'exists:transaction_statuses,id'],
+            'payroll_deduction_id' => ['sometimes', 'integer', 'exists:payroll_deductions,id'],
             'cost' => ['required', 'integer'],
             'paid_at' => ['required', 'date_format:Y-m-d H:i:s'],
             'manager_comment' => ['sometimes', 'nullable', 'string'],

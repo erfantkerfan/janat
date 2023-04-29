@@ -52,6 +52,8 @@ trait CommonCRUD
         $this->loadScopes($request, $modelQuery, $configArray['scopes']);
         $this->filterByDate($request, $modelQuery, $configArray['filterDate']);
         $this->filterByKeys($request, $modelQuery, $configArray['filterKeys']);
+        $this->filterByKeysExact($request, $modelQuery, $configArray['filterKeysExact']);
+        $this->filterByKeysIn($request, $modelQuery, $configArray['filterKeysIn']); // {key}_in in request
         $this->filterByRelationKeys($request, $modelQuery, $configArray['filterRelationKeys']);
         $this->filterByRelationIds($request, $modelQuery, $configArray['filterRelationIds']);
         $modelQuery->with($configArray['eagerLoads']);
@@ -64,6 +66,8 @@ trait CommonCRUD
             'eagerLoads' => $this->getDefault($config, 'eagerLoads', []),
             'filterDate' => $this->getDefault($config, 'filterDate', []),
             'filterKeys' => $this->getDefault($config, 'filterKeys', []),
+            'filterKeysIn' => $this->getDefault($config, 'filterKeysIn', []),
+            'filterKeysExact' => $this->getDefault($config, 'filterKeysExact', []),
             'setAppends' => $this->getDefault($config, 'setAppends', []),
             'returnModelQuery' => $this->getDefault($config, 'returnModelQuery', []),
             'filterRelationIds' => $this->getDefault($config, 'filterRelationIds', []),
@@ -106,6 +110,18 @@ trait CommonCRUD
     private function filterByKeys(Request $request, & $modelQuery, $filterKeys) {
         foreach ($filterKeys as $item) {
             $this->filterByKey($request, $item, $modelQuery);
+        }
+    }
+
+    private function filterByKeysExact(Request $request, & $modelQuery, $filterKeys) {
+        foreach ($filterKeys as $item) {
+            $this->filterByKeyExact($request, $item, $modelQuery);
+        }
+    }
+
+    private function filterByKeysIn(Request $request, & $modelQuery, $filterKeysIn) {
+        foreach ($filterKeysIn as $item) {
+            $this->filterByKeyIn($request, $item, $modelQuery);
         }
     }
 

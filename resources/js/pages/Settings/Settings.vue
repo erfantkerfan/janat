@@ -123,7 +123,6 @@ export default {
     mixins: [priceFilterMixin, getFilterDropdownMixin, axiosMixin],
     computed: {
         currentSidebarMini() {
-            console.log('setting-sidebarMini', this.$store.getters['settings/sidebarMini'])
             const localStorage = window.localStorage.getItem('sidebarMini')
             if (!localStorage) {
                 return this.$store.getters['settings/sidebarMini']
@@ -132,7 +131,6 @@ export default {
             return (localStorage === 'true')
         },
         currentSidebarImg() {
-            console.log('setting-sidebarImg', this.$store.getters['settings/sidebarImg'])
             const localStorage = window.localStorage.getItem('sidebarImg')
             if (!localStorage) {
                 return this.$store.getters['settings/sidebarImg']
