@@ -1,22 +1,24 @@
-import { Fund, FundList } from '@/models/Fund';
-import { Loan, LoanList } from '@/models/Loan';
-import { Company, CompanyList } from '@/models/Company';
-import { TransactionStatus, TransactionStatusList } from '@/models/TransactionStatus';
-import { UserStatus, UserStatusList } from '@/models/UserStatus';
-import { LoanType, LoanTypeList } from "@/models/LoanType";
-import { UserType, UserTypeList } from "@/models/UserType";
+import { Fund, FundList } from '@/models/Fund'
+import { Loan, LoanList } from '@/models/Loan'
+import { Company, CompanyList } from '@/models/Company'
+import { LoanType, LoanTypeList } from '@/models/LoanType'
+import { UserType, UserTypeList } from '@/models/UserType'
+import { UserStatus, UserStatusList } from '@/models/UserStatus'
+import {TransactionType, TransactionTypeList} from '@/models/TransactionType'
+import { TransactionStatus, TransactionStatusList } from '@/models/TransactionStatus'
 
 export default {
   data() {
     return {
-        loans: new LoanList(),
-        loanTypes: new LoanTypeList(),
         funds: new FundList(),
+        loans: new LoanList(),
         companies: new CompanyList(),
-        userStatuses: new UserStatusList(),
         userTypes: new UserTypeList(),
-        transactionStatuses: new TransactionStatusList()
-    };
+        loanTypes: new LoanTypeList(),
+        userStatuses: new UserStatusList(),
+        transactionTypes: new TransactionTypeList(),
+        transactionStatuses: new TransactionStatusList(),
+    }
   },
   methods: {
       getLoans () {
@@ -175,6 +177,29 @@ export default {
                   console.log('error: ', error)
                   this.transactionStatuses.loading = false;
                   this.transactionStatuses = new TransactionStatusList()
+              })
+      },
+      getTransactionType (withEmpty) {
+          this.transactionTypes.loading = true
+          this.transactionTypes.fetch({
+              length: 99999
+          })
+              .then((response) => {
+                  this.transactionTypes.loading = false
+                  this.transactionTypes = new TransactionTypeList(response.data.data, response.data)
+                  if (typeof withEmpty === 'undefined' || withEmpty) {
+                      this.transactionTypes.addItem(new TransactionType({id: 0, display_name: '-'}))
+                  }
+              })
+              .catch((error) => {
+                  this.$store.dispatch('alerts/fire', {
+                      icon: 'error',
+                      title: 'توجه',
+                      message: 'مشکلی رخ داده است. مجدد تلاش کنید'
+                  });
+                  console.log('error: ', error)
+                  this.transactionTypes.loading = false
+                  this.transactionTypes = new TransactionTypeList()
               })
       },
       customOfflineSort(value) {

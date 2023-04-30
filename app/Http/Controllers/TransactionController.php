@@ -50,6 +50,7 @@ class TransactionController extends Controller
             'returnModelQuery' => true,
             'eagerLoads'=> [
                 'transactionStatus',
+                'transactionType',
                 'relatedPayers.transactionPayers',
                 'relatedRecipients.transactionRecipients'
             ],
@@ -61,9 +62,12 @@ class TransactionController extends Controller
                 'deadline_at',
                 'manager_comment',
                 'user_comment',
-                'transaction_status_id',
-                'parent_transaction_id',
                 'paid_as_payroll_deduction'
+            ],
+            'filterKeysExact'=> [
+                'transaction_status_id',
+                'transaction_type_id',
+                'parent_transaction_id',
             ],
             'filterRelationIds'=> [
 //                [
@@ -415,6 +419,7 @@ class TransactionController extends Controller
     public function show($id)
     {
         $transaction = Transaction::with([
+            'transactionType',
             'transactionStatus',
             'userPayers:id,f_name,l_name',
             'relatedPayers.transactionPayers',

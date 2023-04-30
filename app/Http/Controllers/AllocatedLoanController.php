@@ -49,13 +49,15 @@ class AllocatedLoanController extends Controller
                 'account.user:id,f_name,l_name', 'loan', 'loan.fund'
             ],
             'filterKeys'=> [
-                'account_id',
-                'loan_id',
                 'is_settled',
                 'loan_amount',
                 'installment_rate',
                 'number_of_installments',
                 'payroll_deduction'
+            ],
+            'filterKeysExact'=> [
+                'account_id',
+                'loan_id',
             ],
             'filterRelationIds'=> [
                 [

@@ -179,6 +179,8 @@ class PayrollDeductionController extends Controller
             ->get();
         // end of find Accounts
 
+//        dd(Str::replaceArray('?', $targetAccount->getBindings(), $targetAccount->toSql()));
+
         // create PayrollDeduction
         $createdPayrollDeduction = $this->store($request);
         $createdPayrollDeductionId = $createdPayrollDeduction->id;
@@ -214,6 +216,7 @@ class PayrollDeductionController extends Controller
             ]);
         }
     }
+
     public function payPeriodicForLoan(PeriodicPayrollDeductionRequest $request)
     {
         $request->request->add(['paid_for_loan' => 1]);
@@ -384,12 +387,15 @@ class PayrollDeductionController extends Controller
     {
         $payrollDeductionId = $request->payroll_deduction;
 
-        $setAppends = [
+        $setAppendsForLoan = [
             'is_settled',
             'total_payments',
             'remaining_payable_amount',
             'count_of_paid_installments',
             'count_of_remaining_installments'
+        ];
+        $setAppendsForMonthlyPayment = [
+            'balance'
         ];
         $modelQuery = $this->getTransactionModelQuery($payrollDeductionId);
 
@@ -397,9 +403,12 @@ class PayrollDeductionController extends Controller
         $attachedCollection = $modelQuery
             ->paginate($perPage)
             ->getCollection()
-            ->map(function ($item) use ($setAppends) {
+            ->map(function ($item) use ($setAppendsForLoan, $setAppendsForMonthlyPayment) {
                 if ($item->relatedRecipients[0]->transactionRecipients->allocatedLoan) {
-                    $item->relatedRecipients[0]->transactionRecipients->allocatedLoan = $item->relatedRecipients[0]->transactionRecipients->allocatedLoan->setAppends($setAppends);
+                    $item->relatedRecipients[0]->transactionRecipients->allocatedLoan = $item->relatedRecipients[0]->transactionRecipients->allocatedLoan->setAppends($setAppendsForLoan);
+                }
+                if ($item->relatedPayers[0]->transactionPayers) {
+                    $item->relatedPayers[0]->transactionPayers = $item->relatedPayers[0]->transactionPayers->setAppends($setAppendsForMonthlyPayment);
                 }
                 return $item;
             });
@@ -438,8 +447,8 @@ class PayrollDeductionController extends Controller
         $modelQuery = $data['modelQuery'];
 
 //        dd($modelQuery->toSql());
-//        die(Str::replaceArray('?', $modelQuery->getBindings(), $modelQuery->toSql()));
-//        die($targetAllocatedLoan);
+//        dd(Str::replaceArray('?', $modelQuery->getBindings(), $modelQuery->toSql()));
+//        dd($targetAllocatedLoan);
 
         return $modelQuery;
     }

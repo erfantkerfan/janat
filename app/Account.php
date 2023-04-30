@@ -208,7 +208,8 @@ class Account extends Model
                 $payrollDeductionQuery
                     ->where('from', '>=', $from)
                     ->where('to', '<=', $to);
-            });
+            })
+            ->isATypeOfAccountPayTheFundTuition();
         });
     }
 }

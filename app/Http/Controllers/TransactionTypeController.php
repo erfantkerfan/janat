@@ -3,22 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Traits\Filter;
+use App\TransactionType;
 use App\Traits\CommonCRUD;
-use App\TransactionStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class TransactionStatusController extends Controller
+class TransactionTypeController extends Controller
 {
     use Filter, CommonCRUD;
-
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      * @return Response
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $config = [
             'filterKeys'=> [
@@ -31,6 +29,6 @@ class TransactionStatusController extends Controller
             ],
         ];
 
-        return $this->commonIndex($request, TransactionStatus::class, $config);
+        return $this->commonIndex($request, TransactionType::class, $config);
     }
 }

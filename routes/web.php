@@ -23,6 +23,7 @@ use App\Http\Controllers\UserTypeController;
 use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\AllocatedLoanController;
+use App\Http\Controllers\TransactionTypeController;
 use App\Http\Controllers\PayrollDeductionController;
 use App\Http\Controllers\TransactionStatusController;
 use App\Http\Controllers\AllocatedLoanInstallmentController;
@@ -94,6 +95,7 @@ Route::group(['middleware' => 'auth'], function () {
         });
         Route::resource('payroll_deduction', '\\'. PayrollDeductionController::class);
         Route::resource('transaction_statuses', '\\'. TransactionStatusController::class);
+        Route::resource('transaction_types', '\\'. TransactionTypeController::class);
         Route::resource('settings', '\\'. SettingController::class);
     });
 });
