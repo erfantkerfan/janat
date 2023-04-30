@@ -10,7 +10,7 @@
                 <md-table-cell md-label="ردیف">
                     {{ (index+1) }}
                 </md-table-cell>
-                <md-table-cell md-label="شماره عضویت" md-sort-by="account.user.id">
+                <md-table-cell md-label="کد عضویت" md-sort-by="account.user.id">
                     {{ item.related_payers[0].transaction_payers?.user?.id }}
                 </md-table-cell>
                 <md-table-cell md-label="کد پرسنلی" md-sort-by="account.user.staff_code">
@@ -27,11 +27,10 @@
                     {{item.related_payers[0].transaction_payers.id}}
                 </md-table-cell>
                 <md-table-cell :md-label="'موجودی '+'('+currencyUnit+')'" md-sort-by="balance">
-    <!--                {{ item.related_payers[0].transaction_payers.balance | currencyFormat }}-->
-                    -
+                    {{ item.related_payers[0].transaction_payers.balance | currencyFormat }}
                 </md-table-cell>
                 <md-table-cell :md-label="'ماهانه '+'('+currencyUnit+')'" md-sort-by="monthly_payment">
-                    {{ item.related_payers[0].transaction_payer | currencyFormat }}
+                    {{ item.related_payers[0].transaction_payers.monthly_payment | currencyFormat }}
                 </md-table-cell>
                 <md-table-cell md-label="نام صندوق" md-sort-by="loan.fund.name">
                     {{ item.related_payers[0].transaction_payers.fund.name }}

@@ -384,12 +384,15 @@ class PayrollDeductionController extends Controller
     {
         $payrollDeductionId = $request->payroll_deduction;
 
-        $setAppends = [
+        $setAppendsForLoan = [
             'is_settled',
             'total_payments',
             'remaining_payable_amount',
             'count_of_paid_installments',
             'count_of_remaining_installments'
+        ];
+        $setAppendsForMonthlyPayment = [
+            'balance'
         ];
         $modelQuery = $this->getTransactionModelQuery($payrollDeductionId);
 
@@ -397,9 +400,12 @@ class PayrollDeductionController extends Controller
         $attachedCollection = $modelQuery
             ->paginate($perPage)
             ->getCollection()
-            ->map(function ($item) use ($setAppends) {
+            ->map(function ($item) use ($setAppendsForLoan, $setAppendsForMonthlyPayment) {
                 if ($item->relatedRecipients[0]->transactionRecipients->allocatedLoan) {
-                    $item->relatedRecipients[0]->transactionRecipients->allocatedLoan = $item->relatedRecipients[0]->transactionRecipients->allocatedLoan->setAppends($setAppends);
+                    $item->relatedRecipients[0]->transactionRecipients->allocatedLoan = $item->relatedRecipients[0]->transactionRecipients->allocatedLoan->setAppends($setAppendsForLoan);
+                }
+                if ($item->relatedPayers[0]->transactionPayers) {
+                    $item->relatedPayers[0]->transactionPayers = $item->relatedPayers[0]->transactionPayers->setAppends($setAppendsForMonthlyPayment);
                 }
                 return $item;
             });
