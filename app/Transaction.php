@@ -119,6 +119,13 @@ class Transaction extends Model
         return $this->morphToMany(Picture::class, 'attachable_case');
     }
 
+    public function scopeIsATypeOfAccountPayTheFundTuition($query) {
+        $transactionType = TransactionType::where('name', config('constants.TRANSACTION_TYPE_ACCOUNT_PAY_THE_FUND_TUITION'))->first();
+        $transactionTypeId = $transactionType->id;
+
+        $query->where('transaction_type_id', '=', $transactionTypeId);
+    }
+
     public function scopeHasCompanyAsPayer($query, $companyId) {
         $query->where(function (Builder $hasCompanyAsPayerOrRecipientQuery) use ($companyId) {
             $hasCompanyAsPayerOrRecipientQuery->whereHas('accountPayers.company', function (Builder $accountPayerQuery) use ($companyId) {

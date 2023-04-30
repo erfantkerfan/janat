@@ -179,6 +179,8 @@ class PayrollDeductionController extends Controller
             ->get();
         // end of find Accounts
 
+//        dd(Str::replaceArray('?', $targetAccount->getBindings(), $targetAccount->toSql()));
+
         // create PayrollDeduction
         $createdPayrollDeduction = $this->store($request);
         $createdPayrollDeductionId = $createdPayrollDeduction->id;
@@ -214,6 +216,7 @@ class PayrollDeductionController extends Controller
             ]);
         }
     }
+
     public function payPeriodicForLoan(PeriodicPayrollDeductionRequest $request)
     {
         $request->request->add(['paid_for_loan' => 1]);
@@ -444,8 +447,8 @@ class PayrollDeductionController extends Controller
         $modelQuery = $data['modelQuery'];
 
 //        dd($modelQuery->toSql());
-//        die(Str::replaceArray('?', $modelQuery->getBindings(), $modelQuery->toSql()));
-//        die($targetAllocatedLoan);
+//        dd(Str::replaceArray('?', $modelQuery->getBindings(), $modelQuery->toSql()));
+//        dd($targetAllocatedLoan);
 
         return $modelQuery;
     }
