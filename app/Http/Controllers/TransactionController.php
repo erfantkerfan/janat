@@ -62,10 +62,12 @@ class TransactionController extends Controller
                 'deadline_at',
                 'manager_comment',
                 'user_comment',
+                'paid_as_payroll_deduction'
+            ],
+            'filterKeysExact'=> [
                 'transaction_status_id',
                 'transaction_type_id',
                 'parent_transaction_id',
-                'paid_as_payroll_deduction'
             ],
             'filterRelationIds'=> [
 //                [

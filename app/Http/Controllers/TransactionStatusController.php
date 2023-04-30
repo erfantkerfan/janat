@@ -22,11 +22,13 @@ class TransactionStatusController extends Controller
     {
         $config = [
             'filterKeys'=> [
-                'id',
                 'name',
                 'display_name',
                 'description'
-            ]
+            ],
+            'filterKeysExact'=> [
+                'id',
+            ],
         ];
 
         return $this->commonIndex($request, TransactionStatus::class, $config);

@@ -40,13 +40,15 @@ class UserController extends Controller
     {
         $config = [
             'filterKeys'=> [
-                'id',
                 'f_name',
                 'l_name',
                 'staff_code',
                 'SSN',
                 'phone',
-                'mobile',
+                'mobile'
+            ],
+            'filterKeysExact'=> [
+                'id',
                 'status_id'
             ],
             'filterRelationIds'=> [

@@ -20,11 +20,13 @@ class TransactionTypeController extends Controller
     {
         $config = [
             'filterKeys'=> [
-                'id',
                 'name',
                 'display_name',
                 'description'
-            ]
+            ],
+            'filterKeysExact'=> [
+                'id',
+            ],
         ];
 
         return $this->commonIndex($request, TransactionType::class, $config);
