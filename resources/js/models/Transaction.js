@@ -6,6 +6,7 @@ import {Company} from "@/models/Company";
 import {AllocatedLoan} from "@/models/AllocatedLoan";
 import {AllocatedLoanInstallment} from "@/models/AllocatedLoanInstallment";
 import {Loan} from "@/models/Loan";
+import {TransactionType} from "@/models/TransactionType";
 
 class Transaction extends Model {
     constructor (data) {
@@ -16,7 +17,6 @@ class Transaction extends Model {
             },
             { key: 'id' },
 
-            { key: 'transaction_type' },
             { key: 'user_id' },
             { key: 'fund_id' },
             { key: 'account_id' },
@@ -32,6 +32,10 @@ class Transaction extends Model {
             {
                 key: 'transaction_status',
                 relatedModel: TransactionStatus
+            },
+            {
+                key: 'transaction_type',
+                relatedModel: TransactionType
             },
             {
                 key: 'related_payers',

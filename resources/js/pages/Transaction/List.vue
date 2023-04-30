@@ -9,7 +9,6 @@
                     <h4 class="title">لیست تراکنش ها</h4>
                 </md-card-header>
                 <md-card-content>
-
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <md-radio v-model="filterData.transaction_type" value="payer" name="transaction_type">پرداخت کننده</md-radio>
@@ -19,7 +18,6 @@
                             <md-checkbox v-model="filterData.paid_as_payroll_deduction">کسر از حقوق باشد</md-checkbox>
                         </div>
                     </div>
-
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <div class="md-layout">
@@ -58,7 +56,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="md-layout">
                         <div class="md-layout-item">
                             <md-field>
@@ -135,6 +132,21 @@
                                 <md-select v-model="filterData.transaction_status_id" name="pages">
                                     <md-option
                                         v-for="item in transactionStatuses.list"
+                                        :key="item.id"
+                                        :label="item.display_name"
+                                        :value="item.id"
+                                    >
+                                        {{ item.display_name }}
+                                    </md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item">
+                            <md-field>
+                                <label>نوع تراکنش:</label>
+                                <md-select v-model="filterData.transaction_type_id">
+                                    <md-option
+                                        v-for="item in transactionTypes.list"
                                         :key="item.id"
                                         :label="item.display_name"
                                         :value="item.id"
@@ -225,7 +237,7 @@
                         v-if="!transctions.loading && transctions.list.length === 0"
                         class="md-warning"
                         md-icon="info"
-                        md-label="وامی یافت نشد"
+                        md-label="تراکنشی یافت نشد"
                     >
                     </md-empty-state>
                     <md-table
@@ -254,7 +266,9 @@
                                 </md-select>
                             </md-field>
                         </md-table-toolbar>
-                        <md-table-row v-if="!transctions.loading && transctions.list.length > 0" slot="md-table-row" slot-scope="{ item }">
+                        <md-table-row v-if="!transctions.loading && transctions.list.length > 0"
+                                      slot="md-table-row"
+                                      slot-scope="{ item }">
                             <md-table-cell md-label="پرداخت کنندگان">
                                 <div v-for="related_payer in item.related_payers"
                                     :key="'related_payer-'+related_payer.id"
@@ -277,10 +291,16 @@
                                 {{item.cost | currencyFormat}}
                             </md-table-cell>
                             <md-table-cell md-label="وضعیت" md-sort-by="parent_transaction_id">
-                                {{item.transaction_status.display_name}}
-                                <span v-if="item.paid_as_payroll_deduction">
-                                    (کسر از حقوق)
-                                </span>
+                                <div>
+                                    {{item.transaction_status.display_name}}
+                                    <span v-if="item.paid_as_payroll_deduction">
+                                        (کسر از حقوق)
+                                    </span>
+                                </div>
+                                <div>
+                                    {{item.transaction_type.display_name}}
+                                </div>
+
                             </md-table-cell>
                             <md-table-cell md-label="مهلت پرداخت" md-sort-by="deadline_at">
                                 <span v-if="item.deadline_at">
@@ -323,132 +343,133 @@
 </template>
 
 <script>
+import ListPagination from '@/components/ListPagination'
+import { TransactionList } from '@/models/Transaction'
+import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
 
-    import ListPagination from '@/components/ListPagination'
-    import { TransactionList } from '@/models/Transaction'
-    import { priceFilterMixin, getFilterDropdownMixin, axiosMixin } from '@/mixins/Mixins'
-
-    export default {
-        watch: {
-            'filterData.perPage' : function () {
-                this.getList()
-            }
-        },
-        mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
-        components: {
-            ListPagination
-        },
-        data: () => ({
-            transctions: new TransactionList(),
-            filterData: {
-                sortation: {
-                    field: "created_at",
-                    order: "asc"
-                },
-                perPage: 10,
-                perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
-                transaction_type: 'payer',
-                fund_id: null,
-                user_id: null,
-                f_name: null,
-                l_name: null,
-                account_id: null,
-                loan_id: null,
-                company_id: null,
-                transaction_status_id: null,
-                paid_as_payroll_deduction: false,
-                paidSinceDate: null,
-                paidTillDate: null,
-                createdSinceDate: null,
-                createdTillDate: null
-            }
-        }),
-        mounted() {
+export default {
+    watch: {
+        'filterData.perPage' : function () {
             this.getList()
-            this.getLoans()
-            this.getFunds()
-            this.getCompanies()
-            this.getTransactionStatus()
+        }
+    },
+    mixins: [getFilterDropdownMixin, priceFilterMixin, axiosMixin],
+    components: {
+        ListPagination
+    },
+    data: () => ({
+        transctions: new TransactionList(),
+        filterData: {
+            sortation: {
+                field: "created_at",
+                order: "asc"
+            },
+            perPage: 10,
+            perPageOptions: [5, 10, 25, 50, 100, 200, 300, 500],
+            transaction_type: 'payer',
+            fund_id: null,
+            user_id: null,
+            f_name: null,
+            l_name: null,
+            account_id: null,
+            loan_id: null,
+            company_id: null,
+            transaction_type_id: null,
+            transaction_status_id: null,
+            paid_as_payroll_deduction: false,
+            paidSinceDate: null,
+            paidTillDate: null,
+            createdSinceDate: null,
+            createdTillDate: null
+        }
+    }),
+    mounted() {
+        this.getList()
+        this.getLoans()
+        this.getFunds()
+        this.getCompanies()
+        this.getTransactionType()
+        this.getTransactionStatus()
+    },
+    methods: {
+        clickCallback (data) {
+            this.getList(data)
         },
-        methods: {
-            clickCallback (data) {
-                this.getList(data)
-            },
-            getList (page) {
-                if (!page) {
-                    page = 1
-                }
-                this.transctions.loading = true;
-                this.transctions.fetch({
-                    page,
-                    sortation_field: this.filterData.sortation.field,
-                    sortation_order: this.filterData.sortation.order,
-                    length: this.filterData.perPage,
-                    f_name: this.filterData.f_name,
-                    l_name: this.filterData.l_name,
-                    user_id: (this.filterData.user_id === null || this.filterData.user_id.trim().length === 0) ? null: this.filterData.user_id,
-                    account_id: (this.filterData.account_id === null || this.filterData.account_id.trim().length === 0) ? null: this.filterData.account_id,
-                    fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
-                    loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null: this.filterData.loan_id,
-                    company_id: (this.filterData.company_id === null || this.filterData.company_id === 0) ? null: this.filterData.company_id,
-                    transaction_status_id: (this.filterData.transaction_status_id === null || this.filterData.transaction_status_id === 0) ? null: this.filterData.transaction_status_id,
-                    paid_as_payroll_deduction: (this.filterData.paid_as_payroll_deduction === false) ? null : 1,
-                    transaction_type: this.filterData.transaction_type,
-                    paid_at_since_date: this.filterData.paidSinceDate,
-                    paid_at_till_date: this.filterData.paidTillDate,
-                    createdSinceDate: this.filterData.createdSinceDate,
-                    createdTillDate: this.filterData.createdTillDate
+        getList (page) {
+            if (!page) {
+                page = 1
+            }
+            this.transctions.loading = true
+            this.transctions.fetch({
+                page,
+                sortation_field: this.filterData.sortation.field,
+                sortation_order: this.filterData.sortation.order,
+                length: this.filterData.perPage,
+                f_name: this.filterData.f_name,
+                l_name: this.filterData.l_name,
+                user_id: (this.filterData.user_id === null || this.filterData.user_id.trim().length === 0) ? null: this.filterData.user_id,
+                account_id: (this.filterData.account_id === null || this.filterData.account_id.trim().length === 0) ? null: this.filterData.account_id,
+                fund_id: (this.filterData.fund_id === null || this.filterData.fund_id === 0) ? null: this.filterData.fund_id,
+                loan_id: (this.filterData.loan_id === null || this.filterData.loan_id === 0) ? null: this.filterData.loan_id,
+                company_id: (this.filterData.company_id === null || this.filterData.company_id === 0) ? null: this.filterData.company_id,
+                transaction_type_id: (this.filterData.transaction_type_id === null || this.filterData.transaction_type_id === 0) ? null: this.filterData.transaction_type_id,
+                transaction_status_id: (this.filterData.transaction_status_id === null || this.filterData.transaction_status_id === 0) ? null: this.filterData.transaction_status_id,
+                paid_as_payroll_deduction: (this.filterData.paid_as_payroll_deduction === false) ? null : 1,
+                transaction_type: this.filterData.transaction_type,
+                paid_at_since_date: this.filterData.paidSinceDate,
+                paid_at_till_date: this.filterData.paidTillDate,
+                createdSinceDate: this.filterData.createdSinceDate,
+                createdTillDate: this.filterData.createdTillDate
+            })
+                .then((response) => {
+                    this.transctions.loading = false
+                    this.transctions = new TransactionList(response.data.data, response.data)
                 })
-                    .then((response) => {
-                        this.transctions.loading = false
-                        this.transctions = new TransactionList(response.data.data, response.data)
-                    })
-                    .catch((error) => {
-                        this.axios_handleError(error)
-                        this.transctions.loading = false
-                        this.transctions = new TransactionList()
-                    })
-            },
-            confirmRemove(item) {
-                this.$confirm(
-                    {
-                        message: `از حذف تراکنش اطمینان دارید؟`,
-                        button: {
-                            no: 'خیر',
-                            yes: 'بله'
-                        },
-                        callback: confirm => {
-                            if (confirm) {
-                                this.remove(item)
-                            }
+                .catch((error) => {
+                    this.axios_handleError(error)
+                    this.transctions.loading = false
+                    this.transctions = new TransactionList()
+                })
+        },
+        confirmRemove(item) {
+            this.$confirm(
+                {
+                    message: `از حذف تراکنش اطمینان دارید؟`,
+                    button: {
+                        no: 'خیر',
+                        yes: 'بله'
+                    },
+                    callback: confirm => {
+                        if (confirm) {
+                            this.remove(item)
                         }
                     }
-                )
-            },
-            remove(item) {
-                item.loading = true;
-                let that = this;
-                item.delete()
-                    .then(function() {
-                        that.$store.dispatch('alerts/fire', {
-                            icon: 'success',
-                            title: 'توجه',
-                            message: 'تراکنش با موفقیت حذف شد'
-                        });
-                        that.getList()
-                    })
-                    .catch((error) => {
-                        this.axios_handleError(error)
-                        item.editMode = false
-                        item.loading = false
+                }
+            )
+        },
+        remove(item) {
+            item.loading = true;
+            let that = this;
+            item.delete()
+                .then(function() {
+                    that.$store.dispatch('alerts/fire', {
+                        icon: 'success',
+                        title: 'توجه',
+                        message: 'تراکنش با موفقیت حذف شد'
                     });
-            },
-            customSort() {
-                this.getList()
-                return false;
-            }
+                    that.getList()
+                })
+                .catch((error) => {
+                    this.axios_handleError(error)
+                    item.editMode = false
+                    item.loading = false
+                });
+        },
+        customSort() {
+            this.getList()
+            return false;
         }
-
     }
 
+}
 </script>

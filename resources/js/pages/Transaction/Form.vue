@@ -36,19 +36,36 @@
                                 </md-field>
                             </div>
                         </div>
-                        <md-field>
-                            <label>وضعیت تراکنش</label>
-                            <md-select v-model="transaction.transaction_status.id" name="pages">
-                                <md-option
-                                    v-for="item in transactionStatuses.list"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id"
-                                >
-                                    {{ item.display_name }}
-                                </md-option>
-                            </md-select>
-                        </md-field>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                نوع تراکنش
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    {{ transaction.transaction_type.display_name }}
+                                </md-field>
+                            </div>
+                        </div>
+                        <div class="md-layout">
+                            <label class="md-layout-item md-size-15 md-form-label">
+                                وضعیت تراکنش
+                            </label>
+                            <div class="md-layout-item">
+                                <md-field class="md-invalid">
+                                    <md-select v-model="transaction.transaction_status.id" name="pages">
+                                        <md-option
+                                            v-for="item in transactionStatuses.list"
+                                            :key="item.id"
+                                            :label="item.name"
+                                            :value="item.id"
+                                        >
+                                            {{ item.display_name }}
+                                        </md-option>
+                                    </md-select>
+                                </md-field>
+                            </div>
+                        </div>
+
                         <div class="md-layout">
                             <label class="md-layout-item md-size-15 md-form-label">
                                 مهلت پرداخت
