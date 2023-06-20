@@ -71,9 +71,9 @@ RUN composer install --no-cache --no-dev --optimize-autoloader --no-scripts --no
 
 COPY . .
 
-RUN npm ci --omit=dev --no-cache
-
-RUN npm run production
+RUN npm ci --omit=dev --no-cache \
+    npm run production \
+    rm -rf node_modules
 
 RUN chown nobody:nobody /var/www/html \
     && chown -R nobody:nobody /var/www/html/bootstrap /var/www/html/storage /var/lib /run /nobody
