@@ -71,7 +71,7 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --no-ansi
 
 COPY . .
 
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --no-cache
 
 RUN npm run production
 
