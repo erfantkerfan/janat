@@ -67,7 +67,7 @@ WORKDIR /var/www/html
 
 COPY composer.* ./
 
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-ansi
+RUN composer install --no-cache --no-dev --optimize-autoloader --no-scripts --no-ansi
 
 COPY . .
 
