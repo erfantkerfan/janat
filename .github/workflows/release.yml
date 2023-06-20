@@ -38,5 +38,5 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: erfantkerfan/janat:${{ env.RELEASE_VERSION }}, erfantkerfan/janat:latest, ghcr.io/erfantkerfan/janat:${{ env.RELEASE_VERSION }}, erfantkerfan/janat:latest
+          tags: erfantkerfan/janat:${{ env.RELEASE_VERSION }}, erfantkerfan/janat:latest, ghcr.io/erfantkerfan/janat:${{ env.RELEASE_VERSION }}, ghcr.io/erfantkerfan/janat:latest
           build-args: RELEASE_VERSION=${{ env.RELEASE_VERSION }}
