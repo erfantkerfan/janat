@@ -1,4 +1,4 @@
-[![CI](https://github.com/erfantkerfan/janat/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/erfantkerfan/janat/actions/workflows/release.yml)
+[![CI](https://github.com/erfantkerfan/janat/actions/workflows/release.yml/badge.svg)](https://github.com/erfantkerfan/janat/actions/workflows/release.yml)
 
 
 <div dir="rtl">
