@@ -34,7 +34,7 @@
         "assert": "^1.5.0",
         "axios": "^1.7.4",
         "binary-extensions": "^2.2.0",
-        "bootstrap": "^4.6.1",
+        "bootstrap": "^5.0.0",
         "browserslist": "^4.17.5",
         "buffer": "^6.0.3",
         "chart.js": "^2.9.4",
